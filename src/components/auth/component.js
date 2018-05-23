@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Paper, TextField, Button, Hidden } from '@material-ui/core';
 
-const Login = ({ classes, email, confirmPassword, password, emailError, passwordError, confirmPasswordError, updateEmail, updateConfirmPassword, updatePassword, handleForm, step, updateStep }) => {
+const Auth = ({ classes, email, confirmPassword, password, emailError, passwordError, confirmPasswordError, updateEmail, updateConfirmPassword, updatePassword, handleForm, step, updateStep }) => {
     const RegisterButton = ({ onClick }) => (
         <Button variant="raised" color="primary" type="submit" onClick={onClick} className={classes.registerButton}>
             Register
@@ -111,4 +111,4 @@ const Login = ({ classes, email, confirmPassword, password, emailError, password
     )
 }
 
-export default Login;
+export default Auth;

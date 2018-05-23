@@ -34,7 +34,8 @@ const styles = {
         color: '#fff',
     },
     loginForm: {
-        padding: 20
+        padding: 20,
+        margin: '0 10px'
     },
     textField: {
         width: '100%',

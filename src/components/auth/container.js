@@ -1,12 +1,12 @@
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { withStyles } from '@material-ui/core';
-import Login from './component';
+import Auth from './component';
 import styles from './style';
 
 // const isValidEmail = (email) => /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
 const isValidEmail = (email) => /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email);
 
-const LoginHOC = compose(
+const AuthHOC = compose(
     withStyles(styles),
     withState('step', 'setStep', 'signIn'),
     withState('email', 'setEmail', ''),
@@ -45,4 +45,4 @@ const LoginHOC = compose(
     pure
 )
 
-export default LoginHOC(Login);
+export default AuthHOC(Auth);
