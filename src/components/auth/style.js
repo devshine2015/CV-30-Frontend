@@ -1,4 +1,4 @@
-const styles = {
+const styles = theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
@@ -47,7 +47,10 @@ const styles = {
         height: 60,
         background: '#f7a944',
         color: '#fff',
-        fontSize: 20
+        fontSize: 20,
+        '&:hover': {
+            background: '#c07a0d',
+        }
     },
     registerButton: {
         width: '100%',
@@ -85,6 +88,6 @@ const styles = {
         background: '#fff',
         top: '-15%'
     }
-};
+});
 
 export default styles;

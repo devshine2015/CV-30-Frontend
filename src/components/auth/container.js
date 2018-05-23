@@ -33,11 +33,11 @@ const AuthHOC = compose(
             setEmail(email);
             setEmailError(!isValidEmail(email));
         },
-        updateConfirmPassword: ({ setConfirmPassword }) => (confirmPassword) => setConfirmPassword(confirmPassword),
+        updateConfirmPassword: ({ password, setConfirmPassword, setConfirmPasswordError }) => (confirmPassword) => {
+            setConfirmPassword(confirmPassword);
+            setConfirmPasswordError(password !== confirmPassword);
+        },
         handleForm: ({ email, confirmPassword, password }) => () => {
-            console.log(email);
-            console.log(confirmPassword);
-            console.log(password);
             return false;
         }
 

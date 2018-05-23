@@ -2,8 +2,8 @@ import React from 'react';
 import { Grid, Paper, TextField, Button, Hidden } from '@material-ui/core';
 
 const Auth = ({ classes, email, confirmPassword, password, emailError, passwordError, confirmPasswordError, updateEmail, updateConfirmPassword, updatePassword, handleForm, step, updateStep }) => {
-    const RegisterButton = ({ onClick }) => (
-        <Button variant="raised" color="primary" type="submit" onClick={onClick} className={classes.registerButton}>
+    const RegisterButton = ({ onClick, disabled }) => (
+        <Button variant="raised" color="primary" type="submit" onClick={onClick} className={classes.registerButton} disabled={disabled}>
             Register
         </Button>
     );
@@ -85,12 +85,18 @@ const Auth = ({ classes, email, confirmPassword, password, emailError, passwordE
                                     <a href="/" className={classes.forgotLink} onClick={event => { event.preventDefault(); updateStep('forgot'); }}>Forgot password</a>
                                 </p>}
 
-                            {step === 'signIn' && [<LoginButton key="auth_1" onClick={() => { }} disabled={!email || !password || passwordError || emailError} />, <OrSeparator key="auth_2" />, <RegisterButton key="auth_3" onClick={() => updateStep('register')} />]}
+                            {step === 'signIn' && [
+                                <LoginButton key="auth_1" onClick={handleForm} disabled={!email || !password || passwordError || emailError} />,
+                                <OrSeparator key="auth_2" />,
+                                <RegisterButton key="auth_3" onClick={() => updateStep('register')} />]}
 
-                            {step === 'register' && [<RegisterButton key="auth_4" onClick={() => { }} />, <OrSeparator key="auth_5" />, <LoginButton key="auth_6" onClick={() => updateStep('signIn')} disabled={false} />]}
+                            {step === 'register' && [
+                                <RegisterButton key="auth_4" onClick={handleForm} disabled={!email || !password || !confirmPassword || emailError || passwordError || confirmPasswordError}/>,
+                                <OrSeparator key="auth_5" />,
+                                <LoginButton key="auth_6" onClick={() => updateStep('signIn')}  />]}
 
                             {step === 'forgot' && [
-                                <Button key="auth_7" variant="raised" color="primary" type="submit" className={classes.registerButton}>
+                                <Button key="auth_7" variant="raised" color="primary" className={classes.registerButton} disabled={!email || emailError} onClick={handleForm}>
                                     Reset password
                                 </Button>,
                                 <OrSeparator key="auth_8" />,
