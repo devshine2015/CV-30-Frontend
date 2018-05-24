@@ -1,12 +1,21 @@
 const styles = {
     root: {
         display: 'flex',
+        minHeight: '100%',
         flexDirection: 'column',
-        flexGrow: 1,
-        height: '100%',
-        backgroundImage: 'linear-gradient(to bottom, rgba(95, 155, 205, 0.75), rgba(95, 155, 205, 0.75)), url(http://www.businesselement.net/wp-content/uploads/2017/11/Office-Budget.jpg)'
-    },
 
+    },
+    topNav: {
+        display: 'flex',
+        flexGrow: 1,
+        backgroundImage: 'linear-gradient(to bottom, rgba(95, 155, 205, 0.75), rgba(95, 155, 205, 0.75)), url(http://www.businesselement.net/wp-content/uploads/2017/11/Office-Budget.jpg)',
+        padding: 20,
+        flexDirection: 'column',
+        height: '100vh'
+    },
+    navContainer: {
+        justifyContent: 'space-between'
+    },
     roundedImage: {
         maxWidth: 60,
         maxHeight: 60,
@@ -14,76 +23,141 @@ const styles = {
         marginRight: 10
     },
     brand: {
-        marginTop: 20,
-        marginLeft: 20,
-        fontSize: 20,
+        fontSize: '1.25rem',
         color: 'white',
         textDecoration: 'none',
         display: 'flex',
         alignItems: 'center'
     },
-
-    loginContainer: {
-        marginTop: 'auto',
-        marginBottom: 'auto',
-        justifyContent: 'space-evenly',
-        alignItems: 'center'
-
-    },
-    loginMessages: {
-        color: '#fff',
-    },
-    loginForm: {
-        padding: 20,
-        margin: '0 10px'
-    },
-    textField: {
-        width: '100%',
-        marginBottom: 30,
-        fontSize: '20px'
-    },
     loginButton: {
+        marginRight: 10,
+        background: '#f7a944',
+        color: '#fff',
+        '&:hover': {
+            background: '#c07a0d',
+        }
+    },
+    headlineContainer: {
+        margin: 'auto',
+        color: '#fff',
+        justifyContent: 'space-evenly'
+    },
+    featureRow: {
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        marginTop: 100
+    },
+    featureRowReverse: {
+        flexDirection: 'row-reverse'
+    },
+    featureImageContainer: {
+
+    },
+    featureImage: {
+        borderRadius: '50%',
+        background: '#d8d8d8',
+        width: '80%',
+        paddingBottom: '80%',
+        margin: 'auto'
+    },
+    featureHeading: {
+        fontSize: '2.25rem',
+        color: '#277dba'
+    },
+    featureText: {
+        fontWeight: 300,
+        color: '#9a9a9a'
+    },
+
+    storiesContainer: {
+        display: 'flex',
+        borderTop: '2px solid #b7d3e7',
+        marginTop: 100,
+        height: '80vh'
+    },
+    storiesSliderContainer: {
+        padding: '2% 5%',
+        background: '#f3f8fb'
+    },
+    storiesSliderTitle: {
+        textTransform: 'uppercase',
+        fontSize: '5rem',
+        fontWeight: 'lighter',
+        color: '#277dba'
+    },
+    slideTitle: {
+        color: '#277dba',
+        fontSize: '2.25rem'
+    },
+    slideText: {
+        fontWeight: 300,
+        color: '#9a9a9a'
+    },
+    sliderControls: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    sliderArrow: {
+        background: 'none',
+        color: '#277dba'
+    },
+    sliderDot: {
+        width: 15,
+        height: 15,
+        borderRadius: '50%',
+        background: '#dde1e4',
+        margin: '0 5px'
+    },
+    sliderDotActive: {
+        background: '#1b1b1b'
+    },
+    slideImage: {
+        maxHeight: '100%',
+        maxWidth: '100%',
+        width: '100%'
+    },
+    footer: {
+        display: 'flex',
+        flexGrow: 1,
+        backgroundImage: 'linear-gradient(to bottom, rgba(95, 155, 205, 0.75), rgba(95, 155, 205, 0.75)), url(http://www.businesselement.net/wp-content/uploads/2017/11/Office-Budget.jpg)',
+        padding: 20,
+        flexDirection: 'column',
+        minHeight: '80vh'
+    },
+    footerContainer: {
+        justifyContent: 'space-between',
+        margin: 'auto',
+        color: '#fff'
+    },
+    footerSignupButton: {
         width: '100%',
         height: 60,
         background: '#f7a944',
         color: '#fff',
-        fontSize: 20
+        fontSize: 20,
+        '&:hover': {
+            background: '#c07a0d',
+        }
     },
-    registerButton: {
-        width: '100%',
-        height: 60,
-        color: '#fff',
-        fontSize: 20
-    },
-    forgotPass: {
-        marginTop: -20,
-        marginBottom: 20,
-        textAlign: 'right'
-    },
-    forgotLink: {
-        fontSize: 13,
-        textDecoration: 'none'
-    },
-    divSeparator: {
+    footerLinks: {
         display: 'flex',
-        width: '100%',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        margin: '10px 0'
+        justifyContent: 'space-between'
     },
-    separatorHR: {
-        width: '100%',
-        border: '0.5px solid #aaa'
+    footerCopyright: {
+        fontSize: 13,
+        color: '#fff'
     },
-    orText: {
-        position: 'absolute',
-        bottom: '0',
-        width: '50px',
-        textAlign: 'center',
-        background: '#fff',
-        top: '-15%'
+    footerButton: {
+        color: '#fff',
+        fontSize: '1rem',
+        '&:hover': {
+            background: 'none',
+            color: '#eee'
+        }
+    },
+    footerSocialButton: {
+        minWidth: 0,
+        color: '#fff'
     }
 };
 
