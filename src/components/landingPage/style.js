@@ -80,7 +80,7 @@ const styles = {
         display: 'flex',
         borderTop: '2px solid #b7d3e7',
         marginTop: 100,
-        height: '80vh'
+        minHeight: '80vh'
     },
     storiesSliderContainer: {
         padding: '2% 5%',
