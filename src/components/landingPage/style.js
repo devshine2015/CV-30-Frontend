@@ -17,7 +17,7 @@ const styles = {
         backgroundImage: 'linear-gradient(to bottom, rgba(95, 155, 205, 0.75), rgba(95, 155, 205, 0.75)), url(http://www.businesselement.net/wp-content/uploads/2017/11/Office-Budget.jpg)',
         padding: 20,
         flexDirection: 'column',
-        height: '100vh'
+        minHeight: '100vh'
     },
     navContainer: {
         justifyContent: 'space-between',
