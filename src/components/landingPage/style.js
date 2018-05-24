@@ -139,7 +139,7 @@ const styles = {
     },
     footerSignupButton: {
         width: '80%',
-        display: 'block',
+        // display: 'block',
         margin: '30px auto 0',
         height: 60,
         background: '#f7a944',

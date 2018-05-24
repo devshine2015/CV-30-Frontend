@@ -1,4 +1,4 @@
-import { compose, pure, withState, withHandlers } from 'recompose';
+import { compose, pure, withState, withHandlers, mapProps } from 'recompose';
 import { withStyles } from '@material-ui/core';
 import Auth from './component';
 import styles from './style';
@@ -8,7 +8,7 @@ const isValidEmail = (email) => /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?
 
 const AuthHOC = compose(
     withStyles(styles),
-    withState('step', 'setStep', 'signIn'),
+    withState('step', 'setStep', props => (props.location.state && props.location.state.step) || 'signIn'),
     withState('email', 'setEmail', ''),
     withState('emailError', 'setEmailError', null),
     withState('password', 'setPassword', ''),

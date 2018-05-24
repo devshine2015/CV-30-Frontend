@@ -8,16 +8,19 @@ const LandingPage = ({ classes }) => {
             <div className={classes.topNav}>
                 <Grid container className={classes.navContainer}>
                     <Grid item md={1}>
-                        <a href="/" className={classes.brand}>
+                        <Link to="/" className={classes.brand}>
                             <img src="http://brandmark.io/logo-rank/random/pepsi.png" className={classes.roundedImage} alt="alupigus" />
                             Brand
-                        </a>
+                        </Link>
                     </Grid>
                     <Grid item>
                         <Button component={Link} to="/auth" variant="raised" type="button" className={classes.loginButton}>
                             Log in
                         </Button>
-                        <Button variant="raised" color="primary" type="button" className={classes.registerButton}>
+                        <Button component={Link} to={{
+                            pathname: '/auth',
+                            state: { step: 'register' }
+                        }} variant="raised" color="primary" type="button" className={classes.registerButton}>
                             Sign up
                         </Button>
                     </Grid>
@@ -158,7 +161,10 @@ const LandingPage = ({ classes }) => {
                             altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
                             intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
                         </p>
-                        <Button variant="raised" color="primary" type="button" className={classes.footerSignupButton}>
+                        <Button component={Link} to={{
+                            pathname: '/auth',
+                            state: { step: 'register' }
+                        }} variant="raised" color="primary" type="button" className={classes.footerSignupButton}>
                             Sign up
                         </Button>
                     </Grid>

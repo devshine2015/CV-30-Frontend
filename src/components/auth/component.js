@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, Paper, TextField, Button, Hidden } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const Auth = ({ classes, email, confirmPassword, password, emailError, passwordError, confirmPasswordError, updateEmail, updateConfirmPassword, updatePassword, handleForm, step, updateStep }) => {
     const RegisterButton = ({ onClick, disabled }) => (
@@ -25,10 +26,10 @@ const Auth = ({ classes, email, confirmPassword, password, emailError, passwordE
         <div id="login" className={classes.root}>
             <Grid container>
                 <Grid item md={12} sm={12} xs={12}>
-                    <a href="/" className={classes.brand}>
+                    <Link to="/" className={classes.brand}>
                         <img src="http://brandmark.io/logo-rank/random/pepsi.png" className={classes.roundedImage} alt="alupigus" />
                         Brand
-                    </a>
+                    </Link>
                 </Grid>
             </Grid>
             <Grid container className={classes.loginContainer}>
@@ -91,9 +92,9 @@ const Auth = ({ classes, email, confirmPassword, password, emailError, passwordE
                                 <RegisterButton key="auth_3" onClick={() => updateStep('register')} />]}
 
                             {step === 'register' && [
-                                <RegisterButton key="auth_4" onClick={handleForm} disabled={!email || !password || !confirmPassword || emailError || passwordError || confirmPasswordError}/>,
+                                <RegisterButton key="auth_4" onClick={handleForm} disabled={!email || !password || !confirmPassword || emailError || passwordError || confirmPasswordError} />,
                                 <OrSeparator key="auth_5" />,
-                                <LoginButton key="auth_6" onClick={() => updateStep('signIn')}  />]}
+                                <LoginButton key="auth_6" onClick={() => updateStep('signIn')} />]}
 
                             {step === 'forgot' && [
                                 <Button key="auth_7" variant="raised" color="primary" className={classes.registerButton} disabled={!email || emailError} onClick={handleForm}>
