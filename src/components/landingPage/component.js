@@ -24,8 +24,8 @@ const LandingPage = ({ classes }) => {
                 </Grid>
                 <Grid container className={classes.headlineContainer}>
                     <Grid item md={5} sm={12} xs={12}>
-                        <h1>Introductory headline goes here</h1>
-                        <p>
+                        <h1 className={classes.heading1}>Introductory headline goes here</h1>
+                        <p className={classes.paragraph}>
                             Lorem ipsum dolor sit amet, oratio minimum cum ex, rebum error incorrupte mei te. Has hinc consulatu cu. Pro causae cetero eleifend no,
                             altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
                             intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
@@ -36,14 +36,15 @@ const LandingPage = ({ classes }) => {
                     </Hidden>
                 </Grid>
             </div>
+
             <div className={classes.featuresContainer}>
                 <Grid container className={classes.featureRow}>
-                    <Grid item md={5} className={classes.featureImageContainer}>
+                    <Grid item md={5} sm={12} xs={12} className={classes.featureImageContainer}>
                         <div className={classes.featureImage}>
                         </div>
                     </Grid>
 
-                    <Grid item md={5} className={classes.featureTexts}>
+                    <Grid item md={5} sm={11} xs={11} className={classes.featureTexts}>
                         <h2 className={classes.featureHeading}>
                             Title for feature
                         </h2>
@@ -57,12 +58,12 @@ const LandingPage = ({ classes }) => {
                 </Grid>
 
                 <Grid container className={[classes.featureRow, classes.featureRowReverse].join(' ')}>
-                    <Grid item md={5} className={classes.featureImageContainer}>
+                    <Grid item md={5} sm={12} xs={12} className={classes.featureImageContainer}>
                         <div className={classes.featureImage}>
                         </div>
                     </Grid>
 
-                    <Grid item md={5} className={classes.featureTexts}>
+                    <Grid item md={5} sm={11} xs={11} className={classes.featureTexts}>
                         <h2 className={classes.featureHeading}>
                             Title for feature
                         </h2>
@@ -76,12 +77,12 @@ const LandingPage = ({ classes }) => {
                 </Grid>
 
                 <Grid container className={classes.featureRow}>
-                    <Grid item md={5} className={classes.featureImageContainer}>
+                    <Grid item md={5} sm={12} xs={12} className={classes.featureImageContainer}>
                         <div className={classes.featureImage}>
                         </div>
                     </Grid>
 
-                    <Grid item md={5} className={classes.featureTexts}>
+                    <Grid item md={5} sm={11} xs={11} className={classes.featureTexts}>
                         <h2 className={classes.featureHeading}>
                             Title for feature
                         </h2>
@@ -95,12 +96,12 @@ const LandingPage = ({ classes }) => {
                 </Grid>
 
                 <Grid container className={[classes.featureRow, classes.featureRowReverse]}>
-                    <Grid item md={5} className={classes.featureImageContainer}>
+                    <Grid item md={5} sm={12} xs={12} className={classes.featureImageContainer}>
                         <div className={classes.featureImage}>
                         </div>
                     </Grid>
 
-                    <Grid item md={5} className={classes.featureTexts}>
+                    <Grid item md={5} sm={11} xs={11} className={classes.featureTexts}>
                         <h2 className={classes.featureHeading}>
                             Title for feature
                         </h2>
@@ -149,10 +150,10 @@ const LandingPage = ({ classes }) => {
                         <Grid item md={5} sm={12} xs={12}></Grid>
                     </Hidden>
                     <Grid item md={5} sm={12} xs={12}>
-                        <h1 className={classes.footerTitle}>
+                        <h1 className={classes.heading1}>
                             Creaza un cont
                         </h1>
-                        <p className={classes.footerMessage}>
+                        <p className={classes.paragraph}>
                             Lorem ipsum dolor sit amet, oratio minimum cum ex, rebum error incorrupte mei te. Has hinc consulatu cu. Pro causae cetero eleifend no,
                             altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
                             intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
@@ -163,10 +164,10 @@ const LandingPage = ({ classes }) => {
                     </Grid>
                 </Grid>
                 <Grid container className={classes.footerLinks}>
-                    <Grid item className={classes.footerCopyright}>
+                    <Grid item md={2} sm={12} xs={12} className={classes.footerCopyright}>
                         &copy; 2018 CV30. All rights reserved.
                     </Grid>
-                    <Grid item className={classes.footerMenu}>
+                    <Grid item md={8} sm={12} xs={12} className={classes.footerMenu}>
                         <Button href="#" className={classes.footerButton}>
                             Contact
                         </Button>
@@ -180,7 +181,7 @@ const LandingPage = ({ classes }) => {
                             Privacy policy
                         </Button>
                     </Grid>
-                    <Grid item className={classes.footerSocial}>
+                    <Grid item md={2} sm={12} xs={12} className={classes.footerSocial}>
                         <Button href="#" className={classes.footerSocialButton}>
                             <i class="fab fa-twitter"></i>
                         </Button>
@@ -196,7 +197,7 @@ const LandingPage = ({ classes }) => {
                     </Grid>
                 </Grid>
             </footer>
-        </div >
+        </div>
     );
 }
 

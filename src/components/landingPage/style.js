@@ -2,8 +2,14 @@ const styles = {
     root: {
         display: 'flex',
         minHeight: '100%',
-        flexDirection: 'column',
-
+        flexDirection: 'column'
+    },
+    heading1: {
+        fontSize: '4.25rem'
+    },
+    paragraph: {
+        fontSize: '1.5rem',
+        fontWeight: '300'
     },
     topNav: {
         display: 'flex',
@@ -14,7 +20,8 @@ const styles = {
         height: '100vh'
     },
     navContainer: {
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     roundedImage: {
         maxWidth: 60,
@@ -114,7 +121,8 @@ const styles = {
     slideImage: {
         maxHeight: '100%',
         maxWidth: '100%',
-        width: '100%'
+        width: '100%',
+        height: '100%'
     },
     footer: {
         display: 'flex',
@@ -125,12 +133,14 @@ const styles = {
         minHeight: '80vh'
     },
     footerContainer: {
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         margin: 'auto',
         color: '#fff'
     },
     footerSignupButton: {
-        width: '100%',
+        width: '80%',
+        display: 'block',
+        margin: '30px auto 0',
         height: 60,
         background: '#f7a944',
         color: '#fff',
@@ -139,9 +149,21 @@ const styles = {
             background: '#c07a0d',
         }
     },
+    footerMenu: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    },
+    footerSocial: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
     footerLinks: {
         display: 'flex',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     footerCopyright: {
         fontSize: 13,
