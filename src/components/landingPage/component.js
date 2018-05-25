@@ -1,16 +1,23 @@
 import React from 'react';
 import { Grid, Button, Hidden, IconButton, Icon } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedDate, FormattedNumber, FormattedPlural } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 const LandingPage = ({ classes }) => {
     return (
         <div id="landingPage" className={classes.root}>
+            <h1 className="App-title">
+                <FormattedMessage id="app.title"
+                    defaultMessage="Welcome to {what}"
+                    description="Welcome header on app main page"
+                    values={{ what: 'react-intl' }} />
+            </h1>
+
             <div className={classes.topNav}>
                 <Grid container className={classes.navContainer}>
                     <Grid item md={1}>
                         <Link to="/" className={classes.brand}>
-                            <img src="http://brandmark.io/logo-rank/random/pepsi.png" className={classes.roundedImage} alt="alupigus" />
+                            <img src="http://brandmark.io/logo-rank/random/pepsi.png" className={classes.roundedImage} alt="pepsic" />
                             Brand
                         </Link>
                     </Grid>
