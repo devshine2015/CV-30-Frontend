@@ -98,7 +98,7 @@ const LandingPage = ({ classes }) => {
 
                 </Grid>
 
-                <Grid container className={[classes.featureRow, classes.featureRowReverse]}>
+                <Grid container className={[classes.featureRow, classes.featureRowReverse].join(' ')}>
                     <Grid item md={5} sm={12} xs={12} className={classes.featureImageContainer}>
                         <div className={classes.featureImage}>
                         </div>
@@ -189,16 +189,16 @@ const LandingPage = ({ classes }) => {
                     </Grid>
                     <Grid item md={2} sm={12} xs={12} className={classes.footerSocial}>
                         <Button href="#" className={classes.footerSocialButton}>
-                            <i class="fab fa-twitter"></i>
+                            <i className="fab fa-twitter"></i>
                         </Button>
                         <Button href="#" className={classes.footerSocialButton}>
                             <i className="fab fa-facebook-f"></i>
                         </Button>
                         <Button href="#" className={classes.footerSocialButton}>
-                            <i class="fab fa-youtube"></i>
+                            <i className="fab fa-youtube"></i>
                         </Button>
                         <Button href="#" className={classes.footerSocialButton}>
-                            <i class="fab fa-google-plus-g"></i>
+                            <i className="fab fa-google-plus-g"></i>
                         </Button>
                     </Grid>
                 </Grid>
