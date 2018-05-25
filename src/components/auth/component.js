@@ -1,8 +1,12 @@
 import React from 'react';
 import { Grid, Paper, TextField, Button, Hidden } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { FormattedMessage, FormattedDate, FormattedNumber, FormattedPlural } from 'react-intl';
 
-const Auth = ({ classes, email, confirmPassword, password, emailError, passwordError, confirmPasswordError, updateEmail, updateConfirmPassword, updatePassword, handleForm, step, updateStep }) => {
+
+// const Auth = ({ classes, email, confirmPassword, password, emailError, passwordError, confirmPasswordError, updateEmail, updateConfirmPassword, updatePassword, handleForm, step, updateStep }) => {
+const Auth = (props) => {
+    const { classes, email, confirmPassword, password, emailError, passwordError, confirmPasswordError, updateEmail, updateConfirmPassword, updatePassword, handleForm, step, updateStep } = props;
     const RegisterButton = ({ onClick, disabled }) => (
         <Button variant="raised" color="primary" type="submit" onClick={onClick} className={classes.registerButton} disabled={disabled}>
             Register

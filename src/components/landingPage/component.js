@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Button, Hidden, IconButton, Icon } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { FormattedMessage, FormattedDate, FormattedNumber, FormattedPlural } from 'react-intl';
 
 const LandingPage = ({ classes }) => {
     return (
