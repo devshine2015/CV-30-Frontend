@@ -1,9 +1,10 @@
 import React from 'react';
-import { Grid, Button, Hidden, IconButton, Icon } from '@material-ui/core';
+import { Grid, Button, Hidden } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
+import StoriesSlider from './storiesSlider';
 
-const LandingPage = ({ classes }) => {
+const LandingPage = ({ classes, jumpToStoryItem, prevStoryItem, nextStoryItem, activeStoryItem, stories }) => {
     return (
         <div id="landingPage" className={classes.root}>
             <div className={classes.topNav}>
@@ -124,34 +125,7 @@ const LandingPage = ({ classes }) => {
             </div>
 
             <div className={classes.storiesContainer}>
-                <Grid container>
-                    <Grid item md={6} sm={6} xs={12} className={classes.storiesSliderContainer}>
-                        <FormattedMessage id="landingPage.storiesHeadline" defaultMessage="User stories" description="Stories headline on app landing page">
-                            {(text) => (<h1 className={classes.storiesSliderTitle}>{text}</h1>)}
-                        </FormattedMessage>
-                        <div className={classes.sliderControls}>
-                            <IconButton className={classes.sliderArrow}>
-                                <Icon>arrow_back_ios</Icon>
-                            </IconButton>
-                            <span className={classes.sliderDot}></span>
-                            <span className={[classes.sliderDot, classes.sliderDotActive].join(' ')}></span>
-                            <span className={classes.sliderDot}></span>
-                            <span className={classes.sliderDot}></span>
-                            <IconButton className={classes.sliderArrow}>
-                                <Icon>arrow_forward_ios</Icon>
-                            </IconButton>
-                        </div>
-                        <FormattedMessage id="landingPage.slideTitle" defaultMessage="Slide title" description="Slide title on app landing page">
-                            {(text) => (<h2 className={classes.slideTitle}>{text}</h2>)}
-                        </FormattedMessage>
-                        <FormattedMessage id="landingPage.slideText" defaultMessage="Slide text" description="Slide text on app landing page">
-                            {(text) => (<p className={classes.slideText}>{text}</p>)}
-                        </FormattedMessage>
-                    </Grid>
-                    <Grid item md={6} sm={6} xs={12} className={classes.storiesImagesContainer}>
-                        <img className={classes.slideImage} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwObBmWDaXK4DxechC-rdwErL199LKP6qTC_oIh-5LeoOX-NMC" alt="slide" />
-                    </Grid>
-                </Grid>
+                <StoriesSlider classes={classes} stories={stories} activeStoryItem={activeStoryItem} jumpToStoryItem={jumpToStoryItem} prevStoryItem={prevStoryItem} nextStoryItem={nextStoryItem} />
             </div>
 
             <footer className={classes.footer}>
@@ -177,42 +151,42 @@ const LandingPage = ({ classes }) => {
                     </Grid>
                 </Grid>
                 <Grid container className={classes.footerLinks}>
-                    <FormattedHTMLMessage id="landingPage.footerCopyright" defaultMessage="Copyright" description="Footer copyright">
+                    <FormattedMessage id="landingPage.footerCopyright" defaultMessage="Copyright" description="Footer copyright">
                         {(text) => (<Grid item md={2} sm={12} xs={12} className={classes.footerCopyright}>
                             {text}
                         </Grid>)}
-                    </FormattedHTMLMessage>
+                    </FormattedMessage>
 
                     <Grid item md={8} sm={12} xs={12} className={classes.footerMenu}>
-                        <FormattedHTMLMessage id="nav.contact" defaultMessage="Contact" description="Contact button">
+                        <FormattedMessage id="nav.contact" defaultMessage="Contact" description="Contact button">
                             {(text) => (
                                 <Button href="#" className={classes.footerButton}>
                                     {text}
                                 </Button>
                             )}
-                        </FormattedHTMLMessage>
-                        <FormattedHTMLMessage id="nav.help" defaultMessage="Help" description="Help button">
+                        </FormattedMessage>
+                        <FormattedMessage id="nav.help" defaultMessage="Help" description="Help button">
                             {(text) => (
                                 <Button href="#" className={classes.footerButton}>
                                     {text}
                                 </Button>
                             )}
-                        </FormattedHTMLMessage>
+                        </FormattedMessage>
 
-                        <FormattedHTMLMessage id="nav.termsOfUse" defaultMessage="Terms" description="Terms button">
+                        <FormattedMessage id="nav.termsOfUse" defaultMessage="Terms" description="Terms button">
                             {(text) => (
                                 <Button href="#" className={classes.footerButton}>
                                     {text}
                                 </Button>
                             )}
-                        </FormattedHTMLMessage>
-                        <FormattedHTMLMessage id="nav.privaciPolicy" defaultMessage="Privacy" description="Privacy button">
+                        </FormattedMessage>
+                        <FormattedMessage id="nav.privaciPolicy" defaultMessage="Privacy" description="Privacy button">
                             {(text) => (
                                 <Button href="#" className={classes.footerButton}>
                                     {text}
                                 </Button>
                             )}
-                        </FormattedHTMLMessage>
+                        </FormattedMessage>
                     </Grid>
                     <Grid item md={2} sm={12} xs={12} className={classes.footerSocial}>
                         <Button href="#" className={classes.footerSocialButton}>

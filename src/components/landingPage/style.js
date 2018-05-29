@@ -114,7 +114,8 @@ const styles = {
         height: 15,
         borderRadius: '50%',
         background: '#dde1e4',
-        margin: '0 5px'
+        margin: '0 5px',
+        cursor: 'pointer'
     },
     sliderDotActive: {
         background: '#1b1b1b'
@@ -123,7 +124,17 @@ const styles = {
         maxHeight: '100%',
         maxWidth: '100%',
         width: '100%',
-        height: '100%'
+        height: '100%',
+        display: 'none'
+    },
+    slideImageActive: {
+        display: 'block'
+    },
+    storyItem: {
+        display: 'none'
+    },
+    storyItemActive: {
+        display: 'block'
     },
     footer: {
         display: 'flex',
@@ -140,7 +151,6 @@ const styles = {
     },
     footerSignupButton: {
         width: '80%',
-        // display: 'block',
         margin: '30px auto 0',
         height: 60,
         background: '#f7a944',
