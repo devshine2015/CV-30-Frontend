@@ -10,8 +10,18 @@
     "landingPage.footerCreateAccountText": "Create account text",
     "landingPage.footerCopyright": " \u00A9 2018 CV30. All rights reserved.",
 
+    "login.or": "or",
+    "login.title": "Log in",
+    "login.text": "Lorem ipsum dolor sit amet, movet delenit perfecto no qui, iriure alienum urbanitas eum eu.",
+    "login.invalidEmail": "Invalid email address",
+    "login.shortPassError": "Password too short. Minimum is 3 characters.",
+    "login.passNoMatch": "Passwords do not match",
+    "login.forgotPassword": "Forgot password",
+
     "actions.logIn": "Log in",
     "actions.signUp": "Sign up",
+    "actions.register": "Register",
+    "actions.resetPassword": "Reset password",
 
     "nav.contact": "Contact",
     "nav.help": "Help",
