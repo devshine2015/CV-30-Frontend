@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Button, Hidden, IconButton, Icon } from '@material-ui/core';
+import { Grid, IconButton, Icon } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 
 const StoriesSlider = ({ classes, stories, nextStoryItem, prevStoryItem, activeStoryItem, jumpToStoryItem }) => {
