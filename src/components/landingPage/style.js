@@ -55,7 +55,8 @@ const styles = {
         marginTop: 100
     },
     featureRowReverse: {
-        flexDirection: 'row-reverse'
+        flexDirection: 'row-reverse',
+        textAlign: 'right'
     },
     featureImageContainer: {
 

@@ -1,4 +1,21 @@
 {
-    "app.title": "Welcome to react-intl",
-    "app.intro": "To get started, edit <code>src/App.js</code> and save to reload."
+    "landingPage.introHeadline": "Introductory headline",
+    "landingPage.introMessage": "Intro message",
+    "landingPage.featureHeadline": "Feature headline",
+    "landingPage.featureText": "Feature text",
+    "landingPage.storiesHeadline": "User stories",
+    "landingPage.slideTitle": "Slide title",
+    "landingPage.slideText": "Slide text",
+    "landingPage.footerCreateAccount": "Create account",
+    "landingPage.footerCreateAccountText": "Create account text",
+    "landingPage.footerCopyright": " \u00A9 2018 CV30. All rights reserved.",
+
+    "actions.logIn": "Log in",
+    "actions.signUp": "Sign up",
+
+    "nav.contact": "Contact",
+    "nav.help": "Help",
+    "nav.termsOfUse": "Terms of use",
+    "nav.privaciPolicy": "Privacy policy"
+
 }

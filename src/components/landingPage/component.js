@@ -1,18 +1,11 @@
 import React from 'react';
 import { Grid, Button, Hidden, IconButton, Icon } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 
 const LandingPage = ({ classes }) => {
     return (
         <div id="landingPage" className={classes.root}>
-            <h1 className="App-title">
-                <FormattedMessage id="app.title"
-                    defaultMessage="Welcome to {what}"
-                    description="Welcome header on app main page"
-                    values={{ what: 'react-intl' }} />
-            </h1>
-
             <div className={classes.topNav}>
                 <Grid container className={classes.navContainer}>
                     <Grid item md={1}>
@@ -22,25 +15,32 @@ const LandingPage = ({ classes }) => {
                         </Link>
                     </Grid>
                     <Grid item>
-                        <Button component={Link} to="/auth" variant="raised" type="button" className={classes.loginButton}>
-                            Log in
-                        </Button>
-                        <Button component={Link} to={{
-                            pathname: '/auth',
-                            state: { step: 'register' }
-                        }} variant="raised" color="primary" type="button" className={classes.registerButton}>
-                            Sign up
-                        </Button>
+                        <FormattedMessage id="actions.logIn" defaultMessage="Log in" description="Log in action">
+                            {(text) => (<Button component={Link} to="/auth" variant="raised" type="button" className={classes.loginButton}>
+                                {text}
+                            </Button>)}
+                        </FormattedMessage>
+
+                        <FormattedMessage id="actions.signUp" defaultMessage="Sign up" description="Sign up action">
+                            {(text) => (<Button component={Link} to={{
+                                pathname: '/auth',
+                                state: { step: 'register' }
+                            }} variant="raised" color="primary" type="button" className={classes.registerButton}>
+                                {text}
+                            </Button>)}
+                        </FormattedMessage>
+
                     </Grid>
                 </Grid>
                 <Grid container className={classes.headlineContainer}>
                     <Grid item md={5} sm={12} xs={12}>
-                        <h1 className={classes.heading1}>Introductory headline goes here</h1>
-                        <p className={classes.paragraph}>
-                            Lorem ipsum dolor sit amet, oratio minimum cum ex, rebum error incorrupte mei te. Has hinc consulatu cu. Pro causae cetero eleifend no,
-                            altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
-                            intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
-                             </p>
+                        <FormattedMessage id="landingPage.introHeadline" defaultMessage="Intro headline" description="Welcome header on app landing page">
+                            {(text) => (<h1 className={classes.heading1}>{text}</h1>)}
+                        </FormattedMessage>
+
+                        <FormattedMessage id="landingPage.introMessage" defaultMessage="Intro message" description="Welcome message on app landing page">
+                            {(text) => (<p className={classes.paragraph}>{text}</p>)}
+                        </FormattedMessage>
                     </Grid>
                     <Hidden mdDown>
                         <Grid item md={5} sm={12} xs={12}></Grid>
@@ -57,15 +57,18 @@ const LandingPage = ({ classes }) => {
 
                     <Grid item md={5} sm={11} xs={11} className={classes.featureTexts}>
                         <h2 className={classes.featureHeading}>
-                            Title for feature
+                            <FormattedMessage id="landingPage.featureHeadline"
+                                defaultMessage="Feature headline"
+                                description="Feature headline on app landing page"
+                            />
                         </h2>
                         <p className={classes.featureText}>
-                            Lorem ipsum dolor sit amet, oratio minimum cum ex, rebum error incorrupte mei te. Has hinc consulatu cu. Pro causae cetero eleifend no,
-                            altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
-                            intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
+                            <FormattedMessage id="landingPage.featureText"
+                                defaultMessage="Feature text"
+                                description="Feature text on app landing page"
+                            />
                         </p>
                     </Grid>
-
                 </Grid>
 
                 <Grid container className={[classes.featureRow, classes.featureRowReverse].join(' ')}>
@@ -75,14 +78,12 @@ const LandingPage = ({ classes }) => {
                     </Grid>
 
                     <Grid item md={5} sm={11} xs={11} className={classes.featureTexts}>
-                        <h2 className={classes.featureHeading}>
-                            Title for feature
-                        </h2>
-                        <p className={classes.featureText}>
-                            Lorem ipsum dolor sit amet, oratio minimum cum ex, rebum error incorrupte mei te. Has hinc consulatu cu. Pro causae cetero eleifend no,
-                            altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
-                            intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
-                        </p>
+                        <FormattedMessage id="landingPage.featureHeadline" defaultMessage="Feature headline" description="Feature headline on app landing page">
+                            {(text) => (<h2 className={classes.featureHeading}>{text}</h2>)}
+                        </FormattedMessage>
+                        <FormattedMessage id="landingPage.featureText" defaultMessage="Feature text" description="Feature text on app landing page">
+                            {(text) => (<p className={classes.featureText}>{text}</p>)}
+                        </FormattedMessage>
                     </Grid>
 
                 </Grid>
@@ -94,14 +95,12 @@ const LandingPage = ({ classes }) => {
                     </Grid>
 
                     <Grid item md={5} sm={11} xs={11} className={classes.featureTexts}>
-                        <h2 className={classes.featureHeading}>
-                            Title for feature
-                        </h2>
-                        <p className={classes.featureText}>
-                            Lorem ipsum dolor sit amet, oratio minimum cum ex, rebum error incorrupte mei te. Has hinc consulatu cu. Pro causae cetero eleifend no,
-                            altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
-                            intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
-                        </p>
+                        <FormattedMessage id="landingPage.featureHeadline" defaultMessage="Feature headline" description="Feature headline on app landing page">
+                            {(text) => (<h2 className={classes.featureHeading}>{text}</h2>)}
+                        </FormattedMessage>
+                        <FormattedMessage id="landingPage.featureText" defaultMessage="Feature text" description="Feature text on app landing page">
+                            {(text) => (<p className={classes.featureText}>{text}</p>)}
+                        </FormattedMessage>
                     </Grid>
 
                 </Grid>
@@ -113,14 +112,12 @@ const LandingPage = ({ classes }) => {
                     </Grid>
 
                     <Grid item md={5} sm={11} xs={11} className={classes.featureTexts}>
-                        <h2 className={classes.featureHeading}>
-                            Title for feature
-                        </h2>
-                        <p className={classes.featureText}>
-                            Lorem ipsum dolor sit amet, oratio minimum cum ex, rebum error incorrupte mei te. Has hinc consulatu cu. Pro causae cetero eleifend no,
-                            altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
-                            intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
-                        </p>
+                        <FormattedMessage id="landingPage.featureHeadline" defaultMessage="Feature headline" description="Feature headline on app landing page">
+                            {(text) => (<h2 className={classes.featureHeading}>{text}</h2>)}
+                        </FormattedMessage>
+                        <FormattedMessage id="landingPage.featureText" defaultMessage="Feature text" description="Feature text on app landing page">
+                            {(text) => (<p className={classes.featureText}>{text}</p>)}
+                        </FormattedMessage>
                     </Grid>
 
                 </Grid>
@@ -129,7 +126,9 @@ const LandingPage = ({ classes }) => {
             <div className={classes.storiesContainer}>
                 <Grid container>
                     <Grid item md={6} sm={6} xs={12} className={classes.storiesSliderContainer}>
-                        <h1 className={classes.storiesSliderTitle}>User stories</h1>
+                        <FormattedMessage id="landingPage.storiesHeadline" defaultMessage="User stories" description="Stories headline on app landing page">
+                            {(text) => (<h1 className={classes.storiesSliderTitle}>{text}</h1>)}
+                        </FormattedMessage>
                         <div className={classes.sliderControls}>
                             <IconButton className={classes.sliderArrow}>
                                 <Icon>arrow_back_ios</Icon>
@@ -142,12 +141,12 @@ const LandingPage = ({ classes }) => {
                                 <Icon>arrow_forward_ios</Icon>
                             </IconButton>
                         </div>
-                        <h2 className={classes.slideTitle}>Title for feature</h2>
-                        <p className={classes.slideText}>
-                            Lorem ipsum dolor sit amet, oratio minimum cum ex, rebum error incorrupte mei te. Has hinc consulatu cu. Pro causae cetero eleifend no,
-                            altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
-                            intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
-                        </p>
+                        <FormattedMessage id="landingPage.slideTitle" defaultMessage="Slide title" description="Slide title on app landing page">
+                            {(text) => (<h2 className={classes.slideTitle}>{text}</h2>)}
+                        </FormattedMessage>
+                        <FormattedMessage id="landingPage.slideText" defaultMessage="Slide text" description="Slide text on app landing page">
+                            {(text) => (<p className={classes.slideText}>{text}</p>)}
+                        </FormattedMessage>
                     </Grid>
                     <Grid item md={6} sm={6} xs={12} className={classes.storiesImagesContainer}>
                         <img className={classes.slideImage} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwObBmWDaXK4DxechC-rdwErL199LKP6qTC_oIh-5LeoOX-NMC" alt="slide" />
@@ -161,14 +160,14 @@ const LandingPage = ({ classes }) => {
                         <Grid item md={5} sm={12} xs={12}></Grid>
                     </Hidden>
                     <Grid item md={5} sm={12} xs={12}>
-                        <h1 className={classes.heading1}>
-                            Creaza un cont
-                        </h1>
-                        <p className={classes.paragraph}>
-                            Lorem ipsum dolor sit amet, oratio minimum cum ex, rebum error incorrupte mei te. Has hinc consulatu cu. Pro causae cetero eleifend no,
-                            altera feugait eam et, eius aperiam sed id. Mei ei putent putant, sanctus gubergren cu sea. Qui ut agam labores accusamus, atqui pertinax
-                            intellegat ei sed, te vel assum molestiae. Feugiat repudiandae ad sed.
-                        </p>
+                        <FormattedMessage id="landingPage.footerCreateAccount" defaultMessage="Create account" description="Footer create account title on app landing page">
+                            {(text) => (<h1 className={classes.heading1}>{text}</h1>)}
+                        </FormattedMessage>
+
+                        <FormattedMessage id="landingPage.footerCreateAccountText" defaultMessage="Create account text" description="Footer create account text on app landing page">
+                            {(text) => (<p className={classes.paragraph}>{text}</p>)}
+                        </FormattedMessage>
+
                         <Button component={Link} to={{
                             pathname: '/auth',
                             state: { step: 'register' }
@@ -178,22 +177,42 @@ const LandingPage = ({ classes }) => {
                     </Grid>
                 </Grid>
                 <Grid container className={classes.footerLinks}>
-                    <Grid item md={2} sm={12} xs={12} className={classes.footerCopyright}>
-                        &copy; 2018 CV30. All rights reserved.
-                    </Grid>
+                    <FormattedHTMLMessage id="landingPage.footerCopyright" defaultMessage="Copyright" description="Footer copyright">
+                        {(text) => (<Grid item md={2} sm={12} xs={12} className={classes.footerCopyright}>
+                            {text}
+                        </Grid>)}
+                    </FormattedHTMLMessage>
+
                     <Grid item md={8} sm={12} xs={12} className={classes.footerMenu}>
-                        <Button href="#" className={classes.footerButton}>
-                            Contact
-                        </Button>
-                        <Button href="#" className={classes.footerButton}>
-                            Help
-                        </Button>
-                        <Button href="#" className={classes.footerButton}>
-                            Terms of use
-                        </Button>
-                        <Button href="#" className={classes.footerButton}>
-                            Privacy policy
-                        </Button>
+                        <FormattedHTMLMessage id="nav.contact" defaultMessage="Contact" description="Contact button">
+                            {(text) => (
+                                <Button href="#" className={classes.footerButton}>
+                                    {text}
+                                </Button>
+                            )}
+                        </FormattedHTMLMessage>
+                        <FormattedHTMLMessage id="nav.help" defaultMessage="Help" description="Help button">
+                            {(text) => (
+                                <Button href="#" className={classes.footerButton}>
+                                    {text}
+                                </Button>
+                            )}
+                        </FormattedHTMLMessage>
+
+                        <FormattedHTMLMessage id="nav.termsOfUse" defaultMessage="Terms" description="Terms button">
+                            {(text) => (
+                                <Button href="#" className={classes.footerButton}>
+                                    {text}
+                                </Button>
+                            )}
+                        </FormattedHTMLMessage>
+                        <FormattedHTMLMessage id="nav.privaciPolicy" defaultMessage="Privacy" description="Privacy button">
+                            {(text) => (
+                                <Button href="#" className={classes.footerButton}>
+                                    {text}
+                                </Button>
+                            )}
+                        </FormattedHTMLMessage>
                     </Grid>
                     <Grid item md={2} sm={12} xs={12} className={classes.footerSocial}>
                         <Button href="#" className={classes.footerSocialButton}>
