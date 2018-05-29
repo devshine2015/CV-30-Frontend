@@ -1,4 +1,4 @@
-import { compose, pure, withState, withHandlers, mapProps } from 'recompose';
+import { compose, pure, withState, withHandlers } from 'recompose';
 import { withStyles } from '@material-ui/core';
 import Auth from './component';
 import styles from './style';
