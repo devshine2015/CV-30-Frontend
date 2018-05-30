@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
+import React from 'react';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { IntlProvider, addLocaleData } from 'react-intl';
 
 import Auth from './components/auth';
@@ -31,19 +31,14 @@ const CVRouter = (props) => {
   );
 };
 
-class App extends Component {
-  render() {
-    return (
-      <BrowserRouter>
-        <Switch>
-          <Route path='/:lang(en|ro)' component={CVRouter} />
-          <Route path='/:segment(auth|dashboard)' component={(props) => <Redirect to={`/${navigator.language.substr(0, 2)}/${props.location.pathname.replace(/^\/+/, "")}`} />} />
-          <Redirect from='/' to={'/en'} />
-        </Switch>
-      </BrowserRouter>
-
-    );
-  }
-}
+const App = () => (
+  <BrowserRouter>
+    <Switch>
+      <Route path='/:lang(en|ro)' component={CVRouter} />
+      <Route path='/:segment(auth|dashboard)' component={(props) => <Redirect to={`/${navigator.language.substr(0, 2)}/${props.location.pathname.replace(/^\/+/, "")}`} />} />
+      <Redirect from='/' to={'/en'} />
+    </Switch>
+  </BrowserRouter>
+);
 
 export default App;
