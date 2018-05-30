@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './app';
+import App from './App';
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 // import { withClientState } from 'apollo-link-state';
@@ -78,7 +78,7 @@ const client = new ApolloClient({
           getCacheKey({ __typename: 'Movie', id });
       }
     }*/
-  });
+});
 
 client.onResetStore(async () => {
     // await Keychain.resetGenericPassword();
