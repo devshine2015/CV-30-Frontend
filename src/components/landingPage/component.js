@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import StoriesSlider from './storiesSlider';
 
-const LandingPage = ({ classes, jumpToStoryItem, prevStoryItem, nextStoryItem, activeStoryItem, stories }) => {
+const LandingPage = ({ classes, jumpToStoryItem, prevStoryItem, nextStoryItem, activeStoryItem, stories, match }) => {
+    let lang = match.params.lang;
     return (
         <div id="landingPage" className={classes.root}>
             <div className={classes.topNav}>
@@ -17,14 +18,14 @@ const LandingPage = ({ classes, jumpToStoryItem, prevStoryItem, nextStoryItem, a
                     </Grid>
                     <Grid item>
                         <FormattedMessage id="actions.logIn" defaultMessage="Log in" description="Log in action">
-                            {(text) => (<Button component={Link} to="/auth" variant="raised" type="button" className={classes.loginButton}>
+                            {(text) => (<Button component={Link} to={`/${lang}/auth`} variant="raised" type="button" className={classes.loginButton}>
                                 {text}
                             </Button>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="actions.signUp" defaultMessage="Sign up" description="Sign up action">
                             {(text) => (<Button component={Link} to={{
-                                pathname: '/auth',
+                                pathname: `/${lang}/auth`,
                                 state: { step: 'register' }
                             }} variant="raised" color="primary" type="button" className={classes.registerButton}>
                                 {text}
@@ -143,7 +144,7 @@ const LandingPage = ({ classes, jumpToStoryItem, prevStoryItem, nextStoryItem, a
                         </FormattedMessage>
 
                         <Button component={Link} to={{
-                            pathname: '/auth',
+                            pathname: `/${lang}/auth`,
                             state: { step: 'register' }
                         }} variant="raised" color="primary" type="button" className={classes.footerSignupButton}>
                             Sign up

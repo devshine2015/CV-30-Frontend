@@ -7,7 +7,7 @@ const Auth = (props) => {
     const { classes, email, confirmPassword, password, emailError, passwordError, confirmPasswordError, updateEmail, updateConfirmPassword, updatePassword, handleForm, step, updateStep } = props;
     const RegisterButton = ({ onClick, disabled }) => (
         <FormattedMessage id="actions.register" defaultMessage="Register" description="Register action">
-            {(text) => (<Button variant="raised" color="primary" type="submit" onClick={onClick} className={classes.registerButton} disabled={disabled}>
+            {(text) => (<Button variant="raised" color="primary" type="button" onClick={onClick} className={classes.registerButton} disabled={disabled}>
                 {text}
             </Button>)}
         </FormattedMessage>

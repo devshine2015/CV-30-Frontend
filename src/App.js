@@ -5,6 +5,7 @@ import { IntlProvider, addLocaleData } from 'react-intl';
 import Auth from './components/auth';
 import LandingPage from './components/landingPage';
 import Dashboard from './components/dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 //translation stuff
 import romanian from 'react-intl/locale-data/ro';
@@ -23,9 +24,9 @@ const CVRouter = (props) => {
   return (
     <IntlProvider locale={language} messages={messages[language]}>
       <Switch>
-        <Route exact path='/:lang(en|ro)' component={LandingPage} />
-        <Route exact path='/:lang(en|ro)/auth' component={Auth} />
-        <Route path='/:lang(en|ro)/dashboard' component={Dashboard} />
+        <Route exact path='/:lang(en|ro)' component={LandingPage} {...props} />
+        <Route exact path='/:lang(en|ro)/auth' component={Auth} {...props} />
+        <ProtectedRoute isAllowed={true} path='/:lang(en|ro)/dashboard' component={Dashboard} {...props} />
       </Switch>
     </IntlProvider>
   );

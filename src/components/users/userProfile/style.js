@@ -198,6 +198,7 @@ const style = {
         storyImg: {
             width: 'auto',
             height: 'auto',
+            maxWidth: '100%'
         },
         storyTitle: {
             left: 0,
