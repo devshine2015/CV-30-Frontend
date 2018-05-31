@@ -236,7 +236,7 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
                     <IconButton onClick={toggleMobileNav} className={classes.mobileNavButton}>
                         <MenuIcon />
                     </IconButton>
-                    <Drawer anchor="right" open={mobileNavOpen} onClose={closeMobileNav} className={classes.mobileNavContainer}>
+                    <Drawer anchor="right" open={mobileNavOpen} onClose={closeMobileNav} className={classes.mobileNavContainer} classes={{ paperAnchorRight: classes.paperAnchorRight }}>
                         <div tabIndex={0} role="button" onClick={closeMobileNav} onKeyDown={closeMobileNav} className={classes.mobileNavDrawer}>
                             <FormattedMessage id="nav.newsFeed" defaultMessage="News feed" description="News feed menu item">
                                 {(text) => (
@@ -273,7 +273,7 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
                     </Drawer>
                 </Grid>
             </Hidden>
-        </Grid>
+        </Grid >
     );
 };
 

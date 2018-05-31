@@ -139,8 +139,9 @@ const style = {
     },
     mobileNavDrawer: {
         marginTop: 70,
-        maxWidth: '100%',
-        width: 350,
+    },
+    paperAnchorRight: {
+        width: '75%'
     },
 
     //Media queries 
