@@ -135,8 +135,76 @@ const style = {
     },
     chipValues: {
         borderColor: '#c4a848'
-    }
+    },
 
+    storySliderContainer: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    storySliderControls: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    sliderDot: {
+        width: 10,
+        height: 10,
+        borderRadius: '50%',
+        background: '#fff',
+        opacity: 0.3,
+        margin: '0 2px',
+        cursor: 'pointer'
+    },
+    sliderDotActive: {
+        opacity: 1
+    },
+    sliderArrow: {
+        color: '#fff'
+    },
+    storiesSlider: {
+        display: 'flex'
+    },
+    storyItem: {
+        position: 'relative',
+        display: 'none'
+    },
+    storyItemActive: {
+        display: 'block'
+    },
+
+    //Media queries
+    '@media (max-width: 600px)': {
+        header: {
+            padding: 15,
+        },
+        userAvatar: {
+            justifyContent: 'center'
+        },
+        headerLinks: {
+            flexDirection: 'column'
+        },
+        userLinks: {
+            justifyContent: 'center',
+            marginTop: 15
+        },
+        headerSkillsTitle: {
+            display: 'block',
+            width: '100%',
+            marginBottom: 5
+        },
+        headerStories: {
+            flexDirection: 'column'
+        },
+        storyImg: {
+            width: 'auto',
+            height: 'auto',
+        },
+        storyTitle: {
+            left: 0,
+            right: 0,
+            bottom: 4
+        }
+    }
 };
 
 export default style;

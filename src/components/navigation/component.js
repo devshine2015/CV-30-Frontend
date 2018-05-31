@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Button, Hidden, Icon, MenuItem, Avatar, Portal, ClickAwayListener, MenuList, Collapse, Paper, IconButton, Badge } from '@material-ui/core';
+import { Grid, Button, Hidden, Icon, MenuItem, Avatar, Portal, ClickAwayListener, MenuList, Collapse, Paper, IconButton, Badge, Drawer, ListItem } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { NavLink, Link } from 'react-router-dom';
 import { Manager, Target, Popper } from 'react-popper';
@@ -56,8 +56,8 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
                         <Target>
                             <Button aria-owns={profileMenuOpen ? 'profileMenu' : null} aria-haspopup="true" onClick={toggleProfileMenu} className={classes.profileButton}>
                                 <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className={classes.avatar} />
-                                Gabriel
-                        </Button>
+                                <span>Gabriel</span>
+                            </Button>
                         </Target>
                         <Portal>
                             <Popper placement="bottom" eventsEnabled={profileMenuOpen} className={classNames(classes.profileMenuContainer, { [classes.popperClose]: !profileMenuOpen })}>
@@ -149,8 +149,8 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
                         <Target>
                             <Button aria-owns={profileMenuOpen ? 'profileMenu' : null} aria-haspopup="true" onClick={toggleProfileMenu} className={classes.profileButton}>
                                 <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className={classes.avatar} />
-                                Gabriel
-                        </Button>
+                                <span>Gabriel</span>
+                            </Button>
                         </Target>
                         <Portal>
                             <Popper placement="bottom" eventsEnabled={profileMenuOpen} className={classNames(classes.profileMenuContainer, { [classes.popperClose]: !profileMenuOpen })}>
@@ -233,56 +233,44 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
                     </Manager>
 
                     {/* Main navigation*/}
-                    <Manager>
-                        <Target>
-                            <IconButton aria-owns={mobileNavOpen ? 'mobileNavMenu' : null} aria-haspopup="true" onClick={toggleMobileNav} className={classes.mobileNavButton}>
-                                <MenuIcon />
-                            </IconButton>
-                        </Target>
-                        <Portal>
-                            <Popper placement="bottom" eventsEnabled={mobileNavOpen} className={classNames({ [classes.popperClose]: !mobileNavOpen })}>
-                                <ClickAwayListener onClickAway={closeMobileNav}>
-                                    <Collapse in={mobileNavOpen} id="mobileNavMenu">
-                                        <Paper className={classes.mobileNavMenu}>
-                                            <MenuList role="menu">
-                                                <FormattedMessage id="nav.newsFeed" defaultMessage="News feed" description="News feed menu item">
-                                                    {(text) => (
-                                                        <MenuItem component={NavLink} exact to={`/${lang}/dashboard/news`} onClick={closeMobileNav} className={classes.mobileNavButton}>
-                                                            {text}
-                                                        </MenuItem>
-                                                    )}
-                                                </FormattedMessage>
+                    <IconButton onClick={toggleMobileNav} className={classes.mobileNavButton}>
+                        <MenuIcon />
+                    </IconButton>
+                    <Drawer anchor="right" open={mobileNavOpen} onClose={closeMobileNav} className={classes.mobileNavContainer}>
+                        <div tabIndex={0} role="button" onClick={closeMobileNav} onKeyDown={closeMobileNav} className={classes.mobileNavDrawer}>
+                            <FormattedMessage id="nav.newsFeed" defaultMessage="News feed" description="News feed menu item">
+                                {(text) => (
+                                    <ListItem button component={NavLink} exact to={`/${lang}/dashboard/news`} onClick={closeMobileNav} className={classes.mobileNavButton}>
+                                        {text}
+                                    </ListItem>
+                                )}
+                            </FormattedMessage>
 
-                                                <FormattedMessage id="nav.companies" defaultMessage="Companies" description="Companies menu item">
-                                                    {(text) => (
-                                                        <MenuItem component={NavLink} exact to={`/${lang}/dashboard/companies`} onClick={closeMobileNav} className={classes.mobileNavButton}>
-                                                            {text}
-                                                        </MenuItem>
-                                                    )}
-                                                </FormattedMessage>
+                            <FormattedMessage id="nav.companies" defaultMessage="Companies" description="Companies menu item">
+                                {(text) => (
+                                    <ListItem button component={NavLink} exact to={`/${lang}/dashboard/companies`} onClick={closeMobileNav} className={classes.mobileNavButton}>
+                                        {text}
+                                    </ListItem>
+                                )}
+                            </FormattedMessage>
 
-                                                <FormattedMessage id="nav.people" defaultMessage="People" description="People menu item">
-                                                    {(text) => (
-                                                        <MenuItem component={NavLink} exact to={`/${lang}/dashboard/people`} onClick={closeMobileNav} className={classes.mobileNavButton}>
-                                                            {text}
-                                                        </MenuItem>
-                                                    )}
-                                                </FormattedMessage>
+                            <FormattedMessage id="nav.people" defaultMessage="People" description="People menu item">
+                                {(text) => (
+                                    <ListItem button component={NavLink} exact to={`/${lang}/dashboard/people`} onClick={closeMobileNav} className={classes.mobileNavButton}>
+                                        {text}
+                                    </ListItem>
+                                )}
+                            </FormattedMessage>
 
-                                                <FormattedMessage id="nav.jobs" defaultMessage="Jobs" description="Jobs menu item">
-                                                    {(text) => (
-                                                        <MenuItem component={NavLink} exact to={`/${lang}/dashboard/jobs`} onClick={closeMobileNav} className={classes.mobileNavButton}>
-                                                            {text}
-                                                        </MenuItem>
-                                                    )}
-                                                </FormattedMessage>
-                                            </MenuList>
-                                        </Paper>
-                                    </Collapse>
-                                </ClickAwayListener>
-                            </Popper>
-                        </Portal>
-                    </Manager>
+                            <FormattedMessage id="nav.jobs" defaultMessage="Jobs" description="Jobs menu item">
+                                {(text) => (
+                                    <ListItem button component={NavLink} exact to={`/${lang}/dashboard/jobs`} onClick={closeMobileNav} className={classes.mobileNavButton}>
+                                        {text}
+                                    </ListItem>
+                                )}
+                            </FormattedMessage>
+                        </div>
+                    </Drawer>
                 </Grid>
             </Hidden>
         </Grid>

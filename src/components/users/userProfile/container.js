@@ -25,8 +25,23 @@ const values = ['leadership', 'grit', 'critical thinking'];
 const UserProfileHOC = compose(
     withStyles(styles),
     withState('headerStories', 'setHeaderStories', headerStories),
+    withState('count', 'setCount', headerStories.length - 1),
+    withState('activeStoryItem', 'setActiveStoryItem', 0),
     withState('headerSoftSkills', 'setHeaderSoftSkills', softSkills),
     withState('headerValues', 'setHeaderValues', values),
+    withHandlers({
+        prevStoryItem: ({ activeStoryItem, setActiveStoryItem, count }) => () => {
+            let prevStory = activeStoryItem - 1 < 0 ? count : activeStoryItem - 1;
+            setActiveStoryItem(prevStory);
+        },
+        nextStoryItem: ({ activeStoryItem, setActiveStoryItem, count }) => () => {
+            let nextStory = activeStoryItem + 1 > count ? 0 : activeStoryItem + 1;
+            setActiveStoryItem(nextStory);
+        },
+        jumpToStoryItem: ({ setActiveStoryItem }) => (story) => {
+            setActiveStoryItem(story);
+        }
+    }),
     pure
 );
 

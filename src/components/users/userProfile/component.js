@@ -1,24 +1,24 @@
 import React from 'react';
-import { Grid, Avatar, Button, Chip } from '@material-ui/core';
+import { Grid, Avatar, Button, Chip, Hidden, IconButton, Icon } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { NavLink, Switch, Route } from 'react-router-dom';
 import classNames from 'classnames';
 import UserProfileShow from './show';
 import UserProfileFeed from './feed';
 
-const UserProfile = ({ match, classes, headerStories, headerSoftSkills, headerValues }) => {
+const UserProfile = ({ match, classes, headerStories, headerSoftSkills, headerValues, prevStoryItem, activeStoryItem, jumpToStoryItem, nextStoryItem }) => {
     const lang = match.params.lang;
     return <div className={classes.root}>
         <div className={classes.header}>
             <Grid container className={classes.headerLinks}>
-                <Grid item md={3} sm={6} xs={6} className={classes.userAvatar}>
+                <Grid item md={3} sm={12} xs={12} className={classes.userAvatar}>
                     <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className={classes.avatar} />
                     <div className={classes.avatarTexts}>
                         <h3 className={classes.headerName}>Gabriel</h3>
                         <h4 className={classes.headerTitle}>Manager</h4>
                     </div>
                 </Grid>
-                <Grid item md={3} sm={6} xs={6} className={classes.userLinks}>
+                <Grid item md={3} sm={12} xs={12} className={classes.userLinks}>
                     <FormattedMessage id="userProfile.profile" defaultMessage="Profile" description="User header profile link">
                         {(text) => (
                             <Button component={NavLink} exact to={`/${lang}/dashboard/profile`} className={classes.headerLink}>
@@ -47,14 +47,49 @@ const UserProfile = ({ match, classes, headerStories, headerSoftSkills, headerVa
             </Grid>
 
             <Grid container className={classes.headerStories} spacing={8}>
-                {
-                    headerStories.map((story, index) => (
-                        <Grid item className={classes.storyContainer} key={`headerStory-${index}`}>
-                            <img src={story.img} alt="ceva" className={classes.storyImg} />
-                            <span className={classes.storyTitle}>{story.title}</span>
-                        </Grid>
-                    ))
-                }</Grid>
+                <Hidden smDown>
+                    {
+                        headerStories.map((story, index) => (
+                            <Grid item className={classes.storyContainer} key={`headerStory-${index}`}>
+                                <img src={story.img} alt="ceva" className={classes.storyImg} />
+                                <span className={classes.storyTitle}>{story.title}</span>
+                            </Grid>
+                        ))
+                    }
+                </Hidden>
+
+                <Hidden smUp>
+                    <div className={classes.storySliderContainer}>
+                        <div className={classes.storiesSlider}>
+                            {
+                                headerStories.map((story, index) => {
+                                    let itemClass = index === activeStoryItem ? [classes.storyItem, classes.storyItemActive].join(' ') : classes.storyItem;
+                                    return (
+                                        <div className={itemClass} key={`headerStory-${index}`}>
+                                            <img src={story.img} alt="ceva" className={classes.storyImg} />
+                                            <span className={classes.storyTitle}>{story.title}</span>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                    <div className={classes.storySliderControls}>
+                        <IconButton className={classes.sliderArrow} onClick={prevStoryItem}>
+                            <Icon>arrow_back_ios</Icon>
+                        </IconButton>
+                        {
+                            headerStories.map((item, index) => {
+                                let itemClass = index === activeStoryItem ? [classes.sliderDot, classes.sliderDotActive].join(' ') : classes.sliderDot;
+                                return (<span className={itemClass} key={`storyMarker-${index}`} onClick={() => jumpToStoryItem(index)}></span>)
+                            })
+                        }
+                        <IconButton className={classes.sliderArrow} onClick={nextStoryItem}>
+                            <Icon>arrow_forward_ios</Icon>
+                        </IconButton>
+                    </div>
+                </Hidden>
+            </Grid>
 
             <Grid container className={classes.headerSkills}>
                 <Grid item xs={12} className={classes.skillsContainer}>

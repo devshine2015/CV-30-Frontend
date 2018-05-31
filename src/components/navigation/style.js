@@ -7,7 +7,7 @@ const style = {
         alignItems: 'center',
         boxShadow: '0px 2px 5px 1px rgba(120,118,120,0.3)',
         position: 'fixed',
-        zIndex: 1
+        zIndex: 1301
     },
 
     brandImg: {
@@ -137,6 +137,11 @@ const style = {
         alignItems: 'center',
         justifyContent: 'flex-end'
     },
+    mobileNavDrawer: {
+        marginTop: 70,
+        maxWidth: '100%',
+        width: 350,
+    },
 
     //Media queries 
 
@@ -161,6 +166,9 @@ const style = {
             '&:after': {
                 right: 69
             }
+        },
+        mobileNavMenu: {
+            width: 350
         }
     },
 };
