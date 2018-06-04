@@ -1,7 +1,6 @@
 import UserProfile from './component';
 import { compose, pure, withState, withHandlers } from 'recompose';
-import { withStyles } from '@material-ui/core';
-import styles from './style';
+import { withRouter } from 'react-router-dom';
 
 const headerStories = [
     {
@@ -23,7 +22,7 @@ const softSkills = ['leadership', 'grit', 'critical thinking', 'gritt', 'outspok
 const values = ['leadership', 'grit', 'critical thinking'];
 
 const UserProfileHOC = compose(
-    withStyles(styles),
+    withRouter,
     withState('headerStories', 'setHeaderStories', headerStories),
     withState('count', 'setCount', headerStories.length - 1),
     withState('activeStoryItem', 'setActiveStoryItem', 0),

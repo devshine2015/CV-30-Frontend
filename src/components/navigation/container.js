@@ -2,6 +2,7 @@ import Navigation from './component';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { withStyles } from '@material-ui/core';
 import styles from './style';
+import { withRouter } from 'react-router-dom';
 
 const notifications = [
     {
@@ -23,6 +24,7 @@ const notifications = [
 
 const NavigationHOC = compose(
     withStyles(styles),
+    withRouter,
     withState('profileMenuOpen', 'setProfileMenuStatus', false),
     withState('notificationsMenuOpen', 'setNotificationsMenuStatus', false),
     withState('mobileNavOpen', 'setMobileNavStatus', false),

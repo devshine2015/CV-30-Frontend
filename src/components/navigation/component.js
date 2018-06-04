@@ -8,19 +8,19 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications, mobileNavOpen, toggleMobileNav, closeMobileNav }) => {
     const lang = match.params.lang;
-    // debugger;
+
     return (
-        <Grid container className={classes.root}>
+        <Grid container className='mainNav'>
             <Grid item sm={1} xs={1} md={1}>
-                <NavLink className={classes.brand} to={`/${lang}/dashboard`}>
-                    <img src="http://brandmark.io/logo-rank/random/pepsi.png" alt="logo" className={classes.brandImg} />
+                <NavLink className='brand' to={`/${lang}/dashboard`}>
+                    <Avatar src="http://brandmark.io/logo-rank/random/pepsi.png" alt="logo" className='brandImg' />
                 </NavLink>
             </Grid>
             <Hidden smDown>
-                <Grid item md={11} lg={11} className={classes.mainNavContainer} id="mainNav">
+                <Grid item md={11} lg={11} className='mainNavContainer' id="mainNav">
                     <FormattedMessage id="nav.newsFeed" defaultMessage="News feed" description="News feed menu item">
                         {(text) => (
-                            <Button component={NavLink} to={`/${lang}/dashboard/news`} className={classes.navButton}>
+                            <Button component={NavLink} to={`/${lang}/dashboard/news`} className='navButton'>
                                 <Icon className={classes.homeIcon}>home</Icon>
                                 {text}
                             </Button>
@@ -29,7 +29,7 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
 
                     <FormattedMessage id="nav.companies" defaultMessage="Companies" description="Companies menu item">
                         {(text) => (
-                            <Button component={NavLink} to={`/${lang}/dashboard/companies`} className={classes.navButton}>
+                            <Button component={NavLink} to={`/${lang}/dashboard/companies`} className='navButton'>
                                 {text}
                             </Button>
                         )}
@@ -37,7 +37,7 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
 
                     <FormattedMessage id="nav.people" defaultMessage="People" description="People menu item">
                         {(text) => (
-                            <Button component={NavLink} to={`/${lang}/dashboard/people`} className={classes.navButton}>
+                            <Button component={NavLink} to={`/${lang}/dashboard/people`} className='navButton'>
                                 {text}
                             </Button>
                         )}
@@ -45,7 +45,7 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
 
                     <FormattedMessage id="nav.jobs" defaultMessage="Jobs" description="Jobs menu item">
                         {(text) => (
-                            <Button component={NavLink} to={`/${lang}/dashboard/jobs`} className={classes.navButton}>
+                            <Button component={NavLink} to={`/${lang}/dashboard/jobs`} className='navButton'>
                                 {text}
                             </Button>
                         )}
@@ -54,8 +54,8 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
                     {/* Profile menu*/}
                     <Manager>
                         <Target>
-                            <Button aria-owns={profileMenuOpen ? 'profileMenu' : null} aria-haspopup="true" onClick={toggleProfileMenu} className={classes.profileButton}>
-                                <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className={classes.avatar} />
+                            <Button aria-owns={profileMenuOpen ? 'profileMenu' : null} aria-haspopup="true" onClick={toggleProfileMenu} className='profileButton'>
+                                <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className='avatar' />
                                 <span>Gabriel</span>
                             </Button>
                         </Target>
@@ -273,7 +273,7 @@ const Navigation = ({ match, classes, profileMenuOpen, toggleProfileMenu, closeP
                     </Drawer>
                 </Grid>
             </Hidden>
-        </Grid >
+        </Grid>
     );
 };
 

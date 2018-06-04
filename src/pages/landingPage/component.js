@@ -18,16 +18,13 @@ const LandingPage = ({ classes, jumpToStoryItem, prevStoryItem, nextStoryItem, a
                     </Grid>
                     <Grid item>
                         <FormattedMessage id="actions.logIn" defaultMessage="Log in" description="Log in action">
-                            {(text) => (<Button component={Link} to={`/${lang}/auth`} variant="raised" type="button" className={classes.loginButton}>
+                            {(text) => (<Button component={Link} to={`/${lang}/login`} variant="raised" type="button" className={classes.loginButton}>
                                 {text}
                             </Button>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="actions.signUp" defaultMessage="Sign up" description="Sign up action">
-                            {(text) => (<Button component={Link} to={{
-                                pathname: `/${lang}/auth`,
-                                state: { step: 'register' }
-                            }} variant="raised" color="primary" type="button" className={classes.registerButton}>
+                            {(text) => (<Button component={Link} to={`/${lang}/register`} variant="raised" color="primary" type="button" className={classes.registerButton}>
                                 {text}
                             </Button>)}
                         </FormattedMessage>
@@ -143,10 +140,7 @@ const LandingPage = ({ classes, jumpToStoryItem, prevStoryItem, nextStoryItem, a
                             {(text) => (<p className={classes.paragraph}>{text}</p>)}
                         </FormattedMessage>
 
-                        <Button component={Link} to={{
-                            pathname: `/${lang}/auth`,
-                            state: { step: 'register' }
-                        }} variant="raised" color="primary" type="button" className={classes.footerSignupButton}>
+                        <Button component={Link} to={`/${lang}/register`} variant="raised" color="primary" type="button" className={classes.footerSignupButton}>
                             Sign up
                         </Button>
                     </Grid>

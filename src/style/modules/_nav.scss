@@ -1,0 +1,39 @@
+.mainNav {
+    display: flex;
+    background: #fff;
+    padding: 5px 40px;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+    position: fixed;
+    z-index: 1301;
+    .brandImg {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+    .mainNavContainer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .navButton {
+            border-radius: 20px;
+            margin: 0 10px;
+            color: #414141;
+            text-transform: none;
+            &.active {
+                color: #397DB9;
+                background: #F4F4F4;
+            }
+        }
+    }
+    .profileButton {
+        border-radius: 50px;
+        border: 2px solid #F4F4F4;
+        padding: 5px 15px 5px 5px;
+        text-transform: none;
+        .avatar {
+            margin-right: 10px;
+        }
+    }
+}

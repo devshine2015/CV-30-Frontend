@@ -26,6 +26,9 @@
     "nav.contact": "Contact",
     "nav.help": "Help",
     "nav.termsOfUse": "Terms of use",
-    "nav.privaciPolicy": "Privacy policy"
+    "nav.privaciPolicy": "Privacy policy",
+
+    "userProfile.contactMe": "Contact &lt;b&gt;me&lt;/b&gt;"
+
 
 }

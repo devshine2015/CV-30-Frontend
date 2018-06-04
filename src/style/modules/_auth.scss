@@ -1,0 +1,94 @@
+.authContainer {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+    background-image: linear-gradient(to bottom, rgba(95, 155, 205, 0.75), rgba(95, 155, 205, 0.75)), url(http://www.businesselement.net/wp-content/uploads/2017/11/Office-Budget.jpg);
+    .brand {
+        margin: 20px 0 0 20px;
+        font-size: 1.25rem;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        .roundedImage {
+            max-width: 60px;
+            max-height: 60px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    }
+    .authContents {
+        margin-top: auto;
+        margin-bottom: auto;
+        justify-content: space-evenly;
+        align-items: center;
+        .authMessages {
+            color: #fff;
+        }
+    }
+    .authForm {
+        padding: 40px;
+        margin: 0 10px;
+        .textField {
+            width: 100%;
+            margin-bottom: 30px;
+            font-size: 1.25rem;
+        }
+        .loginButton {
+            width: 100%;
+            height: 60px;
+            background: #f7a944;
+            color: #fff;
+            font-size: 1.25rem;
+            &:hover {
+                background: #c07a0d;
+            }
+            &:disabled {
+                cursor: not-allowed;
+                pointer-events: all;
+            }
+        }
+        .divSeparator {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 10px 0;
+        }
+        .separatorHR {
+            width: 100%;
+            border: 0.5px solid #aaa;
+        }
+        .orText {
+            position: absolute;
+            bottom: 0;
+            width: 50px;
+            text-align: center;
+            background: #fff;
+            top: -15%;
+        }
+        .registerButton {
+            width: 100%;
+            height: 60px;
+            color: #fff;
+            font-size: 1.25rem;
+        }
+        .forgotPass {
+            margin-top: -20px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .forgotLink {
+            font-size: 0.8125rem;
+            text-decoration: none;
+        }
+        .errorMessage {
+            color: red;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+    }
+}
