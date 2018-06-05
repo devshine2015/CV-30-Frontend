@@ -16,7 +16,7 @@ class Dashboard extends Component {
                 <div className='dashboardRoot'>
                     <Switch>
                         <Route path='/:lang(en|ro)/dashboard/news' exact component={News} />
-                        <Route path='/:lang(en|ro)/dashboard/companies' exact component={Brand} />
+                        <Route path='/:lang(en|ro)/dashboard/companies' component={Brand} />
                         <Route path='/:lang(en|ro)/dashboard/people' exact component={People} />
                         <Route path='/:lang(en|ro)/dashboard/jobs' exact component={Jobs} />
                         <Route path='/:lang(en|ro)/dashboard/profile' component={UserProfile} />

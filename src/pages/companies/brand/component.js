@@ -4,6 +4,9 @@ import { Grid, Avatar, Button, Chip, Hidden, IconButton, Icon } from '@material-
 import { FormattedMessage } from 'react-intl';
 import { NavLink, Switch, Route } from 'react-router-dom';
 
+import CompanyShow from './show';
+import CompanyFeed from './feed';
+
 const Brand = ({ match, headerStories, keyWords }) => {
     let lang = match.params.lang;
 
@@ -111,7 +114,7 @@ const Brand = ({ match, headerStories, keyWords }) => {
             <React.Fragment>
                 <Switch>
                     <Route exact path='/:lang(en|ro)/dashboard/companies' component={CompanyShow} />
-                    <Route exact path='/:lang(en|ro)/dashboard/companies/feed' component={CompanyShowFeed} />
+                    <Route exact path='/:lang(en|ro)/dashboard/companies/feed' component={CompanyFeed} />
                 </Switch>
             </React.Fragment>
         </div>
