@@ -91,7 +91,7 @@ const UserProfile = ({ match, classes, headerStories, headerSoftSkills, headerVa
             </Grid>
 
             <Grid container className='headerSkills'>
-                <Grid item xs={12} className='skillsContainer'>
+                <Grid item lg={8} md={8} sm={12} xs={12} className='skillsContainer'>
                     <FormattedMessage id="userProfile.softSkills" defaultMessage="Soft skills" description="User header soft skills">
                         {(text) => (<span className='headerSkillsTitle softSkills'>{text}:</span>)}
                     </FormattedMessage>

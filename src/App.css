@@ -109,6 +109,38 @@
       text-align: center;
       font-size: 0.85rem; }
 
+.mainBody {
+  position: relative;
+  display: flex; }
+  .mainBody .columnRight {
+    position: relative;
+    margin-left: auto; }
+    @media (max-width: 960px) {
+      .mainBody .columnRight {
+        margin-right: auto;
+        order: 1; } }
+    .mainBody .columnRight .columnRightContent {
+      position: absolute;
+      right: 0;
+      bottom: -15px;
+      left: 0;
+      top: -215px;
+      background: #fff; }
+      @media (max-width: 960px) {
+        .mainBody .columnRight .columnRightContent {
+          position: relative;
+          top: auto;
+          bottom: auto;
+          left: auto;
+          right: auto; } }
+  .mainBody .centralColumn {
+    position: relative;
+    margin-left: auto; }
+    @media (max-width: 960px) {
+      .mainBody .centralColumn {
+        margin-right: auto;
+        order: 2; } }
+
 .userProfileRoot {
   padding-top: 62px; }
   .userProfileRoot .header {
@@ -275,142 +307,131 @@
         border-color: #73a9ff; }
       .userProfileRoot .headerSkills .skillsContainer .chip.values {
         border-color: #c4a848; }
-  .userProfileRoot .mainBody {
-    position: relative;
-    display: flex;
+  .userProfileRoot .mainBody.userProfileShow {
     background: #fff;
     padding: 50px 0 0;
     border-top: 1px solid #989c9f; }
-    .userProfileRoot .mainBody .columnRight {
-      position: relative;
-      margin-left: auto; }
-      .userProfileRoot .mainBody .columnRight .columnRightContent {
-        border-color: #989c9f;
-        border-width: 1px 0 0 1px;
-        border-style: solid;
-        position: absolute;
-        right: 0;
-        bottom: -15px;
-        left: 0;
-        top: -215px;
-        background: #fff; }
-        .userProfileRoot .mainBody .columnRight .columnRightContent .columnTitle {
-          margin: 0;
-          padding: 15px 25px;
-          color: #fff;
-          background: #397db9;
-          font-weight: 100;
-          display: flex;
-          align-items: flex-end;
-          font-size: 1.875rem; }
-          .userProfileRoot .mainBody .columnRight .columnRightContent .columnTitle i {
-            margin-left: 10px; }
-        .userProfileRoot .mainBody .columnRight .columnRightContent .knowHowContainer,
-        .userProfileRoot .mainBody .columnRight .columnRightContent .myStoryContainer {
-          display: flex;
-          padding: 25px;
-          justify-content: space-between;
-          flex-direction: column; }
-          .userProfileRoot .mainBody .columnRight .columnRightContent .knowHowContainer h4,
-          .userProfileRoot .mainBody .columnRight .columnRightContent .myStoryContainer h4 {
-            font-size: 1.875rem;
-            margin: 0;
-            padding: 0;
-            font-weight: 100;
-            color: #397db9; }
-        .userProfileRoot .mainBody .columnRight .columnRightContent .knowHowContainer .controls {
-          display: flex;
-          justify-content: space-between; }
-        .userProfileRoot .mainBody .columnRight .columnRightContent .sliderControls {
-          align-items: center;
-          display: flex; }
-          .userProfileRoot .mainBody .columnRight .columnRightContent .sliderControls .sliderArrow > span > span {
-            font-size: 1rem; }
-          .userProfileRoot .mainBody .columnRight .columnRightContent .sliderControls .sliderDot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #000;
-            opacity: 0.3;
-            margin: 0 3px; }
-            .userProfileRoot .mainBody .columnRight .columnRightContent .sliderControls .sliderDot.active {
-              height: 10px;
-              width: 10px;
-              opacity: 1; }
-        .userProfileRoot .mainBody .columnRight .columnRightContent .sliderContainer {
-          display: flex;
-          flex-direction: column; }
-          .userProfileRoot .mainBody .columnRight .columnRightContent .sliderContainer p {
-            color: #585858; }
-        .userProfileRoot .mainBody .columnRight .columnRightContent .media {
-          height: 200px;
-          border-radius: 10px; }
-        .userProfileRoot .mainBody .columnRight .columnRightContent hr {
-          width: calc(100% - 50px); }
-        .userProfileRoot .mainBody .columnRight .columnRightContent .myStoryContainer p {
-          color: #397db9;
-          font-style: italic; }
-    .userProfileRoot .mainBody .centralColumn {
-      position: relative;
-      margin-left: auto; }
-      .userProfileRoot .mainBody .centralColumn .experienceSection {
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent {
+      border-color: #989c9f;
+      border-width: 1px 0 0 1px;
+      border-style: solid; }
+      @media (max-width: 960px) {
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent {
+          border: none; } }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle {
+        margin: 0;
+        padding: 15px 25px;
+        color: #fff;
+        background: #397db9;
+        font-weight: 100;
         display: flex;
+        align-items: flex-end;
+        font-size: 1.875rem; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle i {
+          margin-left: 10px; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer,
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer {
+        display: flex;
+        padding: 25px;
+        justify-content: space-between;
         flex-direction: column; }
-        .userProfileRoot .mainBody .centralColumn .experienceSection .sectionTitle {
-          margin: 20px 0 40px;
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer h4,
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer h4 {
+          font-size: 1.875rem;
+          margin: 0;
+          padding: 0;
           font-weight: 100;
           color: #397db9; }
-        .userProfileRoot .mainBody .centralColumn .experienceSection .experienceItem,
-        .userProfileRoot .mainBody .centralColumn .experienceSection .projectItem {
-          position: relative;
-          display: flex;
-          flex-direction: column;
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer .controls {
+        display: flex;
+        justify-content: space-between; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls {
+        align-items: center;
+        display: flex; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls .sliderArrow > span > span {
+          font-size: 1rem; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls .sliderDot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #000;
+          opacity: 0.3;
+          margin: 0 3px; }
+          .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls .sliderDot.active {
+            height: 10px;
+            width: 10px;
+            opacity: 1; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderContainer {
+        display: flex;
+        flex-direction: column; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderContainer p {
+          color: #585858; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .media {
+        height: 200px;
+        border-radius: 10px; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent hr {
+        width: calc(100% - 50px); }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer p {
+        color: #397db9;
+        font-style: italic; }
+    .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection {
+      display: flex;
+      flex-direction: column; }
+      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .sectionTitle {
+        margin: 20px 0 40px;
+        font-weight: 100;
+        color: #397db9; }
+      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem,
+      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ededed;
+        border-radius: 10px;
+        padding: 25px 15px;
+        margin-bottom: 30px; }
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .company,
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .company {
+          position: absolute;
+          left: 15px;
+          top: -19px;
+          background: #fff;
+          padding: 7px 10px;
           border: 1px solid #ededed;
-          border-radius: 10px;
-          padding: 25px 15px;
-          margin-bottom: 30px; }
-          .userProfileRoot .mainBody .centralColumn .experienceSection .experienceItem .company,
-          .userProfileRoot .mainBody .centralColumn .experienceSection .projectItem .company {
-            position: absolute;
-            left: 15px;
-            top: -19px;
-            background: #fff;
-            padding: 7px 10px;
-            border: 1px solid #ededed;
-            border-radius: 20px; }
-            .userProfileRoot .mainBody .centralColumn .experienceSection .experienceItem .company .highlight,
-            .userProfileRoot .mainBody .centralColumn .experienceSection .projectItem .company .highlight {
-              color: #397db9; }
-          .userProfileRoot .mainBody .centralColumn .experienceSection .experienceItem .durationLocation,
-          .userProfileRoot .mainBody .centralColumn .experienceSection .projectItem .durationLocation {
-            position: absolute;
-            top: -19px;
-            background: #fff;
-            padding: 7px 10px;
-            border: 1px solid #ededed;
-            border-radius: 20px;
-            right: 15px; }
-            .userProfileRoot .mainBody .centralColumn .experienceSection .experienceItem .durationLocation .period:after,
-            .userProfileRoot .mainBody .centralColumn .experienceSection .projectItem .durationLocation .period:after {
-              content: "";
-              background: #777;
-              position: relative;
-              display: inline-flex;
-              font-size: 10px;
-              margin: 0 7px;
-              width: 3px;
-              height: 13px; }
-          .userProfileRoot .mainBody .centralColumn .experienceSection .experienceItem .experienceGrid,
-          .userProfileRoot .mainBody .centralColumn .experienceSection .projectItem .experienceGrid {
-            justify-content: space-between; }
-            .userProfileRoot .mainBody .centralColumn .experienceSection .experienceItem .experienceGrid h4,
-            .userProfileRoot .mainBody .centralColumn .experienceSection .projectItem .experienceGrid h4 {
-              font-size: 1rem;
-              color: #565656; }
-            .userProfileRoot .mainBody .centralColumn .experienceSection .experienceItem .experienceGrid p,
-            .userProfileRoot .mainBody .centralColumn .experienceSection .projectItem .experienceGrid p {
-              color: #565656;
-              font-size: 0.85rem; }
+          border-radius: 20px; }
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .company .highlight,
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .company .highlight {
+            color: #397db9; }
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation,
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation {
+          position: absolute;
+          top: -19px;
+          background: #fff;
+          padding: 7px 10px;
+          border: 1px solid #ededed;
+          border-radius: 20px;
+          right: 15px; }
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation .period:after,
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation .period:after {
+            content: "";
+            background: #777;
+            position: relative;
+            display: inline-flex;
+            font-size: 10px;
+            margin: 0 7px;
+            width: 3px;
+            height: 13px; }
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .experienceGrid,
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid {
+          justify-content: space-between; }
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .experienceGrid h4,
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid h4 {
+            font-size: 1rem;
+            color: #565656; }
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .experienceGrid p,
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid p {
+            color: #565656;
+            font-size: 0.85rem; }
   .userProfileRoot .media {
     background: #989898;
     width: 100%;

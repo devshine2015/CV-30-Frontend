@@ -206,25 +206,18 @@
             }
         }
     }
-    .mainBody {
-        position: relative;
-        display: flex;
+    .mainBody.userProfileShow {
         background: #fff;
         padding: 50px 0 0;
         border-top: 1px solid #989c9f;
         .columnRight {
-            position: relative;
-            margin-left: auto;
             .columnRightContent {
                 border-color: #989c9f;
                 border-width: 1px 0 0 1px;
                 border-style: solid;
-                position: absolute;
-                right: 0;
-                bottom: -15px;
-                left: 0;
-                top: -215px;
-                background: #fff;
+                @media (max-width: 960px) {
+                    border: none;
+                }
                 .columnTitle {
                     margin: 0;
                     padding: 15px 25px;
@@ -303,8 +296,6 @@
             }
         }
         .centralColumn {
-            position: relative;
-            margin-left: auto;
             .experienceSection {
                 display: flex;
                 flex-direction: column;
