@@ -180,6 +180,9 @@
   pointer-events: none;
   display: none; }
 
+.dashboardRoot {
+  padding-top: 62px; }
+
 .authContainer {
   display: flex;
   flex-direction: column;
@@ -290,314 +293,464 @@
         margin-right: auto;
         order: 2; } }
 
-.userProfileRoot {
-  padding-top: 62px; }
-  .userProfileRoot .header {
-    background: linear-gradient(to right, #49525e 0%, #1f3947 100%);
-    padding: 15px 50px 20px; }
-    @media (max-width: 600px) {
-      .userProfileRoot .header {
-        padding: 15px; } }
-  .userProfileRoot .headerLinks {
-    display: flex;
-    justify-content: space-between; }
-    @media (max-width: 600px) {
-      .userProfileRoot .headerLinks {
-        flex-direction: column; } }
-  .userProfileRoot .userAvatar {
-    display: flex;
-    padding-top: 15px;
-    align-items: center; }
-    .userProfileRoot .userAvatar .avatar {
-      width: 130px;
-      height: 130px;
-      margin-right: 20px; }
-    .userProfileRoot .userAvatar .avatarTexts {
-      color: #fff; }
-      .userProfileRoot .userAvatar .avatarTexts h3 {
-        font-size: 1.85rem;
-        margin: 0;
-        padding: 0;
-        font-weight: normal; }
-      .userProfileRoot .userAvatar .avatarTexts h4 {
-        font-size: 1.25rem;
-        font-weight: 300;
-        margin: 0;
-        padding: 0; }
-    @media (max-width: 600px) {
-      .userProfileRoot .userAvatar {
-        justify-content: center; } }
-  .userProfileRoot .userLinks {
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start; }
-    @media (max-width: 600px) {
-      .userProfileRoot .userLinks {
-        justify-content: center;
-        margin-top: 15px; } }
-    .userProfileRoot .userLinks .headerLink {
-      color: #fff;
-      background: none;
-      font-size: 0.9rem;
-      text-transform: none;
-      border-radius: 0; }
-      .userProfileRoot .userLinks .headerLink > span:first-of-type {
-        padding-bottom: 8px; }
-      .userProfileRoot .userLinks .headerLink:hover {
-        background: none; }
-        .userProfileRoot .userLinks .headerLink:hover > span:first-of-type {
-          padding-bottom: 6px;
-          border-bottom: 2px solid rgba(255, 255, 255, 0.75); }
-      .userProfileRoot .userLinks .headerLink.active > span:first-of-type {
+.userProfileRoot .header {
+  background: linear-gradient(to right, #49525e 0%, #1f3947 100%);
+  padding: 15px 50px 20px; }
+  @media (max-width: 600px) {
+    .userProfileRoot .header {
+      padding: 15px; } }
+
+.userProfileRoot .headerLinks {
+  display: flex;
+  justify-content: space-between; }
+  @media (max-width: 600px) {
+    .userProfileRoot .headerLinks {
+      flex-direction: column; } }
+
+.userProfileRoot .userAvatar {
+  display: flex;
+  padding-top: 15px;
+  align-items: center; }
+  .userProfileRoot .userAvatar .avatar {
+    width: 130px;
+    height: 130px;
+    margin-right: 20px; }
+  .userProfileRoot .userAvatar .avatarTexts {
+    color: #fff; }
+    .userProfileRoot .userAvatar .avatarTexts h3 {
+      font-size: 1.85rem;
+      margin: 0;
+      padding: 0;
+      font-weight: normal; }
+    .userProfileRoot .userAvatar .avatarTexts h4 {
+      font-size: 1.25rem;
+      font-weight: 300;
+      margin: 0;
+      padding: 0; }
+  @media (max-width: 600px) {
+    .userProfileRoot .userAvatar {
+      justify-content: center; } }
+
+.userProfileRoot .userLinks {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start; }
+  @media (max-width: 600px) {
+    .userProfileRoot .userLinks {
+      justify-content: center;
+      margin-top: 15px; } }
+  .userProfileRoot .userLinks .headerLink {
+    color: #fff;
+    background: none;
+    font-size: 0.9rem;
+    text-transform: none;
+    border-radius: 0; }
+    .userProfileRoot .userLinks .headerLink > span:first-of-type {
+      padding-bottom: 8px; }
+    .userProfileRoot .userLinks .headerLink:hover {
+      background: none; }
+      .userProfileRoot .userLinks .headerLink:hover > span:first-of-type {
         padding-bottom: 6px;
         border-bottom: 2px solid rgba(255, 255, 255, 0.75); }
-    .userProfileRoot .userLinks .headerButton {
-      background: #397db9;
+    .userProfileRoot .userLinks .headerLink.active > span:first-of-type {
+      padding-bottom: 6px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.75); }
+  .userProfileRoot .userLinks .headerButton {
+    background: #397db9;
+    color: #fff;
+    font-size: 0.9rem;
+    text-transform: none; }
+    .userProfileRoot .userLinks .headerButton:hover {
+      background: #3071ab; }
+
+.userProfileRoot .headerStories {
+  display: flex;
+  margin-top: 50px; }
+  .userProfileRoot .headerStories .storyContainer {
+    position: relative;
+    cursor: pointer; }
+    .userProfileRoot .headerStories .storyContainer .storyImg {
+      width: 200px;
+      height: 140px; }
+    .userProfileRoot .headerStories .storyContainer .storyTitle {
+      position: absolute;
+      bottom: 8px;
+      left: 4px;
+      right: 4px;
       color: #fff;
-      font-size: 0.9rem;
-      text-transform: none; }
-      .userProfileRoot .userLinks .headerButton:hover {
-        background: #3071ab; }
-  .userProfileRoot .headerStories {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 5px;
+      text-align: center; }
+  .userProfileRoot .headerStories .storySliderContainer {
     display: flex;
-    margin-top: 50px; }
-    .userProfileRoot .headerStories .storyContainer {
-      position: relative;
+    justify-content: center; }
+    .userProfileRoot .headerStories .storySliderContainer .storiesSlider {
+      display: flex; }
+      .userProfileRoot .headerStories .storySliderContainer .storiesSlider .storyItem {
+        position: relative;
+        display: none; }
+        .userProfileRoot .headerStories .storySliderContainer .storiesSlider .storyItem.active {
+          display: block; }
+        .userProfileRoot .headerStories .storySliderContainer .storiesSlider .storyItem img {
+          width: auto;
+          height: auto;
+          max-width: 100%; }
+        .userProfileRoot .headerStories .storySliderContainer .storiesSlider .storyItem .storyTitle {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 4px;
+          color: #fff;
+          background-color: rgba(0, 0, 0, 0.5);
+          padding: 5px;
+          text-align: center; }
+  .userProfileRoot .headerStories .storySliderControls {
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    align-items: center; }
+    .userProfileRoot .headerStories .storySliderControls .sliderArrow {
+      color: #fff; }
+    .userProfileRoot .headerStories .storySliderControls .sliderDot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0.3;
+      margin: 0 2px;
       cursor: pointer; }
-      .userProfileRoot .headerStories .storyContainer .storyImg {
-        width: 200px;
-        height: 140px; }
-      .userProfileRoot .headerStories .storyContainer .storyTitle {
-        position: absolute;
-        bottom: 8px;
-        left: 4px;
-        right: 4px;
-        color: #fff;
-        background-color: rgba(0, 0, 0, 0.5);
-        padding: 5px;
-        text-align: center; }
-    .userProfileRoot .headerStories .storySliderContainer {
-      display: flex;
-      justify-content: center; }
-      .userProfileRoot .headerStories .storySliderContainer .storiesSlider {
-        display: flex; }
-        .userProfileRoot .headerStories .storySliderContainer .storiesSlider .storyItem {
-          position: relative;
-          display: none; }
-          .userProfileRoot .headerStories .storySliderContainer .storiesSlider .storyItem.active {
-            display: block; }
-          .userProfileRoot .headerStories .storySliderContainer .storiesSlider .storyItem img {
-            width: auto;
-            height: auto;
-            max-width: 100%; }
-          .userProfileRoot .headerStories .storySliderContainer .storiesSlider .storyItem .storyTitle {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 4px;
-            color: #fff;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px;
-            text-align: center; }
-    .userProfileRoot .headerStories .storySliderControls {
-      position: relative;
-      margin: 0 auto;
-      display: flex;
-      align-items: center; }
-      .userProfileRoot .headerStories .storySliderControls .sliderArrow {
-        color: #fff; }
-      .userProfileRoot .headerStories .storySliderControls .sliderDot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #fff;
-        opacity: 0.3;
-        margin: 0 2px;
-        cursor: pointer; }
-        .userProfileRoot .headerStories .storySliderControls .sliderDot.active {
-          opacity: 1;
-          width: 10px;
-          height: 10px; }
+      .userProfileRoot .headerStories .storySliderControls .sliderDot.active {
+        opacity: 1;
+        width: 10px;
+        height: 10px; }
+  @media (max-width: 600px) {
+    .userProfileRoot .headerStories {
+      flex-direction: column; } }
+
+.userProfileRoot .headerSkills {
+  display: flex;
+  margin-top: 50px; }
+  .userProfileRoot .headerSkills .skillsContainer:first-of-type {
+    margin-bottom: 15px; }
+  .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle {
+    display: inline-flex;
+    width: 100px;
+    font-size: 0.9rem;
+    margin-right: 30px; }
+    .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle:before {
+      content: "|";
+      margin-right: 10px;
+      font-weight: bold; }
+    .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle.softSkills {
+      color: #73a9ff; }
+    .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle.values {
+      color: #c4a848; }
     @media (max-width: 600px) {
-      .userProfileRoot .headerStories {
-        flex-direction: column; } }
-  .userProfileRoot .headerSkills {
-    display: flex;
-    margin-top: 50px; }
-    .userProfileRoot .headerSkills .skillsContainer:first-of-type {
-      margin-bottom: 15px; }
-    .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle {
-      display: inline-flex;
-      width: 100px;
-      font-size: 0.9rem;
-      margin-right: 30px; }
-      .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle:before {
-        content: "|";
-        margin-right: 10px;
-        font-weight: bold; }
-      .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle.softSkills {
-        color: #73a9ff; }
-      .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle.values {
-        color: #c4a848; }
-      @media (max-width: 600px) {
-        .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle {
-          display: block;
-          width: 100%;
-          margin-bottom: 5px;
-          font-size: 1.15rem; } }
-    .userProfileRoot .headerSkills .skillsContainer .chip {
-      background: none;
-      border-radius: 5px;
-      border: 1px solid;
-      margin: 5px;
+      .userProfileRoot .headerSkills .skillsContainer .headerSkillsTitle {
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+        font-size: 1.15rem; } }
+  .userProfileRoot .headerSkills .skillsContainer .chip {
+    background: none;
+    border-radius: 5px;
+    border: 1px solid;
+    margin: 5px;
+    color: #fff;
+    text-transform: capitalize; }
+    .userProfileRoot .headerSkills .skillsContainer .chip.skills {
+      border-color: #73a9ff; }
+    .userProfileRoot .headerSkills .skillsContainer .chip.values {
+      border-color: #c4a848; }
+
+.userProfileRoot .mainBody.userProfileShow {
+  background: #fff;
+  padding: 50px 0 0;
+  border-top: 1px solid #989c9f; }
+  .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent {
+    border-color: #989c9f;
+    border-width: 1px 0 0 1px;
+    border-style: solid; }
+    @media (max-width: 960px) {
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent {
+        border: none; } }
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle {
+      margin: 0;
+      padding: 15px 25px;
       color: #fff;
-      text-transform: capitalize; }
-      .userProfileRoot .headerSkills .skillsContainer .chip.skills {
-        border-color: #73a9ff; }
-      .userProfileRoot .headerSkills .skillsContainer .chip.values {
-        border-color: #c4a848; }
-  .userProfileRoot .mainBody.userProfileShow {
-    background: #fff;
-    padding: 50px 0 0;
-    border-top: 1px solid #989c9f; }
-    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent {
-      border-color: #989c9f;
-      border-width: 1px 0 0 1px;
-      border-style: solid; }
-      @media (max-width: 960px) {
-        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent {
-          border: none; } }
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle {
-        margin: 0;
-        padding: 15px 25px;
-        color: #fff;
-        background: #397db9;
-        font-weight: 100;
-        display: flex;
-        align-items: flex-end;
-        font-size: 1.875rem; }
-        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle i {
-          margin-left: 10px; }
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer,
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer {
-        display: flex;
-        padding: 25px;
-        justify-content: space-between;
-        flex-direction: column; }
-        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer h4,
-        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer h4 {
-          font-size: 1.875rem;
-          margin: 0;
-          padding: 0;
-          font-weight: 100;
-          color: #397db9; }
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer .controls {
-        display: flex;
-        justify-content: space-between; }
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls {
-        align-items: center;
-        display: flex; }
-        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls .sliderArrow > span > span {
-          font-size: 1rem; }
-        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls .sliderDot {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #000;
-          opacity: 0.3;
-          margin: 0 3px; }
-          .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls .sliderDot.active {
-            height: 10px;
-            width: 10px;
-            opacity: 1; }
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderContainer {
-        display: flex;
-        flex-direction: column; }
-        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderContainer p {
-          color: #585858; }
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .media {
-        height: 200px;
-        border-radius: 10px; }
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent hr {
-        width: calc(100% - 50px); }
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer p {
-        color: #397db9;
-        font-style: italic; }
-    .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection {
+      background: #397db9;
+      font-weight: 100;
       display: flex;
+      align-items: flex-end;
+      font-size: 1.875rem; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle i {
+        margin-left: 10px; }
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer,
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer {
+      display: flex;
+      padding: 25px;
+      justify-content: space-between;
       flex-direction: column; }
-      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .sectionTitle {
-        margin: 20px 0 40px;
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer h4,
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer h4 {
+        font-size: 1.875rem;
+        margin: 0;
+        padding: 0;
         font-weight: 100;
         color: #397db9; }
-      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem,
-      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        border: 1px solid #ededed;
-        border-radius: 10px;
-        padding: 25px 15px;
-        margin-bottom: 30px; }
-        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .company,
-        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .company {
-          position: absolute;
-          left: 15px;
-          top: -19px;
-          background: #fff;
-          padding: 7px 10px;
-          border: 1px solid #ededed;
-          border-radius: 20px; }
-          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .company .highlight,
-          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .company .highlight {
-            color: #397db9; }
-          @media (max-width: 600px) {
-            .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .company,
-            .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .company {
-              font-size: 0.75rem; } }
-        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation,
-        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation {
-          position: absolute;
-          top: -19px;
-          background: #fff;
-          padding: 7px 10px;
-          border: 1px solid #ededed;
-          border-radius: 20px;
-          right: 15px; }
-          @media (max-width: 600px) {
-            .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation,
-            .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation {
-              font-size: 0.75rem; } }
-          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation .period:after,
-          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation .period:after {
-            content: "";
-            background: #777;
-            position: relative;
-            display: inline-flex;
-            font-size: 10px;
-            margin: 0 7px;
-            width: 3px;
-            height: 13px; }
-        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .experienceGrid,
-        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid {
-          justify-content: space-between; }
-          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .experienceGrid h4,
-          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid h4 {
-            font-size: 1rem;
-            color: #565656; }
-          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .experienceGrid p,
-          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid p {
-            color: #565656;
-            font-size: 0.85rem; }
-  .userProfileRoot .media {
-    background: #989898;
-    width: 100%;
-    height: 100%;
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer .controls {
+      display: flex;
+      justify-content: space-between; }
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls {
+      align-items: center;
+      display: flex; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls .sliderArrow > span > span {
+        font-size: 1rem; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls .sliderDot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #000;
+        opacity: 0.3;
+        margin: 0 3px; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderControls .sliderDot.active {
+          height: 10px;
+          width: 10px;
+          opacity: 1; }
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderContainer {
+      display: flex;
+      flex-direction: column; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .sliderContainer p {
+        color: #585858; }
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .media {
+      height: 200px;
+      border-radius: 10px; }
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent hr {
+      width: calc(100% - 50px); }
+    .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer p {
+      color: #397db9;
+      font-style: italic; }
+  .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 5px;
+    flex-direction: column; }
+    .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .sectionTitle {
+      margin: 20px 0 40px;
+      font-weight: 100;
+      color: #397db9; }
+    .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem,
+    .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #ededed;
+      border-radius: 10px;
+      padding: 25px 15px;
+      margin-bottom: 30px; }
+      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .company,
+      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .company {
+        position: absolute;
+        left: 15px;
+        top: -19px;
+        background: #fff;
+        padding: 7px 10px;
+        border: 1px solid #ededed;
+        border-radius: 20px; }
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .company .highlight,
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .company .highlight {
+          color: #397db9; }
+        @media (max-width: 600px) {
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .company,
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .company {
+            font-size: 0.75rem; } }
+      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation,
+      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation {
+        position: absolute;
+        top: -19px;
+        background: #fff;
+        padding: 7px 10px;
+        border: 1px solid #ededed;
+        border-radius: 20px;
+        right: 15px; }
+        @media (max-width: 600px) {
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation,
+          .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation {
+            font-size: 0.75rem; } }
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation .period:after,
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation .period:after {
+          content: "";
+          background: #777;
+          position: relative;
+          display: inline-flex;
+          font-size: 10px;
+          margin: 0 7px;
+          width: 3px;
+          height: 13px; }
+      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .experienceGrid,
+      .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid {
+        justify-content: space-between; }
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .experienceGrid h4,
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid h4 {
+          font-size: 1rem;
+          color: #565656; }
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .experienceGrid p,
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid p {
+          color: #565656;
+          font-size: 0.85rem; }
+
+.userProfileRoot .media {
+  background: #989898;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  cursor: pointer; }
+  .userProfileRoot .media .playIcon {
+    color: #fff;
+    font-size: 3rem; }
+
+.brandRoot .header {
+  position: relative;
+  height: 90vh; }
+  .brandRoot .header .headerOverlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: red;
+    opacity: .3;
+    pointer-events: none; }
+  .brandRoot .header .headerContents {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    pointer-events: none;
+    padding: 25px 50px;
+    display: flex;
+    flex-direction: column; }
+
+.brandRoot .headerLinks {
+  display: flex;
+  justify-content: space-between;
+  pointer-events: all; }
+  @media (max-width: 600px) {
+    .brandRoot .headerLinks {
+      flex-direction: column; } }
+
+.brandRoot .userAvatar {
+  display: flex;
+  padding: 5px;
+  align-items: center;
+  background: #fff;
+  border-radius: 50px; }
+  .brandRoot .userAvatar .avatar {
+    width: 80px;
+    height: 80px;
+    margin-right: 20px; }
+  .brandRoot .userAvatar .avatarTexts {
+    color: #414141;
+    margin-left: auto;
+    margin-right: auto; }
+    .brandRoot .userAvatar .avatarTexts h3 {
+      font-size: 1.5rem;
+      margin: 0;
+      padding: 0;
+      font-weight: normal; }
+    .brandRoot .userAvatar .avatarTexts h4 {
+      font-size: 1rem;
+      font-weight: 300;
+      margin: 0;
+      padding: 0; }
+
+.brandRoot .userLinks {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start; }
+  @media (max-width: 600px) {
+    .brandRoot .userLinks {
+      justify-content: center;
+      margin-top: 15px; } }
+  .brandRoot .userLinks .headerLink {
+    color: #fff;
+    background: none;
+    font-size: 0.9rem;
+    text-transform: none;
+    border-radius: 0; }
+    .brandRoot .userLinks .headerLink > span:first-of-type {
+      padding-bottom: 8px; }
+    .brandRoot .userLinks .headerLink:hover {
+      background: none; }
+      .brandRoot .userLinks .headerLink:hover > span:first-of-type {
+        padding-bottom: 6px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.75); }
+    .brandRoot .userLinks .headerLink.active > span:first-of-type {
+      padding-bottom: 6px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.75); }
+  .brandRoot .userLinks .headerButton {
+    background: #397db9;
+    color: #fff;
+    font-size: 0.9rem;
+    text-transform: none; }
+    .brandRoot .userLinks .headerButton:hover {
+      background: #3071ab; }
+
+.brandRoot .textInfo {
+  color: #fff; }
+  .brandRoot .textInfo h1 {
+    font-size: 2.5rem;
+    font-weight: 100; }
+    .brandRoot .textInfo h1 b {
+      display: block;
+      font-size: 3.5rem;
+      font-weight: bold;
+      padding-top: 20px; }
+  .brandRoot .textInfo h3 {
+    font-weight: 100;
+    font-size: 1.5rem; }
+
+.brandRoot .headerStories {
+  display: flex;
+  margin-top: 50px; }
+  .brandRoot .headerStories .storyContainer {
+    position: relative;
+    margin: 0 3px;
     cursor: pointer; }
-    .userProfileRoot .media .playIcon {
+    .brandRoot .headerStories .storyContainer .storyImg {
+      width: 200px;
+      height: 140px; }
+    .brandRoot .headerStories .storyContainer .storyTitle {
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
       color: #fff;
-      font-size: 3rem; }
+      background-color: rgba(0, 0, 0, 0.5);
+      text-overflow: ellipsis;
+      padding: 5px;
+      text-align: center; }
+
+.brandRoot .activityFields {
+  margin-top: 50px;
+  display: flex; }
+  .brandRoot .activityFields .chip {
+    background: none;
+    border-radius: 5px;
+    border: 1px solid;
+    margin: 5px;
+    color: #fff;
+    text-transform: capitalize; }
+    .brandRoot .activityFields .chip.activity {
+      border-color: #fff; }
+
+.brandRoot .teamSlider {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  max-height: 200px; }
+  .brandRoot .teamSlider .storyImg {
+    max-height: 200px;
+    height: 100%; }
