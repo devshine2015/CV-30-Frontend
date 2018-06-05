@@ -7,6 +7,12 @@
     box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
     position: fixed;
     z-index: 1301;
+    @media (max-width: 960px) {
+        padding: 5px 20px;
+    }
+    @media (max-width: 600px) {
+        padding: 5px 15px;
+    }
     .brandImg {
         width: 40px;
         height: 40px;
@@ -25,6 +31,9 @@
                 color: #397DB9;
                 background: #F4F4F4;
             }
+            .homeIcon {
+                margin-right: 10px;
+            }
         }
     }
     .profileButton {
@@ -36,4 +45,179 @@
             margin-right: 10px;
         }
     }
+    .notificationsButton {
+        margin-right: 10px
+    }
+    .mobileNavContainer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+}
+
+.profileMenuContainer {
+    .profileMenu {
+        margin: 3px;
+        background: #f4f4f4;
+        margin-top: 20px;
+        width: 250px;
+        border: 1px solid #cacaca;
+        border-radius: 8px;
+        &:after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 14px;
+            right: 100px;
+            width: 10px;
+            height: 10px;
+            background: #f4f4f4;
+            border-right: 1px solid #cacaca;
+            border-top: 1px solid #cacaca;
+            transform: rotate(-45deg);
+        }
+        .companiesContainer {
+            background: #fff;
+            border-top: 1px solid #ebebeb;
+            border-bottom: 1px solid #ebebeb;
+            .companiesContainerTitle {
+                position: relative;
+                display: block;
+                font-size: 0.75rem;
+                color: #8b8b8b;
+                padding: 12px 16px 0;
+            }
+        }
+    }
+}
+
+.notificationsMenu {
+    margin: 3px;
+    background: #f4f4f4;
+    margin-top: 20px;
+    width: 450px;
+    border: 1px solid #cacaca;
+    border-radius: 8px;
+    &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 14px;
+        right: 47px;
+        width: 10px;
+        height: 10px;
+        background: #f4f4f4;
+        border-right: 1px solid #cacaca;
+        border-top: 1px solid #cacaca;
+        transform: rotate(-45deg);
+    }
+    @media (max-width: 960px) {
+        width: 420px;
+        &:after {
+            right: 70px;
+        }
+    }
+    .notificationItem {
+        height: auto;
+        &:not(:last-child) {
+            border-bottom: 2px solid #e8e8e8;
+        }
+    }
+    .notificationAvatar {
+        width: 50px;
+        height: 50px;
+        margin-right: 15px;
+    }
+    .notificationMessage {
+        margin: 0;
+        padding: 0;
+        font-size: 0.875rem;
+        color: #777777;
+    }
+    .notificationElapsed {
+        margin: 0;
+        padding: 0;
+        font-size: 0.75rem;
+        color: #969696;
+    }
+}
+
+.mobileNavContainer,
+.mobileProfileContainer,
+.mobileNotificationsContainer {
+    .sideDrawer {
+        width: 70%;
+    }
+    .content {
+        margin-top: 70px;
+    }
+}
+
+.mobileNavContainer,
+.mobileProfileContainer {
+    .mobileNavItem {
+        color: #414141;
+        text-transform: none;
+        background: #eee;
+        margin: 2px 0;
+        i {
+            margin-right: 10px;
+            display: none;
+        }
+        &.active {
+            padding-left: 10px;
+            border-left: 5px solid #397DB9;
+            background: #fff;
+            color: #397DB9;
+        }
+    }
+}
+
+.mobileNotificationsContainer {
+    .mobileNotificationButton {
+        border-bottom: 2px solid #e8e8e8;
+        .notificationAvatar {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+        }
+        .notificationBody {
+            .notificationMessage {
+                margin: 0;
+                padding: 0;
+                font-size: 0.875rem;
+                color: #777777;
+            }
+            .notificationElapsed {
+                margin: 0;
+                padding: 0;
+                font-size: 0.75rem;
+                color: #969696;
+            }
+        }
+    }
+}
+
+.mobileProfileContainer {
+    .companiesContainer {
+        background: #fff;
+        border-top: 1px solid #ebebeb;
+        border-bottom: 1px solid #ebebeb;
+        .companiesContainerTitle {
+            position: relative;
+            display: block;
+            font-size: 0.75rem;
+            color: #8b8b8b;
+            padding: 12px 16px 0;
+        }
+        .mobileNavItem {
+            background: #fff;
+            color: #397DB9;
+        }
+    }
+}
+
+.popperClose {
+    pointer-events: none;
+    display: none;
 }

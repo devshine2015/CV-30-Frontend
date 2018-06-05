@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Icon, IconButton } from '@material-ui/core';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+// import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 
 const Show = () => (
     <Grid container className='mainBody userProfileShow'>

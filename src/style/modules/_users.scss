@@ -324,6 +324,9 @@
                         .highlight {
                             color: #397db9;
                         }
+                        @media(max-width: 600px) {
+                            font-size: 0.75rem;
+                        }
                     }
                     .durationLocation {
                         position: absolute;
@@ -333,6 +336,9 @@
                         border: 1px solid #ededed;
                         border-radius: 20px;
                         right: 15px;
+                        @media(max-width: 600px) {
+                            font-size: 0.75rem;
+                        }
                         .period {
                             &:after {
                                 content: "";

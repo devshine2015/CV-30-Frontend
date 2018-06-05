@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Avatar, Button, Chip, Hidden, IconButton, Icon } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { NavLink, Switch, Route } from 'react-router-dom';
-import classNames from 'classnames';
+
 import UserProfileShow from './show';
 import UserProfileFeed from './feed';
 
