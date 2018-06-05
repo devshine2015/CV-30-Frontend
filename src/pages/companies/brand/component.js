@@ -90,25 +90,30 @@ const Brand = ({ match, headerStories, keyWords }) => {
                             keyWords.map((item, index) => <Chip label={item} className='chip activity' key={`activity-${index}`} />)
                         }
                     </Grid>
-                    {/*
+
                     <Grid container className='teamSlider'>
-                        <Grid item xs={1} className='teamSliderItem title'>
+                        <Grid item className='teamSliderItem title'>
                             <h4>Cunoaste <b>echipa</b></h4>
                         </Grid>
                         {
                             headerStories.map((story, index) => {
                                 return (
-                                    <Grid item xs={1} className='teamSliderItem' key={`teamSliderItem-${index}`}>
-                                        <img src={story.img} alt="ceva" className='storyImg' />
-                                        <span className='storyTitle'>{story.title}</span>
+                                    <Grid item className='teamSliderItem' key={`teamSliderItem-${index}`}>
+                                        <img src={story.img} alt="ceva" className='teamImg' />
+                                        <span className='teamText'>{story.title}</span>
                                     </Grid>
                                 )
                             })
                         }
                     </Grid>
-                    */}
                 </div>
             </div>
+            <React.Fragment>
+                <Switch>
+                    <Route exact path='/:lang(en|ro)/dashboard/companies' component={CompanyShow} />
+                    <Route exact path='/:lang(en|ro)/dashboard/companies/feed' component={CompanyShowFeed} />
+                </Switch>
+            </React.Fragment>
         </div>
     )
 };

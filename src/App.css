@@ -612,15 +612,16 @@
 
 .brandRoot .header {
   position: relative;
-  height: 90vh; }
+  height: 90vh;
+  min-height: 90vh; }
   .brandRoot .header .headerOverlay {
     position: absolute;
     top: 0;
     bottom: 0;
     right: 0;
     left: 0;
-    background: red;
-    opacity: .3;
+    background: #550019;
+    opacity: .5;
     pointer-events: none; }
   .brandRoot .header .headerContents {
     position: absolute;
@@ -629,12 +630,14 @@
     right: 0;
     left: 0;
     pointer-events: none;
-    padding: 25px 50px;
+    padding: 25px 0 0;
     display: flex;
-    flex-direction: column; }
+    flex-direction: column;
+    justify-content: space-between; }
 
 .brandRoot .headerLinks {
   display: flex;
+  padding: 0 50px;
   justify-content: space-between;
   pointer-events: all; }
   @media (max-width: 600px) {
@@ -699,6 +702,7 @@
       background: #3071ab; }
 
 .brandRoot .textInfo {
+  padding-left: 50px;
   color: #fff; }
   .brandRoot .textInfo h1 {
     font-size: 2.5rem;
@@ -714,7 +718,8 @@
 
 .brandRoot .headerStories {
   display: flex;
-  margin-top: 50px; }
+  margin-top: 50px;
+  padding-left: 50px; }
   .brandRoot .headerStories .storyContainer {
     position: relative;
     margin: 0 3px;
@@ -735,6 +740,7 @@
 
 .brandRoot .activityFields {
   margin-top: 50px;
+  padding-left: 50px;
   display: flex; }
   .brandRoot .activityFields .chip {
     background: none;
@@ -750,7 +756,33 @@
   display: flex;
   flex-wrap: nowrap;
   overflow: hidden;
-  max-height: 200px; }
-  .brandRoot .teamSlider .storyImg {
+  max-height: 200px;
+  margin-top: 50px; }
+  .brandRoot .teamSlider .teamSliderItem {
+    height: 200px;
+    width: 320px;
+    position: relative; }
+    .brandRoot .teamSlider .teamSliderItem.title {
+      background: #fff;
+      color: #550019;
+      display: flex;
+      align-content: center;
+      justify-content: center; }
+      .brandRoot .teamSlider .teamSliderItem.title h4 {
+        font-weight: 100;
+        font-size: 2.5rem;
+        line-height: 1.3; }
+        .brandRoot .teamSlider .teamSliderItem.title h4 b {
+          display: block;
+          font-weight: bold; }
+  .brandRoot .teamSlider .teamImg {
     max-height: 200px;
-    height: 100%; }
+    width: 100%; }
+  .brandRoot .teamSlider .teamText {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    color: #fff;
+    font-size: 1.5rem; }
