@@ -48,7 +48,7 @@ const authLink = setContext(async (_, { headers }) => {
 });*/
 
 const client = new ApolloClient({
-    uri: 'http://ec2-52-214-122-126.eu-west-1.compute.amazonaws.com:3000/graphql',
+    uri: 'http://localhost:3000/graphql',
     fetchOptions: {
         credentials: 'same-origin'
     },

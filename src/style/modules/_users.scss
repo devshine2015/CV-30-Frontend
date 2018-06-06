@@ -17,6 +17,7 @@
         display: flex;
         padding-top: 15px;
         align-items: center;
+        position: relative;
         .avatar {
             width: 130px;
             height: 130px;
@@ -35,6 +36,39 @@
                 font-weight: 300;
                 margin: 0;
                 padding: 0;
+            }
+        }
+        .badgeRoot {
+            position: absolute;
+            bottom: 0;
+            left: 90px;
+            background: #397db9;
+            color: #fff;
+            min-width: auto;
+            width: 50px;
+            height: 50px;
+        }
+        .colorPickerButton {
+            background: #4893cc;
+            color: #fff;
+            padding: 2px 10px 2px 30px;
+            margin: 12px 0 0 30px;
+            .icon {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                position: absolute;
+                left: -25px;
+                background: #397db9;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            &:hover {
+                background: #397db9;
+                .icon {
+                    background: #397db9;
+                }
             }
         }
         @media (max-width: 600px) {
@@ -101,6 +135,22 @@
                 background-color: rgba(0, 0, 0, 0.5);
                 padding: 5px;
                 text-align: center;
+            }
+            &.add {
+                width: 208px;
+                height: 148px;
+                background-color: rgba(0, 0, 0, 0.5);
+                border: 2px dashed #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .bigPlus {
+                    color: #fff;
+                    font-size: 3rem;
+                }
+                .storyTitle {
+                    background: none;
+                }
             }
         }
         .storySliderContainer {
@@ -203,6 +253,29 @@
                     border-color: #c4a848;
                 }
             }
+        }
+    }
+    .editToggle {
+        display: flex;
+        justify-content: center;
+        background: #f9f9f9;
+        align-items: center;
+        label {
+            font-size: 0.85rem;
+            font-weight: normal;
+            color: #565656;
+            &.active {
+                color: #277dba;
+            }
+        }
+        .colorSwitchBase {
+            color: #277dba;
+        }
+        .colorChecked {
+            color: #277dba;
+        }
+        .colorBar {
+            background-color: #bbb;
         }
     }
     .mainBody.userProfileShow {
@@ -377,6 +450,52 @@
         .playIcon {
             color: #fff;
             font-size: 3rem;
+        }
+    }
+}
+
+.colorPickerPaper {
+    background: #fff;
+    border: 1px solid #707881;
+    border-radius: 5px !important;
+    width: 465px;
+    position: relative;
+    overflow: visible !important;
+    margin-top: 20px;
+    &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: -5px;
+        left: 45px;
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        transform: rotate(-45deg);
+    }
+    .popupHeader {
+        border-bottom: 2px solid #f4f4f4;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 10px 0 10px;
+        .picUploadButton {
+            background: #397db9;
+            padding: 5px;
+            margin: 0;
+            color: white;
+            text-transform: none;
+            height: 24px;
+            border-radius: 5px;
+        }
+    }
+    .colorsContainer {
+        padding: 30px;
+        .color {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            margin: 5px;
         }
     }
 }

@@ -1,21 +1,62 @@
 import React from 'react';
-import { Grid, Avatar, Button, Chip, Hidden, IconButton, Icon } from '@material-ui/core';
+import { Grid, Avatar, Button, Chip, Hidden, IconButton, Icon, FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { NavLink, Switch, Route } from 'react-router-dom';
 
 import UserProfileShow from './show';
 import UserProfileFeed from './feed';
 
-const UserProfile = ({ match, classes, headerStories, headerSoftSkills, headerValues, prevStoryItem, activeStoryItem, jumpToStoryItem, nextStoryItem }) => {
+import ColorPicker from './components/colorPicker';
+
+const UserProfile = (props) => {
+    const { match,
+        headerStories, headerSoftSkills, headerValues,
+        prevStoryItem, activeStoryItem, jumpToStoryItem, nextStoryItem,
+        editMode, switchEditMode,
+        toggleColorPicker, colorPickerAnchor, closeColorPicker, availableColors } = props;
     const lang = match.params.lang;
+
     return (<div className='userProfileRoot'>
+        <FormGroup row className='editToggle'>
+            <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
+            <ToggleSwitch checked={editMode} onChange={switchEditMode}
+                classes={{
+                    switchBase: 'colorSwitchBase',
+                    checked: 'colorChecked',
+                    bar: 'colorBar',
+                }}
+                color="primary" />
+            <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
+        </FormGroup>
+
         <div className='header'>
             <Grid container className='headerLinks'>
                 <Grid item md={3} sm={12} xs={12} className='userAvatar'>
                     <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className='avatar' />
+                    {editMode &&
+                        <React.Fragment>
+                            <Button variant='fab' size='small'
+                                classes={{
+                                    fab: 'badgeRoot'
+                                }}
+                                onClick={toggleColorPicker}
+                            >
+                                <Icon>
+                                    camera_alt
+                                </Icon>
+                            </Button>
+                            <ColorPicker colorPickerAnchor={colorPickerAnchor} onClose={closeColorPicker} availableColors={availableColors} />
+                        </React.Fragment>
+                    }
                     <div className='avatarTexts'>
                         <h3>Gabriel</h3>
                         <h4>Manager</h4>
+                        {editMode &&
+                            <Button size='small' className='colorPickerButton' disableRipple={true} onClick={toggleColorPicker}>
+                                <span className='text'>Change Background</span>
+                                <Icon className='icon'>brush</Icon>
+                            </Button>
+                        }
                     </div>
                 </Grid>
                 <Grid item md={3} sm={12} xs={12} className='userLinks'>
@@ -55,6 +96,13 @@ const UserProfile = ({ match, classes, headerStories, headerSoftSkills, headerVa
                                 <span className='storyTitle'>{story.title}</span>
                             </Grid>
                         ))
+                    }
+                    {
+                        editMode &&
+                        <Grid item className='storyContainer add'>
+                            <span className='bigPlus'>+</span>
+                            <span className='storyTitle'>+ Add story</span>
+                        </Grid>
                     }
                 </Hidden>
 

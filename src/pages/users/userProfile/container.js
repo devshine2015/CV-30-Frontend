@@ -17,6 +17,33 @@ const headerStories = [
     },
 ];
 
+const availableColors = [
+    {
+        name: 'Red',
+        style: 'red'
+    },
+    {
+        name: 'Gradient 1',
+        style: 'linear-gradient(to right, #23225a 0%, #1a1abc 100%)'
+    },
+    {
+        name: 'Gradient 1',
+        style: 'linear-gradient(to right, #7756a2 0%, #1f1f1c 100%)'
+    },
+    {
+        name: 'Gradient 1',
+        style: 'blue'
+    },
+    {
+        name: 'Gradient 1',
+        style: 'linear-gradient(to right, #21ab5a 0%, #7cca12 100%)'
+    },
+    {
+        name: 'Gradient 1',
+        style: 'linear-gradient(to right, #32aba5 0%, #7cca42 100%)'
+    }
+]
+
 const softSkills = ['leadership', 'grit', 'critical thinking', 'gritt', 'outspoken', 'extrovert', 'bla bla', 'bla bla bla'];
 
 const values = ['leadership', 'grit', 'critical thinking'];
@@ -28,6 +55,9 @@ const UserProfileHOC = compose(
     withState('activeStoryItem', 'setActiveStoryItem', 0),
     withState('headerSoftSkills', 'setHeaderSoftSkills', softSkills),
     withState('headerValues', 'setHeaderValues', values),
+    withState('editMode', 'updateEditMode', false),
+    withState('availableColors', null, availableColors),
+    withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withHandlers({
         prevStoryItem: ({ activeStoryItem, setActiveStoryItem, count }) => () => {
             let prevStory = activeStoryItem - 1 < 0 ? count : activeStoryItem - 1;
@@ -39,6 +69,15 @@ const UserProfileHOC = compose(
         },
         jumpToStoryItem: ({ setActiveStoryItem }) => (story) => {
             setActiveStoryItem(story);
+        },
+        switchEditMode: ({ editMode, updateEditMode }) => () => {
+            updateEditMode(!editMode);
+        },
+        toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
+            setColorPickerAnchor(event.target);
+        },
+        closeColorPicker: ({ setColorPickerAnchor }) => () => {
+            setColorPickerAnchor(null)
         }
     }),
     pure
