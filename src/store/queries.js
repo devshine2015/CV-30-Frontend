@@ -9,9 +9,19 @@ export const LoginMutation = gql`
         }
     }
 `;
+
 export const RegisterMutation = gql`
     mutation register($nickname: String!, $email: String!, $password: String!) {
         register(nickname: $nickname, email: $email, password: $password) {
+            status
+            error
+        }
+    }
+`;
+
+export const ForgotPasswordMutation = gql`
+    mutation forgotPassword($email: String!){
+        forgotPassword(email: $email){
             status
             error
         }
