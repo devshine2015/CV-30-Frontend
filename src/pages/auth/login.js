@@ -141,22 +141,28 @@ const LoginHOC = compose(
                         password
                     }
                 });
-                let { err, status } = response.data.login;
-                if (err) {
-                    setLoginError(err.message);
+                debugger;
+                let { error, token, refreshToken } = response.data.login;
+                if (error) {
+                    setLoginError(error || 'Something went wrong.');
+                    setLoadingState(false);
                     return false;
                 }
-                if (!status) {
+                if (!token || !refreshToken) {
                     setLoginError('Something went wrong.');
+                    setLoadingState(false);
                     return false;
                 }
+
+                //handle tokens
+
+                setLoadingState(false);
                 history.push(`/${match.params.lang}/dashboard`);
 
             }
-            catch (err) {
-                setLoginError(err.message || 'Something went wrong.');
-            }
-            finally {
+            catch (error) {
+                console.log(error);
+                setLoginError(error.message || 'Something went wrong.');
                 setLoadingState(false);
             }
         }

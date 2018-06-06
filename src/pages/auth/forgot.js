@@ -3,7 +3,7 @@ import { Grid, Paper, TextField, Button, Hidden } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
-import { LoginMutation } from '../../store/queries';
+import { ForgotPasswordMutation } from '../../store/queries';
 import { Link, withRouter } from 'react-router-dom';
 import { isValidEmail } from '../../constants/utils';
 
@@ -102,8 +102,8 @@ const ForgotPasswordComponent = ({ match, email, updateEmail, emailError, loadin
 
 const ForgotPasswordHOC = compose(
     withRouter,
-    graphql(LoginMutation, {
-        name: 'loginMutation'
+    graphql(ForgotPasswordMutation, {
+        name: 'forgotMutation'
     }),
     withState('email', 'setEmail', ''),
     withState('emailError', 'setEmailError', null),
@@ -115,30 +115,33 @@ const ForgotPasswordHOC = compose(
             setEmailError(!isValidEmail(email));
         },
         sendMail: (props) => async () => {
-            const { email, loginMutation, setForgotError, match, history, setLoadingState } = props;
+            const { email, forgotMutation, setForgotError, match, history, setLoadingState } = props;
             setLoadingState(true);
             try {
-                // let response = await loginMutation({
-                //     variables: {
-                //         email
-                //     }
-                // });
-                // let { err, status } = response.data.login;
-                // if (err) {
-                //     setForgotError(err.message);
-                //     return false;
-                // }
-                // if (!status) {
-                //     setForgotError('Something went wrong.');
-                //     return false;
-                // }
-                // history.push(`/${match.params.lang}/dashboard`);
+                let response = await forgotMutation({
+                    variables: {
+                        email
+                    }
+                });
+
+                let { error, status } = response.data.forgotPassword;
+
+                if (error) {
+                    setForgotError(error || error.message || 'Something went wrong.');
+                    setLoadingState(false);
+                    return false;
+                }
+                if (!status) {
+                    setForgotError('Something went wrong.');
+                    setLoadingState(false);
+                    return false;
+                }
+                setLoadingState(false);
+                history.push(`/${match.params.lang}/login`);
 
             }
-            catch (err) {
-                // setForgotError(err.message || 'Something went wrong.');
-            }
-            finally {
+            catch (error) {
+                setForgotError(error || error.message || 'Something went wrong.');
                 setLoadingState(false);
             }
         }
