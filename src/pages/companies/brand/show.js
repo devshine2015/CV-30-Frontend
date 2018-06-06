@@ -1,6 +1,5 @@
 import React from 'react';
 import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const Show = ({ expanded, expandPanel }) => {
     return (
@@ -39,7 +38,7 @@ const Show = ({ expanded, expandPanel }) => {
                         </div>
                     </div>
                     <div className='sliderContents'>
-                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider image' />
+                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider bla' />
                         <div className='textContents'>
                             <h4>
                                 Slide title
@@ -55,7 +54,7 @@ const Show = ({ expanded, expandPanel }) => {
                 <section className='moreStories'>
                     <h2 className='titleHeading'>Afla <b>mai multe</b></h2>
                     <div className='story'>
-                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider image' />
+                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider' />
                         <div className='textContents'>
                             <h4>
                                 Slide title
@@ -67,7 +66,7 @@ const Show = ({ expanded, expandPanel }) => {
                         </div>
                     </div>
                     <div className='story reverse'>
-                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider image' />
+                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider' />
                         <div className='textContents'>
                             <h4>
                                 Slide title
@@ -79,7 +78,7 @@ const Show = ({ expanded, expandPanel }) => {
                         </div>
                     </div>
                     <div className='story'>
-                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider image' />
+                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider' />
                         <div className='textContents'>
                             <h4>
                                 Slide title

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactPlayer from 'react-player';
-import { Grid, Avatar, Button, Chip, Hidden, IconButton, Icon } from '@material-ui/core';
+import { Grid, Avatar, Button, Chip, Hidden } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { NavLink, Switch, Route } from 'react-router-dom';
 
