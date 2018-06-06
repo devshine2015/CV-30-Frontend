@@ -32,6 +32,12 @@ const BrandHOC = compose(
     withState('keyWords', 'setHeaderKeywords', keyWords),
     withState('headerStories', 'setHeaderStories', headerStories),
     withState('count', 'setCount', headerStories.length - 1),
+    withState('expanded', 'updateExpanded', null),
+    withHandlers({
+        expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
+            updateExpanded(expanded ? panel : false);
+        }
+    }),
     pure
 );
 export default BrandHOC(Brand);

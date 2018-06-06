@@ -16,12 +16,12 @@ const MobileNav = (props) => {
 
     return (
         <React.Fragment>
-            <Grid item sm={1} xs={1} md={1}>
+            <Grid item>
                 <NavLink className='brand' to={`/${lang}/dashboard`}>
                     <Avatar src="http://brandmark.io/logo-rank/random/pepsi.png" alt="logo" className='brandImg' />
                 </NavLink>
             </Grid>
-            <Grid item sm={11} xs={11} className='mobileNavContainer' id="mobileMainNav">
+            <Grid item className='mobileNavContainer' id="mobileMainNav">
                 {/* Buttons */}
                 <Button onClick={toggleMobileProfile} className='profileButton'>
                     <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className='avatar' />
