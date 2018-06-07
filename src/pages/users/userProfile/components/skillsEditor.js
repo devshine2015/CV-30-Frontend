@@ -30,7 +30,7 @@ const SkillsEdit = (props) => {
                         id="newSkill"
                         type='text'
                         value={newSkill}
-                        onChange={event => updateNewSkill(event.target.value.trim())}
+                        onChange={event => updateNewSkill(event.target.value)}
                         endAdornment={
                             <InputAdornment position="end">
                                 <Button color='primary' size='small' variant='raised' className='addSkillButton' onClick={addSkill} disabled={!newSkill}>Add</Button>

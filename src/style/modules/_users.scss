@@ -512,12 +512,20 @@
             .textField {
                 margin: 15px 0;
             }
+            h4 {
+                color: #565656;
+            }
             .datePickers {
                 position: relative;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 margin: 15px 0;
+                flex-wrap: wrap;
+                p {
+                    width: 100%;
+                    color: rgba(0, 0, 0, 0.54);
+                }
             }
         }
     }
