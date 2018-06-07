@@ -7,14 +7,21 @@ import UserProfileShow from './show';
 import UserProfileFeed from './feed';
 
 import ColorPicker from './components/colorPicker';
+import SkillsEditor from './components/skillsEditor';
+
 
 const UserProfile = (props) => {
     const { match,
-        headerStories, headerSoftSkills, headerValues,
-        prevStoryItem, activeStoryItem, jumpToStoryItem, nextStoryItem,
+        headerStories, headerSoftSkills, headerValues, openSkillsModal, skillsAnchor, skillsModalData, closeSkillsModal,
+        prevStoryItem, activeStoryItem, jumpToStoryItem, nextStoryItem, removeStory,
         editMode, switchEditMode,
-        toggleColorPicker, colorPickerAnchor, closeColorPicker, availableColors } = props;
+        toggleColorPicker, colorPickerAnchor, closeColorPicker, availableColors,
+        XPEdit, toggleExperienceEdit
+    } = props;
+
     const lang = match.params.lang;
+
+    const Show = (props) => <UserProfileShow editMode={editMode} XPEdit={XPEdit} toggleExperienceEdit={toggleExperienceEdit} />
 
     return (<div className='userProfileRoot'>
         <FormGroup row className='editToggle'>
@@ -94,6 +101,19 @@ const UserProfile = (props) => {
                             <Grid item className='storyContainer' key={`headerStory-${index}`}>
                                 <img src={story.img} alt="ceva" className='storyImg' />
                                 <span className='storyTitle'>{story.title}</span>
+                                {
+                                    editMode &&
+                                    <Button
+                                        variant='fab'
+                                        size='small'
+                                        onClick={() => removeStory(index)}
+                                        classes={{
+                                            fab: 'removeStoryBtn'
+                                        }}
+                                    >
+                                        <Icon>close</Icon>
+                                    </Button>
+                                }
                             </Grid>
                         ))
                     }
@@ -139,28 +159,66 @@ const UserProfile = (props) => {
             </Grid>
 
             <Grid container className='headerSkills'>
-                <Grid item lg={8} md={8} sm={12} xs={12} className='skillsContainer'>
+                <Grid item lg={8} md={8} sm={12} xs={12} className={editMode ? 'skillsContainer edit' : 'skillsContainer'}>
                     <FormattedMessage id="userProfile.softSkills" defaultMessage="Soft skills" description="User header soft skills">
                         {(text) => (<span className='headerSkillsTitle softSkills'>{text}:</span>)}
                     </FormattedMessage>
-                    {
+                    {!editMode &&
                         headerSoftSkills.map((item, index) => <Chip label={item} className='chip skills' key={`softSkill-${index}`} />)
                     }
+                    {
+                        editMode &&
+                        <span>{headerSoftSkills.join(', ')}</span>
+                    }
+                    {
+                        editMode &&
+                        <Button
+                            variant='fab'
+                            size='small'
+                            color='primary'
+                            onClick={(event) => openSkillsModal('skills', event.target)}
+                            classes={{
+                                fab: 'circleEditBtn'
+                            }}
+                        >
+                            <Icon>edit</Icon>
+                        </Button>
+                    }
                 </Grid>
-                <Grid item xs={12} className='skillsContainer'>
+                <Grid item lg={8} md={8} sm={12} xs={12} className={editMode ? 'skillsContainer edit' : 'skillsContainer'}>
                     <FormattedMessage id="userProfile.values" defaultMessage="Values" description="User header values">
                         {(text) => (<span className='headerSkillsTitle values'>{text}:</span>)}
                     </FormattedMessage>
-                    {
+                    {!editMode &&
                         headerValues.map((item, index) => <Chip label={item} className='chip values' key={`value-${index}`} />)
                     }
+                    {
+                        editMode &&
+                        <span>{headerValues.join(', ')}</span>
+                    }
+                    {
+                        editMode &&
+                        <Button
+                            variant='fab'
+                            size='small'
+                            color='primary'
+                            onClick={(event) => openSkillsModal('values', event.target)}
+                            classes={{
+                                fab: 'circleEditBtn'
+                            }}
+                        >
+                            <Icon>edit</Icon>
+                        </Button>
+                    }
+
                 </Grid>
+                <SkillsEditor skillsModalData={skillsModalData} skillsAnchor={skillsAnchor} closeSkillsModal={closeSkillsModal} />
             </Grid>
         </div>
 
         <React.Fragment>
             <Switch>
-                <Route exact path='/:lang(en|ro)/dashboard/profile' component={UserProfileShow} />
+                <Route exact path='/:lang(en|ro)/dashboard/profile' component={Show} />
                 <Route exact path='/:lang(en|ro)/dashboard/profile/feed' component={UserProfileFeed} />
             </Switch>
         </React.Fragment>

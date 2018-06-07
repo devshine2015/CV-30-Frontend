@@ -6,6 +6,16 @@
             padding: 15px;
         }
     }
+    .circleEditBtn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #397db9;
+        color: #fff;
+        position: absolute;
+        min-width: auto;
+        min-height: auto;
+    }
     .headerLinks {
         display: flex;
         justify-content: space-between;
@@ -152,6 +162,18 @@
                     background: none;
                 }
             }
+            .removeStoryBtn {
+                min-width: auto;
+                min-height: auto;
+                width: 25px;
+                height: 25px;
+                position: absolute;
+                top: -10px;
+                right: 10px;
+                color: red;
+                background: white;
+                padding: 2px;
+            }
         }
         .storySliderContainer {
             display: flex;
@@ -251,6 +273,29 @@
                 }
                 &.values {
                     border-color: #c4a848;
+                }
+            }
+            &.edit {
+                display: flex;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 5px;
+                align-items: center;
+                padding: 5px;
+                color: #fff;
+                text-transform: capitalize;
+                font-size: 0.8125rem;
+                font-weight: normal;
+                position: relative;
+                .headerSkillsTitle {
+                    width: auto;
+                    margin-right: 10px;
+                    &:before {
+                        content: "";
+                    }
+                }
+                .circleEditBtn {
+                    right: -20px;
                 }
             }
         }
@@ -437,6 +482,44 @@
                 }
             }
         }
+        .experienceAdd {
+            position: relative;
+            display: flex;
+            border: 2px dashed #76acd2;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            .addXPButton {
+                color: #277dba;
+                text-transform: none;
+                &:hover {
+                    background: none;
+                }
+            }
+        }
+        .experienceEditRoot {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid #f2f2f2;
+            border-radius: 10px;
+            margin-bottom: 45px;
+            padding: 25px;
+            box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+            .textField {
+                margin: 15px 0;
+            }
+            .datePickers {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin: 15px 0;
+            }
+        }
     }
     .media {
         background: #989898;
@@ -496,6 +579,81 @@
             height: 80px;
             border-radius: 5px;
             margin: 5px;
+        }
+    }
+}
+
+.skillsEditPaper {
+    background: #fff;
+    border: 1px solid #707881;
+    border-radius: 5px !important;
+    width: 465px;
+    position: relative;
+    overflow: visible !important;
+    margin-top: 20px;
+    margin-left: 50px;
+    &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: -5px;
+        right: 45px;
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        transform: rotate(-45deg);
+    }
+    .popupHeader {
+        border-bottom: 2px solid #ececec;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        .skillsInput {
+            // width: 100%;
+        }
+        .helperText {
+            color: #a6a6a6;
+            font-size: 0.7rem;
+        }
+        .addSkillButton {
+            background: #397db9;
+            color: white;
+            text-transform: none;
+            min-width: 50px;
+            min-height: 25px;
+            padding: 0;
+        }
+    }
+    .popupBody {
+        padding: 15px;
+        background: #fafafa;
+        border-top: 1px solid #f5f5f5;
+        border-bottom: 1px solid #f5f5f5;
+        .chip {
+            text-transform: capitalize;
+            background: #fff;
+            border: 1px solid #4484bd;
+            color: #4484bd;
+            border-radius: 5px;
+            margin: 2px;
+            .deleteIcon {
+                background: none;
+                color: #4484bd;
+            }
+        }
+    }
+    .popupFooter {
+        background: #fff;
+        padding: 15px;
+        position: relative;
+        .footerCheck {
+            position: absolute;
+            background: #4484bd;
+            color: #fff;
+            border-radius: 50%;
+            bottom: -24px;
+            right: 20px;
         }
     }
 }

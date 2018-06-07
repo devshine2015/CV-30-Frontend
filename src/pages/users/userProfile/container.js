@@ -58,6 +58,9 @@ const UserProfileHOC = compose(
     withState('editMode', 'updateEditMode', false),
     withState('availableColors', null, availableColors),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
+    withState('skillsAnchor', 'setSkillsAnchor', null),
+    withState('skillsModalData', 'setSkillsModalData', null),
+    withState('XPEdit', 'setXPEdit', null),
     withHandlers({
         prevStoryItem: ({ activeStoryItem, setActiveStoryItem, count }) => () => {
             let prevStory = activeStoryItem - 1 < 0 ? count : activeStoryItem - 1;
@@ -77,7 +80,20 @@ const UserProfileHOC = compose(
             setColorPickerAnchor(event.target);
         },
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
-            setColorPickerAnchor(null)
+            setColorPickerAnchor(null);
+        },
+        openSkillsModal: ({ headerSoftSkills, headerValues, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
+            if (type === 'values')
+                setSkillsModalData(headerValues);
+            if (type === 'skills')
+                setSkillsModalData(headerSoftSkills);
+            setSkillsAnchor(target);
+        },
+        closeSkillsModal: ({ setSkillsAnchor }) => () => {
+            setSkillsAnchor(null);
+        },
+        toggleExperienceEdit: ({ XPEdit, setXPEdit }) => () => {
+            setXPEdit(!XPEdit);
         }
     }),
     pure

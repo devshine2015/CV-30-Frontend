@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Popover, Button, Tab, Tabs } from '@material-ui/core';
+import { Popover, Button, Tab, Tabs } from '@material-ui/core';
 
 const ColorPicker = (props) => {
     const { colorPickerAnchor, onClose, availableColors, setColor } = props;
