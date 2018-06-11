@@ -499,7 +499,7 @@
                 }
             }
         }
-        .experienceEditRoot {
+        .experienceForm {
             position: relative;
             display: flex;
             flex-direction: column;
@@ -507,8 +507,67 @@
             border: 1px solid #f2f2f2;
             border-radius: 10px;
             margin-bottom: 45px;
-            padding: 25px;
             box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+            h4 {
+                padding: 10px 25px 0;
+            }
+            section {
+                padding: 25px;
+                &.infoSection {
+                    .mediaToggle {
+                        display: flex;
+                        align-items: center;
+                        .mediaToggleLabel {
+                            font-size: 0.75rem;
+                            font-weight: 100;
+                            color: #727272;
+                            margin-right: 15px;
+                        }
+                        label {
+                            font-size: 0.75rem;
+                            color: #565656;
+                            font-weight: bold;
+                            &.active {
+                                font-size: 0.8rem;
+                                color: #3586bf;
+                            }
+                        }
+                    }
+                }
+                &.mediaUpload {
+                    border-top: 2px solid #f1f1f1;
+                    border-bottom: 2px solid #f1f1f1;
+                    background: #fafafa;
+                    .hiddenFileInput {
+                        display: none;
+                    }
+                }
+                &.editControls {
+                    position: relative;
+                    .cancelBtn,
+                    .submitBtn {
+                        position: absolute;
+                        border-radius: 50%;
+                        box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+                    }
+                    .cancelBtn {
+                        width: 25px;
+                        height: 25px;
+                        min-width: auto;
+                        min-height: auto;
+                        background: #fff;
+                        color: #ff0000;
+                        bottom: -12px;
+                        right: 100px;
+                    }
+                    .submitBtn {
+                        background: #397db9;
+                        color: #fff;
+                        right: 30px;
+                        bottom: -24px;
+                    }
+                }
+            }
             .textField {
                 margin: 15px 0;
             }

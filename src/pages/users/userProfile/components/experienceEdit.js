@@ -1,52 +1,65 @@
 import React from 'react';
-import { TextField, Checkbox, FormLabel, FormControlLabel } from '@material-ui/core';
+import { TextField, Checkbox, FormLabel, FormControlLabel, IconButton, Icon, Switch as ToggleSwitch, FormGroup, Button } from '@material-ui/core';
+import { compose, pure, withState, withHandlers, lifecycle } from 'recompose';
 
 const ExperienceEdit = (props) => {
-    const { stillWorkThere, updateWorkPlace } = props;
+    const { formData, isVideoUrl, switchMediaType, handleFormChange } = props;
+    const { position, company, location, startDate, endDate, stillWorkThere, description, videoURL, fileUpload } = formData;
 
     return (
-        <div className='experienceEditRoot'>
+        <form className='experienceForm' noValidate autoComplete='off'>
             <h4>Add / edit experience</h4>
-            <form className='experienceForm' noValidate autoComplete={false}>
+            <section className='infoSection'>
                 <TextField
-                    id="position"
+                    name="position"
                     label="Add position"
                     placeholder="Position..."
                     className='textField'
                     fullWidth
+                    onChange={handleFormChange}
+                    value={position}
                 />
                 <TextField
-                    id="company"
+                    name="company"
                     label="Add company"
                     placeholder="Company..."
                     className='textField'
                     fullWidth
+                    onChange={handleFormChange}
+                    value={company}
                 />
                 <TextField
-                    id="location"
+                    name="location"
                     label="Add location"
                     placeholder="Location..."
                     className='textField'
                     fullWidth
+                    value={location}
+                    onChange={handleFormChange}
                 />
                 <div className='datePickers'>
                     <p>Date</p>
                     <TextField
-                        id="startDate"
+                        name="startDate"
                         type="date"
                         defaultValue=""
+                        value={startDate}
+                        onChange={handleFormChange}
                     />
                     <TextField
-                        id="endDate"
+                        name="endDate"
                         type="date"
                         defaultValue=""
                         disabled={stillWorkThere}
+                        value={endDate}
+                        onChange={handleFormChange}
                     />
                     <FormControlLabel
                         control={
                             <Checkbox
+                                name='stillWorkThere'
                                 checked={stillWorkThere}
-                                onChange={updateWorkPlace}
+                                onChange={handleFormChange}
                                 value={stillWorkThere}
                                 color="primary"
                             />
@@ -55,17 +68,96 @@ const ExperienceEdit = (props) => {
                     />
                 </div>
                 <TextField
-                    id="description"
+                    name="description"
                     label="Add description"
                     placeholder="Description..."
                     fullWidth
                     multiline
                     className='textField'
                     rowsMax="4"
+                    onChange={handleFormChange}
+                    value={description}
                 />
-            </form>
-        </div>
-    )
-}
+                <FormGroup row className='mediaToggle'>
+                    <span className='mediaToggleLabel'>Upload visuals</span>
+                    <FormLabel className={!isVideoUrl ? 'active' : ''}>Photo</FormLabel>
+                    <ToggleSwitch
+                        checked={isVideoUrl}
+                        onChange={switchMediaType}
+                        classes={{
+                            switchBase: 'colorSwitchBase',
+                            checked: 'colorChecked',
+                            bar: 'colorBar',
+                        }}
+                        color="primary" />
+                    <FormLabel className={isVideoUrl ? 'active' : ''}>Video Url</FormLabel>
+                </FormGroup>
 
-export default ExperienceEdit;
+            </section>
+            <section className='mediaUpload'>
+                {isVideoUrl ?
+                    <TextField
+                        name="videoURL"
+                        label="Add video URL"
+                        placeholder="Video URL..."
+                        fullWidth
+                        className='textField'
+                        onChange={handleFormChange}
+                        value={videoURL}
+                    /> :
+                    <label htmlFor="fileUpload">
+                        <input
+                            accept="image/*"
+                            className='hiddenFileInput'
+                            id="fileUpload"
+                            name="fileUpload"
+                            multiple
+                            type="file"
+                            onChange={handleFormChange}
+                        />
+                        <Button component="span" className='uploadBtn'>
+                            Upload
+                        </Button>
+                    </label>
+                }
+            </section>
+            <section className='editControls'>
+                <IconButton className='cancelBtn'>
+                    <Icon>close</Icon>
+                </IconButton>
+                <IconButton className='submitBtn'>
+                    <Icon>done</Icon>
+                </IconButton>
+            </section>
+        </form>
+    )
+};
+
+const SkillsEditHOC = compose(
+    withState('formData', 'setFormData', {}),
+    withState('isVideoUrl', 'changeMediaType', true),
+    withHandlers({
+        handleFormChange: props => event => {
+            debugger;
+            const target = event.currentTarget;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+            if (!name) {
+                throw Error('Field must have a name attribute!');
+            }
+            props.setFormData(state => ({ ...state, [name]: value }));
+        },
+        switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
+            changeMediaType(!isVideoUrl);
+        }
+    }),
+    lifecycle({
+        // componentDidUpdate(prevProps, prevState, snapshot) {
+        //     if (prevProps.formData !== this.props.formData)
+        //         this.props.setformData(this.props.formData);
+        // }
+    }),
+    pure
+);
+
+export default SkillsEditHOC(ExperienceEdit);
