@@ -27,3 +27,5 @@ yarn-error.log*
 #####################
 *.sass-cache
 /.sass-cache
+
+/credentials

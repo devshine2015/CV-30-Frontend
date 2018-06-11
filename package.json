@@ -20,6 +20,8 @@
     "react-scripts": "1.1.4"
   },
   "scripts": {
+    "deploy": "npm run build && set AWS_SHARED_CREDENTIALS_FILE=./credentials && aws s3 sync --acl public-read --delete build/ s3://cv30.co && npm run invalidate",
+    "invalidate": "set AWS_SHARED_CREDENTIALS_FILE=./credentials && aws cloudfront create-invalidation --distribution-id E37006VW3U4LCL --paths /*",
     "build-css": "node-sass-chokidar src/style -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar src/style -o src/ --watch --recursive",
     "start-js": "react-scripts start",

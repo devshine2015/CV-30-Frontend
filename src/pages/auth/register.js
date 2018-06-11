@@ -152,13 +152,10 @@ const RegisterHOC = compose(
                         password
                     }
                 });
-
                 setLoadingState(false);
-
-                let { err, status } = response.data.register;
-
-                if (err) {
-                    setRegisterError(err.message || 'Something went wrong.');
+                let { error, status } = response.data.register;
+                if (error) {
+                    setRegisterError(error || error.message || 'Something went wrong.');
                     return false;
                 }
                 if (!status) {
@@ -169,8 +166,8 @@ const RegisterHOC = compose(
             }
             catch (err) {
                 console.log(err);
-                setRegisterError(err.message || 'Something went wrong.');
                 setLoadingState(false);
+                setRegisterError(err.message || 'Something went wrong.');
             }
         }
     }),
