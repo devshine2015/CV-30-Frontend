@@ -144,7 +144,6 @@ const RegisterHOC = compose(
         doRegister: (props) => async () => {
             const { email, password, registerMutation, setRegisterError, match, history, setLoadingState } = props;
             setLoadingState(true);
-            debugger;
             try {
                 let response = await registerMutation({
                     variables: {
@@ -153,6 +152,8 @@ const RegisterHOC = compose(
                         password
                     }
                 });
+
+                setLoadingState(false);
 
                 let { err, status } = response.data.register;
 
@@ -164,7 +165,6 @@ const RegisterHOC = compose(
                     setRegisterError('Something went wrong.');
                     return false;
                 }
-                setLoadingState(false);
                 history.push(`/${match.params.lang}/login`);
             }
             catch (err) {

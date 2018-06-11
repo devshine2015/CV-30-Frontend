@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextField, Checkbox, FormLabel, FormControlLabel, IconButton, Icon, Switch as ToggleSwitch, FormGroup, Button } from '@material-ui/core';
-import { compose, pure, withState, withHandlers, lifecycle } from 'recompose';
+import { compose, pure, withState, withHandlers } from 'recompose';
 
 const ExperienceEdit = (props) => {
     debugger;

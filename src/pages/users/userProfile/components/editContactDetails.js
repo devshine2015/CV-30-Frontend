@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Menu, MenuItem, TextField, Icon, IconButton, InputAdornment } from '@material-ui/core';
-import { compose } from 'react-apollo';
-import { pure, withState, withHandlers } from 'recompose';
+import { compose, pure, withState, withHandlers } from 'recompose';
 
 const fields = [
     {
@@ -21,7 +20,7 @@ const fields = [
         text: 'LinkedIn'
     }
 ];
-const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, contactDetails, handleFormChange, formData, removeTextField }) => {
+const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, handleFormChange, formData, removeTextField }) => {
     // debugger;
     return (
         <div className='editContactDetails'>
@@ -45,15 +44,15 @@ const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, cont
                     {
                         fields.map((item, index) => {
                             let key = 'addField-' + index;
-                            let disabled = !!contactDetails[item.id] || contactDetails[item.id] === '';
+                            let disabled = !!formData[item.id] || formData[item.id] === '';
                             return <MenuItem onClick={() => addField(item.id)} key={key} disabled={disabled}>{item.text}</MenuItem>
                         })
                     }
                 </Menu>
             </div>
-            <form className='contactDetailsEditForm' noValidate autoComplete='off' key={contactDetails}>
+            <form className='contactDetailsEditForm' noValidate autoComplete='off'>
                 {
-                    Object.keys(contactDetails).map((key) => {
+                    Object.keys(formData).map((key) => {
                         const result = fields.find(field => field.id === key);
                         let text = result.text || '';
                         return (
@@ -95,8 +94,7 @@ const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, cont
 };
 
 const EditContactDetailsHOC = compose(
-    withState('contactDetails', 'setContactDetails', ({ contact }) => (contact || {})),
-    withState('formData', 'setFormData', {}),
+    withState('formData', 'setFormData', ({ contact }) => (contact || {})),
     withState('anchorEl', 'setAnchorEl', null),
     withHandlers({
         handleClick: ({ setAnchorEl }) => event => {
@@ -106,12 +104,12 @@ const EditContactDetailsHOC = compose(
         handleClose: ({ setAnchorEl }) => () => {
             setAnchorEl(null);
         },
-        addField: ({ setAnchorEl, contactDetails, setContactDetails }) => (fieldId) => {
-            debugger;
-            let contact = Object.assign({}, contactDetails);
-            if (!contact[fieldId])
+        addField: ({ setAnchorEl, formData, setFormData }) => (fieldId) => {
+            let contact = Object.assign({}, formData);
+            if (!contact[fieldId]) {
                 contact[fieldId] = '';
-            setContactDetails(contact);
+                setFormData(contact);
+            }
             setAnchorEl(null);
         },
         handleFormChange: props => event => {
@@ -123,10 +121,10 @@ const EditContactDetailsHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
-        removeTextField: ({ contactDetails, setContactDetails }) => async (key) => {
-            let contact = Object.assign({}, contactDetails);
+        removeTextField: ({ formData, setFormData }) => async (key) => {
+            let contact = Object.assign({}, formData);
             await delete contact[key];
-            setContactDetails(contact);
+            setFormData(contact);
         }
     }),
     pure
