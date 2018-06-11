@@ -3,16 +3,20 @@ import { Grid, Icon, IconButton, Button } from '@material-ui/core';
 // import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 
 import ExperienceEdit from './components/experienceEdit';
+import ExperienceDisplay from './components/experienceDisplay';
 
 const Show = (props) => {
     const { editMode,
-        XPEdit, toggleExperienceEdit,
+        XPEdit, toggleExperienceEdit, experience
     } = props;
     return (
         <Grid container className='mainBody userProfileShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <section className='experienceSection'>
                     <h2 className='sectionTitle'>My <b>experience</b></h2>
+                    {
+                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
+                    }
                     {editMode &&
                         <div className='experienceAdd'>
                             <Button className='addXPButton' onClick={toggleExperienceEdit}>
@@ -23,174 +27,37 @@ const Show = (props) => {
                     {
                         (editMode && XPEdit) && <ExperienceEdit />
                     }
-                    <div className='experienceItem'>
-                        <span className='company'>At&nbsp;
-                    <span className='highlight'>CV30</span>
-                        </span>
 
-                        <span className='durationLocation'>
-                            <span className='period'>15.05.2007 - Prezent</span>
-                            <span className='location'>Timisoara</span>
-                        </span>
-                        <Grid container className='experienceGrid'>
-                            <Grid item xs={7}>
-                                <h4>Title</h4>
-                                <p>
-                                    Lorem ipsum dolor sit amet, cu mei reque inimicus. Exerci altera usu te. Omnis primis id vel, ei primis torquatos eum, per ex munere dolore
-                                    malorum. Recusabo prodesset no ius. Ad unum convenire elaboraret ius, te quem graeco sea.
-                        </p>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <div className='media'>
-                                    <Icon className='playIcon'>
-                                        play_circle_filled
-                                </Icon>
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </div>
-                    <div className='experienceItem'>
-                        <span className='company'>At&nbsp;
-                    <span className='highlight'>CV30</span>
-                        </span>
-
-                        <span className='durationLocation'>
-                            <span className='period'>15.05.2007 - Prezent</span>
-                            <span className='location'>Timisoara</span>
-                        </span>
-                        <Grid container className='experienceGrid'>
-                            <Grid item xs={7}>
-                                <h4>Title</h4>
-                                <p>
-                                    Lorem ipsum dolor sit amet, cu mei reque inimicus. Exerci altera usu te. Omnis primis id vel, ei primis torquatos eum, per ex munere dolore
-                                    malorum. Recusabo prodesset no ius. Ad unum convenire elaboraret ius, te quem graeco sea.
-                        </p>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <div className='media'>
-                                    <Icon className='playIcon'>
-                                        play_circle_filled
-                                </Icon>
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </div>
-                    <div className='experienceItem'>
-                        <span className='company'>At&nbsp;
-                    <span className='highlight'>CV30</span>
-                        </span>
-
-                        <span className='durationLocation'>
-                            <span className='period'>15.05.2007 - Prezent</span>
-                            <span className='location'>Timisoara</span>
-                        </span>
-                        <Grid container className='experienceGrid'>
-                            <Grid item xs={7}>
-                                <h4>Title</h4>
-                                <p>
-                                    Lorem ipsum dolor sit amet, cu mei reque inimicus. Exerci altera usu te. Omnis primis id vel, ei primis torquatos eum, per ex munere dolore
-                                    malorum. Recusabo prodesset no ius. Ad unum convenire elaboraret ius, te quem graeco sea.
-                        </p>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <div className='media'>
-                                    <Icon className='playIcon'>
-                                        play_circle_filled
-                                </Icon>
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </div>
                 </section>
-
                 <section className='experienceSection'>
                     <h2 className='sectionTitle'>My <b>experience</b></h2>
-                    <div className='experienceItem'>
-                        <span className='company'>At&nbsp;
-                    <span className='highlight'>CV30</span>
-                        </span>
+                    {
+                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
+                    }
+                    {editMode &&
+                        <div className='experienceAdd'>
+                            <Button className='addXPButton' onClick={toggleExperienceEdit}>
+                                + Add Experience
+                        </Button>
+                        </div>
+                    }
+                    {
+                        (editMode && XPEdit) && <ExperienceEdit />
+                    }
 
-                        <span className='durationLocation'>
-                            <span className='period'>15.05.2007 - Prezent</span>
-                            <span className='location'>Timisoara</span>
-                        </span>
-                        <Grid container className='experienceGrid'>
-                            <Grid item xs={7} >
-                                <h4>Title</h4>
-                                <p>
-                                    Lorem ipsum dolor sit amet, cu mei reque inimicus. Exerci altera usu te. Omnis primis id vel, ei primis torquatos eum, per ex munere dolore
-                                    malorum. Recusabo prodesset no ius. Ad unum convenire elaboraret ius, te quem graeco sea.
-                        </p>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <div className='media'>
-                                    <Icon className='playIcon'>
-                                        play_circle_filled
-                                </Icon>
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </div>
-                    <div className='experienceItem'>
-                        <span className='company'>At&nbsp;
-                    <span className='highlight'>CV30</span>
-                        </span>
-
-                        <span className='durationLocation'>
-                            <span className='period'>15.05.2007 - Prezent</span>
-                            <span className='location'>Timisoara</span>
-                        </span>
-                        <Grid container className='experienceGrid'>
-                            <Grid item xs={7}>
-                                <h4>Title</h4>
-                                <p>
-                                    Lorem ipsum dolor sit amet, cu mei reque inimicus. Exerci altera usu te. Omnis primis id vel, ei primis torquatos eum, per ex munere dolore
-                                    malorum. Recusabo prodesset no ius. Ad unum convenire elaboraret ius, te quem graeco sea.
-                        </p>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <div className='media'>
-                                    <Icon className='playIcon'>
-                                        play_circle_filled
-                                </Icon>
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </div>
-                    <div className='experienceItem'>
-                        <span className='company'>At&nbsp;
-                    <span className='highlight'>CV30</span>
-                        </span>
-
-                        <span className='durationLocation'>
-                            <span className='period'>15.05.2007 - Prezent</span>
-                            <span className='location'>Timisoara</span>
-                        </span>
-                        <Grid container className='experienceGrid'>
-                            <Grid item xs={7}>
-                                <h4>Title</h4>
-                                <p>
-                                    Lorem ipsum dolor sit amet, cu mei reque inimicus. Exerci altera usu te. Omnis primis id vel, ei primis torquatos eum, per ex munere dolore
-                                    malorum. Recusabo prodesset no ius. Ad unum convenire elaboraret ius, te quem graeco sea.
-                        </p>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <div className='media'>
-                                    <Icon className='playIcon'>
-                                        play_circle_filled
-                                </Icon>
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </div>
                 </section>
-
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
                     <h2 className="columnTitle">
                         Contact&nbsp;<b>me</b>
                         <i className="fas fa-angle-down"></i>
+                        {
+                            editMode &&
+                            <IconButton className='contactEditBtn'>
+                                <Icon>edit</Icon>
+                            </IconButton>
+                        }
                     </h2>
                     <div className='knowHowContainer'>
                         <div className='controls'>

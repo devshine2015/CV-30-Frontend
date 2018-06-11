@@ -341,10 +341,16 @@
                     background: #397db9;
                     font-weight: 100;
                     display: flex;
-                    align-items: flex-end;
+                    align-items: center;
                     font-size: 1.875rem;
                     i {
                         margin-left: 10px;
+                    }
+                    .contactEditBtn {
+                        margin-left: 20px;
+                        background: #fff;
+                        color: #397db9;
+                        border-radius: 50%;
                     }
                 }
                 .knowHowContainer,
@@ -455,6 +461,9 @@
                         @media(max-width: 600px) {
                             font-size: 0.75rem;
                         }
+                        &.editable {
+                            right: 80px;
+                        }
                         .period {
                             &:after {
                                 content: "";
@@ -479,6 +488,19 @@
                             font-size: 0.85rem;
                         }
                     }
+                }
+                .experienceItemEditBtn {
+                    position: absolute;
+                    background: #397db9;
+                    border-radius: 50%;
+                    color: #fff;
+                    width: 40px;
+                    min-width: auto;
+                    height: 40px;
+                    min-height: auto;
+                    top: -20px;
+                    right: 20px;
+                    box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
                 }
             }
         }
@@ -506,7 +528,7 @@
             background: #fff;
             border: 1px solid #f2f2f2;
             border-radius: 10px;
-            margin-bottom: 45px;
+            margin-bottom: 75px;
             box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
             h4 {
                 padding: 10px 25px 0;

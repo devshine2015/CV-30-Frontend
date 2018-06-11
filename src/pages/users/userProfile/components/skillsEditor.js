@@ -3,7 +3,6 @@ import { Popover, Button, FormControl, InputLabel, Input, InputAdornment, IconBu
 import { compose, pure, withState, withHandlers, lifecycle } from 'recompose';
 
 const SkillsEdit = (props) => {
-    // debugger;
     const { displaySkills, skillsAnchor, closeSkillsModal, updateSkills, newSkill, updateNewSkill, addSkill, removeChip } = props;
     return (
         <Popover
@@ -66,7 +65,7 @@ const SkillsEdit = (props) => {
 }
 
 const SkillsEditHOC = compose(
-    withState('displaySkills', 'setDisplaySkills', []),
+    withState('displaySkills', 'setDisplaySkills', ({ skillsModalData }) => (skillsModalData || [])),
     withState('newSkill', 'setSkillText', ''),
     withHandlers({
         updateNewSkill: ({ setSkillText }) => (skill) => {
@@ -80,12 +79,6 @@ const SkillsEditHOC = compose(
             const chipData = [...displaySkills];
             chipData.splice(chipIndex, 1);
             setDisplaySkills(chipData);
-        }
-    }),
-    lifecycle({
-        componentDidUpdate(prevProps, prevState, snapshot) {
-            if (prevProps.skillsModalData !== this.props.skillsModalData)
-                this.props.setDisplaySkills(this.props.skillsModalData);
         }
     }),
     pure

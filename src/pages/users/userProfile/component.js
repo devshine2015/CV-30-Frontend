@@ -16,12 +16,12 @@ const UserProfile = (props) => {
         prevStoryItem, activeStoryItem, jumpToStoryItem, nextStoryItem, removeStory,
         editMode, switchEditMode,
         toggleColorPicker, colorPickerAnchor, closeColorPicker, availableColors,
-        XPEdit, toggleExperienceEdit
+        XPEdit, toggleExperienceEdit, experience
     } = props;
 
     const lang = match.params.lang;
 
-    const Show = (props) => <UserProfileShow editMode={editMode} XPEdit={XPEdit} toggleExperienceEdit={toggleExperienceEdit} />
+    const Show = (props) => <UserProfileShow editMode={editMode} XPEdit={XPEdit} toggleExperienceEdit={toggleExperienceEdit} experience={experience} />
 
     return (<div className='userProfileRoot'>
         <FormGroup row className='editToggle'>
@@ -212,7 +212,7 @@ const UserProfile = (props) => {
                     }
 
                 </Grid>
-                <SkillsEditor skillsModalData={skillsModalData} skillsAnchor={skillsAnchor} closeSkillsModal={closeSkillsModal} />
+                <SkillsEditor skillsModalData={skillsModalData} skillsAnchor={skillsAnchor} closeSkillsModal={closeSkillsModal} key={skillsModalData} />
             </Grid>
         </div>
 

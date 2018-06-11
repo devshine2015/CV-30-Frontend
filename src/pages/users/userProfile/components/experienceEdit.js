@@ -3,7 +3,8 @@ import { TextField, Checkbox, FormLabel, FormControlLabel, IconButton, Icon, Swi
 import { compose, pure, withState, withHandlers, lifecycle } from 'recompose';
 
 const ExperienceEdit = (props) => {
-    const { formData, isVideoUrl, switchMediaType, handleFormChange } = props;
+    debugger;
+    const { formData, isVideoUrl, switchMediaType, handleFormChange, closeEditor } = props;
     const { position, company, location, startDate, endDate, stillWorkThere, description, videoURL, fileUpload } = formData;
 
     return (
@@ -42,14 +43,12 @@ const ExperienceEdit = (props) => {
                     <TextField
                         name="startDate"
                         type="date"
-                        defaultValue=""
                         value={startDate}
                         onChange={handleFormChange}
                     />
                     <TextField
                         name="endDate"
                         type="date"
-                        defaultValue=""
                         disabled={stillWorkThere}
                         value={endDate}
                         onChange={handleFormChange}
@@ -60,7 +59,6 @@ const ExperienceEdit = (props) => {
                                 name='stillWorkThere'
                                 checked={stillWorkThere}
                                 onChange={handleFormChange}
-                                value={stillWorkThere}
                                 color="primary"
                             />
                         }
@@ -122,7 +120,7 @@ const ExperienceEdit = (props) => {
                 }
             </section>
             <section className='editControls'>
-                <IconButton className='cancelBtn'>
+                <IconButton className='cancelBtn' onClick={closeEditor}>
                     <Icon>close</Icon>
                 </IconButton>
                 <IconButton className='submitBtn'>
@@ -134,7 +132,7 @@ const ExperienceEdit = (props) => {
 };
 
 const SkillsEditHOC = compose(
-    withState('formData', 'setFormData', {}),
+    withState('formData', 'setFormData', ({ job }) => (job || {})),
     withState('isVideoUrl', 'changeMediaType', true),
     withHandlers({
         handleFormChange: props => event => {
@@ -150,12 +148,6 @@ const SkillsEditHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         }
-    }),
-    lifecycle({
-        // componentDidUpdate(prevProps, prevState, snapshot) {
-        //     if (prevProps.formData !== this.props.formData)
-        //         this.props.setformData(this.props.formData);
-        // }
     }),
     pure
 );

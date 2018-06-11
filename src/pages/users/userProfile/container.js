@@ -48,6 +48,25 @@ const softSkills = ['leadership', 'grit', 'critical thinking', 'gritt', 'outspok
 
 const values = ['leadership', 'grit', 'critical thinking'];
 
+const experience = [
+    {
+        position: 'President',
+        company: 'USA',
+        description: 'bla bla bla bla bla',
+        startDate: '2018-11-12',
+        stillWorkThere: true,
+        location: 'White House'
+    },
+    {
+        position: 'President',
+        company: 'USA',
+        description: 'bla bla bla bla bla',
+        startDate: '2018-11-12',
+        stillWorkThere: true,
+        location: 'White House'
+    }
+];
+
 const UserProfileHOC = compose(
     withRouter,
     withState('headerStories', 'setHeaderStories', headerStories),
@@ -61,6 +80,7 @@ const UserProfileHOC = compose(
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
     withState('XPEdit', 'setXPEdit', null),
+    withState('experience', null, experience),
     withHandlers({
         prevStoryItem: ({ activeStoryItem, setActiveStoryItem, count }) => () => {
             let prevStory = activeStoryItem - 1 < 0 ? count : activeStoryItem - 1;
