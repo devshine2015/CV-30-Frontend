@@ -1,4 +1,9 @@
 export default {
     Query: {},
-    Mutation: {}
+    Mutation: {
+        setAuthenticated: (_, { status }, { cache }) => {
+            const data = { isAuthenticated: status, __typename: 'Authenticated' };
+            cache.writeData({ data });
+          },
+    }
 };

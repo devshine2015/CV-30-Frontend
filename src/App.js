@@ -34,7 +34,7 @@ const CVRouter = (props) => {
         <Route exact path='/:lang(en|ro)/login' component={Login} />
         <Route exact path='/:lang(en|ro)/register' component={Register} />
         <Route exact path='/:lang(en|ro)/forgot' component={ForgotPassword} />
-        <ProtectedRoute isAllowed={true} path='/:lang(en|ro)/dashboard' component={Dashboard} {...props} />
+        <ProtectedRoute path='/:lang(en|ro)/dashboard' component={Dashboard} {...props} />
       </Switch>
     </IntlProvider>
   );

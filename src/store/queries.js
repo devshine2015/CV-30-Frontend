@@ -7,6 +7,7 @@ export const LoginMutation = gql`
             refreshToken
             error
         }
+        setAuthenticated(status: true) @client
     }
 `;
 
@@ -25,5 +26,11 @@ export const ForgotPasswordMutation = gql`
             status
             error
         }
+    }
+`;
+
+export const IS_AUTHENTICATED = gql`
+    query {
+        isAuthenticated @client 
     }
 `;
