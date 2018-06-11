@@ -67,6 +67,12 @@ const experience = [
     }
 ];
 
+const contact = {
+    phoneNo: '0-123-4567',
+    address: 'Some Street 123',
+    fb: 'https://facebook.com'
+};
+
 const UserProfileHOC = compose(
     withRouter,
     withState('headerStories', 'setHeaderStories', headerStories),
@@ -79,8 +85,8 @@ const UserProfileHOC = compose(
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
-    withState('XPEdit', 'setXPEdit', null),
     withState('experience', null, experience),
+    withState('contact', null, contact),
     withHandlers({
         prevStoryItem: ({ activeStoryItem, setActiveStoryItem, count }) => () => {
             let prevStory = activeStoryItem - 1 < 0 ? count : activeStoryItem - 1;
@@ -111,9 +117,6 @@ const UserProfileHOC = compose(
         },
         closeSkillsModal: ({ setSkillsAnchor }) => () => {
             setSkillsAnchor(null);
-        },
-        toggleExperienceEdit: ({ XPEdit, setXPEdit }) => () => {
-            setXPEdit(!XPEdit);
         }
     }),
     pure

@@ -16,12 +16,12 @@ const UserProfile = (props) => {
         prevStoryItem, activeStoryItem, jumpToStoryItem, nextStoryItem, removeStory,
         editMode, switchEditMode,
         toggleColorPicker, colorPickerAnchor, closeColorPicker, availableColors,
-        XPEdit, toggleExperienceEdit, experience
+        experience, contact
     } = props;
 
     const lang = match.params.lang;
 
-    const Show = (props) => <UserProfileShow editMode={editMode} XPEdit={XPEdit} toggleExperienceEdit={toggleExperienceEdit} experience={experience} />
+    const Show = (props) => <UserProfileShow editMode={editMode} experience={experience} contact={contact} />
 
     return (<div className='userProfileRoot'>
         <FormGroup row className='editToggle'>

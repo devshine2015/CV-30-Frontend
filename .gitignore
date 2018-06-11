@@ -22,3 +22,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Sass Cache remove #
+#####################
+*.sass-cache
+/.sass-cache

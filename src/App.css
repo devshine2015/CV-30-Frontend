@@ -302,6 +302,16 @@
     .userProfileRoot .header {
       padding: 15px; } }
 
+.userProfileRoot .circleEditBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #397db9;
+  color: #fff;
+  position: absolute;
+  min-width: auto;
+  min-height: auto; }
+
 .userProfileRoot .headerLinks {
   display: flex;
   justify-content: space-between; }
@@ -312,7 +322,8 @@
 .userProfileRoot .userAvatar {
   display: flex;
   padding-top: 15px;
-  align-items: center; }
+  align-items: center;
+  position: relative; }
   .userProfileRoot .userAvatar .avatar {
     width: 130px;
     height: 130px;
@@ -329,6 +340,34 @@
       font-weight: 300;
       margin: 0;
       padding: 0; }
+  .userProfileRoot .userAvatar .badgeRoot {
+    position: absolute;
+    bottom: 0;
+    left: 90px;
+    background: #397db9;
+    color: #fff;
+    min-width: auto;
+    width: 50px;
+    height: 50px; }
+  .userProfileRoot .userAvatar .colorPickerButton {
+    background: #4893cc;
+    color: #fff;
+    padding: 2px 10px 2px 30px;
+    margin: 12px 0 0 30px; }
+    .userProfileRoot .userAvatar .colorPickerButton .icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      position: absolute;
+      left: -25px;
+      background: #397db9;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+    .userProfileRoot .userAvatar .colorPickerButton:hover {
+      background: #397db9; }
+      .userProfileRoot .userAvatar .colorPickerButton:hover .icon {
+        background: #397db9; }
   @media (max-width: 600px) {
     .userProfileRoot .userAvatar {
       justify-content: center; } }
@@ -383,6 +422,30 @@
       background-color: rgba(0, 0, 0, 0.5);
       padding: 5px;
       text-align: center; }
+    .userProfileRoot .headerStories .storyContainer.add {
+      width: 208px;
+      height: 148px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 2px dashed #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+      .userProfileRoot .headerStories .storyContainer.add .bigPlus {
+        color: #fff;
+        font-size: 3rem; }
+      .userProfileRoot .headerStories .storyContainer.add .storyTitle {
+        background: none; }
+    .userProfileRoot .headerStories .storyContainer .removeStoryBtn {
+      min-width: auto;
+      min-height: auto;
+      width: 25px;
+      height: 25px;
+      position: absolute;
+      top: -10px;
+      right: 10px;
+      color: red;
+      background: white;
+      padding: 2px; }
   .userProfileRoot .headerStories .storySliderContainer {
     display: flex;
     justify-content: center; }
@@ -464,6 +527,43 @@
       border-color: #73a9ff; }
     .userProfileRoot .headerSkills .skillsContainer .chip.values {
       border-color: #c4a848; }
+  .userProfileRoot .headerSkills .skillsContainer.edit {
+    display: flex;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    align-items: center;
+    padding: 5px;
+    color: #fff;
+    text-transform: capitalize;
+    font-size: 0.8125rem;
+    font-weight: normal;
+    position: relative; }
+    .userProfileRoot .headerSkills .skillsContainer.edit .headerSkillsTitle {
+      width: auto;
+      margin-right: 10px; }
+      .userProfileRoot .headerSkills .skillsContainer.edit .headerSkillsTitle:before {
+        content: ""; }
+    .userProfileRoot .headerSkills .skillsContainer.edit .circleEditBtn {
+      right: -20px; }
+
+.userProfileRoot .editToggle {
+  display: flex;
+  justify-content: center;
+  background: #f9f9f9;
+  align-items: center; }
+  .userProfileRoot .editToggle label {
+    font-size: 0.85rem;
+    font-weight: normal;
+    color: #565656; }
+    .userProfileRoot .editToggle label.active {
+      color: #277dba; }
+  .userProfileRoot .editToggle .colorSwitchBase {
+    color: #277dba; }
+  .userProfileRoot .editToggle .colorChecked {
+    color: #277dba; }
+  .userProfileRoot .editToggle .colorBar {
+    background-color: #bbb; }
 
 .userProfileRoot .mainBody.userProfileShow {
   background: #fff;
@@ -476,16 +576,53 @@
       .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent {
         border: none; } }
     .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle {
-      margin: 0;
       padding: 15px 25px;
-      color: #fff;
-      background: #397db9;
-      font-weight: 100;
-      display: flex;
-      align-items: flex-end;
-      font-size: 1.875rem; }
-      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle i {
-        margin-left: 10px; }
+      background: #397db9; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle h2 {
+        margin: 0;
+        color: #fff;
+        font-weight: 100;
+        display: flex;
+        align-items: center;
+        font-size: 1.875rem;
+        padding: 0; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle h2 i {
+          margin-left: 10px; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle h2 .contactEditBtn {
+          margin-left: auto;
+          background: #fff;
+          color: #397db9;
+          border-radius: 50%; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails p {
+        font-size: 0.75rem;
+        color: #fff;
+        font-weight: 100; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .addContactFieldBtn {
+        background: #4893cc;
+        color: #fff; }
+      .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .contactDetailsEditForm {
+        padding: 20px 0; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .contactDetailsEditForm .contactFormLabel {
+          color: #fff; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .contactDetailsEditForm .contactTextInput {
+          color: #fff; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .contactDetailsEditForm .contactTextInputRoot {
+          border-color: #fff; }
+          .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .contactDetailsEditForm .contactTextInputRoot:before, .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .contactDetailsEditForm .contactTextInputRoot:after {
+            border-color: #fff; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .contactDetailsEditForm .contactUnderline {
+          color: red;
+          border-color: pink; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .contactDetailsEditForm .removeBtn {
+          width: 25px;
+          min-width: auto;
+          height: 25px;
+          min-height: auto;
+          border-radius: 50%;
+          background: #fff;
+          color: #ff0000; }
+        .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .columnTitle .editContactDetails .contactDetailsEditForm .textField {
+          margin: 15px 0; }
     .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .knowHowContainer,
     .userProfileRoot .mainBody.userProfileShow .columnRight .columnRightContent .myStoryContainer {
       display: flex;
@@ -576,6 +713,9 @@
           .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation,
           .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation {
             font-size: 0.75rem; } }
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation.editable,
+        .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation.editable {
+          right: 80px; }
         .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItem .durationLocation .period:after,
         .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .durationLocation .period:after {
           content: "";
@@ -597,6 +737,101 @@
         .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .projectItem .experienceGrid p {
           color: #565656;
           font-size: 0.85rem; }
+    .userProfileRoot .mainBody.userProfileShow .centralColumn .experienceSection .experienceItemEditBtn {
+      position: absolute;
+      background: #397db9;
+      border-radius: 50%;
+      color: #fff;
+      width: 40px;
+      min-width: auto;
+      height: 40px;
+      min-height: auto;
+      top: -20px;
+      right: 20px;
+      box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3); }
+  .userProfileRoot .mainBody.userProfileShow .experienceAdd {
+    position: relative;
+    display: flex;
+    border: 2px dashed #76acd2;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    padding: 20px; }
+    .userProfileRoot .mainBody.userProfileShow .experienceAdd .addXPButton {
+      color: #277dba;
+      text-transform: none; }
+      .userProfileRoot .mainBody.userProfileShow .experienceAdd .addXPButton:hover {
+        background: none; }
+  .userProfileRoot .mainBody.userProfileShow .experienceForm {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #f2f2f2;
+    border-radius: 10px;
+    margin-bottom: 75px;
+    box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3); }
+    .userProfileRoot .mainBody.userProfileShow .experienceForm h4 {
+      padding: 10px 25px 0; }
+    .userProfileRoot .mainBody.userProfileShow .experienceForm section {
+      padding: 25px; }
+      .userProfileRoot .mainBody.userProfileShow .experienceForm section.infoSection .mediaToggle {
+        display: flex;
+        align-items: center; }
+        .userProfileRoot .mainBody.userProfileShow .experienceForm section.infoSection .mediaToggle .mediaToggleLabel {
+          font-size: 0.75rem;
+          font-weight: 100;
+          color: #727272;
+          margin-right: 15px; }
+        .userProfileRoot .mainBody.userProfileShow .experienceForm section.infoSection .mediaToggle label {
+          font-size: 0.75rem;
+          color: #565656;
+          font-weight: bold; }
+          .userProfileRoot .mainBody.userProfileShow .experienceForm section.infoSection .mediaToggle label.active {
+            font-size: 0.8rem;
+            color: #3586bf; }
+      .userProfileRoot .mainBody.userProfileShow .experienceForm section.mediaUpload {
+        border-top: 2px solid #f1f1f1;
+        border-bottom: 2px solid #f1f1f1;
+        background: #fafafa; }
+        .userProfileRoot .mainBody.userProfileShow .experienceForm section.mediaUpload .hiddenFileInput {
+          display: none; }
+      .userProfileRoot .mainBody.userProfileShow .experienceForm section.editControls {
+        position: relative; }
+        .userProfileRoot .mainBody.userProfileShow .experienceForm section.editControls .cancelBtn,
+        .userProfileRoot .mainBody.userProfileShow .experienceForm section.editControls .submitBtn {
+          position: absolute;
+          border-radius: 50%;
+          box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3); }
+        .userProfileRoot .mainBody.userProfileShow .experienceForm section.editControls .cancelBtn {
+          width: 25px;
+          height: 25px;
+          min-width: auto;
+          min-height: auto;
+          background: #fff;
+          color: #ff0000;
+          bottom: -12px;
+          right: 100px; }
+        .userProfileRoot .mainBody.userProfileShow .experienceForm section.editControls .submitBtn {
+          background: #397db9;
+          color: #fff;
+          right: 30px;
+          bottom: -24px; }
+    .userProfileRoot .mainBody.userProfileShow .experienceForm .textField {
+      margin: 15px 0; }
+    .userProfileRoot .mainBody.userProfileShow .experienceForm h4 {
+      color: #565656; }
+    .userProfileRoot .mainBody.userProfileShow .experienceForm .datePickers {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 15px 0;
+      flex-wrap: wrap; }
+      .userProfileRoot .mainBody.userProfileShow .experienceForm .datePickers p {
+        width: 100%;
+        color: rgba(0, 0, 0, 0.54); }
 
 .userProfileRoot .media {
   background: #989898;
@@ -610,6 +845,108 @@
   .userProfileRoot .media .playIcon {
     color: #fff;
     font-size: 3rem; }
+
+.colorPickerPaper {
+  background: #fff;
+  border: 1px solid #707881;
+  border-radius: 5px !important;
+  width: 465px;
+  position: relative;
+  overflow: visible !important;
+  margin-top: 20px; }
+  .colorPickerPaper:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -5px;
+    left: 45px;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    transform: rotate(-45deg); }
+  .colorPickerPaper .popupHeader {
+    border-bottom: 2px solid #f4f4f4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px 0 10px; }
+    .colorPickerPaper .popupHeader .picUploadButton {
+      background: #397db9;
+      padding: 5px;
+      margin: 0;
+      color: white;
+      text-transform: none;
+      height: 24px;
+      border-radius: 5px; }
+  .colorPickerPaper .colorsContainer {
+    padding: 30px; }
+    .colorPickerPaper .colorsContainer .color {
+      width: 80px;
+      height: 80px;
+      border-radius: 5px;
+      margin: 5px; }
+
+.skillsEditPaper {
+  background: #fff;
+  border: 1px solid #707881;
+  border-radius: 5px !important;
+  width: 465px;
+  position: relative;
+  overflow: visible !important;
+  margin-top: 20px;
+  margin-left: 50px; }
+  .skillsEditPaper:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -5px;
+    right: 45px;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    transform: rotate(-45deg); }
+  .skillsEditPaper .popupHeader {
+    border-bottom: 2px solid #ececec;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px; }
+    .skillsEditPaper .popupHeader .helperText {
+      color: #a6a6a6;
+      font-size: 0.7rem; }
+    .skillsEditPaper .popupHeader .addSkillButton {
+      background: #397db9;
+      color: white;
+      text-transform: none;
+      min-width: 50px;
+      min-height: 25px;
+      padding: 0; }
+  .skillsEditPaper .popupBody {
+    padding: 15px;
+    background: #fafafa;
+    border-top: 1px solid #f5f5f5;
+    border-bottom: 1px solid #f5f5f5; }
+    .skillsEditPaper .popupBody .chip {
+      text-transform: capitalize;
+      background: #fff;
+      border: 1px solid #4484bd;
+      color: #4484bd;
+      border-radius: 5px;
+      margin: 2px; }
+      .skillsEditPaper .popupBody .chip .deleteIcon {
+        background: none;
+        color: #4484bd; }
+  .skillsEditPaper .popupFooter {
+    background: #fff;
+    padding: 15px;
+    position: relative; }
+    .skillsEditPaper .popupFooter .footerCheck {
+      position: absolute;
+      background: #4484bd;
+      color: #fff;
+      border-radius: 50%;
+      bottom: -24px;
+      right: 20px; }
 
 .brandRoot {
   background: #fbf2f5; }

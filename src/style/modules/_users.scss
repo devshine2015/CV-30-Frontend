@@ -335,22 +335,68 @@
                     border: none;
                 }
                 .columnTitle {
-                    margin: 0;
                     padding: 15px 25px;
-                    color: #fff;
                     background: #397db9;
-                    font-weight: 100;
-                    display: flex;
-                    align-items: center;
-                    font-size: 1.875rem;
-                    i {
-                        margin-left: 10px;
+                    h2 {
+                        margin: 0;
+                        color: #fff;
+                        font-weight: 100;
+                        display: flex;
+                        align-items: center;
+                        font-size: 1.875rem;
+                        padding: 0;
+                        i {
+                            margin-left: 10px;
+                        }
+                        .contactEditBtn {
+                            margin-left: auto;
+                            background: #fff;
+                            color: #397db9;
+                            border-radius: 50%;
+                        }
                     }
-                    .contactEditBtn {
-                        margin-left: 20px;
-                        background: #fff;
-                        color: #397db9;
-                        border-radius: 50%;
+                    .editContactDetails {
+                        p {
+                            font-size: 0.75rem;
+                            color: #fff;
+                            font-weight: 100;
+                        }
+                        .addContactFieldBtn {
+                            background: #4893cc;
+                            color: #fff;
+                        }
+                        .contactDetailsEditForm {
+                            padding: 20px 0;
+                            .contactFormLabel {
+                                color: #fff;
+                            }
+                            .contactTextInput {
+                                color: #fff;
+                            }
+                            .contactTextInputRoot {
+                                border-color: #fff;
+                                &:before,
+                                &:after {
+                                    border-color: #fff;
+                                }
+                            }
+                            .contactUnderline {
+                                color: red;
+                                border-color: pink;
+                            }
+                            .removeBtn {
+                                width: 25px;
+                                min-width: auto;
+                                height: 25px;
+                                min-height: auto;
+                                border-radius: 50%;
+                                background: #fff;
+                                color: #ff0000;
+                            }
+                            .textField {
+                                margin: 15px 0;
+                            }
+                        }
                     }
                 }
                 .knowHowContainer,

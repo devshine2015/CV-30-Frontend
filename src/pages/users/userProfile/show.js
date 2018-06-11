@@ -4,10 +4,14 @@ import { Grid, Icon, IconButton, Button } from '@material-ui/core';
 
 import ExperienceEdit from './components/experienceEdit';
 import ExperienceDisplay from './components/experienceDisplay';
+import EditContactDetails from './components/editContactDetails';
+import { compose } from 'react-apollo';
+import { pure, withState, withHandlers } from 'recompose';
 
 const Show = (props) => {
     const { editMode,
-        XPEdit, toggleExperienceEdit, experience
+        XPEdit, toggleExperienceEdit, experience,
+        contact, editContactDetails, toggleEditContact, closeContactEdit,
     } = props;
     return (
         <Grid container className='mainBody userProfileShow'>
@@ -49,16 +53,21 @@ const Show = (props) => {
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
-                    <h2 className="columnTitle">
-                        Contact&nbsp;<b>me</b>
-                        <i className="fas fa-angle-down"></i>
+                    <div className='columnTitle'>
+                        <h2 className="columnTitle">
+                            Contact&nbsp;<b>me</b>
+                            <i className="fas fa-angle-down"></i>
+                            {
+                                editMode &&
+                                <IconButton className='contactEditBtn' onClick={toggleEditContact}>
+                                    <Icon>edit</Icon>
+                                </IconButton>
+                            }
+                        </h2>
                         {
-                            editMode &&
-                            <IconButton className='contactEditBtn'>
-                                <Icon>edit</Icon>
-                            </IconButton>
+                            editContactDetails && <EditContactDetails contact={contact} closeContactEdit={closeContactEdit} />
                         }
-                    </h2>
+                    </div>
                     <div className='knowHowContainer'>
                         <div className='controls'>
                             <h4>Know<b>how</b></h4>
@@ -108,6 +117,23 @@ const Show = (props) => {
             </Grid>
         </Grid>
     );
-}
+};
 
-export default Show;
+const ShowHOC = compose(
+    withState('XPEdit', 'setXPEdit', null),
+    withState('editContactDetails', 'setEditContactDetails', false),
+    withHandlers({
+        toggleExperienceEdit: ({ XPEdit, setXPEdit }) => () => {
+            setXPEdit(!XPEdit);
+        },
+        toggleEditContact: ({ editContactDetails, setEditContactDetails }) => () => {
+            setEditContactDetails(!editContactDetails);
+        },
+        closeContactEdit: ({ setEditContactDetails }) => () => {
+            setEditContactDetails(false);
+        },
+    }),
+    pure
+);
+
+export default ShowHOC(Show);
