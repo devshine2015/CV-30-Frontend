@@ -7,11 +7,12 @@ import ExperienceDisplay from './components/experienceDisplay';
 import EditContactDetails from './components/editContactDetails';
 import { compose } from 'react-apollo';
 import { pure, withState, withHandlers } from 'recompose';
+import { contactFields as fields } from '../../../constants/contact';
 
 const Show = (props) => {
     const { editMode,
         XPEdit, toggleExperienceEdit, experience,
-        contact, editContactDetails, toggleEditContact, closeContactEdit,
+        contact, editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
     } = props;
     return (
         <Grid container className='mainBody userProfileShow'>
@@ -56,7 +57,13 @@ const Show = (props) => {
                     <div className='columnTitle'>
                         <h2 className="columnTitle">
                             Contact&nbsp;<b>me</b>
-                            <i className="fas fa-angle-down"></i>
+                            <IconButton onClick={toggleContactExpanded} clasName='contactExpandToggle'>
+                                {
+                                    contactExpanded ?
+                                        <i className="fas fa-angle-up"></i> :
+                                        <i className="fas fa-angle-down"></i>
+                                }
+                            </IconButton>
                             {
                                 editMode &&
                                 <IconButton className='contactEditBtn' onClick={toggleEditContact}>
@@ -65,8 +72,23 @@ const Show = (props) => {
                             }
                         </h2>
                         {
-                            editContactDetails && <EditContactDetails contact={contact} closeContactEdit={closeContactEdit} />
+                            !editContactDetails &&
+                            <div className={contactExpanded ? 'contactDetails open' : 'contactDetails'}>
+                                {Object.keys(contact).map((key) => {
+                                    const result = fields.find(field => field.id === key);
+                                    let label = result.text || '';
+                                    let value = contact[key];
+                                    return (
+                                        <p className='contactDetail'>
+                                            <span>{label}: </span>
+                                            {value}
+                                        </p>
+                                    )
+                                })}
+                            </div>
                         }
+                        {editContactDetails && <EditContactDetails contact={contact} closeContactEdit={closeContactEdit} open={contactExpanded} />}
+
                     </div>
                     <div className='knowHowContainer'>
                         <div className='controls'>
@@ -118,20 +140,25 @@ const Show = (props) => {
         </Grid>
     );
 };
-
 const ShowHOC = compose(
     withState('XPEdit', 'setXPEdit', null),
     withState('editContactDetails', 'setEditContactDetails', false),
+    withState('contactExpanded', 'setContactExpanded', false),
     withHandlers({
         toggleExperienceEdit: ({ XPEdit, setXPEdit }) => () => {
             setXPEdit(!XPEdit);
         },
-        toggleEditContact: ({ editContactDetails, setEditContactDetails }) => () => {
+        toggleEditContact: ({ editContactDetails, setEditContactDetails, setContactExpanded }) => () => {
             setEditContactDetails(!editContactDetails);
+            if (!editContactDetails)
+                setContactExpanded(true);
         },
         closeContactEdit: ({ setEditContactDetails }) => () => {
             setEditContactDetails(false);
         },
+        toggleContactExpanded: ({ contactExpanded, setContactExpanded }) => () => {
+            setContactExpanded(!contactExpanded)
+        }
     }),
     pure
 );

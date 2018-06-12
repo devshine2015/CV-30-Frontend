@@ -16,6 +16,7 @@ const UserProfile = (props) => {
         prevStoryItem, activeStoryItem, jumpToStoryItem, nextStoryItem, removeStory,
         editMode, switchEditMode,
         toggleColorPicker, colorPickerAnchor, closeColorPicker, availableColors,
+        toggleContactExpanded, contactExpanded,
         experience, contact
     } = props;
 

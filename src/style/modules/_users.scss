@@ -346,7 +346,7 @@
                         font-size: 1.875rem;
                         padding: 0;
                         i {
-                            margin-left: 10px;
+                            color: #fff;
                         }
                         .contactEditBtn {
                             margin-left: auto;
@@ -355,7 +355,32 @@
                             border-radius: 50%;
                         }
                     }
+                    .contactDetails {
+                        max-height: 0;
+                        transition: max-height 0.15s ease-out;
+                        overflow: hidden;
+                        &.open {
+                            max-height: 500px;
+                            transition: max-height 0.25s ease-in;
+                        }
+                        .contactDetail {
+                            color: #fff;
+                            padding: 10px 0;
+                            font-size: 0.85rem;
+                            font-weight: normal;
+                            span {
+                                font-weight: 100;
+                            }
+                        }
+                    }
                     .editContactDetails {
+                        max-height: 0;
+                        transition: max-height 0.15s ease-out;
+                        overflow: hidden;
+                        &.open {
+                            max-height: 500px;
+                            transition: max-height 0.25s ease-in;
+                        }
                         p {
                             font-size: 0.75rem;
                             color: #fff;

@@ -1,0 +1,10 @@
+.root {}
+
+.LPstoriesContainer {
+    display: flex;
+    color: red;
+    flex-wrap: wrap;
+    .sliderContainer {
+        width: 100%;
+    }
+}

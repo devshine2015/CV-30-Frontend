@@ -1,11 +1,13 @@
 import React from 'react';
 import { Grid, IconButton, Icon } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
+import Slider from '../../hocs/slider';
+import { compose, pure, withState } from 'recompose';
 
-const StoriesSlider = ({ classes, stories, nextStoryItem, prevStoryItem, activeStoryItem, jumpToStoryItem }) => {
+const StoriesSlider = props => {
+    const { classes, stories, prevItem, nextItem, jumpToItem, activeItem } = props;
     if (!stories)
         return null;
-
     return (
         <Grid container>
             <Grid item md={6} sm={6} xs={12} className={classes.storiesSliderContainer}>
@@ -13,21 +15,21 @@ const StoriesSlider = ({ classes, stories, nextStoryItem, prevStoryItem, activeS
                     {(text) => (<h1 className={classes.storiesSliderTitle}>{text}</h1>)}
                 </FormattedMessage>
                 <div className={classes.sliderControls}>
-                    <IconButton className={classes.sliderArrow} onClick={prevStoryItem}>
+                    <IconButton className={classes.sliderArrow} onClick={prevItem}>
                         <Icon>arrow_back_ios</Icon>
                     </IconButton>
                     {
                         stories.map((item, index) => {
-                            let itemClass = index === activeStoryItem ? [classes.sliderDot, classes.sliderDotActive].join(' ') : classes.sliderDot;
-                            return (<span className={itemClass} key={`storyMarker-${index}`} onClick={() => jumpToStoryItem(index)}></span>)
+                            let itemClass = index === activeItem ? [classes.sliderDot, classes.sliderDotActive].join(' ') : classes.sliderDot;
+                            return (<span className={itemClass} key={`storyMarker-${index}`} onClick={() => jumpToItem(index)}></span>)
                         })
                     }
-                    <IconButton className={classes.sliderArrow} onClick={nextStoryItem}>
+                    <IconButton className={classes.sliderArrow} onClick={nextItem}>
                         <Icon>arrow_forward_ios</Icon>
                     </IconButton>
                 </div>
                 {stories.map((story, index) => {
-                    let itemClass = index === activeStoryItem ? [classes.storyItem, classes.storyItemActive].join(' ') : classes.storyItem;
+                    let itemClass = index === activeItem ? [classes.storyItem, classes.storyItemActive].join(' ') : classes.storyItem;
                     return (
                         <div className={itemClass} key={`storyItem-${index}`}>
                             <h2 className={classes.slideTitle}>{story.title}</h2>
@@ -38,7 +40,7 @@ const StoriesSlider = ({ classes, stories, nextStoryItem, prevStoryItem, activeS
             </Grid>
             <Grid item md={6} sm={6} xs={12} className={classes.storiesImagesContainer}>
                 {stories.map((story, index) => {
-                    let itemClass = index === activeStoryItem ? [classes.slideImage, classes.slideImageActive].join(' ') : classes.slideImage;
+                    let itemClass = index === activeItem ? [classes.slideImage, classes.slideImageActive].join(' ') : classes.slideImage;
                     return <img className={itemClass} src={story.image} alt={`storyImage-${index}`} key={`storyImage-${index}`} />
                 })}
             </Grid>
@@ -46,4 +48,8 @@ const StoriesSlider = ({ classes, stories, nextStoryItem, prevStoryItem, activeS
     )
 };
 
-export default StoriesSlider;
+export default compose(
+    withState('count', 'setCount', ({ stories }) => (stories.length - 1)),
+    Slider,
+    pure
+)(StoriesSlider);
