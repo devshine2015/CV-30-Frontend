@@ -1,0 +1,34 @@
+.sliderContainer {
+    display: flex;
+    position: relative;
+    .slides {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+        .slideItem {
+            display: none;
+            width: 100%;
+            &.active {
+                display: flex;
+            }
+        }
+    }
+    .sliderControls {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        .sliderDot {
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.3);
+            width: 15px;
+            height: 15px;
+            margin: 0 3px;
+            cursor: pointer;
+            &.active {
+                width: 25px;
+                height: 25px;
+                background: rgba(0, 0, 0, 0.8);
+            }
+        }
+    }
+}
