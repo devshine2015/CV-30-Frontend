@@ -2,28 +2,11 @@ import React from 'react';
 import { Button, Menu, MenuItem, TextField, Icon, IconButton, InputAdornment } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
 
-const fields = [
-    {
-        id: 'phoneNo',
-        text: 'Phone number'
-    },
-    {
-        id: 'address',
-        text: 'Address'
-    },
-    {
-        id: 'fb',
-        text: 'Facebook'
-    },
-    {
-        id: 'linkedIn',
-        text: 'LinkedIn'
-    }
-];
-const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, handleFormChange, formData, removeTextField }) => {
-    // debugger;
+import { contactFields as fields } from '../../../../constants/contact';
+
+const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, handleFormChange, formData, removeTextField, open }) => {
     return (
-        <div className='editContactDetails'>
+        <div className={open ? 'editContactDetails open' : 'editContactDetails'}>
             <p className='message'>
                 Add section
             </p>

@@ -29,21 +29,6 @@ const stories = [
 const LandingPageHOC = compose(
     withStyles(styles),
     withState('stories', 'setStories', stories),
-    withState('count', 'setCount', stories.length - 1),
-    withState('activeStoryItem', 'setActiveStoryItem', 0),
-    withHandlers({
-        prevStoryItem: ({ activeStoryItem, setActiveStoryItem, count }) => () => {
-            let prevStory = activeStoryItem - 1 < 0 ? count : activeStoryItem - 1;
-            setActiveStoryItem(prevStory);
-        },
-        nextStoryItem: ({ activeStoryItem, setActiveStoryItem, count }) => () => {
-            let nextStory = activeStoryItem + 1 > count ? 0 : activeStoryItem + 1;
-            setActiveStoryItem(nextStory);
-        },
-        jumpToStoryItem: ({ setActiveStoryItem }) => (story) => {
-            setActiveStoryItem(story);
-        }
-    }),
     pure
 )
 
