@@ -7,7 +7,9 @@ import { LoginMutation } from '../../store/queries';
 import { Link, withRouter } from 'react-router-dom';
 import { isValidEmail } from '../../constants/utils';
 
-const LoginComponent = ({ match, email, password, updateEmail, updatePassword, emailError, passwordError, loading, doLogin, loginError }) => {
+const LoginComponent = (props) => {
+    const { match, email, password, updateEmail, updatePassword, emailError, passwordError, loading, doLogin, loginError } = props;
+    const { activationSuccess } = props.location.state || false;
     const OrSeparator = () => (
         <div className='divSeparator'>
             <hr className='separatorHR' />
@@ -83,8 +85,18 @@ const LoginComponent = ({ match, email, password, updateEmail, updatePassword, e
                                     </p>)}
                             </FormattedMessage>
 
-                            {loginError &&
+                            {
+                                loginError &&
                                 <p className='errorMessage'>{loginError}</p>
+                            }
+
+                            {
+                                activationSuccess &&
+                                <FormattedMessage id="login.activationSuccess" defaultMessage="You have successfully activated your account." description="Activation message">
+                                    {(text) => (
+                                        <p className='activationMessage'>{text}</p>
+                                    )}
+                                </FormattedMessage>
                             }
 
                             <FormattedMessage id="actions.logIn" defaultMessage="Log in" description="Log in action">

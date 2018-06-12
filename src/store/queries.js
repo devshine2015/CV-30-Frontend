@@ -34,3 +34,12 @@ export const IS_AUTHENTICATED = gql`
         isAuthenticated @client 
     }
 `;
+
+export const ActivateAccountMutation = gql`
+    mutation activateAccount($token: String!) {
+        activateAccount(token: $token) {
+            error
+            status
+        }
+    }
+`;
