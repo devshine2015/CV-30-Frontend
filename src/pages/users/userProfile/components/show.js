@@ -2,28 +2,32 @@ import React from 'react';
 import { Grid, Icon, IconButton, Button, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input, InputAdornment } from '@material-ui/core';
 // import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 
-import ExperienceEdit from './components/experienceEdit';
-import ExperienceDisplay from './components/experienceDisplay';
-import EditContactDetails from './components/editContactDetails';
+import ExperienceEdit from './experienceEdit';
+import ExperienceDisplay from './experienceDisplay';
+import EditContactDetails from './editContactDetails';
 import { compose } from 'react-apollo';
 import { pure, withState, withHandlers } from 'recompose';
-import { contactFields as fields } from '../../../constants/contact';
+import { contactFields as fields } from '../../../../constants/contact';
 
 const Show = (props) => {
-    const { editMode,
-        XPEdit, toggleExperienceEdit, experience,
-        contact, editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
-        isSalaryPublic, toggleSalaryPrivate,
+    const { editMode, data,
+        XPEdit, toggleExperienceEdit,
+        editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
+        toggleSalaryPrivate,
         story, updateStory,
-        desiredSalary, updateDesiredSalary,
+        updateDesiredSalary, isSalaryPublic, desiredSalary
     } = props;
+
+    const { contact, experience, projects, } = data;
+
     return (
         <Grid container className='mainBody userProfileShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <section className='experienceSection'>
                     <h2 className='sectionTitle'>My <b>experience</b></h2>
                     {
-                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
+                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} />)
+                        // key={`xpItem-${index}`}
                     }
                     {editMode &&
                         <div className='experienceAdd'>
@@ -38,14 +42,15 @@ const Show = (props) => {
 
                 </section>
                 <section className='experienceSection'>
-                    <h2 className='sectionTitle'>My <b>experience</b></h2>
+                    <h2 className='sectionTitle'>My <b>projects</b></h2>
                     {
-                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
+                        projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} />)
+                        // key={`xpItem-${index}`}
                     }
                     {editMode &&
                         <div className='experienceAdd'>
                             <Button className='addXPButton' onClick={toggleExperienceEdit}>
-                                + Add Experience
+                                + Add project
                         </Button>
                         </div>
                     }
@@ -191,11 +196,11 @@ const Show = (props) => {
 };
 const ShowHOC = compose(
     withState('XPEdit', 'setXPEdit', null),
-    withState('story', 'setMyStory', props => props.myStory || ''),
+    withState('story', 'setMyStory', ({ data }) => data.myStory || ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', false),
-    withState('isSalaryPublic', 'setSalaryPrivacy', false),
-    withState('desiredSalary', 'setDesiredSalary', ''),
+    withState('isSalaryPublic', 'setSalaryPrivacy', ({ data }) => data.isSalaryPublic),
+    withState('desiredSalary', 'setDesiredSalary', ({ data }) => data.desiredSalary),
     withHandlers({
         toggleExperienceEdit: ({ XPEdit, setXPEdit }) => () => {
             setXPEdit(!XPEdit);
