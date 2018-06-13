@@ -167,7 +167,7 @@ const RegisterHOC = compose(
             catch (err) {
                 console.log(err);
                 setLoadingState(false);
-                setRegisterError(err.message || 'Something went wrong.');
+                setRegisterError(err || err.message || 'Something went wrong.');
             }
         }
     }),

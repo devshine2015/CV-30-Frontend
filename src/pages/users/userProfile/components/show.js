@@ -1,26 +1,33 @@
 import React from 'react';
-import { Grid, Icon, IconButton, Button } from '@material-ui/core';
+import { Grid, Icon, IconButton, Button, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input, InputAdornment } from '@material-ui/core';
 // import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 
-import ExperienceEdit from './components/experienceEdit';
-import ExperienceDisplay from './components/experienceDisplay';
-import EditContactDetails from './components/editContactDetails';
+import ExperienceEdit from './experienceEdit';
+import ExperienceDisplay from './experienceDisplay';
+import EditContactDetails from './editContactDetails';
 import { compose } from 'react-apollo';
 import { pure, withState, withHandlers } from 'recompose';
-import { contactFields as fields } from '../../../constants/contact';
+import { contactFields as fields } from '../../../../constants/contact';
 
 const Show = (props) => {
-    const { editMode,
-        XPEdit, toggleExperienceEdit, experience,
-        contact, editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
+    const { editMode, data,
+        XPEdit, toggleExperienceEdit,
+        editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
+        toggleSalaryPrivate,
+        story, updateStory,
+        updateDesiredSalary, isSalaryPublic, desiredSalary
     } = props;
+
+    const { contact, experience, projects, } = data;
+
     return (
         <Grid container className='mainBody userProfileShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <section className='experienceSection'>
                     <h2 className='sectionTitle'>My <b>experience</b></h2>
                     {
-                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
+                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} />)
+                        // key={`xpItem-${index}`}
                     }
                     {editMode &&
                         <div className='experienceAdd'>
@@ -35,14 +42,15 @@ const Show = (props) => {
 
                 </section>
                 <section className='experienceSection'>
-                    <h2 className='sectionTitle'>My <b>experience</b></h2>
+                    <h2 className='sectionTitle'>My <b>projects</b></h2>
                     {
-                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
+                        projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} />)
+                        // key={`xpItem-${index}`}
                     }
                     {editMode &&
                         <div className='experienceAdd'>
                             <Button className='addXPButton' onClick={toggleExperienceEdit}>
-                                + Add Experience
+                                + Add project
                         </Button>
                         </div>
                     }
@@ -57,7 +65,7 @@ const Show = (props) => {
                     <div className='columnTitle'>
                         <h2 className="columnTitle">
                             Contact&nbsp;<b>me</b>
-                            <IconButton onClick={toggleContactExpanded} clasName='contactExpandToggle'>
+                            <IconButton onClick={toggleContactExpanded} className='contactExpandToggle'>
                                 {
                                     contactExpanded ?
                                         <i className="fas fa-angle-up"></i> :
@@ -129,12 +137,58 @@ const Show = (props) => {
                     <hr />
                     <div className='myStoryContainer'>
                         <h4>My&nbsp;<b>story</b></h4>
-                        <p>
-                            Vel at ferri homero aliquando, pro ex elitr patrioque. Quando dicant veniam ea nam. No sea cibo interpretaris, vix reque errem ea. Id ius ridens maluisset dissentiunt, quo et autem etiam abhorreant. Mei te audiam intellegat conclusionemque, no labore impedit instructior cum. Pri id homero expetendis, cu nec melius feugait comprehensam. Ex tota corpora vivendum has, cum at dolorum expetenda urbanitas, mel ut rebum ornatus.
-                            Vidisse discere ius at, sed ex nibh integre. Malorum aliquando mediocritatem vix in, ea legimus epicuri sententiae sed. Eu qui nisl expetenda. Mundi adolescens id est, habeo comprehensam ex est. Ius atqui referrentur contentiones ad, te eum alia tacimates, per minimum insolens explicari ut. Eu vel saepe quidam.
-                            Legere utroque epicuri ad mei. Ad splendide honestatis qui, sit summo laboramus te. At eos docendi delectus imperdiet. Vide fugit vel an. Atqui ocurreret definitionem an nam, ne quo dicta evertitur, wisi constituam eos ad. Stet probo efficiantur ne cum.
-                    </p>
+                        {
+                            editMode &&
+                            <p className='storyHelperText'>Write a few words about yourself.</p>
+                        }
+                        {editMode ?
+                            <TextField
+                                className='storyEditor'
+                                InputProps={{
+                                    classes: {
+                                        root: 'bootstrapRoot',
+                                        input: 'storyEditorinput',
+                                    }
+                                }}
+                                value={story}
+                                multiline
+                                onChange={event => updateStory(event.target.value)}
+                            /> :
+                            <p>
+                                {story}
+                            </p>
+                        }
                     </div>
+                    {
+                        editMode &&
+                        <div className='desiredSalaryContainer'>
+                            <h4>Desired&nbsp;<b>salary</b></h4>
+                            <p>Chiar daca e privat, va ajuta la matching de joburi.</p>
+                            <FormGroup row className='salaryToggle'>
+                                <FormLabel className={!isSalaryPublic ? 'active' : ''}>Private</FormLabel>
+                                <ToggleSwitch checked={isSalaryPublic} onChange={toggleSalaryPrivate}
+                                    classes={{
+                                        switchBase: 'colorSwitchBase',
+                                        checked: 'colorChecked',
+                                        bar: 'colorBar',
+                                    }}
+                                    color="primary" />
+                                <FormLabel className={isSalaryPublic ? 'active' : ''}>Public</FormLabel>
+                            </FormGroup>
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="desiredSalary">Amount</InputLabel>
+                                <Input
+                                    id="desiredSalary"
+                                    name='desiredSalary'
+                                    placeholder='Adauga suma...'
+                                    type='number'
+                                    value={desiredSalary}
+                                    onChange={event => updateDesiredSalary(event.target.value)}
+                                // startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                />
+                            </FormControl>
+                        </div>
+                    }
                 </div>
             </Grid>
         </Grid>
@@ -142,8 +196,11 @@ const Show = (props) => {
 };
 const ShowHOC = compose(
     withState('XPEdit', 'setXPEdit', null),
+    withState('story', 'setMyStory', ({ data }) => data.myStory || ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', false),
+    withState('isSalaryPublic', 'setSalaryPrivacy', ({ data }) => data.isSalaryPublic),
+    withState('desiredSalary', 'setDesiredSalary', ({ data }) => data.desiredSalary),
     withHandlers({
         toggleExperienceEdit: ({ XPEdit, setXPEdit }) => () => {
             setXPEdit(!XPEdit);
@@ -158,6 +215,15 @@ const ShowHOC = compose(
         },
         toggleContactExpanded: ({ contactExpanded, setContactExpanded }) => () => {
             setContactExpanded(!contactExpanded)
+        },
+        toggleSalaryPrivate: ({ isSalaryPublic, setSalaryPrivacy }) => () => {
+            setSalaryPrivacy(!isSalaryPublic);
+        },
+        updateStory: ({ setMyStory }) => text => {
+            setMyStory(text);
+        },
+        updateDesiredSalary: ({ setDesiredSalary }) => salary => {
+            setDesiredSalary(salary);
         }
     }),
     pure

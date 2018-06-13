@@ -1,6 +1,7 @@
 import Brand from './component';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
+import SliderHOC from '../../../hocs/slider';
 
 const headerStories = [
     {
@@ -38,6 +39,7 @@ const BrandHOC = compose(
             updateExpanded(expanded ? panel : false);
         }
     }),
+    SliderHOC,
     pure
 );
 export default BrandHOC(Brand);

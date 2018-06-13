@@ -155,7 +155,7 @@ const LoginHOC = compose(
                 });
                 let { error, token, refreshToken } = response.data.login;
                 if (error) {
-                    setLoginError(error || 'Something went wrong.');
+                    setLoginError(error || error.message || 'Something went wrong.');
                     setLoadingState(false);
                     return false;
                 }
@@ -165,15 +165,12 @@ const LoginHOC = compose(
                     return false;
                 }
 
-                //handle tokens
-
                 setLoadingState(false);
                 history.push(`/${match.params.lang}/dashboard`);
 
             }
             catch (error) {
-                console.log(error);
-                setLoginError(error.message || 'Something went wrong.');
+                setLoginError(error || error.message || 'Something went wrong.');
                 setLoadingState(false);
             }
         }
