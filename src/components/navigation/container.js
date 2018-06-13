@@ -1,6 +1,7 @@
 import Navigation from './component';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
+import Logout from '../../hocs/logout';
 
 const notifications = [
     {
@@ -28,6 +29,7 @@ const NavigationHOC = compose(
     withState('mobileNotificationIsOpen', 'setMobileNotificationStatus', false),
     withState('mobileProfileIsOpen', 'setMobileProfileStatus', false),
     withState('notifications', 'setNotifications', notifications),
+    Logout,
     withHandlers({
         //desktop profile menu functions
         toggleProfileMenu: ({ profileMenuOpen, setProfileMenuStatus }) => (event) => {

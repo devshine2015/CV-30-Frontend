@@ -6,7 +6,7 @@ import { Manager, Target, Popper } from 'react-popper';
 import classNames from 'classnames';
 
 const DesktopNav = (props) => {
-    const { match, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications } = props;
+    const { match, doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications } = props;
     const lang = match.params.lang;
     return (
         <React.Fragment>
@@ -89,7 +89,7 @@ const DesktopNav = (props) => {
                                             </div>
 
                                             <FormattedMessage id="nav.logout" defaultMessage="Logout" description="Logout menu item">
-                                                {(text) => (<MenuItem onClick={closeProfileMenu}>{text}</MenuItem>)}
+                                                {(text) => (<MenuItem onClick={doLogout}>{text}</MenuItem>)}
                                             </FormattedMessage>
 
                                         </MenuList>

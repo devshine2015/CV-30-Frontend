@@ -5,6 +5,7 @@ import { IntlProvider, addLocaleData } from 'react-intl';
 import LandingPage from './pages/landingPage';
 import Dashboard from './pages/dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import GuestRoute from './components/GuestRoute';
 
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
@@ -31,10 +32,10 @@ const CVRouter = (props) => {
     <IntlProvider locale={language} messages={messages[language]}>
       <Switch>
         <Route exact path='/:lang(en|ro)' component={LandingPage} {...props} />
-        <Route exact path='/:lang(en|ro)/login' component={Login} />
-        <Route exact path='/:lang(en|ro)/register' component={Register} />
-        <Route exact path='/:lang(en|ro)/forgot' component={ForgotPassword} />
-        <Route exact path='/:lang(en|ro)/activate/:activationCode' component={ActivateAccount} />
+        <GuestRoute exact path='/:lang(en|ro)/login' component={Login} />
+        <GuestRoute exact path='/:lang(en|ro)/register' component={Register} />
+        <GuestRoute exact path='/:lang(en|ro)/forgot' component={ForgotPassword} />
+        <GuestRoute exact path='/:lang(en|ro)/activate/:activationCode' component={ActivateAccount} />
         <ProtectedRoute path='/:lang(en|ro)/dashboard' component={Dashboard} {...props} />
       </Switch>
     </IntlProvider>

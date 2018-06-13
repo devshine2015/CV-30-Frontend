@@ -153,7 +153,6 @@ const LoginHOC = compose(
                         password
                     }
                 });
-                debugger;
                 let { error, token, refreshToken } = response.data.login;
                 if (error) {
                     setLoginError(error || 'Something went wrong.');

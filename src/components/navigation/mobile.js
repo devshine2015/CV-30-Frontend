@@ -9,7 +9,7 @@ const MobileNav = (props) => {
         toggleMobileNav, mobileNavOpen, closeMobileNav,
         toggleMobileNotifications, mobileNotificationIsOpen, closeMobileNotifications, notifications,
         toggleMobileProfile, mobileProfileIsOpen, closeMobileProfile,
-        match
+        match, doLogout
     } = props;
 
     const lang = match.params.lang;
@@ -127,7 +127,7 @@ const MobileNav = (props) => {
                         </div>
 
                         <FormattedMessage id="nav.logout" defaultMessage="Logout" description="Logout menu item">
-                            {(text) => (<ListItem button onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
+                            {(text) => (<ListItem button onClick={doLogout} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
                     </div>
                 </Drawer>

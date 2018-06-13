@@ -1,3 +1,6 @@
 export default {
-    isAuthenticated: false
+    auth: {
+        __typename: "Authentication",
+        loggedIn: false
+    }
 };

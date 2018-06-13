@@ -11,6 +11,16 @@ export const LoginMutation = gql`
     }
 `;
 
+export const LogoutMutation = gql`
+    mutation logout {
+        logout {
+            status
+            error
+        }
+        setAuthenticated(status: false) @client
+    }
+`;
+
 export const RegisterMutation = gql`
     mutation register($nickname: String!, $email: String!, $password: String!) {
         register(nickname: $nickname, email: $email, password: $password) {
@@ -31,7 +41,10 @@ export const ForgotPasswordMutation = gql`
 
 export const IS_AUTHENTICATED = gql`
     query {
-        isAuthenticated @client 
+        auth @client {
+            __typename
+            loggedIn
+        }
     }
 `;
 

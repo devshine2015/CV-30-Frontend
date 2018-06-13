@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 
 const ProtectedRoute = (props) =>
   <Query query={IS_AUTHENTICATED}>
-    {({ data: { isAuthenticated } }) => isAuthenticated ? <Route {...props} /> : <Redirect to="/auth" />}
+    {({ data: { auth } }) => auth.loggedIn ? <Route {...props} /> : <Redirect to="/auth" />}
   </Query>
 
 export default ProtectedRoute;
