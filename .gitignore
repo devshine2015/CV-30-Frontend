@@ -29,4 +29,4 @@ yarn-error.log*
 /.sass-cache
 
 *.css
-credentials
+/credentials
