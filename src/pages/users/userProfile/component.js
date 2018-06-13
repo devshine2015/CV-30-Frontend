@@ -14,15 +14,14 @@ const UserProfile = (props) => {
     const { match,
         headerStories, headerSoftSkills, headerValues, openSkillsModal, skillsAnchor, skillsModalData, closeSkillsModal,
         prevStoryItem, activeStoryItem, jumpToStoryItem, nextStoryItem, removeStory,
-        editMode, switchEditMode,
+        editMode, switchEditMode, uploadImage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker, availableColors,
-        toggleContactExpanded, contactExpanded,
-        experience, contact
+        experience, contact, myStory,
     } = props;
 
     const lang = match.params.lang;
 
-    const Show = (props) => <UserProfileShow editMode={editMode} experience={experience} contact={contact} />
+    const Show = (props) => <UserProfileShow editMode={editMode} experience={experience} contact={contact} myStory={myStory} />
 
     return (<div className='userProfileRoot'>
         <FormGroup row className='editToggle'>
@@ -43,16 +42,23 @@ const UserProfile = (props) => {
                     <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className='avatar' />
                     {editMode &&
                         <React.Fragment>
-                            <Button variant='fab' size='small'
-                                classes={{
-                                    fab: 'badgeRoot'
-                                }}
-                                onClick={toggleColorPicker}
-                            >
-                                <Icon>
-                                    camera_alt
+                            <label htmlFor="fileUpload">
+                                <input
+                                    accept="image/*"
+                                    className='hiddenInput'
+                                    id="fileUpload"
+                                    name="fileUpload"
+                                    multiple
+                                    type="file"
+                                    onChange={uploadImage}
+                                />
+                                <Button component="span" className='badgeRoot'>
+                                    <Icon>
+                                        camera_alt
                                 </Icon>
-                            </Button>
+                                </Button>
+                            </label>
+
                             <ColorPicker colorPickerAnchor={colorPickerAnchor} onClose={closeColorPicker} availableColors={availableColors} />
                         </React.Fragment>
                     }
@@ -161,57 +167,60 @@ const UserProfile = (props) => {
 
             <Grid container className='headerSkills'>
                 <Grid item lg={8} md={8} sm={12} xs={12} className={editMode ? 'skillsContainer edit' : 'skillsContainer'}>
-                    <FormattedMessage id="userProfile.softSkills" defaultMessage="Soft skills" description="User header soft skills">
-                        {(text) => (<span className='headerSkillsTitle softSkills'>{text}:</span>)}
-                    </FormattedMessage>
-                    {!editMode &&
-                        headerSoftSkills.map((item, index) => <Chip label={item} className='chip skills' key={`softSkill-${index}`} />)
-                    }
-                    {
-                        editMode &&
-                        <span>{headerSoftSkills.join(', ')}</span>
-                    }
-                    {
-                        editMode &&
-                        <Button
-                            variant='fab'
-                            size='small'
-                            color='primary'
-                            onClick={(event) => openSkillsModal('skills', event.target)}
-                            classes={{
-                                fab: 'circleEditBtn'
-                            }}
-                        >
-                            <Icon>edit</Icon>
-                        </Button>
-                    }
+                    <div className='skillsWrapper'>
+                        <FormattedMessage id="userProfile.softSkills" defaultMessage="Soft skills" description="User header soft skills">
+                            {(text) => (<span className='headerSkillsTitle softSkills'>{text}:</span>)}
+                        </FormattedMessage>
+                        {!editMode &&
+                            headerSoftSkills.map((item, index) => <Chip label={item} className='chip skills' key={`softSkill-${index}`} />)
+                        }
+                        {
+                            editMode &&
+                            <span>{headerSoftSkills.join(', ')}</span>
+                        }
+                        {
+                            editMode &&
+                            <Button
+                                variant='fab'
+                                size='small'
+                                color='primary'
+                                onClick={(event) => openSkillsModal('skills', event.target)}
+                                classes={{
+                                    fab: 'circleEditBtn'
+                                }}
+                            >
+                                <Icon>edit</Icon>
+                            </Button>
+                        }
+                    </div>
                 </Grid>
                 <Grid item lg={8} md={8} sm={12} xs={12} className={editMode ? 'skillsContainer edit' : 'skillsContainer'}>
-                    <FormattedMessage id="userProfile.values" defaultMessage="Values" description="User header values">
-                        {(text) => (<span className='headerSkillsTitle values'>{text}:</span>)}
-                    </FormattedMessage>
-                    {!editMode &&
-                        headerValues.map((item, index) => <Chip label={item} className='chip values' key={`value-${index}`} />)
-                    }
-                    {
-                        editMode &&
-                        <span>{headerValues.join(', ')}</span>
-                    }
-                    {
-                        editMode &&
-                        <Button
-                            variant='fab'
-                            size='small'
-                            color='primary'
-                            onClick={(event) => openSkillsModal('values', event.target)}
-                            classes={{
-                                fab: 'circleEditBtn'
-                            }}
-                        >
-                            <Icon>edit</Icon>
-                        </Button>
-                    }
-
+                    <div className='skillsWrapper'>
+                        <FormattedMessage id="userProfile.values" defaultMessage="Values" description="User header values">
+                            {(text) => (<span className='headerSkillsTitle values'>{text}:</span>)}
+                        </FormattedMessage>
+                        {!editMode &&
+                            headerValues.map((item, index) => <Chip label={item} className='chip values' key={`value-${index}`} />)
+                        }
+                        {
+                            editMode &&
+                            <span>{headerValues.join(', ')}</span>
+                        }
+                        {
+                            editMode &&
+                            <Button
+                                variant='fab'
+                                size='small'
+                                color='primary'
+                                onClick={(event) => openSkillsModal('values', event.target)}
+                                classes={{
+                                    fab: 'circleEditBtn'
+                                }}
+                            >
+                                <Icon>edit</Icon>
+                            </Button>
+                        }
+                    </div>
                 </Grid>
                 <SkillsEditor skillsModalData={skillsModalData} skillsAnchor={skillsAnchor} closeSkillsModal={closeSkillsModal} key={skillsModalData} />
             </Grid>

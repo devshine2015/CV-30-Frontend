@@ -72,6 +72,9 @@ const contact = {
     address: 'Some Street 123',
     fb: 'https://facebook.com'
 };
+const myStory = `Vel at ferri homero aliquando, pro ex elitr patrioque. Quando dicant veniam ea nam. No sea cibo interpretaris, vix reque errem ea. Id ius ridens maluisset dissentiunt, quo et autem etiam abhorreant. Mei te audiam intellegat conclusionemque, no labore impedit instructior cum. Pri id homero expetendis, cu nec melius feugait comprehensam. Ex tota corpora vivendum has, cum at dolorum expetenda urbanitas, mel ut rebum ornatus.
+                Vidisse discere ius at, sed ex nibh integre. Malorum aliquando mediocritatem vix in, ea legimus epicuri sententiae sed. Eu qui nisl expetenda. Mundi adolescens id est, habeo comprehensam ex est. Ius atqui referrentur contentiones ad, te eum alia tacimates, per minimum insolens explicari ut. Eu vel saepe quidam.
+                Legere utroque epicuri ad mei. Ad splendide honestatis qui, sit summo laboramus te. At eos docendi delectus imperdiet. Vide fugit vel an. Atqui ocurreret definitionem an nam, ne quo dicta evertitur, wisi constituam eos ad. Stet probo efficiantur ne cum.`
 
 const UserProfileHOC = compose(
     withRouter,
@@ -87,6 +90,7 @@ const UserProfileHOC = compose(
     withState('skillsModalData', 'setSkillsModalData', null),
     withState('experience', null, experience),
     withState('contact', null, contact),
+    withState('myStory', null, myStory),
     withHandlers({
         prevStoryItem: ({ activeStoryItem, setActiveStoryItem, count }) => () => {
             let prevStory = activeStoryItem - 1 < 0 ? count : activeStoryItem - 1;
@@ -117,6 +121,13 @@ const UserProfileHOC = compose(
         },
         closeSkillsModal: ({ setSkillsAnchor }) => () => {
             setSkillsAnchor(null);
+        },
+        uploadImage: () => () => { },
+        removeStory: ({ headerStories, setHeaderStories }) => index => {
+            debugger;
+            let stories = [...headerStories];
+            stories.splice(index, 1);
+            setHeaderStories(stories);
         }
     }),
     pure

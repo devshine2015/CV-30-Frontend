@@ -76,7 +76,7 @@ const SkillsEditHOC = compose(
             setSkillText('');
         },
         removeChip: ({ displaySkills, setDisplaySkills }) => (chipIndex) => {
-            const chipData = [...displaySkills];
+            let chipData = [...displaySkills];
             chipData.splice(chipIndex, 1);
             setDisplaySkills(chipData);
         }
