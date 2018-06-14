@@ -25,7 +25,7 @@ import localForage from 'localforage';
         cache,
         storage: localForage,
         maxSize: false,
-        debug: true
+        debug: process.env.NODE_ENV === 'production'
     });
 
     const httpLink = new HttpLink({
