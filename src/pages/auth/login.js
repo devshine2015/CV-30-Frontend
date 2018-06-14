@@ -153,19 +153,18 @@ const LoginHOC = compose(
                         password
                     }
                 });
+                setLoadingState(false);
+
                 let { error, token, refreshToken } = response.data.login;
                 if (error) {
                     setLoginError(error || error.message || 'Something went wrong.');
-                    setLoadingState(false);
                     return false;
                 }
                 if (!token || !refreshToken) {
                     setLoginError('Something went wrong.');
-                    setLoadingState(false);
                     return false;
                 }
 
-                setLoadingState(false);
                 history.push(`/${match.params.lang}/dashboard`);
 
             }

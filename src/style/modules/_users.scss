@@ -303,20 +303,6 @@
             }
         }
     }
-    .editToggle {
-        display: flex;
-        justify-content: center;
-        background: #f9f9f9;
-        align-items: center;
-        label {
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: #565656;
-            &.active {
-                color: #277dba;
-            }
-        }
-    }
     .mainBody.userProfileShow {
         background: #fff;
         border-top: 1px solid #989c9f;
@@ -630,27 +616,6 @@
             }
             section {
                 padding: 25px;
-                &.infoSection {
-                    .mediaToggle {
-                        display: flex;
-                        align-items: center;
-                        .mediaToggleLabel {
-                            font-size: 0.75rem;
-                            font-weight: 100;
-                            color: #727272;
-                            margin-right: 15px;
-                        }
-                        label {
-                            font-size: 0.75rem;
-                            color: #565656;
-                            font-weight: bold;
-                            &.active {
-                                font-size: 0.8rem;
-                                color: #3586bf;
-                            }
-                        }
-                    }
-                }
                 &.mediaUpload {
                     border-top: 2px solid #f1f1f1;
                     border-bottom: 2px solid #f1f1f1;

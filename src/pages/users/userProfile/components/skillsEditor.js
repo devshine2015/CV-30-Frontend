@@ -1,9 +1,9 @@
 import React from 'react';
 import { Popover, Button, FormControl, InputLabel, Input, InputAdornment, IconButton, Icon, Chip } from '@material-ui/core';
-import { compose, pure, withState, withHandlers, lifecycle } from 'recompose';
+import { compose, pure, withState, withHandlers } from 'recompose';
 
 const SkillsEdit = (props) => {
-    const { displaySkills, skillsAnchor, closeSkillsModal, updateSkills, newSkill, updateNewSkill, addSkill, removeChip } = props;
+    const { displaySkills, skillsAnchor, closeSkillsModal, newSkill, updateNewSkill, addSkill, removeChip } = props;
     return (
         <Popover
             anchorOrigin={{

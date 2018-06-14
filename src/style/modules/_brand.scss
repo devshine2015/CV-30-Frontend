@@ -50,10 +50,11 @@
     }
     .userAvatar {
         display: flex;
-        padding: 30px 5px;
+        padding: 5px 5px;
         align-items: center;
         background: #fff;
         border-radius: 50px;
+        position: relative;
         @media (max-width: 960px) {
             padding: 5px;
         }
@@ -84,6 +85,12 @@
                     font-size: 0.85rem;
                 }
             }
+        }
+        .companySettingsBtn {
+            background: #397db9;
+            color: #fff;
+            position: absolute;
+            right: -15px;
         }
     }
     .userLinks {
@@ -161,6 +168,7 @@
             position: relative;
             margin: 0 3px;
             cursor: pointer;
+            pointer-events: all;
             .storyImg {
                 width: 200px;
                 height: 140px;
@@ -176,6 +184,34 @@
                 padding: 5px;
                 text-align: center;
             }
+            &.add {
+                width: 208px;
+                height: 148px;
+                background-color: rgba(0, 0, 0, 0.5);
+                border: 2px dashed #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .bigPlus {
+                    color: #fff;
+                    font-size: 3rem;
+                }
+                .storyTitle {
+                    background: none;
+                }
+            }
+        }
+        .removeStoryBtn {
+            min-width: auto;
+            min-height: auto;
+            width: 25px;
+            height: 25px;
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            color: red;
+            background: white;
+            padding: 2px;
         }
     }
     .activityFields {
@@ -391,6 +427,169 @@
             background: #fff;
             margin: 0 25px;
             padding: 10px;
+        }
+    }
+}
+
+.storyEditPaper {
+    background: #fff;
+    border: 1px solid #707881;
+    border-radius: 5px !important;
+    width: 800px;
+    position: relative;
+    overflow: visible !important;
+    margin-top: 20px;
+    margin-left: 50px;
+    &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: -5px;
+        right: 45px;
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        transform: rotate(-45deg);
+    }
+    .popupHeader {
+        border-bottom: 2px solid #ececec;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 15px 0;
+        flex-wrap: wrap;
+        h4 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #397db9;
+            width: 100;
+            margin: 5px 0;
+        }
+        p {
+            color: #397db9;
+            font-size: 0.875rem;
+            font-weight: 100;
+            width: 100%;
+            margin: 5px 0;
+        }
+        .tabsContainer {
+            width: 100%;
+            min-height: auto;
+            margin-top: 15px;
+            .tabsFlexContainer {
+                align-items: baseline;
+                justify-content: space-evenly;
+                .tabItemRoot {
+                    min-width: auto;
+                    min-height: auto;
+                    .tabItemLabelContainer {
+                        padding: 15px 5px 5px;
+                    }
+                    .tabItemLabel {
+                        text-transform: none;
+                        font-size: 1rem;
+                    }
+                }
+            }
+            .tabOr {
+                font-size: 0.85rem;
+                color: #cbcbcb;
+                text-transform: uppercase;
+                margin: 0 10px;
+            }
+            .tabIndicator {
+                background-color: #397db9;
+            }
+        }
+    }
+    .popupBody {
+        background: #fafafa;
+        border-top: 1px solid #f5f5f5;
+        border-bottom: 1px solid #f5f5f5;
+        max-height: 350px !important;
+        overflow-y: scroll;
+        padding: 0 !important;
+        .storiesContainer {
+            display: flex;
+            flex-direction: column;
+            .storyItem {
+                padding: 10px 20px;
+                border-bottom: 1px solid #ededed;
+                border-top: 1px solid #f1f1f1;
+                min-height: 110px;
+                cursor: pointer;
+                .media {
+                    background: #d6d6d6;
+                }
+                .texts {
+                    color: #414141;
+                    padding-left: 15px;
+                    user-select: none;
+                    h4 {
+                        font-size: 1rem;
+                        font-weight: 500;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    p {
+                        font-size: 0.85rem;
+                        font-weight: 100;
+                        margin: 0;
+                        padding: 0;
+                    }
+                }
+                &:hover {
+                    background: rgba(0, 0, 0, 0.1);
+                }
+                &:active {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+            }
+        }
+        .newStoryForm {
+            padding: 10px 20px;
+            .textField {
+                margin: 15px 0;
+            }
+            .mediaUpload {
+                margin-left: -20px;
+                margin-right: -20px;
+                border-top: 2px solid #ddd;
+                border-bottom: 2px solid #ddd;
+                background: #eee;
+                padding: 20px;
+            }
+        }
+    }
+    .popupFooter {
+        background: #fff;
+        padding: 15px;
+        position: relative;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        .editControls {
+            .cancelBtn,
+            .submitBtn {
+                position: absolute;
+                border-radius: 50%;
+                box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+            }
+            .cancelBtn {
+                width: 25px;
+                height: 25px;
+                min-width: auto;
+                min-height: auto;
+                background: #fff;
+                color: #ff0000;
+                bottom: -12px;
+                right: 100px;
+            }
+            .submitBtn {
+                background: #397db9;
+                color: #fff;
+                right: 30px;
+                bottom: -24px;
+            }
         }
     }
 }

@@ -70,7 +70,9 @@ const userProfileData = {
             description: 'bla bla bla bla bla',
             startDate: '2018-11-12',
             stillWorkThere: true,
-            location: 'White House'
+            location: 'White House',
+            videoUrl: '',
+            imageUrl: ''
         },
         {
             position: 'President',

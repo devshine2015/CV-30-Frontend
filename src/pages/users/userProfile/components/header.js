@@ -236,7 +236,8 @@ const HeaderHOC = compose(
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
             setColorPickerAnchor(null);
         },
-        openSkillsModal: ({ softSkills, values, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
+        openSkillsModal: ({ data, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
+            const { softSkills, values } = data;
             if (type === 'values')
                 setSkillsModalData(values);
             if (type === 'skills')

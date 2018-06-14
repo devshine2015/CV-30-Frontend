@@ -9,3 +9,23 @@
 .colorBar {
     background-color: #bbb !important;
 }
+
+.mediaToggle {
+    display: flex;
+    align-items: center;
+    .mediaToggleLabel {
+        font-size: 0.75rem;
+        font-weight: 100;
+        color: #727272;
+        margin-right: 15px;
+    }
+    label {
+        font-size: 0.75rem;
+        color: #565656;
+        font-weight: bold;
+        &.active {
+            font-size: 0.8rem;
+            color: #3586bf;
+        }
+    }
+}
