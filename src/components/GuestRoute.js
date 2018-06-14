@@ -6,7 +6,7 @@ import { Query } from 'react-apollo';
 export default (props) =>
     <Query query={IS_AUTHENTICATED}>
         {({ data: { auth } }) => {
-            const { from } = props.location.state || { from: { pathname: '/' } };
-            return !auth.loggedIn ? <Route {...props} /> : <Redirect to='/dashboard' />;
+            const { from } = props.location.state || { from: { pathname: '/dashboard' } };
+            return !auth.loggedIn ? <Route {...props} /> : <Redirect to={from} />;
         }}
     </Query>
