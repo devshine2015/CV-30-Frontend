@@ -49,6 +49,26 @@ const company = {
             text: ' Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit. Dolore libris nominati te quo, et elit probatus duo.Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.'
         }
     ],
+    moreStories: [
+        {
+            id: 1,
+            img: 'http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg',
+            title: 'Story 1',
+            text: ' Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit. Dolore libris nominati te quo, et elit probatus duo.Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.'
+        },
+        {
+            id: 2,
+            img: 'http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg',
+            title: 'Story 2',
+            text: ' Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit. Dolore libris nominati te quo, et elit probatus duo.Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.'
+        },
+        {
+            id: 3,
+            img: 'http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg',
+            title: 'Story 3',
+            text: ' Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit. Dolore libris nominati te quo, et elit probatus duo.Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.'
+        }
+    ],
     faq: [
         {
             question: 'What is the question 1?',

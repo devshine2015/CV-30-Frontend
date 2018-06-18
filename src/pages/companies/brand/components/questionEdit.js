@@ -3,44 +3,46 @@ import { Icon, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Tex
 import { compose, withState, withHandlers, pure } from 'recompose';
 
 const QuestionEdit = props => {
-    const { panelId, onChange, handleFormChange, formData } = props;
+    const { panelId, onChange, handleFormChange, formData, expanded } = props;
     const { question, answer } = formData;
-    return (<ExpansionPanel expanded={true} onChange={onChange} classes={{
-        root: 'qaPanelRoot'
-    }}>
-        <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
-            root: 'qaPanelHeader',
-            expandIcon: 'qaHeaderIcon',
-            content: 'qaPanelHeaderContent'
+    return (
+        <ExpansionPanel expanded={expanded === panelId} onChange={onChange(panelId)} classes={{
+            root: 'qaPanelRoot'
         }}>
-            <TextField
-                name="question"
-                label="Question"
-                placeholder="Question..."
-                fullWidth
-                className='textField'
-                onChange={handleFormChange}
-                value={question}
-            />
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-            <TextField
-                name="answer"
-                label="Answer"
-                placeholder="Answer..."
-                fullWidth
-                multiline
-                rowsMax={10}
-                className='textField'
-                onChange={handleFormChange}
-                value={answer}
-            />
-        </ExpansionPanelDetails>
-    </ExpansionPanel>)
+            <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
+                root: 'qaPanelHeader',
+                expandIcon: 'qaHeaderIcon',
+                content: 'qaPanelHeaderContent'
+            }}>
+                <TextField
+                    name="question"
+                    label="Question"
+                    placeholder="Question..."
+                    fullWidth
+                    className='textField'
+                    onChange={handleFormChange}
+                    value={question}
+                />
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
+                <TextField
+                    name="answer"
+                    label="Answer"
+                    placeholder="Answer..."
+                    fullWidth
+                    multiline
+                    rowsMax={10}
+                    className='textField'
+                    onChange={handleFormChange}
+                    value={answer}
+                />
+            </ExpansionPanelDetails>
+        </ExpansionPanel>)
 }
 
 const QuestionEditHOC = compose(
     withState('formData', 'setFormData', ({ question }) => (question || {})),
+    withState(),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.currentTarget;

@@ -1,18 +1,19 @@
 import React from 'react';
 import { compose, pure, withState, withHandlers } from 'recompose';
-import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup } from '@material-ui/core';
+import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconButton, Icon } from '@material-ui/core';
 
 
 const AddStory = props => {
-    const { popupOpen, toggleEditor, formData, handleFormChange, isVideoUrl, switchMediaType } = props;
+    const { popupOpen, toggleEditor, formData, handleFormChange, isVideoUrl, switchMediaType, story, saveChanges, cancel } = props;
     const { title, text, videoURL } = formData;
     return (
         <div className='addStoryWrapper'>
-            <span className='addStoryBtn' onClick={toggleEditor}>
-                + Add
+            {!story &&
+                <span className='addStoryBtn' onClick={toggleEditor}>
+                    + Add
             </span>
-
-            <div className={popupOpen ? 'newStoryForm open' : 'newStoryForm'}>
+            }
+            <div className={(popupOpen || story) ? 'newStoryForm open' : 'newStoryForm'}>
                 <form noValidate autoComplete='off'>
                     <h4>Add article</h4>
                     <section className='infoSection'>
@@ -76,9 +77,17 @@ const AddStory = props => {
                                 />
                                 <Button component="span" className='uploadBtn'>
                                     Upload
-                        </Button>
+                                </Button>
                             </label>
                         }
+                    </section>
+                    <section className='footer'>
+                        <IconButton className='cancelBtn' onClick={cancel}>
+                            <Icon>close</Icon>
+                        </IconButton>
+                        <IconButton className='submitBtn' onClick={saveChanges}>
+                            <Icon>done</Icon>
+                        </IconButton>
                     </section>
                 </form>
             </div>
@@ -88,7 +97,7 @@ const AddStory = props => {
 
 const AddStoryHOC = compose(
     withState('popupOpen', 'setPopupOpen', false),
-    withState('formData', 'setFormData', {}),
+    withState('formData', 'setFormData', ({ story }) => (story || {})),
     withState('isVideoUrl', 'changeMediaType', true),
     withHandlers({
         toggleEditor: ({ popupOpen, setPopupOpen }) => () => {
@@ -109,6 +118,7 @@ const AddStoryHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
+        saveChanges: () => () => { },
     }),
     pure
 );

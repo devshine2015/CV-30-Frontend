@@ -5,11 +5,11 @@ import SliderHOC from '../../../../hocs/slider';
 
 import AddNewStory from './addStory';
 import QuestionEdit from './questionEdit';
+import Story from './story';
 
 const Show = (props) => {
-    debugger;
     const { expanded, expandPanel, editMode, data, edited, editPanel } = props;
-    const { faq } = data;
+    const { faq, moreStories } = data;
     return (
         <Grid container className='mainBody brandShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -63,42 +63,11 @@ const Show = (props) => {
 
                 <section className='moreStories'>
                     <h2 className='titleHeading'>Afla <b>mai multe</b></h2>
-                    <div className='story'>
-                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider' />
-                        <div className='textContents'>
-                            <h4>
-                                Slide title
-                            </h4>
-                            <p>
-                                Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                                    Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                            </p>
-                        </div>
-                    </div>
-                    <div className='story reverse'>
-                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider' />
-                        <div className='textContents'>
-                            <h4>
-                                Slide title
-                            </h4>
-                            <p>
-                                Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                                    Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                            </p>
-                        </div>
-                    </div>
-                    <div className='story'>
-                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider' />
-                        <div className='textContents'>
-                            <h4>
-                                Slide title
-                            </h4>
-                            <p>
-                                Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                                    Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                            </p>
-                        </div>
-                    </div>
+                    {
+                        moreStories.map((story, index) => (
+                            <Story story={story} index={index} editMode={editMode} />
+                        ))
+                    }
                     {editMode && <AddNewStory />}
                 </section>
 
@@ -109,27 +78,29 @@ const Show = (props) => {
 
                             const panelId = 'panel-' + index;
                             if (edited !== panelId)
-
-                                return (<ExpansionPanel expanded={expanded === panelId} onChange={expandPanel(panelId)} classes={{
-                                    root: 'qaPanelRoot'
-                                }}>
-                                    <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
-                                        root: 'qaPanelHeader',
-                                        expandIcon: 'qaHeaderIcon',
-                                        content: 'qaPanelHeaderContent'
+                                return (
+                                    <ExpansionPanel expanded={expanded === panelId} onChange={expandPanel(panelId)} classes={{
+                                        root: 'qaPanelRoot'
                                     }}>
-                                        {item.question}
-                                        {editMode &&
-                                            <IconButton onClick={() => editPanel(panelId)} className='editBtn'>
-                                                <Icon>edit</Icon>
-                                            </IconButton>
-                                        }
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-                                        {item.answer}
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>)
-                            else return <QuestionEdit question={item} />
+                                        <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
+                                            root: 'qaPanelHeader',
+                                            expandIcon: 'qaHeaderIcon',
+                                            content: 'qaPanelHeaderContent'
+                                        }}>
+                                            {item.question}
+                                            {editMode &&
+                                                <IconButton onClick={(e) => editPanel(e, panelId)} className='editBtn'>
+                                                    <Icon>edit</Icon>
+                                                </IconButton>
+                                            }
+                                        </ExpansionPanelSummary>
+                                        <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
+                                            {item.answer}
+                                        </ExpansionPanelDetails>
+                                    </ExpansionPanel>
+                                )
+                            else
+                                return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} />
                         })
                     }
                 </section>
@@ -149,12 +120,24 @@ const Show = (props) => {
 const ShowHOC = compose(
     withState('expanded', 'updateExpanded', null),
     withState('edited', 'updateEdited', null),
+    withState('editedStory', 'editStory', null),
     withHandlers({
-        expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
-            updateExpanded(expanded ? panel : false);
+        expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
+            if (edited === panel) {
+                updateExpanded(panel);
+            } else {
+                if (edited)
+                    updateEdited(null);
+                updateExpanded(expanded ? panel : false);
+
+            }
         },
-        editPanel: ({ updateEdited }) => (panel) => {
+        editPanel: ({ updateEdited, updateExpanded, edited }) => (e, panel) => {
             updateEdited(panel || false);
+            if (panel !== edited) {
+                updateExpanded(panel);
+                e.stopPropagation();
+            }
         }
     }),
     SliderHOC,

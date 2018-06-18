@@ -388,6 +388,7 @@
             }
             .story {
                 margin-bottom: 25px;
+                position: relative;
                 &:last-child {
                     margin: 0;
                 }
@@ -396,6 +397,16 @@
                     @media (max-width: 960px) {
                         flex-direction: column;
                     }
+                }
+                .floatingEditBtn {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    width: 40px;
+                    height: 40px;
+                    background: #397db9;
+                    color: #fff;
+                    box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
                 }
             }
         }
@@ -460,7 +471,7 @@
             overflow: hidden;
             background: #fff;
             border-radius: 10px;
-            margin-top: 25px;
+            margin: 25px 0;
             transition: max-height 0.15s ease-out;
             &.open {
                 max-height: 1000px;
@@ -479,6 +490,32 @@
                     border-bottom: 2px solid #ddd;
                     background: #eee;
                     padding: 20px;
+                }
+                .footer {
+                    display: flex;
+                    margin: 0;
+                    padding: 15px 0;
+                    position: relative;
+                    align-items: center;
+                    justify-content: flex-end;
+                    button {
+                        border-radius: 50%;
+                        box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+                    }
+                    .cancelBtn {
+                        width: 25px;
+                        height: 25px;
+                        min-width: auto;
+                        min-height: auto;
+                        background: #fff;
+                        color: #ff0000;
+                        margin: 0 5px;
+                    }
+                    .submitBtn {
+                        background: #397db9;
+                        color: #fff;
+                        margin: 0 10px;
+                    }
                 }
             }
         }
