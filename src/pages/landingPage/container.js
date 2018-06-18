@@ -1,4 +1,4 @@
-import { compose, pure, withState, withHandlers } from 'recompose';
+import { compose, pure, withState } from 'recompose';
 import { withStyles } from '@material-ui/core';
 import LandingPage from './component';
 import styles from './style';

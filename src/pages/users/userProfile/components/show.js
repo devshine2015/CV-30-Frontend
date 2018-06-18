@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Icon, IconButton, Button, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input, InputAdornment } from '@material-ui/core';
+import { Grid, Icon, IconButton, Button, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
 // import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 
 import ExperienceEdit from './experienceEdit';
@@ -26,8 +26,7 @@ const Show = (props) => {
                 <section className='experienceSection'>
                     <h2 className='sectionTitle'>My <b>experience</b></h2>
                     {
-                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} />)
-                        // key={`xpItem-${index}`}
+                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
                     }
                     {editMode &&
                         <div className='experienceAdd'>
@@ -44,8 +43,7 @@ const Show = (props) => {
                 <section className='experienceSection'>
                     <h2 className='sectionTitle'>My <b>projects</b></h2>
                     {
-                        projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} />)
-                        // key={`xpItem-${index}`}
+                        projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
                     }
                     {editMode &&
                         <div className='experienceAdd'>
