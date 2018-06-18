@@ -116,7 +116,10 @@ const Header = (props) => {
                             <span className='storyTitle'>+ Add featured article</span>
                         </Grid>
                     }
-                    <StoryEditor anchor={storyEditorAnchor} onClose={closeStoryEditor} />
+                    <StoryEditor
+                        stories={headerStories} //will be fetched from server inside component!!!
+                        anchor={storyEditorAnchor}
+                        onClose={closeStoryEditor} />
                 </Grid>
                 <Grid container className='activityFields'>
                     {

@@ -7,10 +7,11 @@ import CompanyShow from './components/show';
 import CompanyFeed from './components/feed';
 
 const Brand = (props) => {
-    const Show = (props) => {
-        return (<CompanyShow {...props} />)
-    }
     const { editMode, switchEditMode } = props;
+    const Show = () => {
+        return (<CompanyShow {...props} />)
+    };
+
     return (
         <div className='brandRoot'>
             <FormGroup row className='editToggle'>

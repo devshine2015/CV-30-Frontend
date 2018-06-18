@@ -55,6 +55,7 @@
         background: #fff;
         border-radius: 50px;
         position: relative;
+        min-height: 90px;
         @media (max-width: 960px) {
             padding: 5px;
         }
@@ -406,7 +407,6 @@
         &:before {
             background: none;
         }
-        .qaPanelHeader {}
         .qaHeaderIcon {
             color: #397db9;
             left: 8px;
@@ -418,6 +418,18 @@
             font-weight: normal;
             margin-left: 40px;
             font-weight: normal;
+            align-items: center;
+            .editBtn {
+                border-radius: 50%;
+                background: #397db9;
+                color: #fff;
+                padding: inherit;
+                width: 30px;
+                height: 30px;
+                font-size: 10px;
+                margin-left: 20px;
+                box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+            }
         }
         .qaPanelDetailRoot {
             display: flex;
@@ -429,8 +441,51 @@
             padding: 10px;
         }
     }
+    .addStoryWrapper {
+        position: relative;
+        display: block;
+        margin-top: 25px;
+        .addStoryBtn {
+            display: block;
+            color: #277dba;
+            border: 2px dashed #277dba;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .newStoryForm {
+            max-height: 0px;
+            max-height: 0;
+            overflow: hidden;
+            background: #fff;
+            border-radius: 10px;
+            margin-top: 25px;
+            transition: max-height 0.15s ease-out;
+            &.open {
+                max-height: 1000px;
+                transition: max-height 0.25s ease-in;
+                box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+            }
+            form {
+                padding: 10px 20px;
+                .textField {
+                    margin: 15px 0;
+                }
+                .mediaUpload {
+                    margin-left: -20px;
+                    margin-right: -20px;
+                    border-top: 2px solid #ddd;
+                    border-bottom: 2px solid #ddd;
+                    background: #eee;
+                    padding: 20px;
+                }
+            }
+        }
+    }
 }
 
+/////
 .storyEditPaper {
     background: #fff;
     border: 1px solid #707881;

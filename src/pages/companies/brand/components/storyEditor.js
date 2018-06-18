@@ -24,11 +24,9 @@ const StoryBrowser = ({ stories }) => (
 )
 
 const NewStory = (props) => {
-    const {
-        handleFormChange, isVideoUrl, switchMediaType, formData, onClose
-    } = props;
-
+    const { handleFormChange, isVideoUrl, switchMediaType, formData } = props;
     const { title, text, videoURL } = formData;
+
     return (
         <form className='newStoryForm' noValidate autoComplete='off'>
             <h4>Add article</h4>
@@ -104,7 +102,8 @@ const NewStory = (props) => {
 const StoryEditor = (props) => {
     const {
         anchor, onClose,
-        activeTab, handleTabChange
+        activeTab, handleTabChange,
+        stories
     } = props;
 
     return (
@@ -184,33 +183,10 @@ const StoryEditor = (props) => {
         </Popover>
     );
 }
-const stories = [
-    {
-        imgURL: '',
-        title: 'Story 1',
-        text: 'Bla bla bla'
-    },
-    {
-        imgURL: '',
-        title: 'Story 2',
-        text: 'Bla bla bla'
-    },
-    {
-        imgURL: '',
-        title: 'Story 3',
-        text: 'Bla bla bla'
-    },
-    {
-        imgURL: '',
-        title: 'Story 4',
-        text: 'Bla bla bla'
-    }
-];
 
 
 const StoryEditorHOC = compose(
     withState('activeTab', 'setActiveTab', 'new'),
-    withState('stories', 'setStories', stories),
     withState('formData', 'setFormData', {}),
     withState('isVideoUrl', 'changeMediaType', true),
     withHandlers({
@@ -228,7 +204,8 @@ const StoryEditorHOC = compose(
         },
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
-        }
+        },
+
     }),
     pure
 );

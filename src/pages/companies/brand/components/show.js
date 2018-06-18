@@ -1,9 +1,15 @@
 import React from 'react';
 import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
+import SliderHOC from '../../../../hocs/slider';
+
+import AddNewStory from './addStory';
+import QuestionEdit from './questionEdit';
 
 const Show = (props) => {
-    const { expanded, expandPanel } = props;
+    debugger;
+    const { expanded, expandPanel, editMode, data, edited, editPanel } = props;
+    const { faq } = data;
     return (
         <Grid container className='mainBody brandShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -51,6 +57,8 @@ const Show = (props) => {
                         </p>
                         </div>
                     </div>
+
+                    {editMode && <AddNewStory />}
                 </section>
 
                 <section className='moreStories'>
@@ -91,85 +99,39 @@ const Show = (props) => {
                             </p>
                         </div>
                     </div>
+                    {editMode && <AddNewStory />}
                 </section>
 
                 <section className='qaSection'>
                     <h2 className='titleHeading'>Q & A</h2>
-                    <ExpansionPanel expanded={expanded === 'panel1'} onChange={expandPanel('panel1')} classes={{
-                        root: 'qaPanelRoot'
-                    }}>
-                        <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
-                            root: 'qaPanelHeader',
-                            expandIcon: 'qaHeaderIcon',
-                            content: 'qaPanelHeaderContent'
-                        }}>
-                            What is the question?
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-                            Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                            Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    <ExpansionPanel expanded={expanded === 'panel2'} onChange={expandPanel('panel2')} classes={{
-                        root: 'qaPanelRoot'
-                    }}>
-                        <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
-                            root: 'qaPanelHeader',
-                            expandIcon: 'qaHeaderIcon',
-                            content: 'qaPanelHeaderContent'
-                        }}>
-                            What is the question?
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-                            Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                            Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    <ExpansionPanel expanded={expanded === 'panel3'} onChange={expandPanel('panel3')} classes={{
-                        root: 'qaPanelRoot'
-                    }}>
-                        <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
-                            root: 'qaPanelHeader',
-                            expandIcon: 'qaHeaderIcon',
-                            content: 'qaPanelHeaderContent'
-                        }}>
-                            What is the question?
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-                            Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                            Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    <ExpansionPanel expanded={expanded === 'panel4'} onChange={expandPanel('panel4')} classes={{
-                        root: 'qaPanelRoot'
-                    }}>
-                        <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
-                            root: 'qaPanelHeader',
-                            expandIcon: 'qaHeaderIcon',
-                            content: 'qaPanelHeaderContent'
-                        }}>
-                            What is the question?
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-                            Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                            Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    <ExpansionPanel expanded={expanded === 'panel5'} onChange={expandPanel('panel5')} classes={{
-                        root: 'qaPanelRoot'
-                    }}>
-                        <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
-                            root: 'qaPanelHeader',
-                            expandIcon: 'qaHeaderIcon',
-                            content: 'qaPanelHeaderContent'
-                        }}>
-                            What is the question?
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-                            Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                            Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
+                    {
+                        faq.map((item, index) => {
+
+                            const panelId = 'panel-' + index;
+                            if (edited !== panelId)
+
+                                return (<ExpansionPanel expanded={expanded === panelId} onChange={expandPanel(panelId)} classes={{
+                                    root: 'qaPanelRoot'
+                                }}>
+                                    <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
+                                        root: 'qaPanelHeader',
+                                        expandIcon: 'qaHeaderIcon',
+                                        content: 'qaPanelHeaderContent'
+                                    }}>
+                                        {item.question}
+                                        {editMode &&
+                                            <IconButton onClick={() => editPanel(panelId)} className='editBtn'>
+                                                <Icon>edit</Icon>
+                                            </IconButton>
+                                        }
+                                    </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
+                                        {item.answer}
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>)
+                            else return <QuestionEdit question={item} />
+                        })
+                    }
                 </section>
 
             </Grid>
@@ -186,11 +148,16 @@ const Show = (props) => {
 
 const ShowHOC = compose(
     withState('expanded', 'updateExpanded', null),
+    withState('edited', 'updateEdited', null),
     withHandlers({
         expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
             updateExpanded(expanded ? panel : false);
+        },
+        editPanel: ({ updateEdited }) => (panel) => {
+            updateEdited(panel || false);
         }
     }),
+    SliderHOC,
     pure
 )
 
