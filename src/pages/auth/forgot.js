@@ -124,19 +124,17 @@ const ForgotPasswordHOC = compose(
                     }
                 });
 
+                setLoadingState(false);
                 let { error, status } = response.data.forgotPassword;
 
                 if (error) {
                     setForgotError(error || error.message || 'Something went wrong.');
-                    setLoadingState(false);
                     return false;
                 }
                 if (!status) {
                     setForgotError('Something went wrong.');
-                    setLoadingState(false);
                     return false;
                 }
-                setLoadingState(false);
                 history.push(`/${match.params.lang}/login`);
 
             }

@@ -125,9 +125,7 @@ const LoginComponent = (props) => {
 
 const LoginHOC = compose(
     withRouter,
-    graphql(LoginMutation, {
-        name: 'loginMutation'
-    }),
+    graphql(LoginMutation),
     withState('email', 'setEmail', ''),
     withState('emailError', 'setEmailError', null),
     withState('password', 'setPassword', ''),
@@ -144,34 +142,36 @@ const LoginHOC = compose(
             setEmailError(!isValidEmail(email));
         },
         doLogin: (props) => async () => {
-            const { email, password, loginMutation, setLoginError, match, history, setLoadingState } = props;
+            const { email, password, mutate, setLoginError, match, history, setLoadingState } = props;
+            // debugger;
             setLoadingState(true);
-            try {
-                let response = await loginMutation({
-                    variables: {
-                        email,
-                        password
-                    }
-                });
-                setLoadingState(false);
-
-                let { error, token, refreshToken } = response.data.login;
-                if (error) {
-                    setLoginError(error || error.message || 'Something went wrong.');
-                    return false;
+            // try {
+            let response = await mutate({
+                variables: {
+                    email,
+                    password
                 }
-                if (!token || !refreshToken) {
-                    setLoginError('Something went wrong.');
-                    return false;
-                }
+            });
+            let { error, token, refreshToken } = response.data.login;
 
-                history.push(`/${match.params.lang}/dashboard`);
 
-            }
-            catch (error) {
+            if (error) {
                 setLoginError(error || error.message || 'Something went wrong.');
                 setLoadingState(false);
+                return false;
+            } else if (!token || !refreshToken) {
+                setLoginError('Something went wrong.');
+                setLoadingState(false);
+                return false;
+            } else {
+                history.push(`/${match.params.lang}/dashboard`);
             }
+
+            //     }
+            //     catch (error) {
+            //         setLoginError(error || error.message || 'Something went wrong.');
+            //         // setLoadingState(false);
+            //     }
         }
     }),
     pure

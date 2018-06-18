@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Paper, TextField, Button, Hidden } from '@material-ui/core';
+import { Grid, Paper, TextField, Hidden } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { compose, pure, lifecycle, withState } from 'recompose';
 import { graphql } from 'react-apollo';
