@@ -86,6 +86,38 @@ const company = {
             question: 'What is the question 4?',
             answer: 'Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at.'
         }
+    ],
+    jobs: [
+        {
+            id: 'job-1',
+            title: 'Some job title',
+            date: '11-12-2018',
+            level: 'entry'
+        },
+        {
+            id: 'job-2',
+            title: 'Some job title',
+            date: '11-12-2018',
+            level: 'entry'
+        },
+        {
+            id: 'job-3',
+            title: 'Some job title',
+            date: '11-12-2018',
+            level: 'entry'
+        },
+        {
+            id: 'job-4',
+            title: 'Some job title',
+            date: '11-12-2018',
+            level: 'entry'
+        },
+        {
+            id: 'job-5',
+            title: 'Some job title',
+            date: '11-12-2018',
+            level: 'entry'
+        }
     ]
 };
 

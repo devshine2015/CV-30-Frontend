@@ -308,6 +308,58 @@
                     margin: 0;
                     padding: 0;
                 }
+                .jobs {
+                    display: flex;
+                    flex-direction: column;
+                    margin-top: 15px;
+                    .jobItem {
+                        display: flex;
+                        border-bottom: 1px solid #ebebeb;
+                        padding: 15px 0;
+                        align-items: center;
+                        .media {
+                            display: flex;
+                            position: relative;
+                            flex: 1;
+                            .mediaFake {
+                                width: 250px;
+                                height: 140px;
+                                background: #989898;
+                                border-radius: 10px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                i {
+                                    color: #fff;
+                                }
+                            }
+                            span.role {
+                                background: #414141;
+                                color: #fff;
+                                padding: 5px 10px;
+                                position: absolute;
+                                bottom: -10px;
+                                left: 10px;
+                            }
+                        }
+                        .info {
+                            display: flex;
+                            flex-direction: column;
+                            flex: 1;
+                            margin-left: 15px;
+                            h5 {
+                                font-size: 1rem;
+                                color: #414141;
+                                font-weight: bold;
+                            }
+                            span {
+                                font-size: 1rem;
+                                font-weight: normal;
+                                color: #a0a0a0;
+                            }
+                        }
+                    }
+                }
             }
         }
         .centralColumn {

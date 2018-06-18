@@ -9,7 +9,7 @@ import Story from './story';
 
 const Show = (props) => {
     const { expanded, expandPanel, editMode, data, edited, editPanel } = props;
-    const { faq, moreStories } = data;
+    const { faq, moreStories, jobs } = data;
     return (
         <Grid container className='mainBody brandShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -109,8 +109,30 @@ const Show = (props) => {
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
                     <h2 className="columnTitle">
-                        Joburi <b>recente</b>
+                        <b>Joburi</b> recente
                     </h2>
+
+                    <div className='jobs'>
+                        {
+                            jobs.map((job, index) => {
+                                return (
+                                    <div className='jobItem' key={job.id}>
+                                        <div className='media'>
+                                            <div className='mediaFake'>
+                                                <i className="fas fa-play fa-3x"></i>
+                                            </div>
+                                            <span className='role'>{job.level}</span>
+                                        </div>
+                                        <div className='info'>
+                                            <h5>{job.title}</h5>
+                                            <span>{job.date} - {job.location}</span>
+                                        </div>
+
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
             </Grid>
         </Grid>
