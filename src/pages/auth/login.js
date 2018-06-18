@@ -144,34 +144,30 @@ const LoginHOC = compose(
         doLogin: (props) => async () => {
             const { email, password, mutate, setLoginError, match, history, setLoadingState } = props;
             // debugger;
-            setLoadingState(true);
-            // try {
-            let response = await mutate({
-                variables: {
-                    email,
-                    password
+            // setLoadingState(true);
+            try {
+                let response = await mutate({
+                    variables: {
+                        email,
+                        password
+                    }
+                });
+                let { error, token, refreshToken } = response.data.login;
+                // setLoadingState(false);
+
+                if (error) {
+                    setLoginError(error || error.message || 'Something went wrong.');
+                    return false;
+                } else if (!token || !refreshToken) {
+                    setLoginError('Something went wrong.');
+                    return false;
+                } else {
+                    history.push(`/${match.params.lang}/dashboard`);
                 }
-            });
-            let { error, token, refreshToken } = response.data.login;
-
-
-            if (error) {
+            } catch (error) {
                 setLoginError(error || error.message || 'Something went wrong.');
-                setLoadingState(false);
-                return false;
-            } else if (!token || !refreshToken) {
-                setLoginError('Something went wrong.');
-                setLoadingState(false);
-                return false;
-            } else {
-                history.push(`/${match.params.lang}/dashboard`);
+                // setLoadingState(false);
             }
-
-            //     }
-            //     catch (error) {
-            //         setLoginError(error || error.message || 'Something went wrong.');
-            //         // setLoadingState(false);
-            //     }
         }
     }),
     pure
