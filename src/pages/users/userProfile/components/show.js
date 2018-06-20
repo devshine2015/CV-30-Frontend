@@ -85,9 +85,8 @@ const Show = (props) => {
                                     let label = result.text || '';
                                     let value = contact[key];
                                     return (
-                                        <p className='contactDetail'>
-                                            <span>{label}: </span>
-                                            {value}
+                                        <p className='contactDetail' key={label}>
+                                            <span>{label}: </span>{value}
                                         </p>
                                     )
                                 })}
