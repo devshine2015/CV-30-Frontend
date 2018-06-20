@@ -1,9 +1,15 @@
 import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
+import { compose, withState, withHandlers, pure } from 'recompose';
+import S3Uploader from 'react-s3-uploader';
+import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 
 const ColorPicker = (props) => {
-    const { colorPickerAnchor, onClose, availableColors, setColor } = props;
-    const value = 0;
+    const { colorPickerAnchor, onClose,
+        availableColors, setBackgroundColor,
+        activeTab, handleTabChange,
+        getSignedUrl, onUploadStart, onProgress, onError, onFinish, renameFile
+    } = props;
     return (
         <Popover
             anchorOrigin={{
@@ -22,21 +28,125 @@ const ColorPicker = (props) => {
             }}
         >
             <div className='popupHeader'>
-                <Tabs value={value} onChange={this.handleChange} classes={{ root: 'tabsRoot' }}>
-                    <Tab label="Colors" />
-                    <Tab label="Patterns" />
+                <Tabs
+                    value={activeTab}
+                    onChange={handleTabChange}
+                >
+                    <Tab label="Colors" value='colors' />
+                    <Tab label="Patterns" value='patterns' />
                 </Tabs>
-                <Button size='small' className='picUploadButton'>
-                    Upload picture
-                </Button>
+
+                <label htmlFor="uploadCoverPhoto">
+                    <S3Uploader
+                        id="uploadCoverPhoto"
+                        name="uploadCoverPhoto"
+                        className='hiddenInput'
+                        getSignedUrl={getSignedUrl}
+                        accept="image/*"
+                        preprocess={onUploadStart}
+                        onProgress={onProgress}
+                        onError={onError}
+                        onFinish={onFinish}
+                        uploadRequestHeaders={{
+                            'x-amz-acl': 'public-read',
+                        }}
+                        scrubFilename={(filename) => renameFile(filename)}
+                    />
+                    <Button component='span' size='small' className='picUploadButton'>
+                        Upload picture
+                    </Button>
+                </label>
+
+
             </div>
-            <div className='colorsContainer'>
+            <div className='popupBody'>
+                {activeTab === 'colors' &&
+                    <div className='pickerContainer colors'>
+                        {
+                            availableColors.map((color, index) =>
+                                <div
+                                    className='color'
+                                    onClick={() => setBackgroundColor(color)}
+                                    style={{ background: color.style }}
+                                    key={`colorPicker-${index}`}
+                                />)
+                        }
+                    </div>
+                }
                 {
-                    availableColors.map((color, index) => <Button className='color' style={{ background: color.style }} key={`colorPicker-${index}`}></Button>)
+                    activeTab === 'patterns' &&
+                    <div className='pickerContainer patterns'>
+                        <pre>Patterns</pre>
+                    </div>
                 }
             </div>
         </Popover>
     );
 }
 
-export default ColorPicker;
+const ColorPickerHOC = compose(
+    withState('activeTab', 'setActiveTab', 'colors'),
+    withState('isUploading', 'setIsUploading', false),
+    withState('uploadProgress', 'setUploadProgress', 0),
+    withState('uploadError', 'setUploadError', null),
+    withHandlers({
+        handleTabChange: ({ setActiveTab }) => (event, value) => {
+            setActiveTab(value);
+        },
+        setBackgroundColor: ({ updateHeaderCover }) => color => {
+            let style = { background: color.style };
+            updateHeaderCover(style);
+        },
+        getSignedUrl: () => async (file, callback) => {
+            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
+            let fName = ['cover', getExtension].join('.');
+
+            const params = {
+                fileName: fName,
+                contentType: file.type
+            };
+
+            try {
+                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+                let responseJson = await response.json();
+                callback(responseJson);
+            } catch (error) {
+                console.error(error);
+                callback(error)
+            }
+        },
+        renameFile: () => filename => {
+            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+            let fName = ['cover', getExtension].join('.');
+            return fName;
+        },
+        onUploadStart: ({ setIsUploading }) => (file, next) => {
+            setIsUploading(true);
+            next(file);
+        },
+        onProgress: ({ setUploadProgress }) => (percent) => {
+            setUploadProgress(percent);
+        },
+        onError: ({ setUploadError }) => error => {
+            setUploadError(error);
+            console.log(error);
+        },
+        onFinish: ({ updateHeaderCover, setIsUploading }) => () => {
+            setIsUploading(false);
+            let newCover = `${s3BucketURL}/${profilesFolder}/cover.jpg?${Date.now()}`;
+            let style = { background: `url(${newCover})` };
+            updateHeaderCover(style);
+            console.log('finished!');
+        }
+    }),
+    pure
+);
+
+export default ColorPickerHOC(ColorPicker);

@@ -1,6 +1,7 @@
 .userProfileRoot {
     .header {
         background: linear-gradient(to right, #49525e 0%, #1f3947 100%);
+        transition: all 1s ease-in;
         padding: 15px 50px 20px;
         @media (max-width: 600px) {
             padding: 15px;
@@ -81,6 +82,10 @@
                     background: #397db9;
                 }
             }
+        }
+        .avatarLoadCircle {
+            color: #fff;
+            position: absolute;
         }
         @media (max-width: 600px) {
             justify-content: center;
@@ -721,13 +726,16 @@
             border-radius: 5px;
         }
     }
-    .colorsContainer {
+    .pickerContainer {
         padding: 30px;
+        display: flex;
+        flex-wrap: wrap;
         .color {
             width: 80px;
             height: 80px;
             border-radius: 5px;
             margin: 5px;
+            cursor: pointer;
         }
     }
 }

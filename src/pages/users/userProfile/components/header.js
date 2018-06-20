@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Avatar, Button, Icon, Hidden, IconButton, Chip } from '@material-ui/core';
+import { Grid, Avatar, Button, Icon, Hidden, IconButton, Chip, CircularProgress } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from "recompose";
 import { FormattedMessage } from 'react-intl';
 import { NavLink, withRouter } from 'react-router-dom';
@@ -18,9 +18,17 @@ const HeaderHOC = compose(
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
     withState('avatar', 'setAvatar', ({ data }) => `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}`),
+    withState('headerStyle', 'setHeaderStyle', ({ data }) => { return null }),
+    withState('isUploading', 'setIsUploading', false),
+    withState('uploadProgress', 'setUploadProgress', 0),
+    withState('uploadError', 'setUploadError', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
+        },
+        updateHeaderCover: ({ setHeaderStyle }) => style => {
+            console.log(style);
+            setHeaderStyle(style);
         },
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
             setColorPickerAnchor(null);
@@ -41,17 +49,50 @@ const HeaderHOC = compose(
             stories.splice(index, 1);
             setHeaderStories(stories);
         },
+        getSignedUrl: () => async (file, callback) => {
+            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
+            let fName = ['avatar', getExtension].join('.');
+
+            const params = {
+                fileName: fName,
+                contentType: file.type
+            };
+
+            try {
+                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+                let responseJson = await response.json();
+                callback(responseJson);
+            } catch (error) {
+                console.error(error);
+                callback(error)
+            }
+        },
         renameFile: () => filename => {
-            debugger;
             let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
             let fName = ['avatar', getExtension].join('.');
             return fName;
         },
-        onProgress: () => () => { },
-        onError: () => error => {
+        onUploadStart: ({ setIsUploading, setAvatar }) => (file, next) => {
+            setIsUploading(true);
+            setAvatar(null);
+            next(file);
+        },
+        onProgress: ({ setUploadProgress }) => (percent) => {
+            setUploadProgress(percent);
+        },
+        onError: ({ setUploadError }) => error => {
+            setUploadError(error);
             console.log(error);
         },
-        onFinish: ({ setAvatar }) => () => {
+        onFinish: ({ setAvatar, setIsUploading }) => () => {
+            setIsUploading(false);
             let newAvatar = `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}`;
             setAvatar(newAvatar);
             console.log('finished!');
@@ -64,14 +105,17 @@ const HeaderHOC = compose(
 
 const Header = (props) => {
     const { editMode, data,
-        closeColorPicker, toggleColorPicker, colorPickerAnchor, removeStory,
+        closeColorPicker, toggleColorPicker, colorPickerAnchor, updateHeaderCover, headerStyle,
+        removeStory,
         activeItem, prevItem, jumpToItem, nextItem,
         openSkillsModal,
         skillsModalData,
         skillsAnchor,
         closeSkillsModal,
         headerStories,
-        renameFile, onProgress, onError, onFinish, avatar
+        getSignedUrl, renameFile, onProgress, onError, onFinish, onUploadStart,
+        isUploading, uploadProgress,
+        avatar
     } = props;
     const {
         availableColors,
@@ -80,46 +124,23 @@ const Header = (props) => {
     } = data;
     const lang = props.match.params.lang;
 
-    const getSignedUrl = async (file, callback) => {
-        let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-        let fName = ['avatar', getExtension].join('.');
-
-        const params = {
-            fileName: fName,
-            contentType: file.type
-        };
-
-        try {
-            let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(params)
-            });
-            let responseJson = await response.json();
-            callback(responseJson);
-        } catch (error) {
-            console.error(error);
-            callback(error)
-        }
-    }
-
     return (
-        <div className='header'>
+        <div className='header' style={headerStyle || null}>
             <Grid container className='headerLinks'>
                 <Grid item md={3} sm={12} xs={12} className='userAvatar'>
-                    <Avatar alt="Gabriel" src={avatar} key={avatar} className='avatar' />
+                    <Avatar alt="Gabriel" src={avatar} key={avatar} className='avatar'>
+                        {!avatar && 'Gabi'}
+                    </Avatar>
                     {editMode &&
                         <React.Fragment>
-                            <label htmlFor="fileUpload">
+                            <label htmlFor="uploadProfileImg">
                                 <S3Uploader
-                                    id="fileUpload"
-                                    name="fileUpload"
+                                    id="uploadProfileImg"
+                                    name="uploadProfileImg"
                                     className='hiddenInput'
                                     getSignedUrl={getSignedUrl}
                                     accept="image/*"
+                                    preprocess={onUploadStart}
                                     onProgress={onProgress}
                                     onError={onError}
                                     onFinish={onFinish}
@@ -128,14 +149,27 @@ const Header = (props) => {
                                     }}
                                     scrubFilename={(filename) => renameFile(filename)}
                                 />
-                                <Button component='span' className='badgeRoot'>
+                                <Button component='span' className='badgeRoot' disabled={isUploading}>
                                     <Icon>
                                         camera_alt
                                     </Icon>
                                 </Button>
                             </label>
-
-                            <ColorPicker colorPickerAnchor={colorPickerAnchor} onClose={closeColorPicker} availableColors={availableColors} />
+                            {isUploading &&
+                                <CircularProgress
+                                    className='avatarLoadCircle'
+                                    value={uploadProgress}
+                                    size={130}
+                                    variant='determinate'
+                                    thickness={2}
+                                />
+                            }
+                            <ColorPicker
+                                colorPickerAnchor={colorPickerAnchor}
+                                availableColors={availableColors}
+                                updateHeaderCover={updateHeaderCover}
+                                onClose={closeColorPicker}
+                            />
                         </React.Fragment>
                     }
                     <div className='avatarTexts'>
