@@ -153,7 +153,10 @@ const LoginHOC = compose(
                     }
                 });
 
-                let { error, token, refreshToken } = response.data.login;
+                const {
+                    error, token, refreshToken,
+                    id, firstName, lastName, email, hasAvatar
+                } = response.data.login;
 
                 if (error) {
                     setLoginError(error || error.message || 'Something went wrong.');
@@ -162,10 +165,21 @@ const LoginHOC = compose(
                     setLoginError('Something went wrong.');
                     return false;
                 } else {
-                    await authLocal();
+                    await authLocal({
+                        variables: {
+                            user: {
+                                id,
+                                firstName,
+                                lastName,
+                                email,
+                                hasAvatar
+                            }
+                        }
+                    });
                     history.push(`/${match.params.lang}/dashboard`);
                 }
             } catch (error) {
+                console.log(error);
                 setLoginError(error || error.message || 'Something went wrong.');
             }
         }

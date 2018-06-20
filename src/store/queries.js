@@ -2,10 +2,15 @@ import gql from 'graphql-tag';
 
 export const LoginMutation = gql`
     mutation login($email: String!, $password: String!) {
-        login(email: $email, password: $password) {
+        login(email: $email, password: $password) {  
             token
             refreshToken
             error
+            id
+            email
+            firstName
+            lastName
+            hasAvatar
         }        
     }
 `;
@@ -57,8 +62,8 @@ export const ActivateAccountMutation = gql`
 `;
 
 export const AuthenticateLocal = gql`
-    mutation {
-        setAuthenticated(status: true) @client
+    mutation setAuthenticated($user: User) {
+        setAuthenticated(status: true, user: $user) @client
     }
 `;
 
