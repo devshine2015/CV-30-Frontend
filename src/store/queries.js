@@ -6,8 +6,7 @@ export const LoginMutation = gql`
             token
             refreshToken
             error
-        }
-        setAuthenticated(status: true) @client
+        }        
     }
 `;
 
@@ -53,6 +52,55 @@ export const ActivateAccountMutation = gql`
         activateAccount(token: $token) {
             error
             status
+        }
+    }
+`;
+
+export const AuthenticateLocal = gql`
+    mutation {
+        setAuthenticated(status: true) @client
+    }
+`;
+
+export const ProfileQuery = gql`
+    query profile($id: Int, $language: LanguageCodeType!)  {
+        profile (id: $id, language: $language){
+            firstName
+            lastName
+            hasAvatar
+            hasProfileCover
+            coverBackground
+            errors {
+                name
+                value
+                statusCode
+            }
+        }
+    }
+`;
+
+export const currentUserQuery = gql`
+    query currentUser($id: Int, $language: LanguageCodeType!)  {
+            profile (id: $id, language: $language){
+                firstName
+                lastName
+                hasAvatar
+                hasProfileCover
+                coverBackground
+                errors {
+                    name
+                    value
+                    statusCode
+                }
+            }
+        }
+`;
+
+export const updateAvatar = gql`
+    mutation updateAvatar($status:Boolean!){
+        avatar(status: $status){
+            status
+            error
         }
     }
 `;

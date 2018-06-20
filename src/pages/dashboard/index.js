@@ -3,6 +3,10 @@ import Navigation from '../../components/navigation';
 import { Switch, Route } from 'react-router-dom';
 import UserProfile from '../users/userProfile';
 import Brand from '../companies/brand';
+import { compose, pure } from 'recompose';
+import { graphql } from 'react-apollo';
+import { currentUserQuery } from '../../store/queries';
+
 const News = () => <div>News</div>;
 
 const People = () => <div>People</div>;
@@ -27,4 +31,14 @@ class Dashboard extends Component {
     }
 }
 
-export default Dashboard;
+const DashHOC = compose(graphql(
+    currentUserQuery,
+    {
+        name: 'getCurrentUser',
+        options: (props) => ({
+            variables: { language: props.match.params.lang },
+        }),
+    }
+), pure)
+
+export default DashHOC(Dashboard);

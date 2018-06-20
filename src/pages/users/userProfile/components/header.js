@@ -9,15 +9,18 @@ import SkillsEditor from './skillsEditor';
 
 import slider from '../../../../hocs/slider';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
+import { graphql } from 'react-apollo';
+import { updateAvatar } from '../../../../store/queries';
 
 const HeaderHOC = compose(
     withRouter,
+    graphql(updateAvatar, { name: 'updateAvatar' }),
     withState('headerStories', 'setHeaderStories', ({ data }) => data.headerStories || []),
-    withState('count', 'setCount', ({ data }) => data.headerStories.length - 1),
+    withState('count', 'setCount', ({ data }) => data.headerStories ? data.headerStories.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
-    withState('avatar', 'setAvatar', ({ data }) => `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}`),
+    withState('avatar', 'setAvatar', ({ data }) => data.hasAvatar ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}` : null),
     withState('headerStyle', 'setHeaderStyle', ({ data }) => { return null }),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
@@ -91,7 +94,13 @@ const HeaderHOC = compose(
             setUploadError(error);
             console.log(error);
         },
-        onFinish: ({ setAvatar, setIsUploading }) => () => {
+        onFinish: ({ setAvatar, setIsUploading, updateAvatar }) => async () => {
+            await updateAvatar({
+                variables: {
+                    status: true
+                }
+            });
+
             setIsUploading(false);
             let newAvatar = `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}`;
             setAvatar(newAvatar);
@@ -245,19 +254,22 @@ const Header = (props) => {
 
                 <Hidden mdUp>
                     <div className='storySliderContainer'>
-                        <div className='storiesSlider'>
-                            {
-                                headerStories.map((story, index) => {
-                                    let itemClass = index === activeItem ? 'storyItem active' : 'storyItem';
-                                    return (
-                                        <div className={itemClass} key={`headerStory - ${index}`}>
-                                            <img src={story.img} alt="ceva" className='storyImg' />
-                                            <span className='storyTitle'>{story.title}</span>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
+                        {
+                            headerStories &&
+                            <div className='storiesSlider'>
+                                {
+                                    headerStories.map((story, index) => {
+                                        let itemClass = index === activeItem ? 'storyItem active' : 'storyItem';
+                                        return (
+                                            <div className={itemClass} key={`headerStory - ${index}`}>
+                                                <img src={story.img} alt="ceva" className='storyImg' />
+                                                <span className='storyTitle'>{story.title}</span>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                        }
                     </div>
                     <div className='storySliderControls'>
                         <IconButton className='sliderArrow' onClick={prevItem}>

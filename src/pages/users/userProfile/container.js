@@ -1,7 +1,8 @@
 import UserProfile from './component';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
-
+import { graphql } from 'react-apollo';
+import { ProfileQuery } from '../../../store/queries'
 const userProfileData = {
     headerStories: [
         {
@@ -95,7 +96,21 @@ const userProfileData = {
 
 const UserProfileHOC = compose(
     withRouter,
+    graphql(ProfileQuery, {
+        name: 'profileQuery',
+        options: (props) => ({
+            variables: { language: props.match.params.lang },
+        }),
+    }),
     withState('data', 'setData', userProfileData),
+    // withState('data', 'setData', ({ profileQuery }) => {
+    //     const { profile } = profileQuery;
+    //     return profile || {};
+    // }),
+    withState('loading', null, ({ profileQuery }) => {
+        const { loading } = profileQuery;
+        return loading || false;
+    }),
     withState('editMode', 'updateEditMode', false),
     withHandlers({
         switchEditMode: ({ editMode, updateEditMode }) => () => {

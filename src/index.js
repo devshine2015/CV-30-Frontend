@@ -4,10 +4,10 @@ import App from './App';
 // import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import ApolloClient from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
+import { HttpLink, createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { withClientState } from 'apollo-link-state';
-import { ApolloLink } from 'apollo-link';
+import { ApolloLink, } from 'apollo-link';
 import { defaults, resolvers } from './store';
 import { persistCache } from 'apollo-cache-persist';
 import localForage from 'localforage';
@@ -28,7 +28,7 @@ import localForage from 'localforage';
         debug: process.env.NODE_ENV === 'production'
     });
 
-    const httpLink = new HttpLink({
+    const httpLink = createHttpLink({
         uri: process.env.NODE_ENV === 'production' ? 'https://api.cv30.co/graphql' : 'http://localhost/graphql',
         credentials: 'include'
     });

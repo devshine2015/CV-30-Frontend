@@ -3,7 +3,7 @@ import { Grid, Paper, TextField, Button, Hidden } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
-import { LoginMutation } from '../../store/queries';
+import { LoginMutation, AuthenticateLocal } from '../../store/queries';
 import { Link, withRouter } from 'react-router-dom';
 import { isValidEmail } from '../../constants/utils';
 
@@ -125,13 +125,15 @@ const LoginComponent = (props) => {
 
 const LoginHOC = compose(
     withRouter,
-    graphql(LoginMutation),
+    graphql(LoginMutation, {
+        name: 'loginMutation'
+    }),
+    graphql(AuthenticateLocal, { name: 'authLocal' }),
     withState('email', 'setEmail', ''),
     withState('emailError', 'setEmailError', null),
     withState('password', 'setPassword', ''),
     withState('passwordError', 'setPasswordError', null),
     withState('loginError', 'setLoginError', null),
-    withState('loading', 'setLoadingState', false),
     withHandlers({
         updatePassword: ({ setPassword, setPasswordError }) => (password) => {
             setPassword(password);
@@ -142,18 +144,16 @@ const LoginHOC = compose(
             setEmailError(!isValidEmail(email));
         },
         doLogin: (props) => async () => {
-            const { email, password, mutate, setLoginError, match, history, setLoadingState } = props;
-            // debugger;
-            // setLoadingState(true);
+            const { email, password, loginMutation, authLocal, setLoginError, match, history } = props;
             try {
-                let response = await mutate({
+                let response = await loginMutation({
                     variables: {
                         email,
                         password
                     }
                 });
+
                 let { error, token, refreshToken } = response.data.login;
-                // setLoadingState(false);
 
                 if (error) {
                     setLoginError(error || error.message || 'Something went wrong.');
@@ -162,11 +162,11 @@ const LoginHOC = compose(
                     setLoginError('Something went wrong.');
                     return false;
                 } else {
+                    await authLocal();
                     history.push(`/${match.params.lang}/dashboard`);
                 }
             } catch (error) {
                 setLoginError(error || error.message || 'Something went wrong.');
-                // setLoadingState(false);
             }
         }
     }),
