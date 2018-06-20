@@ -83,9 +83,14 @@ const HeaderHOC = compose(
             return fName;
         },
         onUploadStart: ({ setIsUploading, setAvatar }) => (file, next) => {
-            setIsUploading(true);
-            setAvatar(null);
-            next(file);
+            let size = file.size;
+            if (size > 500 * 1024) {
+                alert('File is too big!');
+            } else {
+                setIsUploading(true);
+                setAvatar(null);
+                next(file);
+            }
         },
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
@@ -95,11 +100,11 @@ const HeaderHOC = compose(
             console.log(error);
         },
         onFinish: ({ setAvatar, setIsUploading, updateAvatar }) => async () => {
-            await updateAvatar({
-                variables: {
-                    status: true
-                }
-            });
+            // await updateAvatar({
+            //     variables: {
+            //         status: true
+            //     }
+            // });
 
             setIsUploading(false);
             let newAvatar = `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}`;
@@ -157,6 +162,7 @@ const Header = (props) => {
                                         'x-amz-acl': 'public-read',
                                     }}
                                     scrubFilename={(filename) => renameFile(filename)}
+
                                 />
                                 <Button component='span' className='badgeRoot' disabled={isUploading}>
                                     <Icon>
