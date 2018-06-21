@@ -155,7 +155,6 @@ const LoginHOC = compose(
 
                 const {
                     error, token, refreshToken,
-                    id, firstName, lastName, hasAvatar
                 } = response.data.login;
 
                 if (error) {

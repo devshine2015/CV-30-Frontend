@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-// import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import ApolloClient from 'apollo-client';
-import { HttpLink, createHttpLink } from 'apollo-link-http';
+import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { withClientState } from 'apollo-link-state';
 import { ApolloLink, } from 'apollo-link';
@@ -34,10 +33,6 @@ import localForage from 'localforage';
     });
 
     const client = new ApolloClient({
-        // link: createHttpLink({
-        //     uri: process.env.NODE_ENV === 'production' ? 'https://api.cv30.co/graphql' : 'http://localhost/graphql',
-        //     credentials: 'include'
-        // }),
         link: ApolloLink.from([stateLink, httpLink]),
         cache
     });
@@ -53,14 +48,3 @@ import localForage from 'localforage';
         document.getElementById('root')
     );
 })();
-
-// const client = new ApolloClient({
-//     uri: process.env.NODE_ENV === 'production' ? 'https://api.cv30.co/graphql' : 'http://localhost/graphql',
-//     fetchOptions: {
-//         credentials: 'include'
-//     },
-//     clientState: {
-//         resolvers,
-//         defaults
-//     }
-// });
