@@ -6,12 +6,14 @@ export default {
                 auth: {
                     __typename: "Authentication",
                     loggedIn: status
-                },
-                currentUser: {
-                    __typename: "User",
-                    ...user
                 }
             };
+            // if (user) {
+            //     data.currentUser = {
+            //         __typename: "User",
+            //         ...user
+            //     };
+            // }
             cache.writeData({ data });
             return data;
         },

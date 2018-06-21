@@ -4,7 +4,7 @@ import { compose, pure, withState, withHandlers } from 'recompose';
 
 const ExperienceEdit = (props) => {
     const { formData, isVideoUrl, switchMediaType, handleFormChange, closeEditor } = props;
-    const { position, company, location, startDate, endDate, stillWorkThere, description, videoURL, fileUpload } = formData;
+    const { position, company, location, startDate, endDate, stillWorkThere, description, videoURL } = formData;
 
     return (
         <form className='experienceForm' noValidate autoComplete='off'>

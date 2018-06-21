@@ -155,7 +155,7 @@ const LoginHOC = compose(
 
                 const {
                     error, token, refreshToken,
-                    id, firstName, lastName, email, hasAvatar
+                    id, firstName, lastName, hasAvatar
                 } = response.data.login;
 
                 if (error) {
@@ -165,17 +165,7 @@ const LoginHOC = compose(
                     setLoginError('Something went wrong.');
                     return false;
                 } else {
-                    await authLocal({
-                        variables: {
-                            user: {
-                                id,
-                                firstName,
-                                lastName,
-                                email,
-                                hasAvatar
-                            }
-                        }
-                    });
+                    await authLocal();
                     history.push(`/${match.params.lang}/dashboard`);
                 }
             } catch (error) {

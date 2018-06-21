@@ -8,9 +8,11 @@ import UserProfileFeed from './components/feed';
 import Header from './components/header';
 
 const UserProfile = (props) => {
-    const { editMode, switchEditMode } = props;
+    const { editMode, switchEditMode, currentUser } = props;
 
     const Show = () => <UserProfileShow {...props} />
+    if (currentUser.loading)
+        return <div>Loading</div>
 
     return (<div className='userProfileRoot'>
         <FormGroup row className='editToggle'>
@@ -25,14 +27,15 @@ const UserProfile = (props) => {
             <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
         </FormGroup>
 
-        <Header {...props} />
-
-        <React.Fragment>
+        <Header currentUser={currentUser} editMode={editMode} />
+        {/*
+            <React.Fragment>
             <Switch>
-                <Route exact path='/:lang(en|ro)/dashboard/profile' component={Show} />
-                <Route exact path='/:lang(en|ro)/dashboard/profile/feed' component={UserProfileFeed} />
+            <Route exact path='/:lang(en|ro)/dashboard/profile' component={Show} />
+            <Route exact path='/:lang(en|ro)/dashboard/profile/feed' component={UserProfileFeed} />
             </Switch>
-        </React.Fragment>
+            </React.Fragment>
+        */}
     </div>
     );
 }

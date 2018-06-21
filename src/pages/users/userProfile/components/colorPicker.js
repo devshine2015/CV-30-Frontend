@@ -2,11 +2,14 @@ import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import S3Uploader from 'react-s3-uploader';
+import { graphql } from 'react-apollo';
+
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
+import { availableColors, availablePatterns } from '../../../../constants/headerBackgrounds';
 
 const ColorPicker = (props) => {
     const { colorPickerAnchor, onClose,
-        availableColors, setBackgroundColor,
+        setBackgroundColor,
         activeTab, handleTabChange,
         getSignedUrl, onUploadStart, onProgress, onError, onFinish, renameFile
     } = props;
@@ -85,6 +88,7 @@ const ColorPicker = (props) => {
 }
 
 const ColorPickerHOC = compose(
+
     withState('activeTab', 'setActiveTab', 'colors'),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),

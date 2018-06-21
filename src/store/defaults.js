@@ -5,7 +5,7 @@ export default {
     },
     currentUser: {
         __typename: "User",
-        id: null,
+        id: '0',
         firstName: '',
         lastName: '',
         email: '',

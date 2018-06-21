@@ -7,7 +7,6 @@ export const LoginMutation = gql`
             refreshToken
             error
             id
-            email
             firstName
             lastName
             hasAvatar
@@ -67,28 +66,12 @@ export const AuthenticateLocal = gql`
     }
 `;
 
-export const ProfileQuery = gql`
-    query profile($id: Int, $language: LanguageCodeType!)  {
-        profile (id: $id, language: $language){
-            firstName
-            lastName
-            hasAvatar
-            hasProfileCover
-            coverBackground
-            errors {
-                name
-                value
-                statusCode
-            }
-        }
-    }
-`;
-
 export const currentUserQuery = gql`
     query currentUser($id: Int, $language: LanguageCodeType!)  {
             profile (id: $id, language: $language){
                 firstName
                 lastName
+                email
                 hasAvatar
                 hasProfileCover
                 coverBackground
@@ -106,6 +89,36 @@ export const updateAvatar = gql`
         avatar(status: $status){
             status
             error
+        }
+    }
+`;
+
+export const getCurrentUser = gql`
+    query getCurrentUser {
+        currentUser @client {
+            id
+            firstName
+            lastName
+            email
+            hasAvatar
+        }
+    }
+`;
+
+export const setCoverBackground = gql`
+    mutation setCoverBackground($color: String) {
+        setCoverBackground(color: $color) {
+            status
+            error
+        }
+    }
+`;
+
+export const setHasBackgroundImage = gql`
+    mutation profileCover($status: Boolean) {
+        profileCover(status: $status) {
+            error
+            status
         }
     }
 `;

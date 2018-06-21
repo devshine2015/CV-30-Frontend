@@ -4,24 +4,26 @@ import { compose, pure, withState, withHandlers } from "recompose";
 import { FormattedMessage } from 'react-intl';
 import { NavLink, withRouter } from 'react-router-dom';
 import S3Uploader from 'react-s3-uploader';
+import { graphql } from 'react-apollo';
+
 import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
-
 import slider from '../../../../hocs/slider';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { graphql } from 'react-apollo';
-import { updateAvatar } from '../../../../store/queries';
+import { updateAvatar, setCoverBackground, setHasBackgroundImage } from '../../../../store/queries';
+
 
 const HeaderHOC = compose(
     withRouter,
     graphql(updateAvatar, { name: 'updateAvatar' }),
-    withState('headerStories', 'setHeaderStories', ({ data }) => data.headerStories || []),
-    withState('count', 'setCount', ({ data }) => data.headerStories ? data.headerStories.length - 1 : 0),
+    graphql(setCoverBackground, { name: 'setCoverBackground' }),
+    graphql(setHasBackgroundImage, { name: 'setHasBackgroundImage' }),
+    withState('count', 'setCount', ({ currentUser }) => currentUser.profile.featuredArticles ? currentUser.profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
-    withState('avatar', 'setAvatar', ({ data }) => data.hasAvatar ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}` : null),
-    withState('headerStyle', 'setHeaderStyle', ({ data }) => { return null }),
+    withState('avatar', 'setAvatar', ({ currentUser }) => currentUser.profile.hasAvatar ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}` : null),
+    withState('headerStyle', 'setHeaderStyle', ({ currentUser }) => { return null }),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
@@ -36,19 +38,19 @@ const HeaderHOC = compose(
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
             setColorPickerAnchor(null);
         },
-        openSkillsModal: ({ data, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
-            const { softSkills, values } = data;
+        openSkillsModal: ({ currentUser, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
+            const { skills, values } = currentUser.profile;
             if (type === 'values')
                 setSkillsModalData(values);
             if (type === 'skills')
-                setSkillsModalData(softSkills);
+                setSkillsModalData(skills);
             setSkillsAnchor(target);
         },
         closeSkillsModal: ({ setSkillsAnchor }) => () => {
             setSkillsAnchor(null);
         },
-        removeStory: ({ headerStories, setHeaderStories }) => index => {
-            let stories = [...headerStories];
+        removeStory: ({ profile, setHeaderStories }) => index => {
+            let stories = [...profile.featuredArticles];
             stories.splice(index, 1);
             setHeaderStories(stories);
         },
@@ -99,12 +101,15 @@ const HeaderHOC = compose(
             setUploadError(error);
             console.log(error);
         },
-        onFinish: ({ setAvatar, setIsUploading, updateAvatar }) => async () => {
-            // await updateAvatar({
-            //     variables: {
-            //         status: true
-            //     }
-            // });
+        onFinishUpload: (props) => async () => {
+            const { setAvatar, setIsUploading, updateAvatar, currentUser } = props;
+            await updateAvatar({
+                variables: {
+                    status: true
+                }
+            });
+
+            await currentUser.refetch();
 
             setIsUploading(false);
             let newAvatar = `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}`;
@@ -118,32 +123,33 @@ const HeaderHOC = compose(
 
 
 const Header = (props) => {
-    const { editMode, data,
+    const { editMode, currentUser,
         closeColorPicker, toggleColorPicker, colorPickerAnchor, updateHeaderCover, headerStyle,
         removeStory,
         activeItem, prevItem, jumpToItem, nextItem,
-        openSkillsModal,
-        skillsModalData,
-        skillsAnchor,
-        closeSkillsModal,
-        headerStories,
-        getSignedUrl, renameFile, onProgress, onError, onFinish, onUploadStart,
+        openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
+        getSignedUrl, renameFile, onProgress, onError, onFinishUpload, onUploadStart,
         isUploading, uploadProgress,
         avatar
     } = props;
     const {
-        availableColors,
-        softSkills,
+        firstName,
+        lastName,
+        email,
+        featuredArticles,
+        skills,
         values,
-    } = data;
+    } = currentUser.profile;
+    const avatarText = `${firstName.slice(0, 1).toUpperCase()}${lastName.slice(0, 1).toUpperCase()}` || email.slice(0, 1).toUpperCase() || '';
+
     const lang = props.match.params.lang;
 
     return (
         <div className='header' style={headerStyle || null}>
             <Grid container className='headerLinks'>
                 <Grid item md={3} sm={12} xs={12} className='userAvatar'>
-                    <Avatar alt="Gabriel" src={avatar} key={avatar} className='avatar'>
-                        {!avatar && 'Gabi'}
+                    <Avatar alt={firstName} src={avatar} key={avatar} className='avatar'>
+                        {!avatar && avatarText}
                     </Avatar>
                     {editMode &&
                         <React.Fragment>
@@ -157,7 +163,7 @@ const Header = (props) => {
                                     preprocess={onUploadStart}
                                     onProgress={onProgress}
                                     onError={onError}
-                                    onFinish={onFinish}
+                                    onFinish={onFinishUpload}
                                     uploadRequestHeaders={{
                                         'x-amz-acl': 'public-read',
                                     }}
@@ -181,14 +187,13 @@ const Header = (props) => {
                             }
                             <ColorPicker
                                 colorPickerAnchor={colorPickerAnchor}
-                                availableColors={availableColors}
                                 updateHeaderCover={updateHeaderCover}
                                 onClose={closeColorPicker}
                             />
                         </React.Fragment>
                     }
                     <div className='avatarTexts'>
-                        <h3>Gabriel</h3>
+                        <h3>{firstName}</h3>
                         <h4>Manager</h4>
                         {editMode &&
                             <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
@@ -229,7 +234,7 @@ const Header = (props) => {
             <Grid container className='headerStories' spacing={8}>
                 <Hidden smDown>
                     {
-                        headerStories.map((story, index) => (
+                        featuredArticles && featuredArticles.map((story, index) => (
                             <Grid item className='storyContainer' key={`headerStory - ${index}`}>
                                 <img src={story.img} alt="ceva" className='storyImg' />
                                 <span className='storyTitle'>{story.title}</span>
@@ -261,10 +266,10 @@ const Header = (props) => {
                 <Hidden mdUp>
                     <div className='storySliderContainer'>
                         {
-                            headerStories &&
+                            featuredArticles &&
                             <div className='storiesSlider'>
                                 {
-                                    headerStories.map((story, index) => {
+                                    featuredArticles.map((story, index) => {
                                         let itemClass = index === activeItem ? 'storyItem active' : 'storyItem';
                                         return (
                                             <div className={itemClass} key={`headerStory - ${index}`}>
@@ -282,7 +287,7 @@ const Header = (props) => {
                             <Icon>arrow_back_ios</Icon>
                         </IconButton>
                         {
-                            headerStories.map((item, index) => {
+                            featuredArticles && featuredArticles.map((item, index) => {
                                 return (<span className={index === activeItem ? 'sliderDot active' : 'sliderDot'} key={`storyMarker - ${index}`} onClick={() => jumpToItem(index)}></span>)
                             })
                         }
@@ -299,12 +304,12 @@ const Header = (props) => {
                         <FormattedMessage id="userProfile.softSkills" defaultMessage="Soft skills" description="User header soft skills">
                             {(text) => (<span className='headerSkillsTitle softSkills'>{text}:</span>)}
                         </FormattedMessage>
-                        {!editMode &&
-                            softSkills.map((item, index) => <Chip label={item} className='chip skills' key={`softSkill - ${index}`} />)
+                        {!editMode && skills &&
+                            skills.map((item, index) => <Chip label={item} className='chip skills' key={`softSkill - ${index}`} />)
                         }
                         {
-                            editMode &&
-                            <span>{softSkills.join(', ')}</span>
+                            editMode && skills &&
+                            <span>{skills.join(', ')}</span>
                         }
                         {
                             editMode &&
@@ -327,11 +332,11 @@ const Header = (props) => {
                         <FormattedMessage id="userProfile.values" defaultMessage="Values" description="User header values">
                             {(text) => (<span className='headerSkillsTitle values'>{text}:</span>)}
                         </FormattedMessage>
-                        {!editMode &&
+                        {!editMode && values &&
                             values.map((item, index) => <Chip label={item} className='chip values' key={`value - ${index}`} />)
                         }
                         {
-                            editMode &&
+                            editMode && values &&
                             <span>{values.join(', ')}</span>
                         }
                         {

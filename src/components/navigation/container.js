@@ -1,7 +1,9 @@
-import Navigation from './component';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
+
+import Navigation from './component';
 import Logout from '../../hocs/logout';
+
 
 const notifications = [
     {
@@ -23,6 +25,7 @@ const notifications = [
 
 const NavigationHOC = compose(
     withRouter,
+    withState('user', null, (props) => props.getCurrentUser.profile || null),
     withState('profileMenuOpen', 'setProfileMenuStatus', false),
     withState('notificationsMenuOpen', 'setNotificationsMenuStatus', false),
     withState('mobileNavOpen', 'setMobileNavStatus', false),

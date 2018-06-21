@@ -4,10 +4,14 @@ import { FormattedMessage } from 'react-intl';
 import { NavLink, Link } from 'react-router-dom';
 import { Manager, Target, Popper } from 'react-popper';
 import classNames from 'classnames';
+import { s3BucketURL, profilesFolder } from '../../constants/s3';
 
 const DesktopNav = (props) => {
-    const { match, doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications } = props;
+    const { getCurrentUser, match, doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications } = props;
     const lang = match.params.lang;
+    const user = getCurrentUser.profile;
+    if (!user)
+        return null;
     return (
         <React.Fragment>
             <Grid item sm={1} xs={1} md={1}>
@@ -55,8 +59,10 @@ const DesktopNav = (props) => {
                         <Button aria-owns={profileMenuOpen ? 'profileMenu' : null} aria-haspopup="true" onClick={toggleProfileMenu} className='profileButton' ref={node => {
                             this.target1 = node;
                         }}>
-                            <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className='avatar' />
-                            <span>Gabriel</span>
+                            <Avatar alt="Gabriel" src={user.hasAvatar ? `${s3BucketURL}/${profilesFolder}/avatar.jpg` : null} className='avatar'>
+                                {!user.hasAvatar && user.email.slice(0, 1)}
+                            </Avatar>
+                            <span>{user.firstName || user.email}</span>
                         </Button>
                     </Target>
                     <Portal>

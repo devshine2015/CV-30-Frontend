@@ -8,12 +8,14 @@ import { graphql } from 'react-apollo';
 import { currentUserQuery } from '../../store/queries';
 
 const News = () => <div>News</div>;
-
 const People = () => <div>People</div>;
 const Jobs = () => <div>Jobs</div>;
 
 class Dashboard extends Component {
     render() {
+        let { getCurrentUser } = this.props;
+        if (getCurrentUser.loading)
+            return <div>Loading</div>;
         return (
             <React.Fragment>
                 <Navigation {...this.props} />
@@ -31,14 +33,14 @@ class Dashboard extends Component {
     }
 }
 
-const DashHOC = compose(graphql(
-    currentUserQuery,
-    {
+const DashHOC = compose(
+    graphql(currentUserQuery, {
         name: 'getCurrentUser',
         options: (props) => ({
             variables: { language: props.match.params.lang },
         }),
-    }
-), pure)
+    }),
+    pure
+);
 
 export default DashHOC(Dashboard);
