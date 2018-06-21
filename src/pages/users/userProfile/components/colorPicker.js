@@ -2,10 +2,10 @@ import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import S3Uploader from 'react-s3-uploader';
-import { graphql } from 'react-apollo';
 
-import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { availableColors, availablePatterns } from '../../../../constants/headerBackgrounds';
+import { availableColors } from '../../../../constants/headerBackgrounds';
+import { setCoverBackground, setHasBackgroundImage } from '../../../../store/queries';
+import { graphql } from 'react-apollo';
 
 const ColorPicker = (props) => {
     const { colorPickerAnchor, onClose,
@@ -88,7 +88,8 @@ const ColorPicker = (props) => {
 }
 
 const ColorPickerHOC = compose(
-
+    graphql(setCoverBackground, { name: 'setCoverBg' }),
+    graphql(setHasBackgroundImage, { name: 'setBGImg' }),
     withState('activeTab', 'setActiveTab', 'colors'),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
@@ -97,7 +98,13 @@ const ColorPickerHOC = compose(
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
         },
-        setBackgroundColor: ({ updateHeaderCover }) => color => {
+        setBackgroundColor: ({ updateHeaderCover, setCoverBg }) => async color => {
+            await setCoverBg({
+                variables: {
+                    color: color.style
+                }
+            });
+
             let style = { background: color.style };
             updateHeaderCover(style);
         },
@@ -142,12 +149,13 @@ const ColorPickerHOC = compose(
             setUploadError(error);
             console.log(error);
         },
-        onFinish: ({ updateHeaderCover, setIsUploading }) => () => {
+        onFinish: ({ updateHeaderCover, setIsUploading, setBGImg }) => async () => {
+            await setBGImg({
+                variables:
+                    { status: true }
+            });
             setIsUploading(false);
-            let newCover = `${s3BucketURL}/${profilesFolder}/cover.jpg?${Date.now()}`;
-            let style = { background: `url(${newCover})` };
-            updateHeaderCover(style);
-            console.log('finished!');
+            updateHeaderCover();
         }
     }),
     pure

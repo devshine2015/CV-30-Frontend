@@ -5,11 +5,7 @@ export const LoginMutation = gql`
         login(email: $email, password: $password) {  
             token
             refreshToken
-            error
-            id
-            firstName
-            lastName
-            hasAvatar
+            error           
         }        
     }
 `;
@@ -68,20 +64,46 @@ export const AuthenticateLocal = gql`
 
 export const currentUserQuery = gql`
     query currentUser($id: Int, $language: LanguageCodeType!)  {
-            profile (id: $id, language: $language){
-                firstName
-                lastName
-                email
-                hasAvatar
-                hasProfileCover
-                coverBackground
-                errors {
-                    name
-                    value
-                    statusCode
-                }
+        profile(id: $id, language: $language) {
+            id
+            email
+            firstName
+            lastName
+            featuredArticles {
+                id
+            }
+            skills {
+                id
+            }
+            values {
+                id
+            }
+            experience {
+                id
+            }
+            projects {
+                id
+            }
+            contacts {
+                name
+                value
+            }
+            hasAvatar
+            hasProfileCover
+            coverBackground
+            story
+            salary {
+                amount
+                currency
+                isPublic
+            }
+            errors {
+                name
+                value
+                statusCode
             }
         }
+    }
 `;
 
 export const updateAvatar = gql`

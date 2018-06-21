@@ -9,8 +9,43 @@ import { compose } from 'react-apollo';
 import { pure, withState, withHandlers } from 'recompose';
 import { contactFields as fields } from '../../../../constants/contact';
 
+const ShowHOC = compose(
+    withState('XPEdit', 'setXPEdit', null),
+    withState('story', 'setMyStory', ({ currentUser }) => currentUser.profile.story || ''),
+    withState('editContactDetails', 'setEditContactDetails', false),
+    withState('contactExpanded', 'setContactExpanded', false),
+    withState('isSalaryPublic', 'setSalaryPrivacy', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.isPublic : false),
+    withState('desiredSalary', 'setDesiredSalary', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.amount : 0),
+    withHandlers({
+        toggleExperienceEdit: ({ XPEdit, setXPEdit }) => () => {
+            setXPEdit(!XPEdit);
+        },
+        toggleEditContact: ({ editContactDetails, setEditContactDetails, setContactExpanded }) => () => {
+            setEditContactDetails(!editContactDetails);
+            if (!editContactDetails)
+                setContactExpanded(true);
+        },
+        closeContactEdit: ({ setEditContactDetails }) => () => {
+            setEditContactDetails(false);
+        },
+        toggleContactExpanded: ({ contactExpanded, setContactExpanded }) => () => {
+            setContactExpanded(!contactExpanded)
+        },
+        toggleSalaryPrivate: ({ isSalaryPublic, setSalaryPrivacy }) => () => {
+            setSalaryPrivacy(!isSalaryPublic);
+        },
+        updateStory: ({ setMyStory }) => text => {
+            setMyStory(text);
+        },
+        updateDesiredSalary: ({ setDesiredSalary }) => salary => {
+            setDesiredSalary(salary);
+        }
+    }),
+    pure
+);
+
 const Show = (props) => {
-    const { editMode, data,
+    const { editMode, currentUser,
         XPEdit, toggleExperienceEdit,
         editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
         toggleSalaryPrivate,
@@ -18,7 +53,7 @@ const Show = (props) => {
         updateDesiredSalary, isSalaryPublic, desiredSalary
     } = props;
 
-    const { contact, experience, projects, } = data;
+    const { contacts, experience, projects, } = currentUser.profile;
 
     return (
         <Grid container className='mainBody userProfileShow'>
@@ -80,10 +115,10 @@ const Show = (props) => {
                         {
                             !editContactDetails &&
                             <div className={contactExpanded ? 'contactDetails open' : 'contactDetails'}>
-                                {Object.keys(contact).map((key) => {
+                                {contacts && Object.keys(contacts).map((key) => {
                                     const result = fields.find(field => field.id === key);
                                     let label = result.text || '';
-                                    let value = contact[key];
+                                    let value = contacts[key];
                                     return (
                                         <p className='contactDetail' key={label}>
                                             <span>{label}: </span>{value}
@@ -92,7 +127,7 @@ const Show = (props) => {
                                 })}
                             </div>
                         }
-                        {editContactDetails && <EditContactDetails contact={contact} closeContactEdit={closeContactEdit} open={contactExpanded} />}
+                        {editContactDetails && <EditContactDetails contact={contacts} closeContactEdit={closeContactEdit} open={contactExpanded} />}
 
                     </div>
                     <div className='knowHowContainer'>
@@ -191,39 +226,5 @@ const Show = (props) => {
         </Grid>
     );
 };
-const ShowHOC = compose(
-    withState('XPEdit', 'setXPEdit', null),
-    withState('story', 'setMyStory', ({ data }) => data.myStory || ''),
-    withState('editContactDetails', 'setEditContactDetails', false),
-    withState('contactExpanded', 'setContactExpanded', false),
-    withState('isSalaryPublic', 'setSalaryPrivacy', ({ data }) => data.isSalaryPublic),
-    withState('desiredSalary', 'setDesiredSalary', ({ data }) => data.desiredSalary),
-    withHandlers({
-        toggleExperienceEdit: ({ XPEdit, setXPEdit }) => () => {
-            setXPEdit(!XPEdit);
-        },
-        toggleEditContact: ({ editContactDetails, setEditContactDetails, setContactExpanded }) => () => {
-            setEditContactDetails(!editContactDetails);
-            if (!editContactDetails)
-                setContactExpanded(true);
-        },
-        closeContactEdit: ({ setEditContactDetails }) => () => {
-            setEditContactDetails(false);
-        },
-        toggleContactExpanded: ({ contactExpanded, setContactExpanded }) => () => {
-            setContactExpanded(!contactExpanded)
-        },
-        toggleSalaryPrivate: ({ isSalaryPublic, setSalaryPrivacy }) => () => {
-            setSalaryPrivacy(!isSalaryPublic);
-        },
-        updateStory: ({ setMyStory }) => text => {
-            setMyStory(text);
-        },
-        updateDesiredSalary: ({ setDesiredSalary }) => salary => {
-            setDesiredSalary(salary);
-        }
-    }),
-    pure
-);
 
 export default ShowHOC(Show);

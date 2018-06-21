@@ -23,7 +23,17 @@ const HeaderHOC = compose(
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
     withState('avatar', 'setAvatar', ({ currentUser }) => currentUser.profile.hasAvatar ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}` : null),
-    withState('headerStyle', 'setHeaderStyle', ({ currentUser }) => { return null }),
+    withState('headerStyle', 'setHeaderStyle', ({ currentUser }) => {
+        let { coverBackground, hasProfileCover } = currentUser.profile;
+        if (hasProfileCover) {
+            let newCover = `${s3BucketURL}/${profilesFolder}/cover.jpg?${Date.now()}`;
+            let style = { background: `url(${newCover})` };
+            return style;
+        }
+        if (coverBackground)
+            return { background: coverBackground }
+        return null;
+    }),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
@@ -31,9 +41,10 @@ const HeaderHOC = compose(
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
         },
-        updateHeaderCover: ({ setHeaderStyle }) => style => {
-            console.log(style);
-            setHeaderStyle(style);
+        updateHeaderCover: ({ currentUser }) => () => {
+            currentUser.refetch(
+                { force: true }
+            );
         },
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
             setColorPickerAnchor(null);
@@ -102,19 +113,15 @@ const HeaderHOC = compose(
             console.log(error);
         },
         onFinishUpload: (props) => async () => {
-            const { setAvatar, setIsUploading, updateAvatar, currentUser } = props;
+            const { setIsUploading, updateAvatar, currentUser } = props;
             await updateAvatar({
                 variables: {
                     status: true
                 }
             });
 
-            await currentUser.refetch();
-
+            currentUser.refetch({ force: true });
             setIsUploading(false);
-            let newAvatar = `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}`;
-            setAvatar(newAvatar);
-            console.log('finished!');
         },
     }),
     slider,
@@ -140,7 +147,14 @@ const Header = (props) => {
         skills,
         values,
     } = currentUser.profile;
-    const avatarText = `${firstName.slice(0, 1).toUpperCase()}${lastName.slice(0, 1).toUpperCase()}` || email.slice(0, 1).toUpperCase() || '';
+
+    const avatarText = () => {
+        if (firstName && lastName)
+            return `${firstName.slice(0, 1).toUpperCase()}${lastName.slice(0, 1).toUpperCase()}`
+        else if (email)
+            return email.slice(0, 1).toUpperCase();
+        else return '';
+    }
 
     const lang = props.match.params.lang;
 
@@ -149,7 +163,7 @@ const Header = (props) => {
             <Grid container className='headerLinks'>
                 <Grid item md={3} sm={12} xs={12} className='userAvatar'>
                     <Avatar alt={firstName} src={avatar} key={avatar} className='avatar'>
-                        {!avatar && avatarText}
+                        {!avatar && avatarText()}
                     </Avatar>
                     {editMode &&
                         <React.Fragment>
@@ -189,11 +203,12 @@ const Header = (props) => {
                                 colorPickerAnchor={colorPickerAnchor}
                                 updateHeaderCover={updateHeaderCover}
                                 onClose={closeColorPicker}
+                                profile={currentUser.profile}
                             />
                         </React.Fragment>
                     }
                     <div className='avatarTexts'>
-                        <h3>{firstName}</h3>
+                        <h3>{firstName || email}</h3>
                         <h4>Manager</h4>
                         {editMode &&
                             <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
