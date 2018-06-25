@@ -2,6 +2,27 @@ import React from 'react';
 import { Popover, Button, FormControl, InputLabel, Input, InputAdornment, IconButton, Icon, Chip } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
 
+const SkillsEditHOC = compose(
+    withState('displaySkills', 'setDisplaySkills', ({ skillsModalData }) => skillsModalData ? skillsModalData.slice(0) /*copy array*/ : []),
+    withState('newSkill', 'setSkillText', ''),
+    withHandlers({
+        updateNewSkill: ({ setSkillText }) => (skill) => {
+            setSkillText(skill);
+        },
+        addSkill: ({ newSkill, displaySkills, setSkillText }) => () => {
+            displaySkills.push(newSkill);
+            setSkillText('');
+        },
+        removeChip: ({ displaySkills, setDisplaySkills }) => (chipIndex) => {
+            let chipData = [...displaySkills];
+            chipData.splice(chipIndex, 1);
+            setDisplaySkills(chipData);
+        }
+    }),
+    pure
+);
+
+
 const SkillsEdit = (props) => {
     const { displaySkills, skillsAnchor, closeSkillsModal, newSkill, updateNewSkill, addSkill, removeChip } = props;
     return (
@@ -17,7 +38,6 @@ const SkillsEdit = (props) => {
             open={Boolean(skillsAnchor)}
             anchorEl={skillsAnchor}
             onClose={closeSkillsModal}
-            // disableBackdropClick={true}
             classes={{
                 paper: 'skillsEditPaper'
             }}
@@ -42,16 +62,18 @@ const SkillsEdit = (props) => {
             </div>
             <div className='popupBody'>
                 {
-                    (displaySkills && displaySkills.length) &&
-                    displaySkills.map((skill, index) =>
-                        <Chip
-                            label={skill}
-                            className='chip'
-                            key={`value-${index}`}
-                            onDelete={() => removeChip(index)}
-                            classes={{ deleteIcon: 'deleteIcon' }}
-                        />
-                    )
+                    (displaySkills && displaySkills.length) ?
+                        displaySkills.map((skill, index) =>
+                            <Chip
+                                label={skill}
+                                className='chip'
+                                key={`value-${index}`}
+                                onDelete={() => removeChip(index)}
+                                classes={{ deleteIcon: 'deleteIcon' }}
+                            />
+                        )
+                        :
+                        <span className='noChips'>Nothing to show.</span>
                 }
 
             </div>
@@ -62,26 +84,6 @@ const SkillsEdit = (props) => {
             </div>
         </Popover>
     );
-}
-
-const SkillsEditHOC = compose(
-    withState('displaySkills', 'setDisplaySkills', ({ skillsModalData }) => (skillsModalData || [])),
-    withState('newSkill', 'setSkillText', ''),
-    withHandlers({
-        updateNewSkill: ({ setSkillText }) => (skill) => {
-            setSkillText(skill);
-        },
-        addSkill: ({ newSkill, displaySkills, setSkillText }) => () => {
-            displaySkills.push(newSkill);
-            setSkillText('');
-        },
-        removeChip: ({ displaySkills, setDisplaySkills }) => (chipIndex) => {
-            let chipData = [...displaySkills];
-            chipData.splice(chipIndex, 1);
-            setDisplaySkills(chipData);
-        }
-    }),
-    pure
-);
+};
 
 export default SkillsEditHOC(SkillsEdit);

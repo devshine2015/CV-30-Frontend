@@ -1,11 +1,112 @@
 import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
-import { compose, withState, withHandlers, pure } from 'recompose';
+import { compose, withState, withHandlers, pure, lifecycle } from 'recompose';
 import S3Uploader from 'react-s3-uploader';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
-import { setCoverBackground, setHasBackgroundImage } from '../../../../store/queries';
+import { setCoverBackground, setHasBackgroundImage, currentUserQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
+
+const ColorPickerHOC = compose(
+    graphql(setCoverBackground, { name: 'setCoverBg' }),
+    graphql(setHasBackgroundImage, { name: 'setBGImg' }),
+    withState('activeTab', 'setActiveTab', 'colors'),
+    withState('isUploading', 'setIsUploading', false),
+    withState('uploadProgress', 'setUploadProgress', 0),
+    withState('uploadError', 'setUploadError', null),
+    withHandlers({
+        handleTabChange: ({ setActiveTab }) => (event, value) => {
+            setActiveTab(value);
+        },
+        setBackgroundColor: ({ setCoverBg }) => color => {
+            try {
+                setCoverBg({
+                    variables: {
+                        color: color.style
+                    },
+                    refetchQueries: [{
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: 'en',
+                            id: null
+                        }
+                    }]
+                });
+            }
+            catch (error) {
+                console.log(error);
+            }
+        },
+        getSignedUrl: () => async (file, callback) => {
+            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
+            let fName = ['cover', getExtension].join('.');
+
+            const params = {
+                fileName: fName,
+                contentType: file.type
+            };
+
+            try {
+                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+                let responseJson = await response.json();
+                callback(responseJson);
+            } catch (error) {
+                console.error(error);
+                callback(error)
+            }
+        },
+        renameFile: () => filename => {
+            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+            let fName = ['cover', getExtension].join('.');
+            return fName;
+        },
+        onUploadStart: ({ setIsUploading }) => (file, next) => {
+            setIsUploading(true);
+            next(file);
+        },
+        onProgress: ({ setUploadProgress }) => (percent) => {
+            setUploadProgress(percent);
+        },
+        onError: ({ setUploadError }) => error => {
+            setUploadError(error);
+            console.log(error);
+        },
+        onFinish: ({ setIsUploading, setBGImg, refetchBgImage }) => async () => {
+            await setBGImg({
+                variables:
+                {
+                    status: true
+                },
+                refetchQueries: [{
+                    query: currentUserQuery,
+                    fetchPolicy: 'network-only',
+                    name: 'currentUser',
+                    variables: {
+                        language: 'en',
+                        id: null
+                    }
+                }]
+            });
+            setIsUploading(false);
+            refetchBgImage();
+        }
+    }),
+    lifecycle({
+        componentDidUpdate() {
+
+        }
+    }),
+    pure
+);
 
 const ColorPicker = (props) => {
     const { colorPickerAnchor, onClose,
@@ -86,79 +187,5 @@ const ColorPicker = (props) => {
         </Popover>
     );
 }
-
-const ColorPickerHOC = compose(
-    graphql(setCoverBackground, { name: 'setCoverBg' }),
-    graphql(setHasBackgroundImage, { name: 'setBGImg' }),
-    withState('activeTab', 'setActiveTab', 'colors'),
-    withState('isUploading', 'setIsUploading', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
-    withHandlers({
-        handleTabChange: ({ setActiveTab }) => (event, value) => {
-            setActiveTab(value);
-        },
-        setBackgroundColor: ({ updateHeaderCover, setCoverBg }) => async color => {
-            await setCoverBg({
-                variables: {
-                    color: color.style
-                }
-            });
-
-            let style = { background: color.style };
-            updateHeaderCover(style);
-        },
-        getSignedUrl: () => async (file, callback) => {
-            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['cover', getExtension].join('.');
-
-            const params = {
-                fileName: fName,
-                contentType: file.type
-            };
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error)
-            }
-        },
-        renameFile: () => filename => {
-            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['cover', getExtension].join('.');
-            return fName;
-        },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
-            setIsUploading(true);
-            next(file);
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
-            console.log(error);
-        },
-        onFinish: ({ updateHeaderCover, setIsUploading, setBGImg }) => async () => {
-            await setBGImg({
-                variables:
-                    { status: true }
-            });
-            setIsUploading(false);
-            updateHeaderCover();
-        }
-    }),
-    pure
-);
 
 export default ColorPickerHOC(ColorPicker);

@@ -1,6 +1,16 @@
 export default {
     Query: {},
     Mutation: {
+        updateAvatarTimestamp: (_, { timestamp }, { cache }) => {
+            const data = {
+                localUser: {
+                    __typename: "LocalUser",
+                    timestamp
+                }
+            };
+            cache.writeData({ data });
+            return null;
+        },
         setAuthenticated: (_, { status }, { cache }) => {
             const data = {
                 auth: {
@@ -9,7 +19,7 @@ export default {
                 }
             };
             cache.writeData({ data });
-            return data;
+            return null;
         },
     }
 };

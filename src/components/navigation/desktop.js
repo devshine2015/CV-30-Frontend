@@ -7,11 +7,16 @@ import classNames from 'classnames';
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
 
 const DesktopNav = (props) => {
-    const { getCurrentUser, match, doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications } = props;
+    const { localUserData, currentUser, match, doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications } = props;
     const lang = match.params.lang;
-    const user = getCurrentUser.profile;
+    const user = currentUser.profile;
+
     if (!user)
         return null;
+
+    let avatar =
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${localUserData.localUser.timestamp}` : null
+
     return (
         <React.Fragment>
             <Grid item sm={1} xs={1} md={1}>
@@ -59,7 +64,7 @@ const DesktopNav = (props) => {
                         <Button aria-owns={profileMenuOpen ? 'profileMenu' : null} aria-haspopup="true" onClick={toggleProfileMenu} className='profileButton' ref={node => {
                             this.target1 = node;
                         }}>
-                            <Avatar alt="Gabriel" src={user.hasAvatar ? `${s3BucketURL}/${profilesFolder}/avatar.jpg` : null} className='avatar'>
+                            <Avatar alt="Gabriel" src={avatar} className='avatar'>
                                 {!user.hasAvatar && user.email.slice(0, 1)}
                             </Avatar>
                             <span>{user.firstName || user.email}</span>

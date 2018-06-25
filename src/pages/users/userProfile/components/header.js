@@ -10,41 +10,28 @@ import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
 import slider from '../../../../hocs/slider';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { updateAvatar, setCoverBackground, setHasBackgroundImage } from '../../../../store/queries';
+import { updateAvatar, setCoverBackground, setHasBackgroundImage, currentUserQuery, updateAvatarTimestampMutation, localUserQuery } from '../../../../store/queries';
 
 
 const HeaderHOC = compose(
     withRouter,
     graphql(updateAvatar, { name: 'updateAvatar' }),
+    graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
+    graphql(localUserQuery, { name: 'localUserData' }),
     graphql(setCoverBackground, { name: 'setCoverBackground' }),
     graphql(setHasBackgroundImage, { name: 'setHasBackgroundImage' }),
     withState('count', 'setCount', ({ currentUser }) => currentUser.profile.featuredArticles ? currentUser.profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
-    withState('avatar', 'setAvatar', ({ currentUser }) => currentUser.profile.hasAvatar ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}` : null),
-    withState('headerStyle', 'setHeaderStyle', ({ currentUser }) => {
-        let { coverBackground, hasProfileCover } = currentUser.profile;
-        if (hasProfileCover) {
-            let newCover = `${s3BucketURL}/${profilesFolder}/cover.jpg?${Date.now()}`;
-            let style = { background: `url(${newCover})` };
-            return style;
-        }
-        if (coverBackground)
-            return { background: coverBackground }
-        return null;
-    }),
+    // withState('avatar', 'setAvatar', ({ currentUser }) => currentUser.profile.hasAvatar ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}` : null),
     withState('isUploading', 'setIsUploading', false),
+    withState('forceCoverRender', 'setForceCoverRender', 0),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
-        },
-        updateHeaderCover: ({ currentUser }) => () => {
-            currentUser.refetch(
-                { force: true }
-            );
         },
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
             setColorPickerAnchor(null);
@@ -95,13 +82,12 @@ const HeaderHOC = compose(
             let fName = ['avatar', getExtension].join('.');
             return fName;
         },
-        onUploadStart: ({ setIsUploading, setAvatar }) => (file, next) => {
+        onUploadStart: ({ setIsUploading }) => (file, next) => {
             let size = file.size;
             if (size > 500 * 1024) {
                 alert('File is too big!');
             } else {
                 setIsUploading(true);
-                setAvatar(null);
                 next(file);
             }
         },
@@ -113,16 +99,30 @@ const HeaderHOC = compose(
             console.log(error);
         },
         onFinishUpload: (props) => async () => {
-            const { setIsUploading, updateAvatar, currentUser } = props;
+            const { setIsUploading, updateAvatar, updateAvatarTimestamp } = props;
             await updateAvatar({
                 variables: {
                     status: true
+                },
+                refetchQueries: [{
+                    query: currentUserQuery,
+                    fetchPolicy: 'network-only',
+                    name: 'currentUser',
+                    variables: {
+                        language: 'en',
+                        id: null
+                    }
+                }]
+            });
+            await updateAvatarTimestamp({
+                variables: {
+                    timestamp: Date.now()
                 }
             });
 
-            currentUser.refetch({ force: true });
             setIsUploading(false);
         },
+        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now())
     }),
     slider,
     pure
@@ -131,13 +131,13 @@ const HeaderHOC = compose(
 
 const Header = (props) => {
     const { editMode, currentUser,
-        closeColorPicker, toggleColorPicker, colorPickerAnchor, updateHeaderCover, headerStyle,
+        closeColorPicker, toggleColorPicker, colorPickerAnchor,
         removeStory,
         activeItem, prevItem, jumpToItem, nextItem,
         openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
         getSignedUrl, renameFile, onProgress, onError, onFinishUpload, onUploadStart,
         isUploading, uploadProgress,
-        avatar
+        localUserData, refetchBgImage, forceCoverRender
     } = props;
     const {
         firstName,
@@ -146,7 +146,18 @@ const Header = (props) => {
         featuredArticles,
         skills,
         values,
+        coverBackground, hasProfileCover
     } = currentUser.profile;
+
+    let headerStyle = null;
+
+    if (hasProfileCover) {
+        let newCover = `${s3BucketURL}/${profilesFolder}/cover.jpg?${Date.now()}-${forceCoverRender}`;
+        headerStyle = { background: `url(${newCover})` };
+    }
+    else if (coverBackground) {
+        headerStyle = { background: coverBackground }
+    }
 
     const avatarText = () => {
         if (firstName && lastName)
@@ -155,6 +166,9 @@ const Header = (props) => {
             return email.slice(0, 1).toUpperCase();
         else return '';
     }
+
+    let avatar =
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${localUserData.localUser.timestamp}` : null
 
     const lang = props.match.params.lang;
 
@@ -201,8 +215,8 @@ const Header = (props) => {
                             }
                             <ColorPicker
                                 colorPickerAnchor={colorPickerAnchor}
-                                updateHeaderCover={updateHeaderCover}
                                 onClose={closeColorPicker}
+                                refetchBgImage={refetchBgImage}
                                 profile={currentUser.profile}
                             />
                         </React.Fragment>

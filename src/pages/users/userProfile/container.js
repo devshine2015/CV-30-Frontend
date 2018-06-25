@@ -14,6 +14,7 @@ const UserProfileHOC = compose(
                 language: props.match.params.lang,
                 id: props.match.params.userId || null
             },
+            fetchPolicy: 'network-only'
         }),
     }),
     withState('editMode', 'updateEditMode', false),

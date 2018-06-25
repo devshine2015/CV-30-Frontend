@@ -109,11 +109,31 @@ export const currentUserQuery = gql`
 export const updateAvatar = gql`
     mutation updateAvatar($status:Boolean!){
         avatar(status: $status){
-            status
-            error
+           id
+           hasAvatar
         }
     }
 `;
+
+export const updateAvatarTimestampMutation = gql`
+    mutation updateAvatarTimestamp($timestamp: Int!){
+        updateAvatarTimestamp(timestamp: $timestamp) @client{
+           localUser {
+               __typename
+               timestamp
+           }
+        }
+    }
+`;
+
+export const localUserQuery = gql`
+    query localUserQuery {
+        localUser @client {          
+            timestamp          
+        }
+    }
+`;
+
 
 export const getCurrentUser = gql`
     query getCurrentUser {
@@ -130,8 +150,8 @@ export const getCurrentUser = gql`
 export const setCoverBackground = gql`
     mutation setCoverBackground($color: String) {
         setCoverBackground(color: $color) {
-            status
-            error
+           id
+           coverBackground
         }
     }
 `;
@@ -139,8 +159,8 @@ export const setCoverBackground = gql`
 export const setHasBackgroundImage = gql`
     mutation profileCover($status: Boolean) {
         profileCover(status: $status) {
-            error
-            status
+           id
+           hasProfileCover
         }
     }
 `;

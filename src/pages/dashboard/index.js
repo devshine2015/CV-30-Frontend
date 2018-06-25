@@ -13,9 +13,9 @@ const Jobs = () => <div>Jobs</div>;
 
 class Dashboard extends Component {
     render() {
-        let { getCurrentUser } = this.props;
-        if (getCurrentUser.loading)
-            return <div>Loading</div>;
+        // let { getCurrentUser } = this.props;
+        // if (getCurrentUser.loading)
+        //     return <div>Loading</div>;
         return (
             <React.Fragment>
                 <Navigation {...this.props} />
@@ -33,14 +33,17 @@ class Dashboard extends Component {
     }
 }
 
-const DashHOC = compose(
-    graphql(currentUserQuery, {
-        name: 'getCurrentUser',
-        options: (props) => ({
-            variables: { language: props.match.params.lang },
-        }),
-    }),
-    pure
-);
+// const DashHOC = compose(
+//     graphql(currentUserQuery, {
+//         name: 'getCurrentUser',
+//         options: (props) => ({
+//             variables: {
+//                 language: props.match.params.lang,
+//                 id: null
+//             },
+//         }),
+//     }),
+//     pure
+// );
 
-export default DashHOC(Dashboard);
+export default Dashboard;

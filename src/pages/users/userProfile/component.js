@@ -9,7 +9,7 @@ import Header from './components/header';
 
 const UserProfile = (props) => {
     const { editMode, switchEditMode, currentUser } = props;
-
+    
     const Show = () => <UserProfileShow editMode={editMode} currentUser={currentUser} />
     if (currentUser.loading)
         return <div>Loading</div>

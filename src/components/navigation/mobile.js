@@ -3,16 +3,26 @@ import { Grid, Button, Icon, Avatar, IconButton, Badge, Drawer, ListItem } from 
 import { FormattedMessage } from 'react-intl';
 import { NavLink, Link } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
+import { s3BucketURL, profilesFolder } from '../../constants/s3';
 
 const MobileNav = (props) => {
     const {
         toggleMobileNav, mobileNavOpen, closeMobileNav,
         toggleMobileNotifications, mobileNotificationIsOpen, closeMobileNotifications, notifications,
         toggleMobileProfile, mobileProfileIsOpen, closeMobileProfile,
-        match, doLogout
+        match, doLogout,
+        localUserData, currentUser
     } = props;
 
+    const user = currentUser.profile;
+
     const lang = match.params.lang;
+
+    if (!user)
+        return null;
+
+    let avatar =
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${localUserData.localUser.timestamp}` : null
 
     return (
         <React.Fragment>
@@ -24,7 +34,7 @@ const MobileNav = (props) => {
             <Grid item className='mobileNavContainer' id="mobileMainNav">
                 {/* Buttons */}
                 <Button onClick={toggleMobileProfile} className='profileButton'>
-                    <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className='avatar' />
+                    <Avatar alt="Gabriel" src={avatar} className='avatar' />
                     <span>Gabriel</span>
                 </Button>
 
