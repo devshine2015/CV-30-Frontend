@@ -358,7 +358,6 @@
                         display: flex;
                         align-items: center;
                         justify-content: space-evenly;
-                        .sliderArrow {}
                         .sliderDot {
                             border-radius: 50%;
                             width: 8px;
@@ -383,7 +382,6 @@
                 @media (max-width: 960px) {
                     flex-direction: column;
                 }
-                img {}
                 .textContents {
                     padding: 20px 15px;
                     color: #565656;

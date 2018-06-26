@@ -1,11 +1,13 @@
 import React from 'react';
-import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
+import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Button } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import SliderHOC from '../../../../hocs/slider';
 
 import AddNewStory from './addStory';
 import QuestionEdit from './questionEdit';
 import Story from './story';
+
+
 
 const Show = (props) => {
     const { expanded, expandPanel, editMode, data, edited, editPanel } = props;
@@ -104,7 +106,6 @@ const Show = (props) => {
                         })
                     }
                 </section>
-
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>

@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import Navigation from '../../components/navigation';
 import { Switch, Route } from 'react-router-dom';
+
 import UserProfile from '../users/userProfile';
 import Brand from '../companies/brand';
 import Team from '../companies/team';
+import Jobs from '../job';
 
 
 const News = () => <div>News</div>;
 const People = () => <div>People</div>;
-const Jobs = () => <div>Jobs</div>;
+
 
 class Dashboard extends Component {
     render() {
