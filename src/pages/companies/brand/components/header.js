@@ -3,7 +3,7 @@ import ReactPlayer from 'react-player';
 import { Grid, Avatar, Button, Chip, Hidden, Icon, IconButton } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import SliderHOC from '../../../../hocs/slider';
 import StoryEditor from './storyEditor';
 
@@ -47,8 +47,8 @@ const Header = (props) => {
                             </IconButton>
                         }
                     </Grid>
-                    <Grid item lg={3} md={5} sm={12} xs={12} className='userLinks'>
-                        <FormattedMessage id="userProfile.profile" defaultMessage="Profile" description="User header profile link">
+                    <Grid item lg={3} md={5} sm={12} xs={12} className='rightHeaderLinks'>
+                        <FormattedMessage id="headerLinks.profile" defaultMessage="Profile" description="User header profile link">
                             {(text) => (
                                 <Button component={NavLink} exact to={`/${lang}/dashboard/companies`} className='headerLink'>
                                     {text}
@@ -56,7 +56,7 @@ const Header = (props) => {
                             )}
                         </FormattedMessage>
 
-                        <FormattedMessage id="userProfile.feed" defaultMessage="Feed" description="User header feed link">
+                        <FormattedMessage id="headerLinks.feed" defaultMessage="Feed" description="User header feed link">
                             {(text) => (
                                 <Button component={NavLink} exact to={`/${lang}/dashboard/companies/feed/`} className='headerLink'>
                                     {text}
@@ -64,7 +64,7 @@ const Header = (props) => {
                             )}
                         </FormattedMessage>
 
-                        <FormattedMessage id="userProfile.follow" defaultMessage="Follow" description="User header follow button">
+                        <FormattedMessage id="headerLinks.follow" defaultMessage="Follow" description="User header follow button">
                             {(text) => (
                                 <Button className='headerButton'>
                                     {text}
@@ -133,12 +133,12 @@ const Header = (props) => {
                     </Grid>
                     {
                         headerStories.map((story, index) => {
+                            let url = `/${lang}/dashboard/company/team`; //will add params for company id and team id
                             return (
-                                <Grid item className='teamSliderItem' key={`teamSliderItem-${index}`}>
+                                <Link to={url} className='teamSliderItem' key={`teamSliderItem-${index}`}>
                                     <img src={story.img} alt="ceva" className='teamImg' />
                                     <span className='teamText'>{story.title}</span>
-
-                                </Grid>
+                                </Link>
                             )
                         })
                     }
