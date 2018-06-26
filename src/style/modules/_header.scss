@@ -1,0 +1,56 @@
+  .header {
+      padding: 15px 50px 20px;
+      @media (max-width: 600px) {
+          padding: 15px;
+      }
+      .headerLinks {
+          display: flex;
+          padding: 0 50px;
+          justify-content: space-between;
+          pointer-events: all;
+          @media (max-width: 600px) {
+              flex-direction: column;
+          }
+      }
+      .rightHeaderLinks {
+          display: flex;
+          justify-content: flex-end;
+          align-items: flex-start;
+          @media (max-width: 600px) {
+              justify-content: center;
+              margin-top: 15px;
+          }
+          .headerLink {
+              color: #fff;
+              background: none;
+              font-size: 0.9rem;
+              text-transform: none;
+              border-radius: 0;
+              &>span:first-of-type {
+                  padding-bottom: 8px;
+              }
+              &:hover {
+                  background: none;
+                  &>span:first-of-type {
+                      padding-bottom: 6px;
+                      border-bottom: 2px solid rgba(255, 255, 255, 0.75)
+                  }
+              }
+              &.active {
+                  &>span:first-of-type {
+                      padding-bottom: 6px;
+                      border-bottom: 2px solid rgba(255, 255, 255, 0.75);
+                  }
+              }
+          }
+          .headerButton {
+              background: #397db9;
+              color: #fff;
+              font-size: 0.9rem;
+              text-transform: none;
+              &:hover {
+                  background: #3071ab;
+              }
+          }
+      }
+  }

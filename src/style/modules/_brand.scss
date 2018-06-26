@@ -4,6 +4,7 @@
         position: relative;
         height: 90vh;
         min-height: 90vh;
+        padding: 0;
         @media (max-width: 960px) {
             height: auto;
         }
@@ -38,14 +39,11 @@
                 pointer-events: all;
             }
         }
-    }
-    .headerLinks {
-        display: flex;
-        padding: 0 50px;
-        justify-content: space-between;
-        pointer-events: all;
-        @media (max-width: 600px) {
-            flex-direction: column;
+        .rightHeaderLinks {
+            @media (max-width: 960px) {
+                justify-content: center;
+                margin: 25px 0;
+            }
         }
     }
     .userAvatar {
@@ -94,47 +92,6 @@
             right: -15px;
         }
     }
-    .userLinks {
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-start;
-        @media (max-width: 960px) {
-            justify-content: center;
-            margin: 25px 0;
-        }
-        .headerLink {
-            color: #fff;
-            background: none;
-            font-size: 0.9rem;
-            text-transform: none;
-            border-radius: 0;
-            &>span:first-of-type {
-                padding-bottom: 8px;
-            }
-            &:hover {
-                background: none;
-                &>span:first-of-type {
-                    padding-bottom: 6px;
-                    border-bottom: 2px solid rgba(255, 255, 255, 0.75)
-                }
-            }
-            &.active {
-                &>span:first-of-type {
-                    padding-bottom: 6px;
-                    border-bottom: 2px solid rgba(255, 255, 255, 0.75);
-                }
-            }
-        }
-        .headerButton {
-            background: #397db9;
-            color: #fff;
-            font-size: 0.9rem;
-            text-transform: none;
-            &:hover {
-                background: #3071ab;
-            }
-        }
-    }
     .textInfo {
         padding-left: 50px;
         color: #fff;
@@ -161,6 +118,7 @@
         display: flex;
         margin-top: 50px;
         padding-left: 50px;
+        pointer-events: all;
         @media (max-width: 960px) {
             padding: 0 25px;
             justify-content: center;
@@ -241,6 +199,7 @@
         overflow: hidden;
         max-height: 200px;
         margin-top: 50px;
+        pointer-events: all;
         .teamSliderItem {
             height: 200px;
             width: 320px;

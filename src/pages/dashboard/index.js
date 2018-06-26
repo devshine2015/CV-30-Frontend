@@ -3,9 +3,8 @@ import Navigation from '../../components/navigation';
 import { Switch, Route } from 'react-router-dom';
 import UserProfile from '../users/userProfile';
 import Brand from '../companies/brand';
-import { compose, pure } from 'recompose';
-import { graphql } from 'react-apollo';
-import { currentUserQuery } from '../../store/queries';
+import Team from '../companies/team';
+
 
 const News = () => <div>News</div>;
 const People = () => <div>People</div>;
@@ -13,9 +12,6 @@ const Jobs = () => <div>Jobs</div>;
 
 class Dashboard extends Component {
     render() {
-        // let { getCurrentUser } = this.props;
-        // if (getCurrentUser.loading)
-        //     return <div>Loading</div>;
         return (
             <React.Fragment>
                 <Navigation {...this.props} />
@@ -26,24 +22,12 @@ class Dashboard extends Component {
                         <Route path='/:lang(en|ro)/dashboard/people' exact component={People} />
                         <Route path='/:lang(en|ro)/dashboard/jobs' exact component={Jobs} />
                         <Route path='/:lang(en|ro)/dashboard/profile' component={UserProfile} />
+                        <Route path='/:lang(en|ro)/dashboard/company/team' component={Team} />
                     </Switch>
                 </div>
             </React.Fragment>
         )
     }
 }
-
-// const DashHOC = compose(
-//     graphql(currentUserQuery, {
-//         name: 'getCurrentUser',
-//         options: (props) => ({
-//             variables: {
-//                 language: props.match.params.lang,
-//                 id: null
-//             },
-//         }),
-//     }),
-//     pure
-// );
 
 export default Dashboard;

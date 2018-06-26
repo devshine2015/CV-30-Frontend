@@ -232,7 +232,7 @@ const Header = (props) => {
                         }
                     </div>
                 </Grid>
-                <Grid item md={3} sm={12} xs={12} className='userLinks'>
+                <Grid item md={3} sm={12} xs={12} className='rightHeaderLinks'>
                     <FormattedMessage id="userProfile.profile" defaultMessage="Profile" description="User header profile link">
                         {(text) => (
                             <Button component={NavLink} exact to={`/ ${lang} / dashboard / profile`} className='headerLink'>

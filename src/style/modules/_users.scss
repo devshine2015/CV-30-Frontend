@@ -1,11 +1,11 @@
 .userProfileRoot {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: calc(100vh - 62px);
     .header {
         background: linear-gradient(to right, #49525e 0%, #1f3947 100%);
         transition: all 1s ease-in;
-        padding: 15px 50px 20px;
-        @media (max-width: 600px) {
-            padding: 15px;
-        }
     }
     .circleEditBtn {
         width: 40px;
@@ -16,13 +16,6 @@
         position: absolute;
         min-width: auto;
         min-height: auto;
-    }
-    .headerLinks {
-        display: flex;
-        justify-content: space-between;
-        @media (max-width: 600px) {
-            flex-direction: column;
-        }
     }
     .userAvatar {
         display: flex;
@@ -86,50 +79,10 @@
         .avatarLoadCircle {
             color: #fff;
             position: absolute;
+            left: 0;
         }
         @media (max-width: 600px) {
             justify-content: center;
-        }
-    }
-    .userLinks {
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-start;
-        @media (max-width: 600px) {
-            justify-content: center;
-            margin-top: 15px;
-        }
-        .headerLink {
-            color: #fff;
-            background: none;
-            font-size: 0.9rem;
-            text-transform: none;
-            border-radius: 0;
-            &>span:first-of-type {
-                padding-bottom: 8px;
-            }
-            &:hover {
-                background: none;
-                &>span:first-of-type {
-                    padding-bottom: 6px;
-                    border-bottom: 2px solid rgba(255, 255, 255, 0.75)
-                }
-            }
-            &.active {
-                &>span:first-of-type {
-                    padding-bottom: 6px;
-                    border-bottom: 2px solid rgba(255, 255, 255, 0.75);
-                }
-            }
-        }
-        .headerButton {
-            background: #397db9;
-            color: #fff;
-            font-size: 0.9rem;
-            text-transform: none;
-            &:hover {
-                background: #3071ab;
-            }
         }
     }
     .headerStories {
@@ -311,6 +264,7 @@
     .mainBody.userProfileShow {
         background: #fff;
         border-top: 1px solid #989c9f;
+        flex: 1;
         .columnRight {
             .columnRightContent {
                 border-color: #989c9f;

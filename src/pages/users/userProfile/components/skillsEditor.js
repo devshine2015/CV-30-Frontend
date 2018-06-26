@@ -2,8 +2,30 @@ import React from 'react';
 import { Popover, Button, FormControl, InputLabel, Input, InputAdornment, IconButton, Icon, Chip } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
 
+const skills = [
+    {
+        id: 1,
+        title: 'bla'
+    },
+    {
+        id: 2,
+        title: 'bla'
+    },    
+    {
+        id: 4,
+        title: 'bla'
+    },
+    {
+        id: 5,
+        title: 'bla'
+    },
+    {
+        id: null, 
+        title: 'blabla'
+    }
+];
 const SkillsEditHOC = compose(
-    withState('displaySkills', 'setDisplaySkills', ({ skillsModalData }) => skillsModalData ? skillsModalData.slice(0) /*copy array*/ : []),
+    withState('displaySkills', 'setDisplaySkills', ({ skillsModalData }) => skillsModalData ? skillsModalData.slice(0) : []),
     withState('newSkill', 'setSkillText', ''),
     withHandlers({
         updateNewSkill: ({ setSkillText }) => (skill) => {
