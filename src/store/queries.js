@@ -63,7 +63,7 @@ export const AuthenticateLocal = gql`
 `;
 
 export const currentUserQuery = gql`
-    query currentUser($id: Int, $language: LanguageCodeType!)  {
+    query currentUser($id: Int, $language: LanguageCodeType!) {
         profile(id: $id, language: $language) {
             id
             email
@@ -71,22 +71,60 @@ export const currentUserQuery = gql`
             lastName
             featuredArticles {
                 id
+                author {
+                    id
+                    email
+                    firstName
+                    lastName
+                }
+                image {
+                    isFeatured
+                    title
+                    path
+                }
+                video {
+                    isFeatured
+                    title
+                    path
+                }
+                title
+                description
             }
             skills {
                 id
+                i18n {
+                    title
+                }
             }
             values {
                 id
+                i18n {
+                    title
+                }
             }
             experience {
                 id
+                position
+                company
+                description
+                startDate
+                endDate
+                isCurrent
             }
             projects {
                 id
+                position
+                company
+                description
+                startDate
+                endDate
+                isCurrent
             }
-            contacts {
-                name
-                value
+            contact {
+                phone
+                email
+                facebook
+                linkedin
             }
             hasAvatar
             hasProfileCover
