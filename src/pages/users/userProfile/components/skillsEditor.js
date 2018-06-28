@@ -1,44 +1,151 @@
 import React from 'react';
 import { Popover, Button, FormControl, InputLabel, Input, InputAdornment, IconButton, Icon, Chip } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
+import { setSkills, setValues, removeSkill, removeValue, currentUserQuery } from '../../../../store/queries';
+import { graphql } from 'react-apollo';
 
-const skills = [
-    {
-        id: 1,
-        title: 'bla'
-    },
-    {
-        id: 2,
-        title: 'bla'
-    },    
-    {
-        id: 4,
-        title: 'bla'
-    },
-    {
-        id: 5,
-        title: 'bla'
-    },
-    {
-        id: null, 
-        title: 'blabla'
-    }
-];
 const SkillsEditHOC = compose(
-    withState('displaySkills', 'setDisplaySkills', ({ skillsModalData }) => skillsModalData ? skillsModalData.slice(0) : []),
+    graphql(setSkills, { name: 'setSkills' }),
+    graphql(setValues, { name: 'setValues' }),
+    graphql(removeSkill, { name: 'removeSkill' }),
+    graphql(removeValue, { name: 'removeValue' }),
+    withState('displaySkills', 'setDisplaySkills', ({ skillsModalData }) => {
+        if (skillsModalData && skillsModalData.data) {
+            let newArr = skillsModalData.data.map(item => ({
+                id: item.id,
+                title: item.i18n[0].title
+            }));
+            return newArr;
+        }
+        else return [];
+
+    }),
     withState('newSkill', 'setSkillText', ''),
     withHandlers({
         updateNewSkill: ({ setSkillText }) => (skill) => {
             setSkillText(skill);
         },
         addSkill: ({ newSkill, displaySkills, setSkillText }) => () => {
-            displaySkills.push(newSkill);
-            setSkillText('');
+            let found = displaySkills.find(item => item.title.toLowerCase() === newSkill.toLowerCase());
+            if (!found) {
+                displaySkills.push({
+                    id: null,
+                    title: newSkill
+                });
+                setSkillText('');
+            } else {
+                alert('duplicate!');
+            }
         },
-        removeChip: ({ displaySkills, setDisplaySkills }) => (chipIndex) => {
+        removeChip: ({ displaySkills, setDisplaySkills, skillsModalData, removeSkill, removeValue }) => async (chipIndex) => {
+            const { type } = skillsModalData;
+            let id = displaySkills[chipIndex].id;
+
+            switch (type) {
+                case 'skills':
+                    try {
+                        await removeSkill({
+                            variables: {
+                                id
+                            },
+                            refetchQueries: [{
+                                query: currentUserQuery,
+                                fetchPolicy: 'network-only',
+                                name: 'currentUser',
+                                variables: {
+                                    language: 'en',
+                                    id: null
+                                }
+                            }]
+                        });
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                    break;
+                case 'values':
+                    try {
+                        await removeValue({
+                            variables: {
+                                id
+                            },
+                            refetchQueries: [{
+                                query: currentUserQuery,
+                                fetchPolicy: 'network-only',
+                                name: 'currentUser',
+                                variables: {
+                                    language: 'en',
+                                    id: null
+                                }
+                            }]
+                        });
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                    break;
+                default:
+                    return false;
+            }
+
             let chipData = [...displaySkills];
             chipData.splice(chipIndex, 1);
             setDisplaySkills(chipData);
+        },
+        saveData: ({ displaySkills, skillsModalData, setSkills, setValues, closeSkillsModal }) => async () => {
+            const { type } = skillsModalData;
+            console.log(displaySkills);
+            let data = displaySkills.map(item => item.title);
+
+            switch (type) {
+                case 'skills':
+                    try {
+                        await setSkills({
+                            variables: {
+                                language: 'en',
+                                skills: data
+                            },
+                            refetchQueries: [{
+                                query: currentUserQuery,
+                                fetchPolicy: 'network-only',
+                                name: 'currentUser',
+                                variables: {
+                                    language: 'en',
+                                    id: null
+                                }
+                            }]
+                        });
+                    }
+                    catch (err) {
+                        console.log(err);
+                    }
+                    break;
+                case 'values':
+                    try {
+                        await setValues({
+                            variables: {
+                                language: 'en',
+                                values: data
+                            },
+                            refetchQueries: [{
+                                query: currentUserQuery,
+                                fetchPolicy: 'network-only',
+                                name: 'currentUser',
+                                variables: {
+                                    language: 'en',
+                                    id: null
+                                }
+                            }]
+                        });
+                    }
+                    catch (err) {
+                        console.log(err);
+                    }
+                    break;
+                default:
+                    return false;
+            }
+            closeSkillsModal();
         }
     }),
     pure
@@ -46,7 +153,7 @@ const SkillsEditHOC = compose(
 
 
 const SkillsEdit = (props) => {
-    const { displaySkills, skillsAnchor, closeSkillsModal, newSkill, updateNewSkill, addSkill, removeChip } = props;
+    const { displaySkills, skillsAnchor, closeSkillsModal, newSkill, updateNewSkill, addSkill, removeChip, saveData } = props;
     return (
         <Popover
             anchorOrigin={{
@@ -85,9 +192,9 @@ const SkillsEdit = (props) => {
             <div className='popupBody'>
                 {
                     (displaySkills && displaySkills.length) ?
-                        displaySkills.map((skill, index) =>
+                        displaySkills.map((item, index) =>
                             <Chip
-                                label={skill}
+                                label={item.title}
                                 className='chip'
                                 key={`value-${index}`}
                                 onDelete={() => removeChip(index)}
@@ -100,7 +207,7 @@ const SkillsEdit = (props) => {
 
             </div>
             <div className='popupFooter'>
-                <IconButton className='footerCheck' onClick={closeSkillsModal}>
+                <IconButton className='footerCheck' onClick={saveData}>
                     <Icon>done</Icon>
                 </IconButton>
             </div>

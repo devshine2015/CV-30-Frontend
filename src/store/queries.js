@@ -202,3 +202,66 @@ export const setHasBackgroundImage = gql`
         }
     }
 `;
+
+export const setSkills = gql`
+    mutation setSkills($skills: [String!]!, $language: LanguageCodeType!) {
+        setSkills(skills: $skills, language: $language) {
+            status
+            error
+        }
+    }
+`;
+
+export const removeSkill = gql`
+    mutation removeSkill($id: Int) {
+        removeSkill(id: $id){
+            status
+            error
+        }
+    }
+`;
+
+export const setValues = gql`
+    mutation setValues($values: [String!]!, $language: LanguageCodeType!) {
+        setValues(values: $values, language: $language) {
+            status
+            error
+        }
+    }
+`;
+
+export const removeValue = gql`
+    mutation removeValue($id: Int) {
+        removeValue(id: $id){
+            status
+            error
+        }
+    }
+`;
+
+export const setExperience = gql`
+    mutation setExperience($id: String, $location: Int, $isCurrent: Boolean, $position: String, $company: String, $startDate: Date, $endDate: Date) {
+        setExperience(id: $id, location: $location, isCurrent: $isCurrent, position: $position, company: $company, startDate: $startDate, endDate: $endDate) {
+            status
+            error
+        }
+    }
+`;
+
+export const setProject = gql`
+    mutation setProject($id: String, $location: Int, $isCurrent: Boolean, $position: String, $company: String, $startDate: Date, $endDate: Date) {
+        setProject(id: $id, location: $location, isCurrent: $isCurrent, position: $position, company: $company, startDate: $startDate, endDate: $endDate) {
+            status
+            error
+        }
+    }
+`;
+
+export const setContact = gql`
+    mutation setContact($phone: String, $email: String, $facebook: String, $linkedin: String) {
+        setContact(phone: $phone, email: $email, facebook: $facebook, linkedin: $linkedin) {
+            status
+            error
+        }
+    }
+`;

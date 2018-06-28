@@ -1,18 +1,19 @@
-export const contactFields = [
+const contactFields = [
     {
-        id: 'phoneNo',
+        id: 'phone',
         text: 'Phone number'
     },
     {
-        id: 'address',
-        text: 'Address'
+        id: 'email',
+        text: 'Email'
     },
     {
-        id: 'fb',
+        id: 'facebook',
         text: 'Facebook'
     },
     {
-        id: 'linkedIn',
+        id: 'linkedin',
         text: 'LinkedIn'
     }
 ];
+export default contactFields;

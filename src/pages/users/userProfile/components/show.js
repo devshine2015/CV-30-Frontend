@@ -7,18 +7,22 @@ import ExperienceDisplay from './experienceDisplay';
 import EditContactDetails from './editContactDetails';
 import { compose } from 'react-apollo';
 import { pure, withState, withHandlers } from 'recompose';
-import { contactFields as fields } from '../../../../constants/contact';
+import fields from '../../../../constants/contact';
 
 const ShowHOC = compose(
-    withState('XPEdit', 'setXPEdit', null),
+    withState('newXP', 'setNewXP', false),
+    withState('newProj', 'setNewProj', false),
     withState('story', 'setMyStory', ({ currentUser }) => currentUser.profile.story || ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', false),
     withState('isSalaryPublic', 'setSalaryPrivacy', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.isPublic : false),
     withState('desiredSalary', 'setDesiredSalary', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.amount : 0),
     withHandlers({
-        toggleExperienceEdit: ({ XPEdit, setXPEdit }) => () => {
-            setXPEdit(!XPEdit);
+        addNewExperience: ({ newXP, setNewXP }) => () => {
+            setNewXP(!newXP);
+        },
+        addNewProject: ({ newProj, setNewProj }) => () => {
+            setNewProj(!newProj);
         },
         toggleEditContact: ({ editContactDetails, setEditContactDetails, setContactExpanded }) => () => {
             setEditContactDetails(!editContactDetails);
@@ -46,52 +50,62 @@ const ShowHOC = compose(
 
 const Show = (props) => {
     const { editMode, currentUser,
-        XPEdit, toggleExperienceEdit,
+        newXP, newProj, addNewExperience, addNewProject,
         editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
         toggleSalaryPrivate,
         story, updateStory,
         updateDesiredSalary, isSalaryPublic, desiredSalary
     } = props;
 
-    const { contacts, experience, projects, } = currentUser.profile;
+    const { contact, experience, projects, } = currentUser.profile;
 
     return (
         <Grid container className='mainBody userProfileShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                <section className='experienceSection'>
-                    <h2 className='sectionTitle'>My <b>experience</b></h2>
-                    {
-                        experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
-                    }
-                    {editMode &&
-                        <div className='experienceAdd'>
-                            <Button className='addXPButton' onClick={toggleExperienceEdit}>
-                                + Add Experience
-                        </Button>
-                        </div>
-                    }
-                    {
-                        (editMode && XPEdit) && <ExperienceEdit />
-                    }
+                {
+                    ((experience && experience.length > 0) || editMode) &&
 
-                </section>
-                <section className='experienceSection'>
-                    <h2 className='sectionTitle'>My <b>projects</b></h2>
-                    {
-                        projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} key={`xpItem-${index}`} />)
-                    }
-                    {editMode &&
-                        <div className='experienceAdd'>
-                            <Button className='addXPButton' onClick={toggleExperienceEdit}>
-                                + Add project
+                    <section className='experienceSection'>
+                        <h2 className='sectionTitle'>My <b>experience</b></h2>
+                        {
+                            experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'experience'} />)
+                            //key={`xpItem-${index}`}
+                        }
+                        {editMode && !newXP &&
+                            <div className='experienceAdd'>
+                                <Button className='addXPButton' onClick={addNewExperience}>
+                                    + Add Experience
                         </Button>
-                        </div>
-                    }
-                    {
-                        (editMode && XPEdit) && <ExperienceEdit />
-                    }
+                            </div>
+                        }
+                        {
+                            (editMode && newXP) && <ExperienceEdit type={'experience'} />
+                        }
 
-                </section>
+                    </section>
+                }
+                {
+                    ((projects && projects.length > 0) || editMode) &&
+
+                    <section className='experienceSection'>
+                        <h2 className='sectionTitle'>My <b>projects</b></h2>
+                        {
+                            projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'project'} />)
+                            //key={`projectItem-${index}`}
+                        }
+                        {editMode && !newProj &&
+                            <div className='experienceAdd'>
+                                <Button className='addXPButton' onClick={addNewProject}>
+                                    + Add project
+                        </Button>
+                            </div>
+                        }
+                        {
+                            (editMode && newProj) && <ExperienceEdit type={'project'} />
+                        }
+
+                    </section>
+                }
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
@@ -115,19 +129,23 @@ const Show = (props) => {
                         {
                             !editContactDetails &&
                             <div className={contactExpanded ? 'contactDetails open' : 'contactDetails'}>
-                                {contacts && Object.keys(contacts).map((key) => {
+                                {contact && Object.keys(contact).map((key) => {
                                     const result = fields.find(field => field.id === key);
-                                    let label = result.text || '';
-                                    let value = contacts[key];
-                                    return (
-                                        <p className='contactDetail' key={label}>
-                                            <span>{label}: </span>{value}
-                                        </p>
-                                    )
+                                    if (result) {
+                                        let label = result.text;
+                                        let value = contact[key];
+                                        if (value && value !== '') {
+                                            return (
+                                                <p className='contactDetail' key={label}>
+                                                    <span>{label}: </span><b>{value}</b>
+                                                </p>
+                                            )
+                                        }
+                                    }
                                 })}
                             </div>
                         }
-                        {editContactDetails && <EditContactDetails contact={contacts} closeContactEdit={closeContactEdit} open={contactExpanded} />}
+                        {editContactDetails && <EditContactDetails contact={contact} closeContactEdit={closeContactEdit} open={contactExpanded} />}
 
                     </div>
                     <div className='knowHowContainer'>

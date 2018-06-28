@@ -331,6 +331,11 @@
                         }
                         .contactDetailsEditForm {
                             padding: 20px 0;
+                            .formGroup {
+                                display: flex;
+                                align-items: baseline;
+                                justify-content: space-between;
+                            }
                             .contactFormLabel {
                                 color: #fff;
                             }
@@ -359,6 +364,15 @@
                             }
                             .textField {
                                 margin: 15px 0;
+                                width: 90%;
+                            }
+                            .submitBtn {
+                                display: flex;
+                                margin-left: auto;
+                                position: relative;
+                                background: #fff;
+                                color: #397db9;
+                                box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
                             }
                         }
                     }

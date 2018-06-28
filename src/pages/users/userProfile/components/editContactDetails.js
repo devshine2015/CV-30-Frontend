@@ -1,10 +1,84 @@
 import React from 'react';
-import { Button, Menu, MenuItem, TextField, Icon, IconButton, InputAdornment } from '@material-ui/core';
+import { Button, Menu, MenuItem, TextField, Icon, IconButton } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
 
-import { contactFields as fields } from '../../../../constants/contact';
+import fields from '../../../../constants/contact';
+import { setContact, currentUserQuery } from '../../../../store/queries';
+import { graphql } from 'react-apollo';
 
-const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, handleFormChange, formData, removeTextField, open }) => {
+const EditContactDetailsHOC = compose(
+    graphql(setContact, { name: 'setContact' }),
+    withState('formData', 'setFormData', ({ contact }) => {
+        debugger;
+        if (!contact) {
+            return {};
+        } else {
+            let formData = {};
+            Object.keys(contact).map(key => {
+                const result = fields.find(field => field.id === key);
+                if (result && contact[key] && contact[key] !== '') {
+                    formData[key] = contact[key];
+                }
+            })
+            return formData;
+        }
+
+    }),
+    withState('anchorEl', 'setAnchorEl', null),
+    withHandlers({
+        handleClick: ({ setAnchorEl }) => event => {
+            setAnchorEl(event.currentTarget);
+        },
+
+        handleClose: ({ setAnchorEl }) => () => {
+            setAnchorEl(null);
+        },
+        addField: ({ setAnchorEl, formData, setFormData }) => (fieldId) => {
+            let contact = Object.assign({}, formData);
+            if (!contact[fieldId]) {
+                contact[fieldId] = '';
+                setFormData(contact);
+            }
+            setAnchorEl(null);
+        },
+        handleFormChange: props => event => {
+            const target = event.currentTarget;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+            if (!name) {
+                throw Error('Field must have a name attribute!');
+            }
+            props.setFormData(state => ({ ...state, [name]: value }));
+        },
+        removeTextField: ({ formData, setFormData }) => async (key) => {
+            let contact = Object.assign({}, formData);
+            await delete contact[key];
+            setFormData(contact);
+        },
+        updateContact: ({ setContact, formData }) => async () => {
+            try {
+                await setContact({
+                    variables: formData,
+                    refetchQueries: [{
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: 'en',
+                            id: null
+                        }
+                    }]
+                })
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+    }),
+    pure
+);
+
+const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, handleFormChange, formData, removeTextField, open, updateContact }) => {
     return (
         <div className={open ? 'editContactDetails open' : 'editContactDetails'}>
             <p className='message'>
@@ -37,80 +111,48 @@ const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, hand
                 {
                     Object.keys(formData).map((key) => {
                         const result = fields.find(field => field.id === key);
-                        let text = result.text || '';
-                        return (
-                            <TextField
-                                key={key}
-                                name={key}
-                                label={text}
-                                placeholder={text}
-                                fullWidth
-                                className='textField'
-                                onChange={handleFormChange}
-                                value={formData[key] || ''}
-                                InputProps={{
-                                    classes: {
-                                        root: 'contactTextInputRoot',
-                                        input: 'contactTextInput',
-                                    },
-                                    endAdornment: (
-                                        <InputAdornment position="end" >
-                                            <IconButton className='removeBtn'
-                                                onClick={() => removeTextField(key)}
-                                            >
-                                                <Icon>
-                                                    close
-                                                </Icon>
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
-                                }}
-                                InputLabelProps={{
-                                    className: 'contactFormLabel'
-                                }}
+                        if (result) {
+                            let text = result.text;
+                            return (
+                                <div className='formGroup' key={key}>
+                                    <TextField
+                                        name={key}
+                                        label={text}
+                                        placeholder={text}
+                                        fullWidth
+                                        className='textField'
+                                        onChange={handleFormChange}
+                                        value={formData[key] || ''}
+                                        InputProps={{
+                                            classes: {
+                                                root: 'contactTextInputRoot',
+                                                input: 'contactTextInput',
+                                            }
+                                        }}
+                                        InputLabelProps={{
+                                            className: 'contactFormLabel'
+                                        }}
 
-                            />)
+                                    />
+                                    <IconButton
+                                        className='removeBtn'
+                                        onClick={() => removeTextField(key)}
+                                    >
+                                        <Icon>
+                                            close
+                                    </Icon>
+                                    </IconButton>
+                                </div>
+                            )
+                        }
                     })}
+
+                <IconButton className='submitBtn' onClick={updateContact}>
+                    <Icon>done</Icon>
+                </IconButton>
             </form>
         </div>
     );
 };
-
-const EditContactDetailsHOC = compose(
-    withState('formData', 'setFormData', ({ contact }) => (contact || {})),
-    withState('anchorEl', 'setAnchorEl', null),
-    withHandlers({
-        handleClick: ({ setAnchorEl }) => event => {
-            setAnchorEl(event.currentTarget);
-        },
-
-        handleClose: ({ setAnchorEl }) => () => {
-            setAnchorEl(null);
-        },
-        addField: ({ setAnchorEl, formData, setFormData }) => (fieldId) => {
-            let contact = Object.assign({}, formData);
-            if (!contact[fieldId]) {
-                contact[fieldId] = '';
-                setFormData(contact);
-            }
-            setAnchorEl(null);
-        },
-        handleFormChange: props => event => {
-            const target = event.currentTarget;
-            const value = target.type === 'checkbox' ? target.checked : target.value;
-            const name = target.name;
-            if (!name) {
-                throw Error('Field must have a name attribute!');
-            }
-            props.setFormData(state => ({ ...state, [name]: value }));
-        },
-        removeTextField: ({ formData, setFormData }) => async (key) => {
-            let contact = Object.assign({}, formData);
-            await delete contact[key];
-            setFormData(contact);
-        }
-    }),
-    pure
-);
 
 export default EditContactDetailsHOC(EditContactDetails);

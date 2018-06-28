@@ -1,14 +1,18 @@
 import React from 'react';
 import { TextField, Checkbox, FormLabel, FormControlLabel, IconButton, Icon, Switch as ToggleSwitch, FormGroup, Button } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
+import { graphql } from 'react-apollo';
+import { setExperience, setProject, currentUserQuery } from '../../../../store/queries';
 
 const ExperienceEdit = (props) => {
-    const { formData, isVideoUrl, switchMediaType, handleFormChange, closeEditor } = props;
+    const { formData, isVideoUrl, switchMediaType, handleFormChange, closeEditor, submitForm, type } = props;
     const { position, company, location, startDate, endDate, stillWorkThere, description, videoURL } = formData;
 
     return (
         <form className='experienceForm' noValidate autoComplete='off'>
-            <h4>Add / edit experience</h4>
+            <h4>
+                {type === 'experience' ? 'Add / edit experience' : 'Add / edit project'}
+            </h4>
             <section className='infoSection'>
                 <TextField
                     name="position"
@@ -17,7 +21,7 @@ const ExperienceEdit = (props) => {
                     className='textField'
                     fullWidth
                     onChange={handleFormChange}
-                    value={position}
+                    value={position || ''}
                 />
                 <TextField
                     name="company"
@@ -26,7 +30,7 @@ const ExperienceEdit = (props) => {
                     className='textField'
                     fullWidth
                     onChange={handleFormChange}
-                    value={company}
+                    value={company || ''}
                 />
                 <TextField
                     name="location"
@@ -34,7 +38,7 @@ const ExperienceEdit = (props) => {
                     placeholder="Location..."
                     className='textField'
                     fullWidth
-                    value={location}
+                    value={location || ''}
                     onChange={handleFormChange}
                 />
                 <div className='datePickers'>
@@ -42,21 +46,21 @@ const ExperienceEdit = (props) => {
                     <TextField
                         name="startDate"
                         type="date"
-                        value={startDate}
+                        value={startDate || ''}
                         onChange={handleFormChange}
                     />
                     <TextField
                         name="endDate"
                         type="date"
                         disabled={stillWorkThere}
-                        value={endDate}
+                        value={endDate || ''}
                         onChange={handleFormChange}
                     />
                     <FormControlLabel
                         control={
                             <Checkbox
                                 name='stillWorkThere'
-                                checked={stillWorkThere}
+                                checked={stillWorkThere || false}
                                 onChange={handleFormChange}
                                 color="primary"
                             />
@@ -73,7 +77,7 @@ const ExperienceEdit = (props) => {
                     className='textField'
                     rowsMax="4"
                     onChange={handleFormChange}
-                    value={description}
+                    value={description || ''}
                 />
                 <FormGroup row className='mediaToggle'>
                     <span className='mediaToggleLabel'>Upload visuals</span>
@@ -100,7 +104,7 @@ const ExperienceEdit = (props) => {
                         fullWidth
                         className='textField'
                         onChange={handleFormChange}
-                        value={videoURL}
+                        value={videoURL || ''}
                     /> :
                     <label htmlFor="fileUpload">
                         <input
@@ -122,7 +126,7 @@ const ExperienceEdit = (props) => {
                 <IconButton className='cancelBtn' onClick={closeEditor}>
                     <Icon>close</Icon>
                 </IconButton>
-                <IconButton className='submitBtn'>
+                <IconButton className='submitBtn' onClick={submitForm}>
                     <Icon>done</Icon>
                 </IconButton>
             </section>
@@ -131,11 +135,12 @@ const ExperienceEdit = (props) => {
 };
 
 const SkillsEditHOC = compose(
+    graphql(setExperience, { name: 'setExperience' }),
+    graphql(setProject, { name: 'setProject' }),
     withState('formData', 'setFormData', ({ job }) => (job || {})),
     withState('isVideoUrl', 'changeMediaType', true),
     withHandlers({
         handleFormChange: props => event => {
-            debugger;
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
@@ -146,6 +151,52 @@ const SkillsEditHOC = compose(
         },
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
+        },
+        submitForm: ({ formData, setExperience, setProject, type }) => async () => {
+            console.log(type);
+            switch (type) {
+                case 'experience':
+                    try {
+                        await setExperience({
+                            variables: formData,
+                            refetchQueries: [{
+                                query: currentUserQuery,
+                                fetchPolicy: 'network-only',
+                                name: 'currentUser',
+                                variables: {
+                                    language: 'en',
+                                    id: null
+                                }
+                            }]
+                        });
+                    }
+                    catch (err) {
+                        console.log(err);
+                    }
+                    break;
+                case 'project':
+                    try {
+                        await setProject({
+                            variables: formData,
+                            refetchQueries: [{
+                                query: currentUserQuery,
+                                fetchPolicy: 'network-only',
+                                name: 'currentUser',
+                                variables: {
+                                    language: 'en',
+                                    id: null
+                                }
+                            }]
+                        });
+                    }
+                    catch (err) {
+                        console.log(err);
+                    }
+                    break;
+                default:
+                    return false;
+            }
+
         }
     }),
     pure

@@ -2,14 +2,15 @@ import React from 'react';
 import ExperienceEdit from './experienceEdit';
 import { IconButton, Icon, Grid } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
+import { FormattedDate, FormattedMessage } from 'react-intl';
 
-const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, closeEditor }) => {
+const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, closeEditor, type }) => {
     if (!job) {
         return null;
     } else {
 
         if (editItem) {
-            return <ExperienceEdit job={job} closeEditor={closeEditor} key={editItem} />
+            return <ExperienceEdit job={job} closeEditor={closeEditor} type={type} />
         } else {
 
             return (
@@ -19,7 +20,32 @@ const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, clos
                     </span>
 
                     <span className={globalEditMode ? 'durationLocation editable' : 'durationLocation'}>
-                        <span className='period'>15.05.2007 - Prezent</span>
+                        <span className='period'>
+                            <FormattedDate
+                                value={job.startDate}
+                                year='numeric'
+                                month='2-digit'
+                                day='2-digit'
+                            >
+                                {(text) => (<span>{text}</span>)}
+                            </FormattedDate>
+                            <span>&nbsp;-&nbsp;</span>
+                            {
+                                job.isCurrent ?
+                                    <FormattedMessage id="present" defaultMessage="Present" description="Present">
+                                        {(text) => (<span>{text}</span>)}
+                                    </FormattedMessage>
+                                    :
+                                    <FormattedDate
+                                        value={job.endDate}
+                                        year='numeric'
+                                        month='2-digit'
+                                        day='2-digit'
+                                    >
+                                        {(text) => (<span>{text}</span>)}
+                                    </FormattedDate>
+                            }
+                        </span>
                         <span className='location'>{job.location}</span>
                     </span>
                     {

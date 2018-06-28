@@ -39,12 +39,20 @@ const HeaderHOC = compose(
         openSkillsModal: ({ currentUser, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
             const { skills, values } = currentUser.profile;
             if (type === 'values')
-                setSkillsModalData(values);
+                setSkillsModalData({
+                    type: type,
+                    data: values
+                })
+                    ;
             if (type === 'skills')
-                setSkillsModalData(skills);
+                setSkillsModalData({
+                    type: type,
+                    data: skills
+                });
             setSkillsAnchor(target);
         },
-        closeSkillsModal: ({ setSkillsAnchor }) => () => {
+        closeSkillsModal: ({ setSkillsAnchor, setSkillsModalData }) => () => {
+            setSkillsModalData(null);
             setSkillsAnchor(null);
         },
         removeStory: ({ profile, setHeaderStories }) => index => {
@@ -144,10 +152,24 @@ const Header = (props) => {
         lastName,
         email,
         featuredArticles,
-        skills,
-        values,
+        // skills,
+        // values,
         coverBackground, hasProfileCover
     } = currentUser.profile;
+
+    const skills = currentUser.profile.skills ? currentUser.profile.skills.map(item => {
+        return {
+            id: item.id,
+            title: item.i18n[0].title
+        }
+    }) : [];
+
+    const values = currentUser.profile.values ? currentUser.profile.values.map(item => {
+        return {
+            id: item.id,
+            title: item.i18n[0].title
+        }
+    }) : [];
 
     let headerStyle = null;
 
@@ -334,11 +356,11 @@ const Header = (props) => {
                             {(text) => (<span className='headerSkillsTitle softSkills'>{text}:</span>)}
                         </FormattedMessage>
                         {!editMode && skills &&
-                            skills.map((item, index) => <Chip label={item} className='chip skills' key={`softSkill - ${index}`} />)
+                            skills.map((item, index) => <Chip label={item.title} className='chip skills' key={`softSkill - ${index}`} />)
                         }
                         {
                             editMode && skills &&
-                            <span>{skills.join(', ')}</span>
+                            <span>{skills.map(item => item.title).join(', ')}</span>
                         }
                         {
                             editMode &&
@@ -362,11 +384,11 @@ const Header = (props) => {
                             {(text) => (<span className='headerSkillsTitle values'>{text}:</span>)}
                         </FormattedMessage>
                         {!editMode && values &&
-                            values.map((item, index) => <Chip label={item} className='chip values' key={`value - ${index}`} />)
+                            values.map((item, index) => <Chip label={item.title} className='chip values' key={`value - ${index}`} />)
                         }
                         {
                             editMode && values &&
-                            <span>{values.join(', ')}</span>
+                            <span>{values.map(item => item.title).join(', ')}</span>
                         }
                         {
                             editMode &&

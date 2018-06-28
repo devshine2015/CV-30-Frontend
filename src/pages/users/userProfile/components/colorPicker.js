@@ -64,11 +64,6 @@ const ColorPickerHOC = compose(
                 callback(error)
             }
         },
-        renameFile: () => filename => {
-            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['cover', getExtension].join('.');
-            return fName;
-        },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
             setIsUploading(true);
             next(file);
@@ -112,7 +107,7 @@ const ColorPicker = (props) => {
     const { colorPickerAnchor, onClose,
         setBackgroundColor,
         activeTab, handleTabChange,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinish, renameFile
+        getSignedUrl, onUploadStart, onProgress, onError, onFinish,
     } = props;
     return (
         <Popover
@@ -154,7 +149,6 @@ const ColorPicker = (props) => {
                         uploadRequestHeaders={{
                             'x-amz-acl': 'public-read',
                         }}
-                        scrubFilename={(filename) => renameFile(filename)}
                     />
                     <Button component='span' size='small' className='picUploadButton'>
                         Upload picture
