@@ -2,20 +2,24 @@
     background: #fff;
     flex: 1;
     .header {
+        display: flex;
+        flex-wrap: wrap;
         background: #f4f4f4;
         border-bottom: 1px solid #e8e8e8;
         box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
-        padding: 50px 200px 30px;
+        padding: 50px 0 30px;
         .jobTitle {
             color: #277dba;
             font-size: 2rem;
             font-weight: 100;
+            width: 100%;
         }
         .jobDetails {
             color: #aaaaaa;
             font-size: 1 rem;
             font-weight: normal;
             margin-bottom: 30px;
+            width: 100%;
             .published,
             .expires {
                 &:after {
@@ -28,6 +32,18 @@
                 color: #277dba;
                 text-transform: uppercase;
             }
+        }
+        .centralColumn {
+            position: relative;
+            margin-left: auto;
+        }
+        .columnRight {
+            position: relative;
+            margin-left: auto;
+        }
+        .titleInput {
+            font-size: 2rem;
+            color: #565656;
         }
     }
     .applyButton,
@@ -209,6 +225,30 @@
                     border: 1px solid #363636;
                     color: #363636;
                     margin-right: 12px;
+                }
+            }
+            .jobEditForm {
+                section {
+                    padding-bottom: 40px;
+                    border-bottom: 1px solid #ebebeb;
+                    &:last-child {
+                        margin-bottom: 50px;
+                    }
+                    &:first-child {
+                        border: none;
+                    }
+                }
+                .mediaBtn {
+                    background: #397db9;
+                    color: #fff;
+                    text-transform: none;
+                    font-size: 0.75rem;
+                    padding: 7px 15px;
+                    min-height: auto;
+                    position: relative;
+                    &:first-of-type {
+                        margin-right: 15px;
+                    }
                 }
             }
         }

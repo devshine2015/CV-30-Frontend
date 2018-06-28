@@ -4,17 +4,10 @@ import { withRouter } from 'react-router-dom';
 
 const JobHOC = compose(
     withRouter,
-    withState('expanded', 'updateExpanded', null),
+    withState('editMode', 'updateEditMode', true),
     withHandlers({
-        expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
-            if (edited === panel) {
-                updateExpanded(panel);
-            } else {
-                if (edited)
-                    updateEdited(null);
-                updateExpanded(expanded ? panel : false);
-
-            }
+        switchEditMode: ({ editMode, updateEditMode }) => () => {
+            updateEditMode(!editMode);
         }
     }),
     pure
