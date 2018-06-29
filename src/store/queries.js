@@ -129,7 +129,12 @@ export const currentUserQuery = gql`
             hasAvatar
             hasProfileCover
             coverBackground
-            story
+            story {
+                i18n {
+                    title
+                    description
+                }
+            }
             salary {
                 amount
                 currency
@@ -240,8 +245,8 @@ export const removeValue = gql`
 `;
 
 export const setExperience = gql`
-    mutation setExperience($id: String, $location: Int, $isCurrent: Boolean, $position: String, $company: String, $startDate: Date, $endDate: Date) {
-        setExperience(id: $id, location: $location, isCurrent: $isCurrent, position: $position, company: $company, startDate: $startDate, endDate: $endDate) {
+    mutation setExperience($id: String, $location: Int, $isCurrent: Boolean, $position: String, $company: String, $startDate: Date, $endDate: Date, $title: String, $description: String, $language: LanguageCodeType!) {
+        setExperience(id: $id, location: $location, isCurrent: $isCurrent, position: $position, company: $company, startDate: $startDate, endDate: $endDate, title: $title, description: $description, language: $language) {
             status
             error
         }
@@ -249,8 +254,8 @@ export const setExperience = gql`
 `;
 
 export const setProject = gql`
-    mutation setProject($id: String, $location: Int, $isCurrent: Boolean, $position: String, $company: String, $startDate: Date, $endDate: Date) {
-        setProject(id: $id, location: $location, isCurrent: $isCurrent, position: $position, company: $company, startDate: $startDate, endDate: $endDate) {
+    mutation setProject($id: String, $location: Int, $isCurrent: Boolean, $position: String, $company: String, $startDate: Date, $endDate: Date, $title: String, $description: String, $language: LanguageCodeType!) {
+        setProject(id: $id, location: $location, isCurrent: $isCurrent, position: $position, company: $company, startDate: $startDate, endDate: $endDate, title: $title, description: $description, language: $language) {
             status
             error
         }

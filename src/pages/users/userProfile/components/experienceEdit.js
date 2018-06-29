@@ -152,13 +152,16 @@ const SkillsEditHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        submitForm: ({ formData, setExperience, setProject, type }) => async () => {
-            console.log(type);
+        submitForm: ({ formData, setExperience, setProject, type, match }) => async () => {
+
             switch (type) {
                 case 'experience':
                     try {
                         await setExperience({
-                            variables: formData,
+                            variables: {
+                                ...formData,
+                                language: 'en'
+                            },
                             refetchQueries: [{
                                 query: currentUserQuery,
                                 fetchPolicy: 'network-only',
