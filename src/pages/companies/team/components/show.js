@@ -102,7 +102,7 @@ const Show = props => {
                         </div>
                     </div>
                 </section>
-                <Link to={`/${lang}/dashboard/companies/`} className='teamBackLink'>Inapoi la Ursus Romania</Link>
+                <Link to={`/${lang}/dashboard/company/`} className='teamBackLink'>Inapoi la Ursus Romania</Link>
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>

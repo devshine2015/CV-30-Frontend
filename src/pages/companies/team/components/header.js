@@ -13,7 +13,7 @@ const Header = props => {
                 <Grid item lg={3} md={5} sm={12} xs={12} className='leftHeaderLinks'>
                     <FormattedMessage id="headerLinks.backTo" defaultMessage="Back to" description="User header back to link">
                         {(text) => (
-                            <Button component={Link} to={`/${lang}/dashboard/companies/`} className='backButton'>
+                            <Button component={Link} to={`/${lang}/dashboard/company/`} className='backButton'>
                                 <i className='fas fa-angle-left' />
                                 {text} Ursus Romania
                             </Button>

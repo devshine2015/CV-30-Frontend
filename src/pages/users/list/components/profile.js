@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const ProfileHOC = compose(withState('activeTab', 'setActiveTab', false),
     withHandlers({
         handleTabChange: ({ activeTab, setActiveTab }) => (event, value) => {
-            setActiveTab(activeTab ? false : value);
+            setActiveTab(activeTab === value ? false : value);
         }
     }),
     pure);

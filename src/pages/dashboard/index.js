@@ -7,10 +7,9 @@ import Brand from '../companies/brand';
 import Team from '../companies/team';
 import Jobs from '../job';
 import UsersList from '../users/list';
-
+import CompaniesList from '../companies/list';
 
 const News = () => <div>News</div>;
-const People = () => <div>People</div>;
 
 
 class Dashboard extends Component {
@@ -21,11 +20,12 @@ class Dashboard extends Component {
                 <div className='dashboardRoot'>
                     <Switch>
                         <Route path='/:lang(en|ro)/dashboard/news' exact component={News} />
-                        <Route path='/:lang(en|ro)/dashboard/companies' component={Brand} />
+                        <Route path='/:lang(en|ro)/dashboard/companies' component={CompaniesList} />
+                        <Route exact path='/:lang(en|ro)/dashboard/company' component={Brand} />
+                        <Route exact path='/:lang(en|ro)/dashboard/company/team' component={Team} />
                         <Route path='/:lang(en|ro)/dashboard/people' exact component={UsersList} />
                         <Route path='/:lang(en|ro)/dashboard/jobs' exact component={Jobs} />
                         <Route path='/:lang(en|ro)/dashboard/profile' component={UserProfile} />
-                        <Route path='/:lang(en|ro)/dashboard/company/team' component={Team} />
                     </Switch>
                 </div>
             </React.Fragment>

@@ -28,8 +28,8 @@ const Brand = (props) => {
             <Header {...props} />
             <React.Fragment>
                 <Switch>
-                    <Route exact path='/:lang(en|ro)/dashboard/companies' component={Show} />
-                    <Route exact path='/:lang(en|ro)/dashboard/companies/feed' component={CompanyFeed} />
+                    <Route exact path='/:lang(en|ro)/dashboard/company' component={Show} />
+                    <Route exact path='/:lang(en|ro)/dashboard/company/feed' component={CompanyFeed} />
                 </Switch>
             </React.Fragment>
         </div>
