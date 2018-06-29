@@ -6,6 +6,7 @@ import UserProfile from '../users/userProfile';
 import Brand from '../companies/brand';
 import Team from '../companies/team';
 import Jobs from '../job';
+import UsersList from '../users/list';
 
 
 const News = () => <div>News</div>;
@@ -21,7 +22,7 @@ class Dashboard extends Component {
                     <Switch>
                         <Route path='/:lang(en|ro)/dashboard/news' exact component={News} />
                         <Route path='/:lang(en|ro)/dashboard/companies' component={Brand} />
-                        <Route path='/:lang(en|ro)/dashboard/people' exact component={People} />
+                        <Route path='/:lang(en|ro)/dashboard/people' exact component={UsersList} />
                         <Route path='/:lang(en|ro)/dashboard/jobs' exact component={Jobs} />
                         <Route path='/:lang(en|ro)/dashboard/profile' component={UserProfile} />
                         <Route path='/:lang(en|ro)/dashboard/company/team' component={Team} />
