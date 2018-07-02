@@ -270,3 +270,27 @@
         }
     }
 }
+
+.jobsListRoot {
+    .columnRight {
+        .columnRightContent {
+            top: -80px;
+            border-top: 1px solid;
+            border-left: 1px solid;
+            border-color: #f0f0f0;
+            padding: 25px 20px;
+            .columnTitle {
+                color: #397db9;
+                font-weight: 100;
+                font-size: 2rem;
+                margin: 0;
+                padding: 0;
+            }
+            @media (max-width: 960px) {
+                top: auto;
+                margin-bottom: 75px;
+                border: none;
+            }
+        }
+    }
+}

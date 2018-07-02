@@ -5,7 +5,8 @@ import { Switch, Route } from 'react-router-dom';
 import UserProfile from '../users/userProfile';
 import Brand from '../companies/brand';
 import Team from '../companies/team';
-import Jobs from '../job';
+import Jobs from '../jobs/list';
+import Job from '../jobs/view';
 import UsersList from '../users/list';
 import CompaniesList from '../companies/list';
 
@@ -25,6 +26,7 @@ class Dashboard extends Component {
                         <Route exact path='/:lang(en|ro)/dashboard/company/team' component={Team} />
                         <Route path='/:lang(en|ro)/dashboard/people' exact component={UsersList} />
                         <Route path='/:lang(en|ro)/dashboard/jobs' exact component={Jobs} />
+                        <Route path='/:lang(en|ro)/dashboard/job' exact component={Job} />
                         <Route path='/:lang(en|ro)/dashboard/profile' component={UserProfile} />
                     </Switch>
                 </div>

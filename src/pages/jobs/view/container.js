@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 const JobHOC = compose(
     withRouter,
-    withState('editMode', 'updateEditMode', true),
+    withState('editMode', 'updateEditMode', false),
     withHandlers({
         switchEditMode: ({ editMode, updateEditMode }) => () => {
             updateEditMode(!editMode);

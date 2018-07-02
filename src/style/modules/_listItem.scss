@@ -43,7 +43,8 @@
 }
 
 .userListRoot,
-.companiesListRoot {
+.companiesListRoot,
+.jobsListRoot {
     flex: 1;
     background: #fff;
     .listItem {
@@ -62,12 +63,15 @@
                 margin-left: 15px;
                 padding: 15px 0;
                 .userName,
-                .userTitle {
+                .userTitle,
+                .companyName,
+                .expires {
                     margin: 0;
                     padding: 0;
                     color: #565656;
                 }
-                .userName {
+                .userName,
+                .companyName {
                     display: flex;
                     align-items: flex-start;
                     font-size: 1rem;
@@ -76,9 +80,16 @@
                         margin-left: 10px;
                     }
                 }
-                .userTitle {
+                .userTitle,
+                .expires {
                     font-size: 0.75rem;
                     font-weight: 100;
+                }
+                .expires {
+                    color: #a0a0a0;
+                    span {
+                        color: #414141;
+                    }
                 }
             }
         }
@@ -301,6 +312,133 @@
             .title {
                 font-size: 0.875rem;
                 font-weight: 100;
+            }
+        }
+    }
+}
+
+.jobsListRoot {
+    .header {
+        padding: 40px 0;
+        background: #f4f4f4;
+        box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+        .centralColumn {
+            position: relative;
+            margin-left: auto;
+        }
+        .columnRight {
+            position: relative;
+            margin-left: auto;
+        }
+        .searchTitle {
+            color: #277dba;
+            font-weight: 100;
+            font-size: 2rem;
+        }
+        .searchFields {
+            display: flex;
+            align-items: baseline;
+            .textField {
+                flex: 1;
+                margin-right: 15px;
+            }
+        }
+        .searchBtn {
+            background: #277dba;
+            color: #fff;
+            text-transform: none;
+        }
+    }
+    .listItem {
+        .rightOverlay {
+            align-items: center;
+            border: none;
+            padding: 8px 12px;
+            top: -46px;
+            .location {
+                color: #565656;
+                font-weight: 100;
+                margin-right: 15px;
+                i {
+                    margin-right: 5px;
+                }
+            }
+            .match {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-width: 80px;
+                min-height: 80px;
+                .matchText,
+                .matchValue {
+                    font-size: 1rem;
+                    font-weight: 900;
+                    color: #29a9e1;
+                    text-align: center;
+                }
+                .matchText {
+                    color: #ababab;
+                    font-weight: normal;
+                }
+                .matchRoot {
+                    color: #29a9e1;
+                    position: absolute;
+                }
+            }
+        }
+        .itemBody {
+            flex-wrap: nowrap;
+            align-items: center;
+            .media {
+                display: flex;
+                min-width: 290px;
+                min-height: 165px;
+                width: 290px;
+                height: 165px;
+                background: #d6d6d6;
+                margin-right: 20px;
+            }
+            .details {
+                .jobTitle {
+                    color: #414141;
+                    font-size: 1.25rem;
+                    font-weight: normal;
+                    margin: 0 0 15px 0;
+                    padding: 0;
+                }
+                .levels {
+                    display: flex;
+                    flex-wrap: wrap;
+                    .jobLevel {
+                        height: 30px;
+                        background: #ebebeb;
+                        border-radius: 5px;
+                        color: #414141;
+                        margin: 7px 5px 7px 0;
+                        text-transform: capitalize;
+                    }
+                }
+                .benefits {
+                    display: flex;
+                    flex-wrap: wrap;
+                    .benefit {
+                        color: #ababab;
+                        font-size: 0.75rem;
+                        font-weight: bold;
+                        margin: 7px 15px 7px 0;
+                        i {
+                            margin-right: 5px;
+                        }
+                    }
+                }
+                .companyDescription {
+                    margin: 0;
+                    padding: 0;
+                    color: #414141;
+                    font-weight: 100;
+                    font-size: 0.75rem;
+                }
             }
         }
     }
