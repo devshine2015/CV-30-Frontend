@@ -610,7 +610,9 @@
         max-height: 250px !important;
         overflow-y: scroll;
         padding: 0 !important;
-        .storiesContainer {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        .articlesContainer {
             display: flex;
             flex-direction: column;
             .storyItem {
@@ -649,8 +651,14 @@
                     background: rgba(0, 0, 0, 0.2);
                 }
             }
+            .noArticles {
+                color: #bbb;
+                font-size: .75rem;
+                font-style: italic;
+                padding: 15px;
+            }
         }
-        .newStoryForm {
+        .newArticleForm {
             padding: 10px 20px;
             .textField {
                 margin: 15px 0;
@@ -665,35 +673,28 @@
             }
         }
     }
-    .popupFooter {
-        background: #fff;
+    .editControls {
         padding: 15px;
-        position: relative;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-        .editControls {
-            .cancelBtn,
-            .submitBtn {
-                position: absolute;
-                border-radius: 50%;
-                box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
-            }
-            .cancelBtn {
-                width: 25px;
-                height: 25px;
-                min-width: auto;
-                min-height: auto;
-                background: #fff;
-                color: #ff0000;
-                bottom: -12px;
-                right: 100px;
-            }
-            .submitBtn {
-                background: #397db9;
-                color: #fff;
-                right: 30px;
-                bottom: -24px;
-            }
+        display: flex;
+        align-items: center;
+        .cancelBtn,
+        .submitBtn {
+            border-radius: 50%;
+            box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+        }
+        .cancelBtn {
+            width: 25px;
+            height: 25px;
+            min-width: auto;
+            min-height: auto;
+            background: #fff;
+            color: #ff0000;
+            margin-left: auto;
+        }
+        .submitBtn {
+            background: #397db9;
+            color: #fff;
+            margin-left: 15px;
         }
     }
 }

@@ -68,8 +68,8 @@ const Show = (props) => {
                     <section className='experienceSection'>
                         <h2 className='sectionTitle'>My <b>experience</b></h2>
                         {
-                            experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'experience'} />)
-                            //key={`xpItem-${index}`}
+                            experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'experience'} key={`xpItem-${index}`} />)
+
                         }
                         {editMode && !newXP &&
                             <div className='experienceAdd'>
@@ -90,8 +90,7 @@ const Show = (props) => {
                     <section className='experienceSection'>
                         <h2 className='sectionTitle'>My <b>projects</b></h2>
                         {
-                            projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'project'} />)
-                            //key={`projectItem-${index}`}
+                            projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'project'} key={`projectItem-${index}`} />)
                         }
                         {editMode && !newProj &&
                             <div className='experienceAdd'>

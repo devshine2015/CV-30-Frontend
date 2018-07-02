@@ -30,3 +30,4 @@ yarn-error.log*
 
 *.css
 /credentials
+.vscode/settings.json

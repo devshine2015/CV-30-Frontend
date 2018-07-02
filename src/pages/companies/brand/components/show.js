@@ -67,7 +67,7 @@ const Show = (props) => {
                     <h2 className='titleHeading'>Afla <b>mai multe</b></h2>
                     {
                         moreStories.map((story, index) => (
-                            <Story story={story} index={index} editMode={editMode} />
+                            <Story story={story} index={index} editMode={editMode} key={`story-${index}`} />
                         ))
                     }
                     {editMode && <AddNewStory />}
@@ -81,9 +81,14 @@ const Show = (props) => {
                             const panelId = 'panel-' + index;
                             if (edited !== panelId)
                                 return (
-                                    <ExpansionPanel expanded={expanded === panelId} onChange={expandPanel(panelId)} classes={{
-                                        root: 'qaPanelRoot'
-                                    }}>
+                                    <ExpansionPanel
+                                        expanded={expanded === panelId}
+                                        onChange={expandPanel(panelId)}
+                                        classes={{
+                                            root: 'qaPanelRoot'
+                                        }}
+                                        key={`QAitem-${index}`}
+                                    >
                                         <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
                                             root: 'qaPanelHeader',
                                             expandIcon: 'qaHeaderIcon',

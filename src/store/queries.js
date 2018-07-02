@@ -270,3 +270,42 @@ export const setContact = gql`
         }
     }
 `;
+
+export const getArticles = gql`
+    query articles($language: LanguageCodeType!) {
+        articles(language: $language) {
+            id
+            author {
+                id
+                email
+                firstName
+                lastName
+            }
+            image {
+                id
+                title
+                isFeatured
+                source
+            }
+            video {
+                id
+                title
+                isFeatured
+                source
+            }
+            title
+            description
+            created_at
+            updated_at
+        }
+    }
+`;
+
+export const handleArticle = gql`
+    mutation handleArticle($language: LanguageCodeType!, $article: ArticleInput, $options: ArticleOptions) {
+        handleArticle(language: $language, article: $article, options: $options) {
+            status
+            status
+        }
+    }
+`;

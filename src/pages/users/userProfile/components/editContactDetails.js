@@ -9,7 +9,6 @@ import { graphql } from 'react-apollo';
 const EditContactDetailsHOC = compose(
     graphql(setContact, { name: 'setContact' }),
     withState('formData', 'setFormData', ({ contact }) => {
-        debugger;
         if (!contact) {
             return {};
         } else {

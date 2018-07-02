@@ -5,8 +5,8 @@ import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import SliderHOC from '../../../../hocs/slider';
-import StoryEditor from './storyEditor';
 
+import AddStoryPopup from '../../../../components/AddStoryPopup';
 
 const Header = (props) => {
     const { match, headerStories, keyWords, editMode, removeStory, toggleStoryEditor, closeStoryEditor, storyEditorAnchor } = props;
@@ -116,10 +116,11 @@ const Header = (props) => {
                             <span className='storyTitle'>+ Add featured article</span>
                         </Grid>
                     }
-                    <StoryEditor
-                        stories={headerStories} //will be fetched from server inside component!!!
+                    <AddStoryPopup
                         anchor={storyEditorAnchor}
-                        onClose={closeStoryEditor} />
+                        onClose={closeStoryEditor}
+                    />
+
                 </Grid>
                 <Grid container className='activityFields'>
                     {
