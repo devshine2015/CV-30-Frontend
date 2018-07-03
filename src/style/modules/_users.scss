@@ -875,6 +875,18 @@
             margin-top: 30px;
             display: flex;
             justify-content: flex-end;
+            .successMessage {
+                display: flex;
+                align-items: center;
+                padding: 0 15px;
+                color: #0a0;
+            }
+            .errorMessage {
+                display: flex;
+                align-items: center;
+                padding: 0 15px;
+                color: #F00;
+            }
             .cancelBtn,
             .saveBtn {
                 color: #fff;

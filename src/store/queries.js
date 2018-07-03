@@ -10,6 +10,14 @@ export const LoginMutation = gql`
     }
 `;
 
+export const updateUserSettingsMutation = gql`
+    mutation updateUserSettings($userSettings: UserSettingsInput) {
+        updateUserSettings(userSettings: $userSettings) {  
+            status
+        }
+    }
+`;
+
 export const LogoutMutation = gql`
     mutation logout {
         logout {
