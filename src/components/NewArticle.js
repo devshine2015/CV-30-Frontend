@@ -3,7 +3,7 @@ import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconBu
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { handleArticle } from '../store/queries';
 import { graphql } from 'react-apollo';
-import uuid from 'uuidv4';
+import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
 
 const NewArticleHOC = compose(
