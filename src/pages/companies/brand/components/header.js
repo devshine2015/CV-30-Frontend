@@ -171,7 +171,6 @@ const HeaderHOC = compose(
         closeStoryEditor: ({ setStoryEditorAnchor }) => () => {
             setStoryEditorAnchor(null);
         }
-
     }),
     SliderHOC,
     pure
