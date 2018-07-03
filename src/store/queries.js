@@ -77,18 +77,24 @@ export const currentUserQuery = gql`
                     firstName
                     lastName
                 }
-                image {
+                images {
                     isFeatured
-                    title
+                    i18n {
+                        title
+                    }
                     path
                 }
-                video {
+                videos {
                     isFeatured
-                    title
+                    i18n {
+                        title
+                    }
                     path
                 }
-                title
-                description
+                i18n {
+                    title
+                    description
+                }
             }
             skills {
                 id
