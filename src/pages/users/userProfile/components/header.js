@@ -12,6 +12,8 @@ import slider from '../../../../hocs/slider';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { updateAvatar, setCoverBackground, setHasBackgroundImage, currentUserQuery, updateAvatarTimestampMutation, localUserQuery } from '../../../../store/queries';
 
+import AddStoryPopup from '../../../../components/AddStoryPopup';
+
 
 const HeaderHOC = compose(
     withRouter,
@@ -29,6 +31,7 @@ const HeaderHOC = compose(
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
+    withState('storyEditorAnchor', 'setStoryEditorAnchor', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -130,7 +133,18 @@ const HeaderHOC = compose(
 
             setIsUploading(false);
         },
-        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now())
+        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+        removeStory: ({ headerStories, setHeaderStories }) => (index) => {
+            let stories = [...headerStories];
+            stories.splice(index, 1);
+            setHeaderStories(stories);
+        },
+        toggleStoryEditor: ({ setStoryEditorAnchor }) => target => {
+            setStoryEditorAnchor(target);
+        },
+        closeStoryEditor: ({ setStoryEditorAnchor }) => () => {
+            setStoryEditorAnchor(null);
+        }
     }),
     slider,
     pure
@@ -145,7 +159,8 @@ const Header = (props) => {
         openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
         getSignedUrl, renameFile, onProgress, onError, onFinishUpload, onUploadStart,
         isUploading, uploadProgress,
-        localUserData, refetchBgImage, forceCoverRender
+        localUserData, refetchBgImage, forceCoverRender,
+        storyEditorAnchor, toggleStoryEditor, closeStoryEditor
     } = props;
     const {
         firstName,
@@ -307,10 +322,17 @@ const Header = (props) => {
                     }
                     {
                         editMode &&
-                        <Grid item className='storyContainer add'>
+                        <Grid item className='storyContainer add' onClick={(event) => toggleStoryEditor(event.target)}>
                             <span className='bigPlus'>+</span>
                             <span className='storyTitle'>+ Add story</span>
                         </Grid>
+                    }
+                    {
+                        editMode &&
+                        <AddStoryPopup
+                            anchor={storyEditorAnchor}
+                            onClose={closeStoryEditor}
+                        />
                     }
                 </Hidden>
 
