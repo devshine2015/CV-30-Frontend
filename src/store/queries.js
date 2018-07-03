@@ -315,3 +315,12 @@ export const handleArticle = gql`
         }
     }
 `;
+
+export const handleCompany = gql`
+    mutation handleCompany($language: LanguageCodeType!, $details: CompanyInput!) {
+        handleCompany(language:$language, details:  $details){
+            status
+            error
+        }
+    }
+`;

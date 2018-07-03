@@ -279,17 +279,42 @@
             border-left: 1px solid;
             border-color: #f0f0f0;
             padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
             .columnTitle {
                 color: #397db9;
                 font-weight: 100;
                 font-size: 2rem;
-                margin: 0;
                 padding: 0;
             }
             @media (max-width: 960px) {
                 top: auto;
                 margin-bottom: 75px;
                 border: none;
+            }
+            .textField {
+                margin-bottom: 15px;
+            }
+            section {
+                .sectionTitle {
+                    font-size: 1.25rem;
+                    color: #a0a0a0;
+                    font-weight: 500;
+                }
+            }
+            .checkboxBtn {
+                background: #e5e5e5;
+                color: #414141;
+                margin: 5px 10px 5px 0;
+                text-transform: capitalize;
+                &.active {
+                    background: #277dba;
+                    color: #fff;
+                }
+            }
+            .advanced {
+                display: flex;
+                flex-direction: column;
             }
         }
     }

@@ -138,8 +138,22 @@ const jobs = [
 
 const JobsListHOC = compose(
     withState('data', null, jobs),
+    withState('formData', 'setFormData', {}),
     withState(),
-    withHandlers(),
+    withHandlers({
+        handleFormChange: props => event => {
+            const target = event.currentTarget;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+            if (!name) {
+                throw Error('Field must have a name attribute!');
+            }
+            props.setFormData(state => ({ ...state, [name]: value }));
+        },
+        handleSliderChange: () => (value) => {
+            console.log(value);
+        }
+    }),
     pure
 );
 
