@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Avatar, Button, Icon, Hidden, IconButton, Chip, CircularProgress } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from "recompose";
 import { FormattedMessage } from 'react-intl';
-import { NavLink, withRouter, Link } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 
@@ -134,11 +134,6 @@ const HeaderHOC = compose(
             setIsUploading(false);
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
-        removeStory: ({ headerStories, setHeaderStories }) => (index) => {
-            let stories = [...headerStories];
-            stories.splice(index, 1);
-            setHeaderStories(stories);
-        },
         toggleStoryEditor: ({ setStoryEditorAnchor }) => target => {
             setStoryEditorAnchor(target);
         },

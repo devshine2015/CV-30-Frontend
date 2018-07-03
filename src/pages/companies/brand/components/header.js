@@ -50,7 +50,7 @@ const Header = (props) => {
                     <Grid item lg={3} md={5} sm={12} xs={12} className='rightHeaderLinks'>
                         <FormattedMessage id="headerLinks.profile" defaultMessage="Profile" description="User header profile link">
                             {(text) => (
-                                <Button component={NavLink} exact to={`/${lang}/dashboard/companies`} className='headerLink'>
+                                <Button component={NavLink} exact to={`/${lang}/dashboard/company`} className='headerLink'>
                                     {text}
                                 </Button>
                             )}
@@ -58,7 +58,7 @@ const Header = (props) => {
 
                         <FormattedMessage id="headerLinks.feed" defaultMessage="Feed" description="User header feed link">
                             {(text) => (
-                                <Button component={NavLink} exact to={`/${lang}/dashboard/companies/feed/`} className='headerLink'>
+                                <Button component={NavLink} exact to={`/${lang}/dashboard/company/feed/`} className='headerLink'>
                                     {text}
                                 </Button>
                             )}
