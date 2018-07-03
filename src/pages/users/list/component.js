@@ -8,7 +8,6 @@ const UsersList = props => {
     if (loading) {
         return <div>Loading...</div>
     } else {
-        console.log(profiles);
         return (
             <Grid container className='mainBody userListRoot'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>

@@ -17,9 +17,10 @@ const CompanyHOC = compose(
 
 const Company = props => {
     const {
-        activeTab, handleTabChange,
-        name, field, description, jobs, location, team, employees
+        activeTab, handleTabChange, company
     } = props;
+    const { name, field, location, employees, i18n, jobs, team } = company;
+    debugger;
     return (
         <div className='listItem companyListItem'>
             <div className='leftOverlay'>
@@ -35,11 +36,11 @@ const Company = props => {
                 </div>
             </div>
             <div className='rightOverlay'>
-                {location}&nbsp;|&nbsp;{employees}
+                {location}&nbsp;|&nbsp;{employees || 0} Employees
             </div>
             <div className='itemBody'>
                 <p className='companyDescription'>
-                    {description}
+                    {i18n[0].description}
                 </p>
                 <Tabs
                     value={activeTab}
@@ -63,6 +64,7 @@ const Company = props => {
                         disableRipple
                         disableTouchRipple
                         focusRipple
+                        disabled={!jobs || jobs.length === 0}
                     />
                     <Tab
                         label="Team"
@@ -78,6 +80,7 @@ const Company = props => {
                         disableRipple
                         disableTouchRipple
                         focusRipple
+                        disabled={!team || team.length === 0}
                     />
                 </Tabs>
             </div>

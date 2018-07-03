@@ -106,6 +106,7 @@
         }
         .itemBody {
             flex-wrap: wrap;
+            flex-direction: column;
             .chipContainer {
                 display: flex;
                 width: 100%;

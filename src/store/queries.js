@@ -375,3 +375,27 @@ export const profilesQuery = gql`
         }
     }
 `;
+
+export const companiesQuery = gql`
+    query companies($language: LanguageCodeType!) {
+        companies(language: $language) {
+            id
+            name
+            i18n {
+                headline
+                description
+            }
+            featuredArticles {
+                id
+                images {
+                    id
+                    path
+                }
+                videos {
+                    id
+                    path
+                }
+            }
+        }
+    }
+`;
