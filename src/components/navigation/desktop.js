@@ -81,11 +81,14 @@ const DesktopNav = (props) => {
                                             </FormattedMessage>
 
                                             <FormattedMessage id="nav.appliedJobs" defaultMessage="Applied Jobs" description="Applied jobs menu item">
-                                                {(text) => (<MenuItem onClick={closeProfileMenu}>{text}</MenuItem>)}
+                                                {(text) => (<MenuItem component={Link} to={{
+                                                    pathname: `/${lang}/dashboard/profile/settings`,
+                                                    state: { activeTab: 'jobs' }
+                                                }} onClick={closeProfileMenu}>{text}</MenuItem>)}
                                             </FormattedMessage>
 
                                             <FormattedMessage id="nav.settings" defaultMessage="Settings" description="Settings menu item">
-                                                {(text) => (<MenuItem onClick={closeProfileMenu}>{text}</MenuItem>)}
+                                                {(text) => (<MenuItem component={Link} to={`/${lang}/dashboard/profile/settings`} onClick={closeProfileMenu}>{text}</MenuItem>)}
                                             </FormattedMessage>
 
                                             <div className='companiesContainer'>

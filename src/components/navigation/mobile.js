@@ -117,11 +117,14 @@ const MobileNav = (props) => {
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.appliedJobs" defaultMessage="Applied Jobs" description="Applied jobs menu item">
-                            {(text) => (<ListItem button onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
+                            {(text) => (<ListItem button component={Link} to={{
+                                pathname: `/${lang}/dashboard/profile/settings`,
+                                state: { activeTab: 'jobs' }
+                            }} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.settings" defaultMessage="Settings" description="Settings menu item">
-                            {(text) => (<ListItem button onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
+                            {(text) => (<ListItem button component={Link} to={`/${lang}/dashboard/profile/settings`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <div className='companiesContainer'>

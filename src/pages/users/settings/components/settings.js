@@ -104,7 +104,7 @@ const SettingsHOC = compose(
 )
 const Settings = props => {
     const { getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, localUserData, currentUser, handleFormChange, formData } = props;
-    const { firstName } = formData;
+    const { firstName, lastName, email, oldPassword, newPassword, newPasswordConfirm } = formData;
 
     let avatar =
         (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${localUserData.localUser.timestamp}` : null
@@ -142,7 +142,60 @@ const Settings = props => {
                     className='textField'
                     onChange={handleFormChange}
                     value={firstName || ''}
+                    type='text'
                 />
+                <TextField
+                    name='lastName'
+                    label='Last name'
+                    placeholder='Enter your last name...'
+                    className='textField'
+                    onChange={handleFormChange}
+                    value={lastName || ''}
+                    type='text'
+                />
+                <TextField
+                    name='email'
+                    label='Email'
+                    placeholder='Enter your email...'
+                    className='textField'
+                    onChange={handleFormChange}
+                    value={email || ''}
+                    type='email'
+                    disabled
+                />
+            </div>
+            <div className='passwordFields'>
+                <TextField
+                    name='oldPassword'
+                    label='Old password'
+                    placeholder='Enter your old password...'
+                    className='textField'
+                    onChange={handleFormChange}
+                    value={oldPassword || ''}
+                    type='password'
+                />
+                <TextField
+                    name='newPassword'
+                    label='New password'
+                    placeholder='Enter your new password...'
+                    className='textField'
+                    onChange={handleFormChange}
+                    value={newPassword || ''}
+                    type='password'
+                />
+                <TextField
+                    name='newPasswordConfirm'
+                    label='Confirm new password'
+                    placeholder='Confirm new password...'
+                    className='textField'
+                    onChange={handleFormChange}
+                    value={newPasswordConfirm || ''}
+                    type='password'
+                />
+            </div>
+            <div className='actions'>
+                <Button className='cancelBtn'>Cancel</Button>
+                <Button className='saveBtn'>Save</Button>
             </div>
         </div>
     );

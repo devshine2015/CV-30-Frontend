@@ -15,7 +15,9 @@ const UserSettingsHOC = compose(
             fetchPolicy: 'network-only'
         }),
     }),
-    withState('activeTab', 'setActiveTab', 'settings'),
+    withState('activeTab', 'setActiveTab', props => {
+        return props.location.state && props.location.state.activeTab ? props.location.state.activeTab : 'settings';
+    }),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);

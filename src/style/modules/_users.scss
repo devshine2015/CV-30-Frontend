@@ -42,10 +42,9 @@
                 padding: 0;
             }
         }
-        .badgeRoot {
+        .badgeRoot,
+        .settingsBtn {
             position: absolute;
-            bottom: 0;
-            left: 90px;
             background: #397db9;
             color: #fff;
             min-width: auto;
@@ -53,6 +52,11 @@
             height: 50px;
             border-radius: 50%;
         }
+        .badgeRoot {
+            bottom: 0;
+            left: 90px;
+        }
+        .settingsBtn {}
         .colorPickerButton {
             background: #4893cc;
             color: #fff;
@@ -836,9 +840,56 @@
                 border: 1px solid #eaeaea;
                 margin-right: 15px;
             }
+            .settingsUploadBtn {
+                color: #277dba;
+                text-transform: capitalize;
+                &:hover,
+                &:active {
+                    background: none;
+                }
+                &:hover {
+                    padding-top: 1px;
+                }
+            }
         }
         .infoFields {
-            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            .textField {
+                width: 49%;
+                box-sizing: border-box;
+                margin-top: 30px;
+            }
         }
+        .passwordFields {
+            display: flex;
+            justify-content: space-between;
+            .textField {
+                width: 31%;
+                box-sizing: border-box;
+                margin-top: 30px;
+            }
+        }
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+            .cancelBtn,
+            .saveBtn {
+                color: #fff;
+                text-transform: capitalize;
+            }
+            .saveBtn {
+                background: #277dba;
+            }
+            .cancelBtn {
+                background: red;
+                margin-right: 15px;
+            }
+        }
+    }
+    .jobsList {
+        padding-top: 95px;
     }
 }

@@ -44,7 +44,8 @@
 
 .userListRoot,
 .companiesListRoot,
-.jobsListRoot {
+.jobsListRoot,
+.jobsList {
     flex: 1;
     background: #fff;
     .listItem {
@@ -349,6 +350,11 @@
             text-transform: none;
         }
     }
+}
+
+.jobsListRoot,
+.jobsList {
+    position: relative;
     .listItem {
         .rightOverlay {
             align-items: center;
@@ -386,6 +392,18 @@
                     position: absolute;
                 }
             }
+        }
+        .appliedDate {
+            position: absolute;
+            font-size: 0.75rem;
+            font-weight: 100;
+            color: #93bedc;
+            padding: 8px;
+            border-radius: 5px;
+            background: #fff;
+            border: 1px solid #ededed;
+            bottom: -16px;
+            left: 15px;
         }
         .itemBody {
             flex-wrap: nowrap;

@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom';
 import { Avatar, CircularProgress, Chip } from '@material-ui/core';
 
 const JobItem = props => {
-    console.log(props);
-    const { title, company, expirationDate, location, description, match, videos, images, benefits, jobLevels } = props;
+    const { title, company, expirationDate, location, description, match, videos, images, benefits, jobLevels, appliedDate } = props;
     return (
-        <div className='listItem companyListItem'>
+        <div className='listItem jobListItem'>
             <div className='leftOverlay'>
                 <Link to='/dashboard/job'>
                     <Avatar alt="Gabriel" src="http://brandmark.io/logo-rank/random/pepsi.png" className='avatar' />
@@ -41,6 +40,10 @@ const JobItem = props => {
                     </span>
                 </div>
             </div>
+            {
+                appliedDate &&
+                <span className='appliedDate'>Applied:&nbsp;<b>{appliedDate}</b></span>
+            }
             <div className='itemBody'>
                 {
                     ((videos && videos.length) || (images && images.length)) &&

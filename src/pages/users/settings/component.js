@@ -60,6 +60,7 @@ const UserSettings = props => {
 
                     </Tabs>
                     {activeTab === 'settings' && <Settings {...props} />}
+                    {activeTab === 'jobs' && <Jobs {...props} />}
                 </Grid>
             </Grid>
         </div>

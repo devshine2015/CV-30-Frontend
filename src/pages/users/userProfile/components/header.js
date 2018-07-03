@@ -241,9 +241,6 @@ const Header = (props) => {
                                 refetchBgImage={refetchBgImage}
                                 profile={currentUser.profile}
                             />
-                            <IconButton component={Link} to={`/${lang}/dashboard/profile/settings`}>
-                                <Icon>settings</Icon>
-                            </IconButton>
                         </React.Fragment>
                     }
                     <div className='avatarTexts'>
