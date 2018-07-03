@@ -31,8 +31,8 @@ class Dashboard extends Component {
                         <Route path='/:lang(en|ro)/dashboard/job' exact component={Job} />
 
                         <Route path='/:lang(en|ro)/dashboard/people' exact component={UsersList} />
-                        <Route exact path='/:lang(en|ro)/dashboard/profile/settings' component={UserProfileSettings} />
-                        <Route path='/:lang(en|ro)/dashboard/profile' component={UserProfile} />
+                        <Route path='/:lang(en|ro)/dashboard/profile/:id?/settings' component={UserProfileSettings} />
+                        <Route path='/:lang(en|ro)/dashboard/profile/:id?' component={UserProfile} />
                     </Switch>
                 </div>
             </React.Fragment>

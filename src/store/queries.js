@@ -324,3 +324,46 @@ export const handleCompany = gql`
         }
     }
 `;
+
+export const profilesQuery = gql`
+    query profiles($language: LanguageCodeType!) {
+        profiles(language: $language) {
+            id
+            email
+            firstName
+            lastName
+            skills {
+                id
+                i18n {
+                    title
+                }
+            }
+            values {
+                id
+                i18n {
+                    title
+                }
+            }
+            aboutMeArticles {
+                id
+                i18n {
+                    title
+                }
+                images {
+                    id
+                    path
+                }
+                videos {
+                    id
+                    path
+                }
+            }
+            hasAvatar
+            errors {
+                name
+                value
+                statusCode
+            }
+        }
+    }
+`;

@@ -22,7 +22,8 @@ const MobileNav = (props) => {
         return null;
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.jpg?${localUserData.localUser.timestamp}` : null
+
 
     return (
         <React.Fragment>
@@ -113,18 +114,21 @@ const MobileNav = (props) => {
                 <Drawer anchor="left" open={mobileProfileIsOpen} onClose={closeMobileProfile} className='mobileProfileContainer' classes={{ paperAnchorLeft: 'sideDrawer' }}>
                     <div tabIndex={0} role="button" onClick={closeMobileProfile} onKeyDown={closeMobileProfile} className='content'>
                         <FormattedMessage id="nav.profile" defaultMessage="My profile" description="Profile menu item">
-                            {(text) => (<ListItem button component={NavLink} exact to={`/${lang}/dashboard/profile`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
+                            {(text) => (<ListItem button component={NavLink} exact to={`/${lang}/dashboard/profile/${currentUser.profile.id}`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.appliedJobs" defaultMessage="Applied Jobs" description="Applied jobs menu item">
                             {(text) => (<ListItem button component={Link} to={{
-                                pathname: `/${lang}/dashboard/profile/settings`,
+                                pathname: `/${lang}/dashboard/profile/${currentUser.profile.id}/settings`,
                                 state: { activeTab: 'jobs' }
                             }} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.settings" defaultMessage="Settings" description="Settings menu item">
-                            {(text) => (<ListItem button component={Link} to={`/${lang}/dashboard/profile/settings`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
+                            {(text) => (<ListItem button component={Link} to={{
+                                pathname: `/${lang}/dashboard/profile/${currentUser.profile.id}/settings`,
+                                state: { activeTab: 'settings' }
+                            }} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <div className='companiesContainer'>

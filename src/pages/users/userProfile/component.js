@@ -9,7 +9,7 @@ import Header from './components/header';
 
 const UserProfile = (props) => {
     const { editMode, switchEditMode, currentUser } = props;
-    
+
     const Show = () => <UserProfileShow editMode={editMode} currentUser={currentUser} />
     if (currentUser.loading)
         return <div>Loading</div>
@@ -30,8 +30,8 @@ const UserProfile = (props) => {
         <Header currentUser={currentUser} editMode={editMode} />
         <React.Fragment>
             <Switch>
-                <Route exact path='/:lang(en|ro)/dashboard/profile' component={Show} />
-                <Route exact path='/:lang(en|ro)/dashboard/profile/feed' component={UserProfileFeed} />
+                <Route path='/:lang(en|ro)/dashboard/profile/feed' component={UserProfileFeed} />
+                <Route path='/:lang(en|ro)/dashboard/profile' component={Show} />
             </Switch>
         </React.Fragment>
     </div>

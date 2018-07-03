@@ -814,12 +814,14 @@
         .tabsContainer {
             .tabItemRoot {
                 font-size: 1rem;
-                font-weight: bold;
+                font-weight: 500;
                 color: #bababa;
                 text-transform: none;
                 min-width: auto;
+                transition: all .5s;
                 &.tabItemSelected {
                     color: #414141;
+                    font-weight: bold;
                 }
             }
             .tabIndicator {

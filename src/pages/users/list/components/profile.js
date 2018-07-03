@@ -2,6 +2,7 @@ import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { Avatar, Chip, Tabs, Tab } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 
 const ProfileHOC = compose(withState('activeTab', 'setActiveTab', false),
     withHandlers({
@@ -24,16 +25,21 @@ const Article = props => {
     )
 }
 const Profile = props => {
-    const { activeTab, handleTabChange, featuredArticles, match } = props;
+    const { activeTab, handleTabChange, match, user } = props;
+
+    let { id, firstName, lastName, email, hasAvatar, skills, values, aboutMeArticles } = user;
+    let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.jpg` : '';
+    let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
+
     return (
         <div className='listItem userListItem'>
             <div className='leftOverlay'>
-                <Link to='/dashboard/profile'>
-                    <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className='avatar' />
+                <Link to={`/dashboard/profile/${id}`}>
+                    <Avatar alt={firstName || lastName || email} src={avatar} className='avatar' />
                 </Link>
                 <div className='leftOverlayTexts'>
                     <h6 className='userName'>
-                        Radu Daniel
+                        <span>{fullName}</span>
                         <i className='fas fa-caret-down' />
                     </h6>
                     <p className='userTitle'>Manager</p>
@@ -45,50 +51,60 @@ const Profile = props => {
             <div className='itemBody'>
                 <div className='chipContainer'>
                     <span className='chipTitle skills'>Hard skills:</span>
-                    <Chip label='Leadership' className='chip' />
-                    <Chip label='Leadership' className='chip' />
-                    <Chip label='Leadership' className='chip' />
-                    <Chip label='Leadership' className='chip' />
+                    {(skills && skills.length > 0) ?
+                        skills.map(item => <Chip label={item.i18n[0].title} key={item.id} className='chip' />)
+                        : <span className='empty'>No skills.</span>
+                    }
                 </div>
+
                 <div className='chipContainer'>
                     <span className='chipTitle values'>Soft skills & values:</span>
-                    <Chip label='Leadership' className='chip' />
-                    <Chip label='Leadership' className='chip' />
-                    <Chip label='Leadership' className='chip' />
-                    <Chip label='Leadership' className='chip' />
+                    {(values && values.length > 0) ?
+                        values.map(item => <Chip label={item.i18n[0].title} key={item.id} className='chip' />)
+                        : <span className='empty'>No values.</span>
+                    }
                 </div>
-                <Tabs
-                    value={activeTab}
-                    onChange={handleTabChange}
-                    classes={{
-                        root: 'tabsContainer',
-                        indicator: 'tabsIndicator'
-                    }}
-                >
-                    <Tab
-                        label="More about me"
-                        value='more'
-                        classes={{
-                            root: 'tabRoot',
-                            labelIcon: 'labelIcon',
-                            selected: 'tabSelected',
-                            wrapper: 'tabWrapper',
-                            labelContainer: 'labelContainer',
-                            label: 'label'
-                        }}
-                        disableRipple
-                        disableTouchRipple
-                        focusRipple
-                    />
-                </Tabs>
-            </div>
-            <div className={activeTab ? 'itemFooter open' : 'itemFooter'}>
-                {activeTab === 'more' &&
-                    <div className='articles'>
-                        {featuredArticles.map((item, index) => (<Article {...item} key={`article-${index}`} />))}
-                    </div>
+                {
+                    (aboutMeArticles && aboutMeArticles.length > 0) ?
+                        <Tabs
+                            value={activeTab}
+                            onChange={handleTabChange}
+                            classes={{
+                                root: 'tabsContainer',
+                                indicator: 'tabsIndicator'
+                            }}
+                        >
+                            <Tab
+                                label="More about me"
+                                value='more'
+                                classes={{
+                                    root: 'tabRoot',
+                                    labelIcon: 'labelIcon',
+                                    selected: 'tabSelected',
+                                    wrapper: 'tabWrapper',
+                                    labelContainer: 'labelContainer',
+                                    label: 'label'
+                                }}
+                                disableRipple
+                                disableTouchRipple
+                                focusRipple
+                                disabled={!aboutMeArticles || aboutMeArticles.length === 0}
+                            />
+                        </Tabs>
+                        : null
                 }
             </div>
+            {
+                (aboutMeArticles && aboutMeArticles.length > 0) ?
+                    <div className={activeTab ? 'itemFooter open' : 'itemFooter'}>
+                        {activeTab === 'more' &&
+                            <div className='articles'>
+                                {aboutMeArticles.map(article => (<Article {...article} key={article.id} />))}
+                            </div>
+                        }
+                    </div>
+                    : null
+            }
         </div>
     );
 }

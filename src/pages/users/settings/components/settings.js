@@ -21,13 +21,15 @@ const SettingsHOC = compose(
 
     }),
     withHandlers({
-        getSignedUrl: () => async (file, callback) => {
+        getSignedUrl: ({ currentUser }) => async (file, callback) => {
             let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
             let fName = ['avatar', getExtension].join('.');
 
             const params = {
                 fileName: fName,
-                contentType: file.type
+                contentType: file.type,
+                id: currentUser.profile.id,
+                type: 'avatar'
             };
 
             try {
@@ -107,7 +109,7 @@ const Settings = props => {
     const { firstName, lastName, email, oldPassword, newPassword, newPasswordConfirm } = formData;
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.jpg?${localUserData.localUser.timestamp}` : null
 
     return (
         <div className='settingsTab'>

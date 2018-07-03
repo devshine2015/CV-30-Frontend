@@ -63,13 +63,15 @@ const HeaderHOC = compose(
             stories.splice(index, 1);
             setHeaderStories(stories);
         },
-        getSignedUrl: () => async (file, callback) => {
+        getSignedUrl: ({ currentUser }) => async (file, callback) => {
             let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
             let fName = ['avatar', getExtension].join('.');
 
             const params = {
                 fileName: fName,
-                contentType: file.type
+                contentType: file.type,
+                id: currentUser.profile.id,
+                type: 'avatar'
             };
 
             try {
@@ -200,7 +202,7 @@ const Header = (props) => {
     }
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.jpg?${localUserData.localUser.timestamp}` : null
 
     const lang = props.match.params.lang;
 
@@ -267,7 +269,7 @@ const Header = (props) => {
                 <Grid item md={3} sm={12} xs={12} className='rightHeaderLinks'>
                     <FormattedMessage id="userProfile.profile" defaultMessage="Profile" description="User header profile link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/${lang}/dashboard/profile`} className='headerLink'>
+                            <Button component={NavLink} exact to={`/${lang}/dashboard/profile/${currentUser.profile.id}`} className='headerLink'>
                                 {text}
                             </Button>
                         )}
@@ -275,7 +277,7 @@ const Header = (props) => {
 
                     <FormattedMessage id="userProfile.feed" defaultMessage="Feed" description="User header feed link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/${lang}/dashboard/profile/feed/`} className='headerLink'>
+                            <Button component={NavLink} exact to={`/${lang}/dashboard/profile/${currentUser.profile.id}/feed/`} className='headerLink'>
                                 {text}
                             </Button>
                         )}
