@@ -1,0 +1,30 @@
+.filters {
+    display: flex;
+    flex-direction: column;
+    .textField {
+        margin-bottom: 15px;
+    }
+    section {
+        margin: 20px 0;
+        .sectionTitle {
+            font-size: 1.25rem;
+            color: #a0a0a0;
+            font-weight: 500;
+            margin: 10px 0;
+        }
+    }
+    .checkboxBtn {
+        background: #e5e5e5;
+        color: #414141;
+        margin: 5px 10px 5px 0;
+        text-transform: capitalize;
+        &.active {
+            background: #277dba;
+            color: #fff;
+        }
+    }
+    .advanced {
+        display: flex;
+        flex-direction: column;
+    }
+}

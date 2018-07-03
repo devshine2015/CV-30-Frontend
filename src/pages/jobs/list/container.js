@@ -139,7 +139,6 @@ const jobs = [
 const JobsListHOC = compose(
     withState('data', null, jobs),
     withState('formData', 'setFormData', {}),
-    withState(),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.currentTarget;

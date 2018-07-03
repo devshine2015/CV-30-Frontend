@@ -1,5 +1,5 @@
 import CompaniesList from './component';
-import { compose, pure } from 'recompose';
+import { compose, pure, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { companiesQuery } from '../../../store/queries';
@@ -14,6 +14,18 @@ const CompaniesListHOC = compose(
                 language: props.match.params.lang
             },
         }),
+    }),
+    withState('formData', 'setFormData', {}),
+    withHandlers({
+        handleFormChange: props => event => {
+            const target = event.currentTarget;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+            if (!name) {
+                throw Error('Field must have a name attribute!');
+            }
+            props.setFormData(state => ({ ...state, [name]: value }));
+        }
     }),
     pure
 );

@@ -17,14 +17,14 @@ const CompanyHOC = compose(
 
 const Company = props => {
     const {
-        activeTab, handleTabChange, company
+        activeTab, handleTabChange, company, match
     } = props;
-    const { name, field, location, employees, i18n, jobs, team } = company;
-    debugger;
+    const { id, name, field, location, employees, i18n, jobs, team } = company;
+
     return (
         <div className='listItem companyListItem'>
             <div className='leftOverlay'>
-                <Link to='/dashboard/company'>
+                <Link to={`/dashboard/company/${id}`}>
                     <Avatar alt="Gabriel" src="http://brandmark.io/logo-rank/random/pepsi.png" className='avatar' />
                 </Link>
                 <div className='leftOverlayTexts'>

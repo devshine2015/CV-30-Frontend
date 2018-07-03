@@ -410,6 +410,7 @@
         .itemBody {
             flex-wrap: nowrap;
             align-items: center;
+            flex-direction: row;
             .media {
                 display: flex;
                 min-width: 290px;
