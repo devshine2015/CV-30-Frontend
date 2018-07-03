@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Avatar, Button, Icon, Hidden, IconButton, Chip, CircularProgress } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from "recompose";
 import { FormattedMessage } from 'react-intl';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink, withRouter, Link } from 'react-router-dom';
 import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 
@@ -241,6 +241,9 @@ const Header = (props) => {
                                 refetchBgImage={refetchBgImage}
                                 profile={currentUser.profile}
                             />
+                            <IconButton component={Link} to={`/${lang}/dashboard/profile/settings`}>
+                                <Icon>settings</Icon>
+                            </IconButton>
                         </React.Fragment>
                     }
                     <div className='avatarTexts'>
@@ -257,7 +260,7 @@ const Header = (props) => {
                 <Grid item md={3} sm={12} xs={12} className='rightHeaderLinks'>
                     <FormattedMessage id="userProfile.profile" defaultMessage="Profile" description="User header profile link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/ ${lang} / dashboard / profile`} className='headerLink'>
+                            <Button component={NavLink} exact to={`/${lang}/dashboard/profile`} className='headerLink'>
                                 {text}
                             </Button>
                         )}
@@ -265,7 +268,7 @@ const Header = (props) => {
 
                     <FormattedMessage id="userProfile.feed" defaultMessage="Feed" description="User header feed link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/ ${lang} / dashboard / profile / feed / `} className='headerLink'>
+                            <Button component={NavLink} exact to={`/${lang}/dashboard/profile/feed/`} className='headerLink'>
                                 {text}
                             </Button>
                         )}

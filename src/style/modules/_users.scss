@@ -784,3 +784,61 @@
         }
     }
 }
+
+.userSettingsRoot {
+    background: #fff;
+    flex: 1;
+    .header {
+        background: #f4f4f4;
+        box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+        padding: 50px 0;
+        justify-content: center;
+        .settingsTitle {
+            font-size: 2rem;
+            font-weight: 100;
+            color: #277dba;
+            margin: 0;
+        }
+        .settingsMessage {
+            color: #a5a5a5;
+            font-size: 1rem;
+            font-weight: normal;
+        }
+    }
+    .userSettings {
+        justify-content: center;
+        .tabsContainer {
+            .tabItemRoot {
+                font-size: 1rem;
+                font-weight: bold;
+                color: #bababa;
+                text-transform: none;
+                min-width: auto;
+                &.tabItemSelected {
+                    color: #414141;
+                }
+            }
+            .tabIndicator {
+                height: 4px;
+                background: #414141;
+            }
+        }
+    }
+    .settingsTab {
+        padding: 30px 0;
+        .profilePicture {
+            display: flex;
+            align-items: center;
+            .settingsAvatar {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                border: 1px solid #eaeaea;
+                margin-right: 15px;
+            }
+        }
+        .infoFields {
+            margin-top: 30px;
+        }
+    }
+}
