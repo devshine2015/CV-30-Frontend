@@ -4,21 +4,23 @@ import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { currentUserQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation } from '../../../../store/queries';
+import { currentUserQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation } from '../../../../store/queries';
 
 const SettingsHOC = compose(
     graphql(updateAvatar, { name: 'updateAvatar' }),
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
     graphql(localUserQuery, { name: 'localUserData' }),
+    graphql(updateUserSettingsMutation, { name: 'updateUserSettings' }),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
+    withState('settingsFormError', 'setSettingsFormError', ''),
+    withState('settingsFormSuccess', 'setSettingsFormSuccess', false),
     withState('formData', 'setFormData', ({ currentUser }) => {
         if (!currentUser || !currentUser.profile)
             return {};
         let { firstName, lastName, email } = currentUser.profile;
         return { firstName, lastName, email };
-
     }),
     withHandlers({
         getSignedUrl: ({ currentUser }) => async (file, callback) => {
@@ -101,11 +103,44 @@ const SettingsHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
+        saveUserDetails: ({ setSettingsFormSuccess, setSettingsFormError, updateUserSettings, formData: { firstName, lastName, oldPassword, newPassword, newPasswordConfirm } }) => async () => {
+            if (newPassword) {
+                if (!oldPassword) { alert('Please enter your current password'); return; }
+                if (newPassword != newPasswordConfirm) { alert('New password and confirm new password do not match'); return; }
+            }
+            if (!firstName.trim()) { alert('First name cannot be empty'); return; }
+            if (!lastName.trim()) { alert('Last name cannot be empty'); return; }
+            if (newPassword == oldPassword && !!newPassword) { alert('Are you trying to change the current password with the same one?'); return; }
+            try {
+                const { data: { updateUserSettings: { status } } } = await updateUserSettings({
+                    variables: {
+                        userSettings: {
+                            firstName,
+                            lastName,
+                            oldPassword: oldPassword ? oldPassword : '',
+                            newPassword: newPassword ? newPassword : ''
+                        }
+                    },
+                    refetchQueries: [{
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: 'en',
+                            id: null
+                        }
+                    }]
+                });
+                if (status) setSettingsFormSuccess(true);
+            } catch (error) {
+                setSettingsFormError(JSON.stringify(error));
+            }
+        }
     }),
     pure
 )
 const Settings = props => {
-    const { getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, localUserData, currentUser, handleFormChange, formData } = props;
+    const { settingsFormSuccess, settingsFormError, getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, localUserData, currentUser, handleFormChange, formData, saveUserDetails } = props;
     const { firstName, lastName, email, oldPassword, newPassword, newPasswordConfirm } = formData;
 
     let avatar =
@@ -196,8 +231,10 @@ const Settings = props => {
                 />
             </div>
             <div className='actions'>
-                <Button className='cancelBtn'>Cancel</Button>
-                <Button className='saveBtn'>Save</Button>
+                {/* <Button className='cancelBtn'>Cancel</Button> */}
+                { settingsFormError && <div className="errorMessage">{ settingsFormError }</div> }
+                { settingsFormSuccess && <div className="successMessage">Your details have been successfully saved</div> }
+                <Button className='saveBtn' onClick={saveUserDetails}>Save</Button>
             </div>
         </div>
     );
