@@ -277,8 +277,8 @@ export const setProject = gql`
 `;
 
 export const setContact = gql`
-    mutation setContact($phone: String, $email: String, $facebook: String, $linkedin: String) {
-        setContact(phone: $phone, email: $email, facebook: $facebook, linkedin: $linkedin) {
+    mutation setContact($contact: ContactInput) {
+        setContact(contact: $contact) {
             status
             error
         }
@@ -294,21 +294,19 @@ export const getArticles = gql`
                 email
                 firstName
                 lastName
-            }
-            image {
+                }
+            images {
                 id
-                title
-                isFeatured
-                source
-            }
-            video {
+                path
+                }
+            videos {
                 id
+                path
+                }
+            i18n {
                 title
-                isFeatured
-                source
-            }
-            title
-            description
+                description
+                }
             created_at
             updated_at
         }
@@ -396,6 +394,24 @@ export const companiesQuery = gql`
                     path
                 }
             }
+        }
+    }
+`;
+
+export const setStory = gql`
+    mutation setStory($story: StoryInput, $language: LanguageCodeType!) {
+        setStory(story: $story, language: $language) {
+            status
+            error
+        }
+    }
+`;
+
+export const setSalary = gql`
+    mutation setSalary($salary: SalaryInput) {
+        setSalary(salary: $salary) {
+            status
+            error
         }
     }
 `;

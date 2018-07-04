@@ -6,7 +6,7 @@ import { graphql } from 'react-apollo';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
 
-const NewArticleHOC = compose(
+const ArticleEditorHOC = compose(
     graphql(handleArticle, {
         name: 'handleArticle'
     }),
@@ -48,7 +48,8 @@ const NewArticleHOC = compose(
                             title: formData.title,
                             videos: [],
                             images: formData.images,
-                            description: formData.description
+                            description: formData.description,
+                            isFeatured: true
                         },
                         options: {
                             // articleId: formData.id,
@@ -57,9 +58,6 @@ const NewArticleHOC = compose(
                         }
                     }
                 });
-
-                console.log(result);
-
             }
             catch (err) {
                 console.log(err);
@@ -67,13 +65,11 @@ const NewArticleHOC = compose(
             setIsSaving(true);
         },
         getSignedUrl: ({ formData }) => async (file, callback) => {
-            let id = formData.id;
-            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = [id, getExtension].join('.');
-
             const params = {
-                fileName: fName,
-                contentType: file.type
+                fileName: file.name,
+                contentType: file.type,
+                id: formData.id,
+                type: 'article'
             };
 
             try {
@@ -102,8 +98,7 @@ const NewArticleHOC = compose(
                 newFormData.images = [{
                     id: uuid(),
                     title: file.name,
-                    isFeatured: true,
-                    sourceType: 'company',
+                    sourceType: 'article',
                     source: formData.id, //article id,
                     path: 'bla' // {/server/user | company/article/image}
 
@@ -129,7 +124,7 @@ const NewArticleHOC = compose(
     pure
 )
 
-const NewArticle = props => {
+const ArticleEditor = props => {
     const {
         handleFormChange, isVideoUrl, switchMediaType, formData,
         getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload,
@@ -138,7 +133,7 @@ const NewArticle = props => {
     const { title, description, videoURL } = formData;
 
     return (
-        <form className='newArticleForm' noValidate autoComplete='off'>
+        <div className='newArticleForm'>
             <h4>Add article</h4>
             <section className='infoSection'>
                 <TextField
@@ -146,7 +141,6 @@ const NewArticle = props => {
                     label="Article title"
                     placeholder="Title..."
                     className='textField'
-                    fullWidth
                     onChange={handleFormChange}
                     value={title || ''}
                 />
@@ -158,7 +152,6 @@ const NewArticle = props => {
                     multiline
                     rows={1}
                     rowsMax={10}
-                    fullWidth
                     onChange={handleFormChange}
                     value={description || ''}
                 />
@@ -184,7 +177,6 @@ const NewArticle = props => {
                         name="videoURL"
                         label="Add video URL"
                         placeholder="Video URL..."
-                        fullWidth
                         className='textField'
                         onChange={handleFormChange}
                         value={videoURL || ''}
@@ -203,8 +195,6 @@ const NewArticle = props => {
                             uploadRequestHeaders={{
                                 'x-amz-acl': 'public-read'
                             }}
-                        // autoUpload={false}
-                        // ref={uploader => { this.uploader = uploader; }}
                         />
                         <Button component='span' className='badgeRoot' disabled={isSaving}>
                             Upload
@@ -220,8 +210,8 @@ const NewArticle = props => {
                     <Icon>done</Icon>
                 </IconButton>
             </section>
-        </form>
+        </div>
     );
 };
 
-export default NewArticleHOC(NewArticle);
+export default ArticleEditorHOC(ArticleEditor);

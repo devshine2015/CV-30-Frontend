@@ -10,9 +10,9 @@ import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
 import slider from '../../../../hocs/slider';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { updateAvatar, setCoverBackground, setHasBackgroundImage, currentUserQuery, updateAvatarTimestampMutation, localUserQuery } from '../../../../store/queries';
+import { updateAvatar, setCoverBackground, setHasBackgroundImage, currentUserQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
 
-import AddStoryPopup from '../../../../components/AddStoryPopup';
+import ArticlePopup from '../../../../components/ArticlePopup';
 
 
 const HeaderHOC = compose(
@@ -22,6 +22,7 @@ const HeaderHOC = compose(
     graphql(localUserQuery, { name: 'localUserData' }),
     graphql(setCoverBackground, { name: 'setCoverBackground' }),
     graphql(setHasBackgroundImage, { name: 'setHasBackgroundImage' }),
+    graphql(handleArticle, { name: 'handleArticle' }),
     withState('count', 'setCount', ({ currentUser }) => currentUser.profile.featuredArticles ? currentUser.profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
@@ -58,10 +59,34 @@ const HeaderHOC = compose(
             setSkillsModalData(null);
             setSkillsAnchor(null);
         },
-        removeStory: ({ profile, setHeaderStories }) => index => {
-            let stories = [...profile.featuredArticles];
-            stories.splice(index, 1);
-            setHeaderStories(stories);
+        removeStory: ({ handleArticle }) => async article => {
+            console.log(article);
+            // debugger;
+            try {
+                await handleArticle({
+                    variables: {
+                        article: {
+                            id: article.id,
+                            title: article.i18n ? article.i18n[0].title : 'bla',
+                            isFeatured: false
+                        },
+                        language: 'en'
+                    },
+                    refetchQueries: [{
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: 'en',
+                            id: null
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
+
         },
         getSignedUrl: ({ currentUser }) => async (file, callback) => {
             let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
@@ -186,7 +211,7 @@ const Header = (props) => {
     let headerStyle = null;
 
     if (hasProfileCover) {
-        let newCover = `${s3BucketURL}/${profilesFolder}/cover.jpg?${Date.now()}-${forceCoverRender}`;
+        let newCover = `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/cover.jpg?${Date.now()}-${forceCoverRender}`;
         headerStyle = { background: `url(${newCover})` };
     }
     else if (coverBackground) {
@@ -297,8 +322,8 @@ const Header = (props) => {
             <Grid container className='headerStories' spacing={8}>
                 <Hidden smDown>
                     {
-                        featuredArticles && featuredArticles.map((story, index) => (
-                            <Grid item className='storyContainer' key={`headerStory - ${index}`}>
+                        featuredArticles && featuredArticles.map(story => (
+                            <Grid item className='storyContainer' key={story.id}>
                                 <img src={story.img} alt="ceva" className='storyImg' />
                                 <span className='storyTitle'>{story.title}</span>
                                 {
@@ -306,7 +331,7 @@ const Header = (props) => {
                                     <Button
                                         variant='fab'
                                         size='small'
-                                        onClick={() => removeStory(index)}
+                                        onClick={() => removeStory(story)}
                                         classes={{
                                             fab: 'removeStoryBtn'
                                         }}
@@ -326,7 +351,7 @@ const Header = (props) => {
                     }
                     {
                         editMode &&
-                        <AddStoryPopup
+                        <ArticlePopup
                             anchor={storyEditorAnchor}
                             onClose={closeStoryEditor}
                         />

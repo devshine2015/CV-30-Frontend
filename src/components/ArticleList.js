@@ -15,8 +15,7 @@ const StoryBrowserHOC = compose(
             },
         }),
     }),
-    withHandlers({
-    }),
+    withHandlers({}),
     pure
 );
 
@@ -33,15 +32,15 @@ const StoryBrowser = props => {
 
         <div className='articlesContainer'>
             {
-                (articles && articles.length > 0) ? articles.map((story, index) => (
-                    <Grid container className='storyItem' onClick={() => console.log(story.title)} key={`article-${index}`}>
-                        <Grid item sm={12} md={3} className='media'>
-                            <img src={story.imgUrl} alt={story.title} />
+                (articles && articles.length > 0) ? articles.map(article => (
+                    <Grid container className='articleItem' onClick={() => console.log(article.title)} key={article.id}>
+                        <Grid item sm={12} md={3} className='articleMedia'>
+                            <img src={article.imgUrl} alt={article.title} />
                         </Grid>
-                        <Grid item sm={12} md={9} className='texts'>
-                            <h4>{story.title}</h4>
+                        <Grid item sm={12} md={9} className='articleTexts'>
+                            <h4>{article.title}</h4>
                             <p>
-                                {story.text}
+                                {article.text}
                             </p>
                         </Grid>
                     </Grid>

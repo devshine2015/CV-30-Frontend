@@ -6,7 +6,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import SliderHOC from '../../../../hocs/slider';
 
-import AddStoryPopup from '../../../../components/AddStoryPopup';
+import ArticlePopup from '../../../../components/ArticlePopup';
 
 const Header = (props) => {
     const { match, headerStories, keyWords, editMode, removeStory, toggleStoryEditor, closeStoryEditor, storyEditorAnchor } = props;
@@ -116,7 +116,7 @@ const Header = (props) => {
                             <span className='storyTitle'>+ Add featured article</span>
                         </Grid>
                     }
-                    <AddStoryPopup
+                    <ArticlePopup
                         anchor={storyEditorAnchor}
                         onClose={closeStoryEditor}
                     />

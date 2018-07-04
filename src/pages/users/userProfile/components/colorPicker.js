@@ -39,13 +39,15 @@ const ColorPickerHOC = compose(
                 console.log(error);
             }
         },
-        getSignedUrl: () => async (file, callback) => {
+        getSignedUrl: ({ profile }) => async (file, callback) => {
             let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
             let fName = ['cover', getExtension].join('.');
 
             const params = {
                 fileName: fName,
-                contentType: file.type
+                contentType: file.type,
+                id: profile.id,
+                type: 'profile_cover'
             };
 
             try {
@@ -93,11 +95,6 @@ const ColorPickerHOC = compose(
             });
             setIsUploading(false);
             refetchBgImage();
-        }
-    }),
-    lifecycle({
-        componentDidUpdate() {
-
         }
     }),
     pure

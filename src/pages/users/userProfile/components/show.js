@@ -1,20 +1,24 @@
 import React from 'react';
 import { Grid, Icon, IconButton, Button, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
 // import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { setStory, setSalary, currentUserQuery } from '../../../../store/queries';
 
 import ExperienceEdit from './experienceEdit';
 import ExperienceDisplay from './experienceDisplay';
 import EditContactDetails from './editContactDetails';
-import { compose } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import { pure, withState, withHandlers } from 'recompose';
 import fields from '../../../../constants/contact';
+import AddStoryInline from '../../../../components/ArticleInline';
 
 const ShowHOC = compose(
+    graphql(setStory, { name: 'setStory' }),
+    graphql(setSalary, { name: 'setSalary' }),
     withState('newXP', 'setNewXP', false),
     withState('newProj', 'setNewProj', false),
     withState('story', 'setMyStory', ({ currentUser }) => currentUser.profile.story || ''),
     withState('editContactDetails', 'setEditContactDetails', false),
-    withState('contactExpanded', 'setContactExpanded', false),
+    withState('contactExpanded', 'setContactExpanded', true),
     withState('isSalaryPublic', 'setSalaryPrivacy', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.isPublic : false),
     withState('desiredSalary', 'setDesiredSalary', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.amount : 0),
     withHandlers({
@@ -41,9 +45,59 @@ const ShowHOC = compose(
         updateStory: ({ setMyStory }) => text => {
             setMyStory(text);
         },
+        saveStory: ({ setStory, story }) => async () => {
+            try {
+                await setStory({
+                    variables: {
+                        story: {
+                            title: 'My story',
+                            description: story
+                        },
+                        language: 'en'
+                    },
+                    refetchQueries: [{
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: 'en',
+                            id: null
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
+        },
         updateDesiredSalary: ({ setDesiredSalary }) => salary => {
             setDesiredSalary(salary);
-        }
+        },
+        saveDesiredSalary: ({ setSalary, isSalaryPublic, desiredSalary }) => async () => {
+            try {
+                await setSalary({
+                    variables: {
+                        salary: {
+                            amount: desiredSalary,
+                            isPublic: isSalaryPublic,
+                            currency: 'ron'
+                        }
+                    },
+                    refetchQueries: [{
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: 'en',
+                            id: null
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
+        },
     }),
     pure
 );
@@ -53,8 +107,8 @@ const Show = (props) => {
         newXP, newProj, addNewExperience, addNewProject,
         editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
         toggleSalaryPrivate,
-        story, updateStory,
-        updateDesiredSalary, isSalaryPublic, desiredSalary
+        story, updateStory, saveStory,
+        updateDesiredSalary, isSalaryPublic, desiredSalary, saveDesiredSalary
     } = props;
 
     const { contact, experience, projects, } = currentUser.profile;
@@ -75,7 +129,7 @@ const Show = (props) => {
                             <div className='experienceAdd'>
                                 <Button className='addXPButton' onClick={addNewExperience}>
                                     + Add Experience
-                        </Button>
+                                </Button>
                             </div>
                         }
                         {
@@ -182,6 +236,7 @@ const Show = (props) => {
                             </Icon>
                             </div>
                         </div>
+                        {editMode && <AddStoryInline />}
                     </div>
                     <hr />
                     <div className='myStoryContainer'>
@@ -191,18 +246,23 @@ const Show = (props) => {
                             <p className='storyHelperText'>Write a few words about yourself.</p>
                         }
                         {editMode ?
-                            <TextField
-                                className='storyEditor'
-                                InputProps={{
-                                    classes: {
-                                        root: 'bootstrapRoot',
-                                        input: 'storyEditorinput',
-                                    }
-                                }}
-                                value={story}
-                                multiline
-                                onChange={event => updateStory(event.target.value)}
-                            /> :
+                            <React.Fragment>
+                                <TextField
+                                    className='storyEditor'
+                                    InputProps={{
+                                        classes: {
+                                            root: 'bootstrapRoot',
+                                            input: 'storyEditorinput',
+                                        }
+                                    }}
+                                    value={story || ''}
+                                    multiline
+                                    onChange={event => updateStory(event.target.value)}
+                                />
+                                <IconButton className='submitBtn' onClick={saveStory}>
+                                    <Icon>done</Icon>
+                                </IconButton>
+                            </React.Fragment> :
                             <p>
                                 {story}
                             </p>
@@ -224,7 +284,7 @@ const Show = (props) => {
                                     color="primary" />
                                 <FormLabel className={isSalaryPublic ? 'active' : ''}>Public</FormLabel>
                             </FormGroup>
-                            <FormControl fullWidth>
+                            <FormControl>
                                 <InputLabel htmlFor="desiredSalary">Amount</InputLabel>
                                 <Input
                                     id="desiredSalary"
@@ -236,6 +296,9 @@ const Show = (props) => {
                                 // startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                 />
                             </FormControl>
+                            <IconButton className='submitBtn' onClick={saveDesiredSalary}>
+                                <Icon>done</Icon>
+                            </IconButton>
                         </div>
                     }
                 </div>

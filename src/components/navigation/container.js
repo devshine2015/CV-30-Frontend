@@ -32,8 +32,9 @@ const NavigationHOC = compose(
             variables: {
                 language: props.match.params.lang,
                 id: null
-            },
+            }
         }),
+        fetchPolicy: 'network-only'
     }),
     graphql(localUserQuery, { name: 'localUserData' }),
     withState('profileMenuOpen', 'setProfileMenuStatus', false),

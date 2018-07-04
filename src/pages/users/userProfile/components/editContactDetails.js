@@ -57,7 +57,9 @@ const EditContactDetailsHOC = compose(
         updateContact: ({ setContact, formData }) => async () => {
             try {
                 await setContact({
-                    variables: formData,
+                    variables: {
+                        contact: formData
+                    },
                     refetchQueries: [{
                         query: currentUserQuery,
                         fetchPolicy: 'network-only',
@@ -118,7 +120,6 @@ const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, hand
                                         name={key}
                                         label={text}
                                         placeholder={text}
-                                        fullWidth
                                         className='textField'
                                         onChange={handleFormChange}
                                         value={formData[key] || ''}

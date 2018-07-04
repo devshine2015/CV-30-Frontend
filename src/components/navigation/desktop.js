@@ -6,7 +6,7 @@ import { Manager, Target, Popper } from 'react-popper';
 import classNames from 'classnames';
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
 
-const DesktopNav = (props) => {
+const DesktopNav = props => {
     const { localUserData, currentUser, match, doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications } = props;
     const lang = match.params.lang;
     const user = currentUser.profile;
