@@ -211,7 +211,7 @@ const Header = (props) => {
     let headerStyle = null;
 
     if (hasProfileCover) {
-        let newCover = `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/cover.jpg?${Date.now()}-${forceCoverRender}`;
+        let newCover = `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/cover.png?${Date.now()}-${forceCoverRender}`;
         headerStyle = { background: `url(${newCover})` };
     }
     else if (coverBackground) {
@@ -227,7 +227,7 @@ const Header = (props) => {
     }
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.jpg?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.png?${localUserData.localUser.timestamp}` : null
 
     const lang = props.match.params.lang;
 

@@ -16,7 +16,7 @@ const ShowHOC = compose(
     graphql(setSalary, { name: 'setSalary' }),
     withState('newXP', 'setNewXP', false),
     withState('newProj', 'setNewProj', false),
-    withState('story', 'setMyStory', ({ currentUser }) => currentUser.profile.story || ''),
+    withState('story', 'setMyStory', ({ currentUser }) => currentUser.profile.story && currentUser.profile.story.i18n && currentUser.profile.story.i18n[0].description || ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', true),
     withState('isSalaryPublic', 'setSalaryPrivacy', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.isPublic : false),
@@ -25,9 +25,11 @@ const ShowHOC = compose(
         addNewExperience: ({ newXP, setNewXP }) => () => {
             setNewXP(!newXP);
         },
+        closeNewExperience: ({ setNewXP }) => () => setNewXP(false),
         addNewProject: ({ newProj, setNewProj }) => () => {
             setNewProj(!newProj);
         },
+        closeNewProject: ({ setNewProj }) => () => setNewProj(false),
         toggleEditContact: ({ editContactDetails, setEditContactDetails, setContactExpanded }) => () => {
             setEditContactDetails(!editContactDetails);
             if (!editContactDetails)
@@ -60,8 +62,7 @@ const ShowHOC = compose(
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
-                            language: 'en',
-                            id: null
+                            language: 'en'
                         }
                     }]
                 });
@@ -104,7 +105,7 @@ const ShowHOC = compose(
 
 const Show = (props) => {
     const { editMode, currentUser,
-        newXP, newProj, addNewExperience, addNewProject,
+        newXP, newProj, addNewExperience, closeNewExperience, addNewProject, closeNewProject,
         editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
         toggleSalaryPrivate,
         story, updateStory, saveStory,
@@ -126,14 +127,14 @@ const Show = (props) => {
 
                         }
                         {editMode && !newXP &&
-                            <div className='experienceAdd'>
-                                <Button className='addXPButton' onClick={addNewExperience}>
+                            <div className='experienceAdd' onClick={addNewExperience}>
+                                <Button className='addXPButton'>
                                     + Add Experience
                                 </Button>
                             </div>
                         }
                         {
-                            (editMode && newXP) && <ExperienceEdit type={'experience'} />
+                            (editMode && newXP) && <ExperienceEdit type={'experience'} closeEditor={closeNewExperience} />
                         }
 
                     </section>
@@ -147,14 +148,14 @@ const Show = (props) => {
                             projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'project'} key={`projectItem-${index}`} />)
                         }
                         {editMode && !newProj &&
-                            <div className='experienceAdd'>
-                                <Button className='addXPButton' onClick={addNewProject}>
+                            <div className='experienceAdd' onClick={addNewProject}>
+                                <Button className='addXPButton'>
                                     + Add project
-                        </Button>
+                                </Button>
                             </div>
                         }
                         {
-                            (editMode && newProj) && <ExperienceEdit type={'project'} />
+                            (editMode && newProj) && <ExperienceEdit type={'project'} closeEditor={closeNewProject} />
                         }
 
                     </section>

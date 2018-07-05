@@ -15,7 +15,7 @@ const DesktopNav = props => {
         return null;
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.jpg?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.png?${localUserData.localUser.timestamp}` : null
 
     return (
         <React.Fragment>

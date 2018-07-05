@@ -71,7 +71,7 @@ export const AuthenticateLocal = gql`
 `;
 
 export const currentUserQuery = gql`
-    query currentUser($id: Int, $language: LanguageCodeType!) {
+    query currentUser($id: String, $language: LanguageCodeType!) {
         profile(id: $id, language: $language) {
             id
             email
@@ -166,8 +166,7 @@ export const currentUserQuery = gql`
 export const updateAvatar = gql`
     mutation updateAvatar($status:Boolean!){
         avatar(status: $status){
-           id
-           hasAvatar
+           status
         }
     }
 `;
@@ -185,8 +184,8 @@ export const updateAvatarTimestampMutation = gql`
 
 export const localUserQuery = gql`
     query localUserQuery {
-        localUser @client {          
-            timestamp          
+        localUser @client {
+            timestamp
         }
     }
 `;
@@ -207,8 +206,7 @@ export const getCurrentUser = gql`
 export const setCoverBackground = gql`
     mutation setCoverBackground($color: String) {
         setCoverBackground(color: $color) {
-           id
-           coverBackground
+           status
         }
     }
 `;
@@ -216,8 +214,7 @@ export const setCoverBackground = gql`
 export const setHasBackgroundImage = gql`
     mutation profileCover($status: Boolean) {
         profileCover(status: $status) {
-           id
-           hasProfileCover
+            status
         }
     }
 `;

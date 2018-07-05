@@ -36,7 +36,7 @@ const Header = (props) => {
             <div className='headerContents'>
                 <Grid container className='headerLinks'>
                     <Grid item lg={3} md={5} sm={12} xs={12} className='userAvatar'>
-                        <Avatar alt="Gabriel" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg" className='avatar' />
+                        <Avatar alt="John" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.png" className='avatar' />
                         <div className='avatarTexts'>
                             <h3>Ursus Romania</h3>
                             <h4>Companie de bauturi</h4>
