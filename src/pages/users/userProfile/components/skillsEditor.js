@@ -37,7 +37,7 @@ const SkillsEditHOC = compose(
                 alert('duplicate!');
             }
         },
-        removeChip: ({ displaySkills, setDisplaySkills, skillsModalData, removeSkill, removeValue }) => async (chipIndex) => {
+        removeChip: ({ displaySkills, setDisplaySkills, skillsModalData, removeSkill, removeValue, match }) => async chipIndex => {
             const { type } = skillsModalData;
             let id = displaySkills[chipIndex].id;
 
@@ -54,7 +54,7 @@ const SkillsEditHOC = compose(
                                 name: 'currentUser',
                                 variables: {
                                     language: 'en',
-                                    id: null
+                                    id: match.params.profileId
                                 }
                             }]
                         });
@@ -75,7 +75,7 @@ const SkillsEditHOC = compose(
                                 name: 'currentUser',
                                 variables: {
                                     language: 'en',
-                                    id: null
+                                    id: match.params.profileId
                                 }
                             }]
                         });
@@ -92,7 +92,7 @@ const SkillsEditHOC = compose(
             chipData.splice(chipIndex, 1);
             setDisplaySkills(chipData);
         },
-        saveData: ({ displaySkills, skillsModalData, setSkills, setValues, closeSkillsModal }) => async () => {
+        saveData: ({ displaySkills, skillsModalData, setSkills, setValues, closeSkillsModal, match }) => async () => {
             const { type } = skillsModalData;
             console.log(displaySkills);
             let data = displaySkills.map(item => item.title);
@@ -111,7 +111,7 @@ const SkillsEditHOC = compose(
                                 name: 'currentUser',
                                 variables: {
                                     language: 'en',
-                                    id: null
+                                    id: match.params.profileId
                                 }
                             }]
                         });
@@ -133,7 +133,7 @@ const SkillsEditHOC = compose(
                                 name: 'currentUser',
                                 variables: {
                                     language: 'en',
-                                    id: null
+                                    id: match.params.profileId
                                 }
                             }]
                         });

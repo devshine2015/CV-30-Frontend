@@ -71,7 +71,7 @@ export const AuthenticateLocal = gql`
 `;
 
 export const currentUserQuery = gql`
-    query currentUser($id: Int, $language: LanguageCodeType!) {
+    query currentUser($id: String, $language: LanguageCodeType!) {
         profile(id: $id, language: $language) {
             id
             email

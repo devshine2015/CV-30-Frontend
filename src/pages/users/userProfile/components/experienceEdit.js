@@ -168,7 +168,7 @@ const SkillsEditHOC = compose(
                                 name: 'currentUser',
                                 variables: {
                                     language: 'en',
-                                    id: null
+                                    id: match.params.profileId
                                 }
                             }]
                         });
@@ -187,7 +187,7 @@ const SkillsEditHOC = compose(
                                 name: 'currentUser',
                                 variables: {
                                     language: 'en',
-                                    id: null
+                                    id: match.params.profileId
                                 }
                             }]
                         });

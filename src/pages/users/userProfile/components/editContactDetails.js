@@ -5,8 +5,10 @@ import { compose, pure, withState, withHandlers } from 'recompose';
 import fields from '../../../../constants/contact';
 import { setContact, currentUserQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 
 const EditContactDetailsHOC = compose(
+    withRouter,
     graphql(setContact, { name: 'setContact' }),
     withState('formData', 'setFormData', ({ contact }) => {
         if (!contact) {
@@ -54,7 +56,7 @@ const EditContactDetailsHOC = compose(
             await delete contact[key];
             setFormData(contact);
         },
-        updateContact: ({ setContact, formData }) => async () => {
+        updateContact: ({ setContact, formData, match }) => async () => {
             try {
                 await setContact({
                     variables: {
@@ -66,7 +68,7 @@ const EditContactDetailsHOC = compose(
                         name: 'currentUser',
                         variables: {
                             language: 'en',
-                            id: null
+                            id: match.params.profileId
                         }
                     }]
                 })

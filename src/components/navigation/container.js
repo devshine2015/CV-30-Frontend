@@ -30,8 +30,7 @@ const NavigationHOC = compose(
         name: 'currentUser',
         options: (props) => ({
             variables: {
-                language: props.match.params.lang,
-                id: null
+                language: props.match.params.lang
             }
         }),
         fetchPolicy: 'network-only'

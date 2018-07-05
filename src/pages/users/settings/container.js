@@ -10,7 +10,7 @@ const UserSettingsHOC = compose(
         options: (props) => ({
             variables: {
                 language: props.match.params.lang,
-                id: props.match.params.userId || null
+                id: props.match.params.profileId
             },
             fetchPolicy: 'network-only'
         }),
