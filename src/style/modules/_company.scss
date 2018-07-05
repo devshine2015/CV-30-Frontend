@@ -558,3 +558,96 @@
         }
     }
 }
+
+.newCompanyRoot {
+    background: #fff;
+    flex: 1 1;
+    .header {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        background: #f4f4f4;
+        border-bottom: 1px solid #e8e8e8;
+        box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+        padding: 50px 0 30px;
+        justify-content: center;
+        align-items: center;
+        .headerTitle {
+            color: #277dba;
+            font-size: 2rem;
+            font-weight: 100;
+        }
+        .headerMessage {
+            color: #aaaaaa;
+            font-size: 1rem;
+            font-weight: normal;
+            margin-bottom: 30px;
+        }
+    }
+    .newCompany {
+        align-content: center;
+        justify-content: center;
+        section {
+            margin-bottom: 50px;
+        }
+        .titleSection {
+            .textField {}
+            .titleInput {
+                font-size: 2rem;
+                color: #565656;
+            }
+        }
+        .mediaSection {
+            display: flex;
+            .avatar,
+            .colorPicker {
+                flex: 1;
+                position: relative;
+            }
+            .companyAvatarPreview {
+                width: 170px;
+                height: 170px;
+                background: #ebebeb;
+            }
+            .badgeRoot {
+                position: absolute;
+                background: #397db9;
+                color: #fff;
+                min-width: auto;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                top: 20px;
+                left: 130px;
+            }
+        }
+        .details {
+            display: flex;
+            .textField {
+                margin-right: 20px;
+            }
+        }
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            .cancelBtn {
+                &,
+                &:hover,
+                &:active {
+                    background: none;
+                }
+                font-size: 1rem;
+                color: #727272;
+                text-transform: capitalize;
+                margin-right: 20px;
+            }
+            .submitBtn {
+                background: #397db9;
+                color: #fff;
+                font-size: 1.25rem;
+                text-transform: capitalize;
+            }
+        }
+    }
+}

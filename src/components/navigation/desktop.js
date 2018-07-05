@@ -99,9 +99,27 @@ const DesktopNav = props => {
                                                     {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
                                                 </FormattedMessage>
 
-                                                <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Logout menu item">
-                                                    {(text) => (<MenuItem onClick={closeProfileMenu}>{text}</MenuItem>)}
-                                                </FormattedMessage>
+                                                {user.company ?
+                                                    <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Company profile">
+                                                        {(text) => (<MenuItem
+                                                            component={Link} to={`/${lang}/dashboard/company/${user.company.id}`}
+                                                            onClick={closeProfileMenu}
+                                                        >
+                                                            {text}
+                                                        </MenuItem>
+                                                        )}
+                                                    </FormattedMessage>
+                                                    :
+                                                    <FormattedMessage id="nav.noCompany" defaultMessage="Create Company" description="Create company">
+                                                        {(text) => (<Link
+                                                            to={`/${lang}/dashboard/companies/new`}
+                                                            onClick={closeProfileMenu}
+                                                            className='noCompanyLink'
+                                                        >
+                                                            {text}
+                                                        </Link>)}
+                                                    </FormattedMessage>
+                                                }
 
                                             </div>
 
