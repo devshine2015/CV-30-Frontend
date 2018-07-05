@@ -253,8 +253,8 @@ export const removeValue = gql`
 `;
 
 export const setExperience = gql`
-    mutation setExperience($id: String, $location: Int, $isCurrent: Boolean, $position: String, $company: String, $startDate: Date, $endDate: Date, $title: String, $description: String, $language: LanguageCodeType!) {
-        setExperience(id: $id, location: $location, isCurrent: $isCurrent, position: $position, company: $company, startDate: $startDate, endDate: $endDate, title: $title, description: $description, language: $language) {
+    mutation setExperience($experience: ExperienceInput!, $language: LanguageCodeType!) {
+        setExperience(experience: $experience, language: $language) {
             status
             error
         }
@@ -262,8 +262,8 @@ export const setExperience = gql`
 `;
 
 export const setProject = gql`
-    mutation setProject($id: String, $location: Int, $isCurrent: Boolean, $position: String, $company: String, $startDate: Date, $endDate: Date, $title: String, $description: String, $language: LanguageCodeType!) {
-        setProject(id: $id, location: $location, isCurrent: $isCurrent, position: $position, company: $company, startDate: $startDate, endDate: $endDate, title: $title, description: $description, language: $language) {
+    mutation setProject($project: ProjectInput!, $language: LanguageCodeType!) {
+        setProject(project: $project, language: $language) {
             status
             error
         }

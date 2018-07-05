@@ -74,7 +74,7 @@ const Show = (props) => {
                 </section>
 
                 <section className='qaSection'>
-                    <h2 className='titleHeading'>Q & A</h2>
+                    <h2 className='titleHeading'>Q &amp; A</h2>
                     {
                         faq.map((item, index) => {
 

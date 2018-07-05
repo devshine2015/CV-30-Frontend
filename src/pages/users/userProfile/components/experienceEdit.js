@@ -2,12 +2,13 @@ import React from 'react';
 import { TextField, Checkbox, FormLabel, FormControlLabel, IconButton, Icon, Switch as ToggleSwitch, FormGroup, Button } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 import { setExperience, setProject, currentUserQuery } from '../../../../store/queries';
 
 const ExperienceEdit = (props) => {
     const { formData, isVideoUrl, switchMediaType, handleFormChange, closeEditor, submitForm, type } = props;
-    const { position, company, location, startDate, endDate, stillWorkThere, description, videoURL } = formData;
-
+    const { position, company, location, startDate, endDate, isCurrent, description, videoURL } = formData;
+    console.log(new Date(endDate).toLocaleDateString("en-UK"));
     return (
         <form className='experienceForm' noValidate autoComplete='off'>
             <h4>
@@ -52,15 +53,15 @@ const ExperienceEdit = (props) => {
                     <TextField
                         name="endDate"
                         type="date"
-                        disabled={stillWorkThere}
+                        disabled={isCurrent}
                         value={endDate || ''}
                         onChange={handleFormChange}
                     />
                     <FormControlLabel
                         control={
                             <Checkbox
-                                name='stillWorkThere'
-                                checked={stillWorkThere || false}
+                                name='isCurrent'
+                                checked={isCurrent || false}
                                 onChange={handleFormChange}
                                 color="primary"
                             />
@@ -134,9 +135,10 @@ const ExperienceEdit = (props) => {
     )
 };
 
-const SkillsEditHOC = compose(
+const ExperienceEditHOC = compose(
     graphql(setExperience, { name: 'setExperience' }),
     graphql(setProject, { name: 'setProject' }),
+    withRouter,
     withState('formData', 'setFormData', ({ job }) => (job || {})),
     withState('isVideoUrl', 'changeMediaType', true),
     withHandlers({
@@ -153,13 +155,12 @@ const SkillsEditHOC = compose(
             changeMediaType(!isVideoUrl);
         },
         submitForm: ({ formData, setExperience, setProject, type, match }) => async () => {
-
             switch (type) {
                 case 'experience':
                     try {
                         await setExperience({
                             variables: {
-                                ...formData,
+                                experience: formData,
                                 language: 'en'
                             },
                             refetchQueries: [{
@@ -167,8 +168,7 @@ const SkillsEditHOC = compose(
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
-                                    language: 'en',
-                                    id: match.params.profileId
+                                    language: 'en'
                                 }
                             }]
                         });
@@ -180,14 +180,16 @@ const SkillsEditHOC = compose(
                 case 'project':
                     try {
                         await setProject({
-                            variables: formData,
+                            variables: {
+                                project: formData,
+                                language: 'en'
+                            },
                             refetchQueries: [{
                                 query: currentUserQuery,
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
-                                    language: 'en',
-                                    id: match.params.profileId
+                                    language: 'en'
                                 }
                             }]
                         });
@@ -205,4 +207,4 @@ const SkillsEditHOC = compose(
     pure
 );
 
-export default SkillsEditHOC(ExperienceEdit);
+export default ExperienceEditHOC(ExperienceEdit);
