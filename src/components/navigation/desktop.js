@@ -77,19 +77,19 @@ const DesktopNav = props => {
                                     <Paper className='profileMenu'>
                                         <MenuList role="menu">
                                             <FormattedMessage id="nav.profile" defaultMessage="My profile" description="Profile menu item">
-                                                {(text) => (<MenuItem component={Link} to={`/${lang}/dashboard/profile/${currentUser.profile.id}`} onClick={closeProfileMenu}>{text}</MenuItem>)}
+                                                {(text) => (<MenuItem component={Link} to={`/${lang}/dashboard/profile`} onClick={closeProfileMenu}>{text}</MenuItem>)}
                                             </FormattedMessage>
 
                                             <FormattedMessage id="nav.appliedJobs" defaultMessage="Applied Jobs" description="Applied jobs menu item">
                                                 {(text) => (<MenuItem component={Link} to={{
-                                                    pathname: `/${lang}/dashboard/profile/${currentUser.profile.id}/settings`,
+                                                    pathname: `/${lang}/dashboard/profile/settings`,
                                                     state: { activeTab: 'jobs' }
                                                 }} onClick={closeProfileMenu}>{text}</MenuItem>)}
                                             </FormattedMessage>
 
                                             <FormattedMessage id="nav.settings" defaultMessage="Settings" description="Settings menu item">
                                                 {(text) => (<MenuItem component={Link} to={{
-                                                    pathname: `/${lang}/dashboard/profile/${currentUser.profile.id}/settings`,
+                                                    pathname: `/${lang}/dashboard/profile/settings`,
                                                     state: { activeTab: 'settings' }
                                                 }} onClick={closeProfileMenu}>{text}</MenuItem>)}
                                             </FormattedMessage>

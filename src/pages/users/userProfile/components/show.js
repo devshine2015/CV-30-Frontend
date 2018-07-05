@@ -10,7 +10,7 @@ import EditContactDetails from './editContactDetails';
 import { compose, graphql } from 'react-apollo';
 import { pure, withState, withHandlers } from 'recompose';
 import fields from '../../../../constants/contact';
-import AddStoryInline from '../../../../components/ArticleInline';
+import ArticlePopUp from '../../../../components/ArticlePopup';
 
 const ShowHOC = compose(
     withRouter,
@@ -18,6 +18,7 @@ const ShowHOC = compose(
     graphql(setSalary, { name: 'setSalary' }),
     withState('newXP', 'setNewXP', false),
     withState('newProj', 'setNewProj', false),
+    withState('isPopUpOpen', 'setIsPopUpOpen', false),
     withState('story', 'setMyStory', ({ currentUser }) => currentUser.profile.story && currentUser.profile.story.i18n && currentUser.profile.story.i18n[0].description || ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', true),
@@ -57,14 +58,14 @@ const ShowHOC = compose(
                             title: 'My story',
                             description: story
                         },
-                        language: 'en'
+                        language: match.params.lang
                     },
                     refetchQueries: [{
                         query: currentUserQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
-                            language: 'en'
+                            language: match.params.lang
                         }
                     }]
                 });
@@ -91,7 +92,7 @@ const ShowHOC = compose(
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
-                            language: 'en',
+                            language: match.params.lang,
                             id: match.params.profileId
                         }
                     }]
@@ -101,6 +102,13 @@ const ShowHOC = compose(
                 console.log(err);
             }
         },
+        openArticlePopUp: ({ setIsPopUpOpen }) => () => {
+            setIsPopUpOpen(true);
+        },
+        closeArticlePopUp: ({ setIsPopUpOpen }) => () => {
+            setIsPopUpOpen(false);
+        }
+
     }),
     pure
 );
@@ -109,6 +117,7 @@ const Show = (props) => {
     const { editMode, currentUser,
         newXP, newProj, addNewExperience, closeNewExperience, addNewProject, closeNewProject,
         editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
+        openArticlePopUp, isPopUpOpen, closeArticlePopUp,
         toggleSalaryPrivate,
         story, updateStory, saveStory,
         updateDesiredSalary, isSalaryPublic, desiredSalary, saveDesiredSalary
@@ -130,9 +139,7 @@ const Show = (props) => {
                         }
                         {editMode && !newXP &&
                             <div className='experienceAdd' onClick={addNewExperience}>
-                                <Button className='addXPButton'>
-                                    + Add Experience
-                                </Button>
+                                + Add Experience
                             </div>
                         }
                         {
@@ -151,9 +158,7 @@ const Show = (props) => {
                         }
                         {editMode && !newProj &&
                             <div className='experienceAdd' onClick={addNewProject}>
-                                <Button className='addXPButton'>
-                                    + Add project
-                                </Button>
+                                + Add project
                             </div>
                         }
                         {
@@ -232,14 +237,25 @@ const Show = (props) => {
                             <p>
                                 Lorem ipsum dolor sit amet, cu mei reque inimicus. Exerci altera usu te. Omnis primis id vel, ei primis torquatos eum, per ex munere dolore
                                 malorum. Recusabo prodesset no ius. Ad unum convenire elaboraret ius, te quem graeco sea.
-                        </p>
+                            </p>
                             <div className='media'>
                                 <Icon className='playIcon'>
                                     play_circle_filled
                             </Icon>
                             </div>
                         </div>
-                        {editMode && <AddStoryInline />}
+                        {editMode &&
+                            <React.Fragment>
+                                <div className='addArticle' onClick={openArticlePopUp}>
+                                    + Add Article
+                                </div>
+                                <ArticlePopUp
+                                    type='profile_isAboutMe'
+                                    open={isPopUpOpen}
+                                    onClose={closeArticlePopUp}
+                                />
+                            </React.Fragment>
+                        }
                     </div>
                     <hr />
                     <div className='myStoryContainer'>

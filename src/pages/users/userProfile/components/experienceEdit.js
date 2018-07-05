@@ -136,10 +136,22 @@ const ExperienceEdit = (props) => {
 };
 
 const ExperienceEditHOC = compose(
+    withRouter,
     graphql(setExperience, { name: 'setExperience' }),
     graphql(setProject, { name: 'setProject' }),
     withRouter,
-    withState('formData', 'setFormData', ({ job }) => (job || {})),
+    withState('formData', 'setFormData', ({ job }) => {
+        if (!job)
+            return {};
+        debugger;
+        let data = {
+            ...job,
+            ...job.i18n[0]
+        };
+        delete data.i18n;
+        delete data.__typename;
+        return data;
+    }),
     withState('isVideoUrl', 'changeMediaType', true),
     withHandlers({
         handleFormChange: props => event => {
@@ -155,20 +167,24 @@ const ExperienceEditHOC = compose(
             changeMediaType(!isVideoUrl);
         },
         submitForm: ({ formData, setExperience, setProject, type, match }) => async () => {
+            let { id, title, description, position, company, startDate, endDate, isCurrent } = formData;
             switch (type) {
+
                 case 'experience':
                     try {
                         await setExperience({
                             variables: {
-                                experience: formData,
-                                language: 'en'
+                                experience: {
+                                    id, title, description, position, company, startDate, endDate, isCurrent
+                                },
+                                language: match.params.lang
                             },
                             refetchQueries: [{
                                 query: currentUserQuery,
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
-                                    language: 'en'
+                                    language: match.params.lang
                                 }
                             }]
                         });
@@ -181,15 +197,17 @@ const ExperienceEditHOC = compose(
                     try {
                         await setProject({
                             variables: {
-                                project: formData,
-                                language: 'en'
+                                project: {
+                                    id, title, description, position, company, startDate, endDate, isCurrent
+                                },
+                                language: match.params.lang
                             },
                             refetchQueries: [{
                                 query: currentUserQuery,
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
-                                    language: 'en'
+                                    language: match.params.lang
                                 }
                             }]
                         });

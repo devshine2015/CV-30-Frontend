@@ -580,7 +580,8 @@
                 }
             }
         }
-        .experienceAdd {
+        .experienceAdd,
+        .addArticle {
             position: relative;
             display: flex;
             border: 2px dashed #76acd2;
@@ -590,13 +591,8 @@
             margin-bottom: 30px;
             padding: 20px;
             cursor: pointer;
-            .addXPButton {
-                color: #277dba;
-                text-transform: none;
-                &:hover {
-                    background: none;
-                }
-            }
+            color: #277dba;
+            text-transform: none;
         }
         .experienceForm {
             position: relative;

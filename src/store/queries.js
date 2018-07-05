@@ -71,96 +71,117 @@ export const AuthenticateLocal = gql`
 `;
 
 export const currentUserQuery = gql`
-    query currentUser($id: String, $language: LanguageCodeType!) {
-        profile(id: $id, language: $language) {
-            id
-            email
-            firstName
-            lastName
-            featuredArticles {
-                id
-                author {
-                    id
-                    email
-                    firstName
-                    lastName
-                }
-                images {
-                    isFeatured
-                    i18n {
-                        title
-                    }
-                    path
-                }
-                videos {
-                    isFeatured
-                    i18n {
-                        title
-                    }
-                    path
-                }
-                i18n {
-                    title
-                    description
-                }
-            }
-            skills {
-                id
-                i18n {
-                    title
-                }
-            }
-            values {
-                id
-                i18n {
-                    title
-                }
-            }
-            experience {
-                id
-                position
-                company
-                description
-                startDate
-                endDate
-                isCurrent
-            }
-            projects {
-                id
-                position
-                company
-                description
-                startDate
-                endDate
-                isCurrent
-            }
-            contact {
-                phone
-                email
-                facebook
-                linkedin
-            }
-            hasAvatar
-            hasProfileCover
-            coverBackground
-            story {
-                i18n {
-                    title
-                    description
-                }
-            }
-            salary {
-                amount
-                currency
-                isPublic
-            }
-            errors {
-                name
-                value
-                statusCode
-            }
-        }
+  query currentUser($id: String, $language: LanguageCodeType!) {
+  profile(id: $id, language: $language) {
+    id
+    email
+    firstName
+    lastName
+    featuredArticles {
+      id
+      author {
+        id
+        email
+        firstName
+        lastName
+      }
+      images {
+        id
+        path
+      }
+      videos {
+        id
+        path
+      }
+      i18n {
+        title
+        description
+      }
     }
+    aboutMeArticles {
+      id
+      author {
+        id
+        email
+        firstName
+        lastName
+      }
+      images {
+        id
+        path
+      }
+      videos {
+        id
+        path
+      }
+      i18n {
+        title
+        description
+      }
+    }
+    skills {
+      id
+      i18n {
+        title
+      }
+    }
+    values {
+      id
+      i18n {
+        title
+      }
+    }
+    experience {
+      id
+      position
+      company
+      startDate
+      endDate
+      isCurrent
+      i18n {
+        title
+        description
+      }
+    }
+    projects {
+      id
+      position
+      company
+      i18n {
+        title
+        description
+      }
+      startDate
+      endDate
+      isCurrent
+    }
+    contact {
+      phone
+      email
+      facebook
+      linkedin
+    }
+    hasAvatar
+    hasProfileCover
+    coverBackground
+    story {
+      i18n {
+        title
+        description
+      }
+    }
+    salary {
+      amount
+      currency
+      isPublic
+    }
+    errors {
+      name
+      value
+      statusCode
+    }
+  }
+}
 `;
 
 export const updateAvatar = gql`
@@ -311,7 +332,7 @@ export const handleArticle = gql`
     mutation handleArticle($language: LanguageCodeType!, $article: ArticleInput, $options: ArticleOptions) {
         handleArticle(language: $language, article: $article, options: $options) {
             status
-            status
+            error
         }
     }
 `;

@@ -9,7 +9,7 @@ import SliderHOC from '../../../../hocs/slider';
 import ArticlePopup from '../../../../components/ArticlePopup';
 
 const Header = (props) => {
-    const { match, headerStories, keyWords, editMode, removeStory, toggleStoryEditor, closeStoryEditor, storyEditorAnchor } = props;
+    const { match, headerStories, keyWords, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen } = props;
     const lang = match.params.lang;
 
     return (
@@ -117,7 +117,7 @@ const Header = (props) => {
                         </Grid>
                     }
                     <ArticlePopup
-                        anchor={storyEditorAnchor}
+                        open={isPopUpOpen}
                         onClose={closeStoryEditor}
                     />
 
@@ -153,7 +153,7 @@ const Header = (props) => {
 const HeaderHOC = compose(
     withState('keyWords', 'setHeaderKeywords', ({ data }) => data.keyWords),
     withState('headerStories', 'setHeaderStories', ({ data }) => data.headerStories),
-    withState('storyEditorAnchor', 'setStoryEditorAnchor', null),
+    withState('isPopUpOpen', 'setIsPopUpOpen', false),
     withState('count', 'setCount', ({ data }) => data.headerStories.length - 1),
     withState('expanded', 'updateExpanded', null),
     withHandlers({
@@ -165,11 +165,11 @@ const HeaderHOC = compose(
             stories.splice(index, 1);
             setHeaderStories(stories);
         },
-        toggleStoryEditor: ({ setStoryEditorAnchor }) => target => {
-            setStoryEditorAnchor(target);
+        toggleStoryEditor: ({ setIsPopUpOpen }) => () => {
+            setIsPopUpOpen(true);
         },
-        closeStoryEditor: ({ setStoryEditorAnchor }) => () => {
-            setStoryEditorAnchor(null);
+        closeStoryEditor: ({ setIsPopUpOpen }) => () => {
+            setIsPopUpOpen(false);
         }
     }),
     SliderHOC,

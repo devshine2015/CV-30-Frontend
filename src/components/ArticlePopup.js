@@ -6,13 +6,13 @@ import ArticleList from './ArticleList';
 
 const ArticlePopUp = (props) => {
     const {
-        anchor, onClose,
+        open, onClose,
         activeTab, handleTabChange
     } = props;
 
     return (
         <Modal
-            open={!!anchor}
+            open={open}
             classes={{
                 root: 'modalRoot'
             }}

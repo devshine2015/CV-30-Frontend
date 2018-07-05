@@ -1,12 +1,14 @@
 import React from 'react';
 import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { handleArticle } from '../store/queries';
+import { handleArticle, currentUserQuery } from '../store/queries';
 import { graphql } from 'react-apollo';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
+import { withRouter } from 'react-router-dom';
 
 const ArticleEditorHOC = compose(
+    withRouter,
     graphql(handleArticle, {
         name: 'handleArticle'
     }),
@@ -32,32 +34,55 @@ const ArticleEditorHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        saveArticle: ({ formData, handleArticle, setIsSaving, isSaving }) => async () => {
+        saveArticle: ({ formData, handleArticle, setIsSaving, isSaving, match, type, onClose }) => async () => {
             if (isSaving)
                 return false;
 
-            console.log(formData);
             setIsSaving(true);
+            const { lang, profileId } = match.params;
+            let article = {
+                id: formData.id,
+                title: formData.title,
+                images: formData.images,
+                description: formData.description,
+                isFeatured: type === 'profile_isFeatured',
+                isAboutMe: type === 'profile_isAboutMe'
+            };
+            if (formData.videoURL) {
+                article.videos = [
+                    {
+                        id: uuid(),
+                        title: formData.videoURL,
+                        sourceType: 'article',
+                        path: formData.videoURL
+
+                    }
+                ];
+            }
+
+            let options = {
+                // articleId: formData.id,
+                // companyId: formData.id,
+                // isFeatured: true
+            };
 
             try {
-                let result = await handleArticle({
+                await handleArticle({
                     variables: {
-                        language: 'en',
-                        article: {
-                            id: formData.id,
-                            title: formData.title,
-                            videos: [],
-                            images: formData.images,
-                            description: formData.description,
-                            isFeatured: true
-                        },
-                        options: {
-                            // articleId: formData.id,
-                            // companyId: formData.id,
-                            // isFeatured: true
+                        language: lang,
+                        article,
+                        options
+                    },
+                    refetchQueries: [{
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: 'en'
                         }
-                    }
+                    }]
                 });
+                onClose();
             }
             catch (err) {
                 console.log(err);
@@ -88,7 +113,7 @@ const ArticleEditorHOC = compose(
                 callback(error)
             }
         },
-        onUploadStart: ({ setIsSaving, formData, setFormData }) => (file, next) => {
+        onUploadStart: ({ setIsSaving, formData, setFormData, match }) => (file, next) => {
             let size = file.size;
             if (size > 1024 * 1024) {
                 alert('File is too big!');
@@ -99,9 +124,8 @@ const ArticleEditorHOC = compose(
                     id: uuid(),
                     title: file.name,
                     sourceType: 'article',
-                    source: formData.id, //article id,
-                    path: 'bla' // {/server/user | company/article/image}
-
+                    source: formData.id, //article id
+                    path: `/articles/${formData.id}/${file.name}`
                 }];
                 setFormData(newFormData);
                 setIsSaving(true);
@@ -182,6 +206,7 @@ const ArticleEditor = props => {
                         className='textField'
                         onChange={handleFormChange}
                         value={videoURL || ''}
+                        fullWidth
                     /> :
                     <label htmlFor="uploadArticleImage">
                         <S3Uploader

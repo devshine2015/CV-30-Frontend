@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { NavLink, withRouter } from 'react-router-dom';
 import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
+import ReactPlayer from 'react-player';
 
 import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
@@ -29,7 +30,7 @@ const HeaderHOC = compose(
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
-    withState('storyEditorAnchor', 'setStoryEditorAnchor', null),
+    withState('isArticlePopUpOpen', 'setIsArticlePopUpOpen', false),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -156,11 +157,11 @@ const HeaderHOC = compose(
             setIsUploading(false);
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
-        toggleStoryEditor: ({ setStoryEditorAnchor }) => target => {
-            setStoryEditorAnchor(target);
+        toggleStoryEditor: ({ setIsArticlePopUpOpen }) => () => {
+            setIsArticlePopUpOpen(true);
         },
-        closeStoryEditor: ({ setStoryEditorAnchor }) => () => {
-            setStoryEditorAnchor(null);
+        closeStoryEditor: ({ setIsArticlePopUpOpen }) => () => {
+            setIsArticlePopUpOpen(false);
         }
     }),
     slider,
@@ -177,7 +178,7 @@ const Header = (props) => {
         getSignedUrl, renameFile, onProgress, onError, onFinishUpload, onUploadStart,
         isUploading, uploadProgress,
         localUserData, refetchBgImage, forceCoverRender,
-        storyEditorAnchor, toggleStoryEditor, closeStoryEditor
+        isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor
     } = props;
     const {
         firstName,
@@ -289,7 +290,12 @@ const Header = (props) => {
                 <Grid item md={3} sm={12} xs={12} className='rightHeaderLinks'>
                     <FormattedMessage id="userProfile.profile" defaultMessage="Profile" description="User header profile link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/${lang}/dashboard/profile/${currentUser.profile.id}`} className='headerLink'>
+                            <Button
+                                component={NavLink}
+                                exact
+                                to={props.match.params.profileId ? `/${lang}/dashboard/profile/${props.match.params.profileId}` : `/${lang}/dashboard/profile`}
+                                className='headerLink'
+                            >
                                 {text}
                             </Button>
                         )}
@@ -297,7 +303,12 @@ const Header = (props) => {
 
                     <FormattedMessage id="userProfile.feed" defaultMessage="Feed" description="User header feed link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/${lang}/dashboard/profile/${currentUser.profile.id}/feed/`} className='headerLink'>
+                            <Button
+                                component={NavLink}
+                                exact
+                                to={props.match.params.profileId ? `/${lang}/dashboard/profile/${props.match.params.profileId}/feed/` : `/${lang}/dashboard/profile/feed/`}
+                                className='headerLink'
+                            >
                                 {text}
                             </Button>
                         )}
@@ -317,25 +328,54 @@ const Header = (props) => {
             <Grid container className='headerStories' spacing={8}>
                 <Hidden smDown>
                     {
-                        featuredArticles && featuredArticles.map(story => (
-                            <Grid item className='storyContainer' key={story.id}>
-                                <img src={story.img} alt="ceva" className='storyImg' />
-                                <span className='storyTitle'>{story.title}</span>
-                                {
-                                    editMode &&
-                                    <Button
-                                        variant='fab'
-                                        size='small'
-                                        onClick={() => removeStory(story)}
-                                        classes={{
-                                            fab: 'removeStoryBtn'
-                                        }}
-                                    >
-                                        <Icon>close</Icon>
-                                    </Button>
-                                }
-                            </Grid>
-                        ))
+                        featuredArticles && featuredArticles.map(story => {
+                            console.log(story);
+                            let image, video;
+                            if (story.images && story.images.length > 0) {
+                                image = `${s3BucketURL}${story.images[0].path}`;
+                            }
+                            if (story.videos && story.videos.length > 0) {
+                                video = story.videos[0].path;
+                            }
+                            return (
+                                <Grid item className='storyContainer' key={story.id}>
+                                    {image &&
+                                        <img src={image} alt={story.id} className='storyImg' />
+                                    }
+                                    {(video && !image) &&
+                                        <ReactPlayer
+                                            url={video}
+                                            width='200'
+                                            height='140'
+                                            config={{
+                                                youtube: {
+                                                    playerVars: {
+                                                        showinfo: 0,
+                                                        controls: 0,
+                                                        modestbranding: 1,
+                                                        loop: 1
+                                                    }
+                                                }
+                                            }}
+                                            playing={false} />
+                                    }
+                                    <span className='storyTitle'>{story.i18n[0].title}</span>
+                                    {
+                                        editMode &&
+                                        <Button
+                                            variant='fab'
+                                            size='small'
+                                            onClick={() => removeStory(story)}
+                                            classes={{
+                                                fab: 'removeStoryBtn'
+                                            }}
+                                        >
+                                            <Icon>close</Icon>
+                                        </Button>
+                                    }
+                                </Grid>
+                            )
+                        })
                     }
                     {
                         editMode &&
@@ -347,8 +387,9 @@ const Header = (props) => {
                     {
                         editMode &&
                         <ArticlePopup
-                            anchor={storyEditorAnchor}
+                            open={isArticlePopUpOpen}
                             onClose={closeStoryEditor}
+                            type='profile_isFeatured'
                         />
                     }
                 </Hidden>
