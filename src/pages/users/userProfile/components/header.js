@@ -10,7 +10,7 @@ import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
 import slider from '../../../../hocs/slider';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { updateAvatar, setCoverBackground, setHasBackgroundImage, currentUserQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
+import { updateAvatar, currentUserQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 
@@ -20,14 +20,11 @@ const HeaderHOC = compose(
     graphql(updateAvatar, { name: 'updateAvatar' }),
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
     graphql(localUserQuery, { name: 'localUserData' }),
-    graphql(setCoverBackground, { name: 'setCoverBackground' }),
-    graphql(setHasBackgroundImage, { name: 'setHasBackgroundImage' }),
     graphql(handleArticle, { name: 'handleArticle' }),
     withState('count', 'setCount', ({ currentUser }) => currentUser.profile.featuredArticles ? currentUser.profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
-    // withState('avatar', 'setAvatar', ({ currentUser }) => currentUser.profile.hasAvatar ? `${s3BucketURL}/${profilesFolder}/avatar.jpg?${Date.now()}` : null),
     withState('isUploading', 'setIsUploading', false),
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withState('uploadProgress', 'setUploadProgress', 0),
@@ -61,13 +58,11 @@ const HeaderHOC = compose(
         },
         removeStory: ({ handleArticle, match }) => async article => {
             console.log(article);
-            // debugger;
             try {
                 await handleArticle({
                     variables: {
                         article: {
                             id: article.id,
-                            // title: article.i18n ? article.i18n[0].title : 'blabla',
                             isFeatured: false
                         },
                         language: 'en'

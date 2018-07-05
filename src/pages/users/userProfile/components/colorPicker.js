@@ -4,12 +4,11 @@ import { compose, withState, withHandlers, pure, lifecycle } from 'recompose';
 import S3Uploader from 'react-s3-uploader';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
-import { setCoverBackground, setHasBackgroundImage, currentUserQuery } from '../../../../store/queries';
+import { updateCoverMutation, currentUserQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 
 const ColorPickerHOC = compose(
-    graphql(setCoverBackground, { name: 'setCoverBg' }),
-    graphql(setHasBackgroundImage, { name: 'setBGImg' }),
+    graphql(updateCoverMutation, { name: 'updateCoverMutation' }),
     withState('activeTab', 'setActiveTab', 'colors'),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
@@ -18,10 +17,12 @@ const ColorPickerHOC = compose(
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
         },
-        setBackgroundColor: ({ setCoverBg }) => color => {
+        setBackgroundColor: ({ updateCoverMutation }) => async color => {
             try {
-                setCoverBg({
-                    variables: {
+                await updateCoverMutation({
+                    variables:
+                    {
+                        status: false,
                         color: color.style
                     },
                     refetchQueries: [{
@@ -29,14 +30,13 @@ const ColorPickerHOC = compose(
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
-                            language: 'en',
-                            id: null
+                            language: 'en'
                         }
                     }]
                 });
             }
-            catch (error) {
-                console.log(error);
+            catch (err) {
+                console.log(err);
             }
         },
         getSignedUrl: ({ profile }) => async (file, callback) => {
@@ -77,22 +77,26 @@ const ColorPickerHOC = compose(
             setUploadError(error);
             console.log(error);
         },
-        onFinish: ({ setIsUploading, setBGImg, refetchBgImage }) => async () => {
-            await setBGImg({
-                variables:
-                {
-                    status: true
-                },
-                refetchQueries: [{
-                    query: currentUserQuery,
-                    fetchPolicy: 'network-only',
-                    name: 'currentUser',
-                    variables: {
-                        language: 'en',
-                        id: null
-                    }
-                }]
-            });
+        onFinish: ({ setIsUploading, updateCoverMutation, refetchBgImage }) => async () => {
+            try {
+                await updateCoverMutation({
+                    variables:
+                    {
+                        status: true
+                    },
+                    refetchQueries: [{
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: 'en'
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
             setIsUploading(false);
             refetchBgImage();
         }

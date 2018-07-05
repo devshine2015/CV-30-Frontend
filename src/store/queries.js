@@ -203,18 +203,15 @@ export const getCurrentUser = gql`
     }
 `;
 
-export const setCoverBackground = gql`
-    mutation setCoverBackground($color: String) {
-        setCoverBackground(color: $color) {
-           status
-        }
-    }
-`;
-
-export const setHasBackgroundImage = gql`
-    mutation profileCover($status: Boolean) {
+export const updateCoverMutation = gql`
+    mutation updateCoverMutation($status: Boolean, $color: String) {
         profileCover(status: $status) {
             status
+            error
+        }
+        setCoverBackground(color: $color) {
+            status
+            error
         }
     }
 `;
