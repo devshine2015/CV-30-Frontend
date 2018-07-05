@@ -1,9 +1,10 @@
 import React from 'react';
 import { Grid, Tabs, Tab } from '@material-ui/core';
 import Settings from './components/settings';
-import Notifications from './components/notifications';
 import Jobs from './components/jobs';
-import Following from './components/following';
+
+// import Notifications from './components/notifications';
+// import Following from './components/following';
 
 const UserSettings = props => {
     const { handleTabChange, activeTab } = props;

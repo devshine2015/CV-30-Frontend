@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Button } from '@material-ui/core';
+import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import SliderHOC from '../../../../hocs/slider';
 

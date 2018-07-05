@@ -20,7 +20,8 @@ const EditContactDetailsHOC = compose(
                 if (result && contact[key] && contact[key] !== '') {
                     formData[key] = contact[key];
                 }
-            })
+                return null;
+            });
             return formData;
         }
 
@@ -146,7 +147,8 @@ const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, hand
                                     </IconButton>
                                 </div>
                             )
-                        }
+                        } else
+                            return null;
                     })}
 
                 <IconButton className='submitBtn' onClick={updateContact}>

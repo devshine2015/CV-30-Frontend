@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { Avatar, Chip, Tabs, Tab } from '@material-ui/core';
+import { Avatar, Tabs, Tab } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import JobItem from './jobItem';
 import TeamMember from './teamMember';
@@ -16,9 +16,7 @@ const CompanyHOC = compose(
 
 
 const Company = props => {
-    const {
-        activeTab, handleTabChange, company, match
-    } = props;
+    const { activeTab, handleTabChange, company } = props;
     const { id, name, field, location, employees, i18n, jobs, team } = company;
 
     return (

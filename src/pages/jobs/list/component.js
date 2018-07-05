@@ -19,7 +19,7 @@ const JobsList = props => {
                     <div className='searchFields'>
                         <TextField
                             name='jobName'
-                            // value={jobName || ''}
+                            value={jobName || ''}
                             label="Job title..."
                             type="search"
                             className='textField'
@@ -29,7 +29,7 @@ const JobsList = props => {
                         />
                         <TextField
                             name='location'
-                            // value={location || ''}
+                            value={location || ''}
                             label="Location..."
                             type="search"
                             className='textField'
@@ -58,7 +58,7 @@ const JobsList = props => {
                         <div className='filters'>
                             <TextField
                                 name='company'
-                                // value={company || ''}
+                                value={company || ''}
                                 label='Company'
                                 placeholder='Search for company...'
                                 type="search"

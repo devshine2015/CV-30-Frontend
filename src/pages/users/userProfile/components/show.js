@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Icon, IconButton, Button, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
+import { Grid, Icon, IconButton, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
 // import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { setStory, setSalary, currentUserQuery } from '../../../../store/queries';
 import { withRouter } from 'react-router-dom';
@@ -23,7 +23,7 @@ const ShowHOC = compose(
     withState('newProj', 'setNewProj', false),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
     withState('count', 'setCount', ({ currentUser }) => currentUser.profile.aboutMeArticles ? currentUser.profile.aboutMeArticles.length - 1 : 0),
-    withState('story', 'setMyStory', ({ currentUser }) => currentUser.profile.story && currentUser.profile.story.i18n && currentUser.profile.story.i18n[0].description || ''),
+    withState('story', 'setMyStory', ({ currentUser }) => (currentUser.profile.story && currentUser.profile.story.i18n) ? currentUser.profile.story.i18n[0].description : ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', true),
     withState('isSalaryPublic', 'setSalaryPrivacy', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.isPublic : false),
@@ -207,8 +207,11 @@ const Show = (props) => {
                                                     <span>{label}: </span><b>{value}</b>
                                                 </p>
                                             )
-                                        }
+                                        } else
+                                            return null;
                                     }
+                                    else
+                                        return null;
                                 })}
                             </div>
                         }
@@ -251,7 +254,7 @@ const Show = (props) => {
                                         video = article.videos[0].path;
                                     }
                                     return (
-                                        <div className={index === activeItem ? 'sliderContainer active' : 'sliderContainer'}>
+                                        <div className={index === activeItem ? 'sliderContainer active' : 'sliderContainer'} key={article.id}>
                                             <p>{article.i18n ? article.i18n[0].description : ''}</p>
                                             <div className='media'>
                                                 {image &&

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Avatar, Button, TextField } from '@material-ui/core';
+import { Avatar, Button, TextField } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
@@ -72,7 +72,7 @@ const SettingsHOC = compose(
             console.log(error);
         },
         onFinishUpload: (props) => async () => {
-            const { setIsUploading, updateAvatar, updateAvatarTimestamp } = props;
+            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match } = props;
             await updateAvatar({
                 variables: {
                     status: true
@@ -82,8 +82,7 @@ const SettingsHOC = compose(
                     fetchPolicy: 'network-only',
                     name: 'currentUser',
                     variables: {
-                        language: 'en',
-                        id: null
+                        language: match.params.lang
                     }
                 }]
             });
@@ -107,11 +106,20 @@ const SettingsHOC = compose(
         saveUserDetails: ({ setSettingsFormSuccess, setSettingsFormError, updateUserSettings, formData: { firstName, lastName, oldPassword, newPassword, newPasswordConfirm }, match }) => async () => {
             if (newPassword) {
                 if (!oldPassword) { alert('Please enter your current password'); return; }
-                if (newPassword != newPasswordConfirm) { alert('New password and confirm new password do not match'); return; }
+                if (newPassword !== newPasswordConfirm) { alert('New password and confirm new password do not match'); return; }
             }
-            if (!firstName.trim()) { alert('First name cannot be empty'); return; }
-            if (!lastName.trim()) { alert('Last name cannot be empty'); return; }
-            if (newPassword == oldPassword && !!newPassword) { alert('Are you trying to change the current password with the same one?'); return; }
+            if (!firstName.trim()) {
+                alert('First name cannot be empty');
+                return;
+            }
+            if (!lastName.trim()) {
+                alert('Last name cannot be empty');
+                return;
+            }
+            if (newPassword === oldPassword && !!newPassword) {
+                alert('Are you trying to change the current password with the same one?');
+                return;
+            }
             try {
                 const { data: { updateUserSettings: { status } } } = await updateUserSettings({
                     variables: {
@@ -127,8 +135,7 @@ const SettingsHOC = compose(
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
-                            language: 'en',
-                            id: match.params.profileId
+                            language: match.params.lang
                         }
                     }]
                 });

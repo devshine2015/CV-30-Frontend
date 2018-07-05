@@ -39,7 +39,6 @@ const ArticleEditorHOC = compose(
                 return false;
 
             setIsSaving(true);
-            const { lang, profileId } = match.params;
             let article = {
                 id: formData.id,
                 title: formData.title,
@@ -69,7 +68,7 @@ const ArticleEditorHOC = compose(
             try {
                 await handleArticle({
                     variables: {
-                        language: lang,
+                        language: match.params.lang,
                         article,
                         options
                     },

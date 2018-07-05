@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
-import { compose, withState, withHandlers, pure, lifecycle } from 'recompose';
+import { compose, withState, withHandlers, pure } from 'recompose';
 import S3Uploader from 'react-s3-uploader';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';

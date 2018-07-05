@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Button } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
-import { compose, withState, withHandlers, pure } from 'recompose';
+// import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 
 const Header = props => {
