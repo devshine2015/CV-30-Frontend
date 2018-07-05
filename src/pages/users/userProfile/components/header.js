@@ -329,7 +329,6 @@ const Header = (props) => {
                 <Hidden smDown>
                     {
                         featuredArticles && featuredArticles.map(story => {
-                            console.log(story);
                             let image, video;
                             if (story.images && story.images.length > 0) {
                                 image = `${s3BucketURL}${story.images[0].path}`;
@@ -400,12 +399,37 @@ const Header = (props) => {
                             featuredArticles &&
                             <div className='storiesSlider'>
                                 {
-                                    featuredArticles.map((story, index) => {
-                                        let itemClass = index === activeItem ? 'storyItem active' : 'storyItem';
+                                    featuredArticles && featuredArticles.map((story, index) => {
+                                        let image, video;
+                                        if (story.images && story.images.length > 0) {
+                                            image = `${s3BucketURL}${story.images[0].path}`;
+                                        }
+                                        if (story.videos && story.videos.length > 0) {
+                                            video = story.videos[0].path;
+                                        }
                                         return (
-                                            <div className={itemClass} key={`headerStory - ${index}`}>
-                                                <img src={story.img} alt="ceva" className='storyImg' />
-                                                <span className='storyTitle'>{story.title}</span>
+                                            <div className={index === activeItem ? 'storyItem active' : 'storyItem'} key={story.id}>
+                                                {image &&
+                                                    <img src={image} alt={story.id} className='storyImg' />
+                                                }
+                                                {(video && !image) &&
+                                                    <ReactPlayer
+                                                        url={video}
+                                                        width='200'
+                                                        height='140'
+                                                        config={{
+                                                            youtube: {
+                                                                playerVars: {
+                                                                    showinfo: 0,
+                                                                    controls: 0,
+                                                                    modestbranding: 1,
+                                                                    loop: 1
+                                                                }
+                                                            }
+                                                        }}
+                                                        playing={false} />
+                                                }
+                                                <span className='storyTitle'>{story.i18n[0].title}</span>
                                             </div>
                                         )
                                     })
@@ -418,9 +442,9 @@ const Header = (props) => {
                             <Icon>arrow_back_ios</Icon>
                         </IconButton>
                         {
-                            featuredArticles && featuredArticles.map((item, index) => {
-                                return (<span className={index === activeItem ? 'sliderDot active' : 'sliderDot'} key={`storyMarker - ${index}`} onClick={() => jumpToItem(index)}></span>)
-                            })
+                            featuredArticles && featuredArticles.map((item, index) =>
+                                (<span className={index === activeItem ? 'sliderDot active' : 'sliderDot'} key={`storyMarker - ${index}`} onClick={() => jumpToItem(index)}></span>)
+                            )
                         }
                         <IconButton className='sliderArrow' onClick={nextItem}>
                             <Icon>arrow_forward_ios</Icon>

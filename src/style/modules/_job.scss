@@ -255,10 +255,12 @@
         .columnRight {
             .columnRightContent {
                 top: -100px;
+                margin-bottom: -100px;
                 border-top: 1px solid;
                 border-left: 1px solid;
                 border-color: #f0f0f0;
                 padding: 25px 20px;
+                height: calc(100% + 100px);
                 .columnTitle {
                     color: #397db9;
                     font-weight: 100;
@@ -275,12 +277,14 @@
     .columnRight {
         .columnRightContent {
             top: -80px;
+            margin-bottom: -80px;
             border-top: 1px solid;
             border-left: 1px solid;
             border-color: #f0f0f0;
             padding: 25px 20px;
             display: flex;
             flex-direction: column;
+            height: calc(100% + 80px);
             .columnTitle {
                 color: #397db9;
                 font-weight: 100;

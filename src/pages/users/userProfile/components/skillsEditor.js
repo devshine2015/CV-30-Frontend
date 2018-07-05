@@ -3,8 +3,10 @@ import { Popover, Button, FormControl, InputLabel, Input, InputAdornment, IconBu
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { setSkills, setValues, removeSkill, removeValue, currentUserQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 
 const SkillsEditHOC = compose(
+    withRouter,
     graphql(setSkills, { name: 'setSkills' }),
     graphql(setValues, { name: 'setValues' }),
     graphql(removeSkill, { name: 'removeSkill' }),
@@ -53,8 +55,7 @@ const SkillsEditHOC = compose(
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
-                                    language: 'en',
-                                    id: match.params.profileId
+                                    language: match.params.lang
                                 }
                             }]
                         });
@@ -74,8 +75,7 @@ const SkillsEditHOC = compose(
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
-                                    language: 'en',
-                                    id: match.params.profileId
+                                    language: match.params.lang
                                 }
                             }]
                         });
@@ -110,8 +110,7 @@ const SkillsEditHOC = compose(
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
-                                    language: 'en',
-                                    id: match.params.profileId
+                                    language: match.params.lang
                                 }
                             }]
                         });
@@ -132,8 +131,7 @@ const SkillsEditHOC = compose(
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
-                                    language: 'en',
-                                    id: match.params.profileId
+                                    language: match.params.lang
                                 }
                             }]
                         });
