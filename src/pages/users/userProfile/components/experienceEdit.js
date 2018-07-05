@@ -8,7 +8,7 @@ import { setExperience, setProject, currentUserQuery } from '../../../../store/q
 const ExperienceEdit = (props) => {
     const { formData, isVideoUrl, switchMediaType, handleFormChange, closeEditor, submitForm, type } = props;
     const { position, company, location, startDate, endDate, isCurrent, description, videoURL } = formData;
-    console.log(new Date(endDate).toLocaleDateString("en-UK"));
+
     return (
         <form className='experienceForm' noValidate autoComplete='off'>
             <h4>
@@ -47,14 +47,14 @@ const ExperienceEdit = (props) => {
                     <TextField
                         name="startDate"
                         type="date"
-                        value={startDate || ''}
+                        value={startDate ? (new Date(startDate)).toISOString().split("T")[0] : ''}
                         onChange={handleFormChange}
                     />
                     <TextField
                         name="endDate"
                         type="date"
                         disabled={isCurrent}
-                        value={endDate || ''}
+                        value={endDate ? (new Date(endDate)).toISOString().split("T")[0] : ''}
                         onChange={handleFormChange}
                     />
                     <FormControlLabel
@@ -143,13 +143,14 @@ const ExperienceEditHOC = compose(
     withState('formData', 'setFormData', ({ job }) => {
         if (!job)
             return {};
-        debugger;
+
+        const { id, company, position, location, startDate, endDate, isCurrent, i18n } = job;
+        const { description } = i18n;
+
         let data = {
-            ...job,
-            ...job.i18n[0]
+            id, company, position, location, startDate, endDate, isCurrent, description
         };
-        delete data.i18n;
-        delete data.__typename;
+
         return data;
     }),
     withState('isVideoUrl', 'changeMediaType', true),
