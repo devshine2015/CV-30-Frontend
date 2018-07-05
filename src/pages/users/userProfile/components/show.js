@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid, Icon, IconButton, Button, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
 // import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { setStory, setSalary, currentUserQuery } from '../../../../store/queries';
+import { withRouter } from 'react-router-dom';
 
 import ExperienceEdit from './experienceEdit';
 import ExperienceDisplay from './experienceDisplay';
@@ -12,6 +13,7 @@ import fields from '../../../../constants/contact';
 import AddStoryInline from '../../../../components/ArticleInline';
 
 const ShowHOC = compose(
+    withRouter,
     graphql(setStory, { name: 'setStory' }),
     graphql(setSalary, { name: 'setSalary' }),
     withState('newXP', 'setNewXP', false),
@@ -47,7 +49,7 @@ const ShowHOC = compose(
         updateStory: ({ setMyStory }) => text => {
             setMyStory(text);
         },
-        saveStory: ({ setStory, story }) => async () => {
+        saveStory: ({ setStory, story, match }) => async () => {
             try {
                 await setStory({
                     variables: {
@@ -74,7 +76,7 @@ const ShowHOC = compose(
         updateDesiredSalary: ({ setDesiredSalary }) => salary => {
             setDesiredSalary(salary);
         },
-        saveDesiredSalary: ({ setSalary, isSalaryPublic, desiredSalary }) => async () => {
+        saveDesiredSalary: ({ setSalary, isSalaryPublic, desiredSalary, match }) => async () => {
             try {
                 await setSalary({
                     variables: {
@@ -90,7 +92,7 @@ const ShowHOC = compose(
                         name: 'currentUser',
                         variables: {
                             language: 'en',
-                            id: null
+                            id: match.params.profileId
                         }
                     }]
                 });

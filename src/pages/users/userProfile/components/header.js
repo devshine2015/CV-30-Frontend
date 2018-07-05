@@ -59,7 +59,7 @@ const HeaderHOC = compose(
             setSkillsModalData(null);
             setSkillsAnchor(null);
         },
-        removeStory: ({ handleArticle }) => async article => {
+        removeStory: ({ handleArticle, match }) => async article => {
             console.log(article);
             // debugger;
             try {
@@ -67,7 +67,7 @@ const HeaderHOC = compose(
                     variables: {
                         article: {
                             id: article.id,
-                            title: article.i18n ? article.i18n[0].title : 'bla',
+                            // title: article.i18n ? article.i18n[0].title : 'blabla',
                             isFeatured: false
                         },
                         language: 'en'
@@ -78,7 +78,7 @@ const HeaderHOC = compose(
                         name: 'currentUser',
                         variables: {
                             language: 'en',
-                            id: null
+                            id: match.params.profileId
                         }
                     }]
                 });
@@ -137,7 +137,7 @@ const HeaderHOC = compose(
             console.log(error);
         },
         onFinishUpload: (props) => async () => {
-            const { setIsUploading, updateAvatar, updateAvatarTimestamp } = props;
+            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match } = props;
             await updateAvatar({
                 variables: {
                     status: true
@@ -148,7 +148,7 @@ const HeaderHOC = compose(
                     name: 'currentUser',
                     variables: {
                         language: 'en',
-                        id: null
+                        id: match.params.profileId
                     }
                 }]
             });

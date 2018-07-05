@@ -95,6 +95,7 @@ const SettingsHOC = compose(
             setIsUploading(false);
         },
         handleFormChange: props => event => {
+            debugger;
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
@@ -103,7 +104,7 @@ const SettingsHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
-        saveUserDetails: ({ setSettingsFormSuccess, setSettingsFormError, updateUserSettings, formData: { firstName, lastName, oldPassword, newPassword, newPasswordConfirm } }) => async () => {
+        saveUserDetails: ({ setSettingsFormSuccess, setSettingsFormError, updateUserSettings, formData: { firstName, lastName, oldPassword, newPassword, newPasswordConfirm }, match }) => async () => {
             if (newPassword) {
                 if (!oldPassword) { alert('Please enter your current password'); return; }
                 if (newPassword != newPasswordConfirm) { alert('New password and confirm new password do not match'); return; }
@@ -127,7 +128,7 @@ const SettingsHOC = compose(
                         name: 'currentUser',
                         variables: {
                             language: 'en',
-                            id: null
+                            id: match.params.profileId
                         }
                     }]
                 });
@@ -232,8 +233,8 @@ const Settings = props => {
             </div>
             <div className='actions'>
                 {/* <Button className='cancelBtn'>Cancel</Button> */}
-                { settingsFormError && <div className="errorMessage">{ settingsFormError }</div> }
-                { settingsFormSuccess && <div className="successMessage">Your details have been successfully saved</div> }
+                {settingsFormError && <div className="errorMessage">{settingsFormError}</div>}
+                {settingsFormSuccess && <div className="successMessage">Your details have been successfully saved</div>}
                 <Button className='saveBtn' onClick={saveUserDetails}>Save</Button>
             </div>
         </div>

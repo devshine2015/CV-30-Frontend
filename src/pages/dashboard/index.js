@@ -25,14 +25,14 @@ class Dashboard extends Component {
 
                         <Route path='/:lang(en|ro)/dashboard/companies' component={CompaniesList} />
                         <Route path='/:lang(en|ro)/dashboard/company/team' component={Team} />
-                        <Route path='/:lang(en|ro)/dashboard/company' component={Brand} />
+                        <Route path='/:lang(en|ro)/dashboard/company/:companyId' component={Brand} />
 
                         <Route path='/:lang(en|ro)/dashboard/jobs' exact component={Jobs} />
-                        <Route path='/:lang(en|ro)/dashboard/job' exact component={Job} />
+                        <Route path='/:lang(en|ro)/dashboard/job/:jobId' exact component={Job} />
 
                         <Route path='/:lang(en|ro)/dashboard/people' exact component={UsersList} />
-                        <Route path='/:lang(en|ro)/dashboard/profile/:id?/settings' component={UserProfileSettings} />
-                        <Route path='/:lang(en|ro)/dashboard/profile/:id?' component={UserProfile} />
+                        <Route path='/:lang(en|ro)/dashboard/profile/:profileId/settings' component={UserProfileSettings} />
+                        <Route path='/:lang(en|ro)/dashboard/profile/:profileId' component={UserProfile} />
                     </Switch>
                 </div>
             </React.Fragment>

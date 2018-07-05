@@ -143,6 +143,7 @@ const ArticleEditor = props => {
                     className='textField'
                     onChange={handleFormChange}
                     value={title || ''}
+                    fullWidth
                 />
                 <TextField
                     name="description"
@@ -154,6 +155,7 @@ const ArticleEditor = props => {
                     rowsMax={10}
                     onChange={handleFormChange}
                     value={description || ''}
+                    fullWidth
                 />
                 <FormGroup row className='mediaToggle'>
                     <span className='mediaToggleLabel'>Upload visuals</span>
