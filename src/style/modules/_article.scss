@@ -12,6 +12,7 @@
     max-width: 600px;
     max-height: 80vh;
     top: 100px;
+    overflow-y: auto;
 }
 
 .storyEditPaper,
@@ -85,6 +86,10 @@
                 cursor: pointer;
                 .articleMedia {
                     background: #d6d6d6;
+                    img {
+                        max-width: 100%;
+                        max-height: 100%;
+                    }
                 }
                 .articleTexts {
                     color: #414141;
@@ -92,7 +97,6 @@
                     user-select: none;
                     display: flex;
                     flex-direction: column;
-                    justify-content: space-around;
                     h4 {
                         font-size: 1rem;
                         font-weight: 500;
