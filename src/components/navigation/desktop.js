@@ -112,7 +112,10 @@ const DesktopNav = props => {
                                                     :
                                                     <FormattedMessage id="nav.noCompany" defaultMessage="Create Company" description="Create company">
                                                         {(text) => (<Link
-                                                            to={`/${lang}/dashboard/companies/new`}
+                                                            to={{
+                                                                pathname: `/${lang}/dashboard/companies/new`,
+                                                                state: { profile: currentUser.profile }
+                                                            }}
                                                             onClick={closeProfileMenu}
                                                             className='noCompanyLink'
                                                         >

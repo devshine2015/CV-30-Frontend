@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { IntlProvider, addLocaleData } from 'react-intl';
+import scriptLoader from 'react-async-script-loader';
 
 import LandingPage from './pages/landingPage';
 import Dashboard from './pages/dashboard';
@@ -52,4 +53,4 @@ const App = () => (
   </BrowserRouter>
 );
 
-export default App;
+export default scriptLoader('https://maps.googleapis.com/maps/api/js?key=AIzaSyBTQiBfUXeguqDwn0cMRSJGWPFQyFu9OW0&libraries=places')(App);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, TextField, Avatar, Button, Icon, CircularProgress, IconButton } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
-
+import MUIPlacesAutocomplete from 'mui-places-autocomplete';
 
 const NewCompany = props => {
     const {
@@ -37,7 +37,7 @@ const NewCompany = props => {
                             }}
                         />
                     </section>
-                    <section className='mediaSection'>
+                    {/* <section className='mediaSection'>
                         <div className='avatar'>
                             <Avatar src='' alt='company pic' className='companyAvatarPreview' />
                             <label htmlFor="uploadProfileImg">
@@ -72,7 +72,7 @@ const NewCompany = props => {
                             }
                         </div>
                         <div className='colorPicker'></div>
-                    </section>
+                    </section> */}
                     <section className='details'>
                         <TextField
                             name="field"
@@ -92,7 +92,12 @@ const NewCompany = props => {
                             onChange={handleFormChange}
                             value={employees || ''}
                         />
-                        <TextField
+                        <MUIPlacesAutocomplete
+                            onSuggestionSelected={() => {}}
+                            renderTarget={() => {}}
+                            name={'location'}
+                        />
+                        {/* <TextField
                             name="location"
                             label="Location"
                             placeholder="Enter location..."
@@ -100,7 +105,7 @@ const NewCompany = props => {
                             fullWidth
                             onChange={handleFormChange}
                             value={location || ''}
-                        />
+                        /> */}
                     </section>
                     <section className='actions'>
                         <Button className='cancelBtn' onClick={cancel}>Cancel</Button>

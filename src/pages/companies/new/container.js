@@ -1,22 +1,24 @@
 import NewCompany from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import uuid from 'uuid/v4';
+import { withRouter } from 'react-router-dom';
 
 const NewCompanyHOC = compose(
+    withRouter,
     withState('formData', 'setFormData', { id: uuid() }),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('isUploading', 'setIsUploading', false),
     withHandlers({
-        getSignedUrl: ({ currentUser }) => async (file, callback) => {
+        getSignedUrl: ({ location: { state: { profile } } }) => async (file, callback) => {
             let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['avatar', getExtension].join('.');
+            let fName = ['logo', getExtension].join('.');
 
             const params = {
                 fileName: fName,
                 contentType: file.type,
-                id: currentUser.profile.id,
-                type: 'avatar'
+                id: profile.id,
+                type: 'logo'
             };
 
             try {
