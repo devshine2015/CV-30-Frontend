@@ -27,6 +27,8 @@ const NewCompany = props => {
                 <Grid item lg={6} sm={11}>
                     <section className='locationSection'>
                         { googleMaps.isLoaded && typeof window.google != "undefined" && <TextField
+                            error={touched.location && errors.location}
+                            helperText={errors.location}
                             inputRef={autocompleteHandle}
                             name="location"
                             label="Location"
@@ -39,6 +41,8 @@ const NewCompany = props => {
                     </section>
                     <section className='titleSection'>
                         <TextField
+                            error={touched.name && errors.name}
+                            helperText={errors.name}
                             name="name"
                             label="Company name"
                             placeholder="Enter company name..."
@@ -91,6 +95,8 @@ const NewCompany = props => {
                     </section> */}
                     <section className='details'>
                         <TextField
+                            error={touched.activityField && errors.activityField}
+                            helperText={errors.activityField}
                             name="activityField"
                             label="Field of Activity"
                             placeholder="Enter field of activity..."
@@ -100,6 +106,8 @@ const NewCompany = props => {
                             value={values.activityField}
                         />
                         <TextField
+                            error={touched.noOfEmployees && errors.noOfEmployees}
+                            helperText={errors.noOfEmployees}
                             name="noOfEmployees"
                             label="Number of employees"
                             placeholder="Enter number of employees..."
@@ -110,8 +118,11 @@ const NewCompany = props => {
                         />
                     </section>
                     <section className='actions'>
-                        <Button className='cancelBtn' disabled={isSubmitting} onClick={cancel}>Cancel</Button>
-                        <Button className='submitBtn' disabled={isSubmitting || !isValid} onClick={handleSubmit}>Create company</Button>
+                        { isSubmitting && <CircularProgress /> }
+                        { !isSubmitting && <React.Fragment>
+                            <Button className='cancelBtn' onClick={cancel}>Cancel</Button>
+                            <Button className={isValid ? 'submitBtn' : ''} disabled={!isValid} onClick={handleSubmit}>Create company</Button>
+                        </React.Fragment> }
                     </section>
                 </Grid>
             </Grid>
