@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    Grid, TextField, Button,
-    // Avatar, Icon, CircularProgress, IconButton, Field
+    Grid, TextField, Button, CircularProgress
+    // Avatar, Icon, , IconButton, Field
 } from '@material-ui/core';
 // import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
