@@ -1,6 +1,6 @@
 import NewCompany from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import uuid from 'uuid/v4';
+// import uuid from 'uuid/v4';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 import { handleCompany } from '../../../store/queries';

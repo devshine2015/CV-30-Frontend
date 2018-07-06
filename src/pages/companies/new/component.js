@@ -1,6 +1,9 @@
 import React from 'react';
-import { Grid, TextField, Avatar, Button, Icon, CircularProgress, IconButton, Field } from '@material-ui/core';
-import S3Uploader from 'react-s3-uploader';
+import {
+    Grid, TextField, Button,
+    // Avatar, Icon, CircularProgress, IconButton, Field
+} from '@material-ui/core';
+// import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import { compose, pure, lifecycle, withHandlers, withState } from 'recompose';
 import { withFormik } from 'formik';
@@ -10,7 +13,7 @@ import schema from './validation';
 
 const NewCompany = props => {
     const {
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, uploadProgress,
+        // getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, uploadProgress,
         cancel, save, autocompleteHandle,
         googleMapsData: { googleMaps },
         values, touched, errors, isSubmitting, handleChange, handleSubmit, isValid
@@ -37,7 +40,7 @@ const NewCompany = props => {
                             fullWidth
                             onChange={handleChange}
                             value={values.location}
-                        /> }
+                        />}
                     </section>
                     <section className='titleSection'>
                         <TextField

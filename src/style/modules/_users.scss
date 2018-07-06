@@ -56,7 +56,6 @@
             bottom: 0;
             left: 90px;
         }
-        .settingsBtn {}
         .colorPickerButton {
             background: #4893cc;
             color: #fff;
@@ -601,6 +600,9 @@
             cursor: pointer;
             color: #277dba;
             text-transform: none;
+        }
+        .addArticle {
+            margin: 25px;
         }
         .experienceForm {
             position: relative;

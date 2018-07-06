@@ -283,19 +283,19 @@ const Show = (props) => {
                                 })
                             }
 
-                            {editMode &&
-                                <React.Fragment>
-                                    <div className='addArticle' onClick={openArticlePopUp}>
-                                        + Add Article
-                                </div>
-                                    <ArticlePopUp
-                                        type='profile_isAboutMe'
-                                        open={isPopUpOpen}
-                                        onClose={closeArticlePopUp}
-                                    />
-                                </React.Fragment>
-                            }
                         </div>
+                    }
+                    {editMode &&
+                        <React.Fragment>
+                            <div className='addArticle' onClick={openArticlePopUp}>
+                                + Add Article
+                            </div>
+                            <ArticlePopUp
+                                type='profile_isAboutMe'
+                                open={isPopUpOpen}
+                                onClose={closeArticlePopUp}
+                            />
+                        </React.Fragment>
                     }
                     <hr />
                     <div className='myStoryContainer'>
