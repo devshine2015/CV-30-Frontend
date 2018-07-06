@@ -192,6 +192,25 @@ export const updateAvatar = gql`
     }
 `;
 
+export const updateGoogleMapsMutation = gql`
+    mutation updateGoogleMaps($isLoaded: Boolean!){
+        updateGoogleMaps(isLoaded: $isLoaded) @client{
+            googleMaps {
+               __typename
+               isLoaded
+           }
+        }
+    }
+`;
+
+export const googleMapsQuery = gql`
+    query googleMapsData{
+        googleMaps @client {
+            isLoaded
+        }
+    }
+`;
+
 export const updateAvatarTimestampMutation = gql`
     mutation updateAvatarTimestamp($timestamp: Int!){
         updateAvatarTimestamp(timestamp: $timestamp) @client{
@@ -339,7 +358,7 @@ export const handleArticle = gql`
 
 export const handleCompany = gql`
     mutation handleCompany($language: LanguageCodeType!, $details: CompanyInput!) {
-        handleCompany(language:$language, details:  $details){
+        handleCompany(language: $language, details:  $details){
             status
             error
         }

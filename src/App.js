@@ -1,12 +1,15 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { IntlProvider, addLocaleData } from 'react-intl';
+import { compose, pure, lifecycle } from 'recompose';
 import scriptLoader from 'react-async-script-loader';
+import { graphql } from 'react-apollo';
 
 import LandingPage from './pages/landingPage';
 import Dashboard from './pages/dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import GuestRoute from './components/GuestRoute';
+import { updateGoogleMapsMutation } from './store/queries';
 
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
@@ -53,4 +56,28 @@ const App = () => (
   </BrowserRouter>
 );
 
-export default scriptLoader('https://maps.googleapis.com/maps/api/js?key=AIzaSyBTQiBfUXeguqDwn0cMRSJGWPFQyFu9OW0&libraries=places')(App);
+export default compose(
+  scriptLoader('https://maps.googleapis.com/maps/api/js?key=AIzaSyBTQiBfUXeguqDwn0cMRSJGWPFQyFu9OW0&libraries=places'),
+  graphql(updateGoogleMapsMutation, {
+    name: 'googleMapsMutation'
+  }),
+  lifecycle({
+    componentDidMount() {
+      const { isScriptLoaded, isScriptLoadSucceed } = this.props;
+      this.props.googleMapsMutation({
+        variables: {
+          isLoaded: isScriptLoaded && isScriptLoadSucceed && typeof window.google != "undefined"
+        }
+      })
+    },
+    componentDidUpdate(prevProps, prevState, snapshot) {
+      const { isScriptLoaded, isScriptLoadSucceed } = this.props;
+      this.props.googleMapsMutation({
+        variables: {
+          isLoaded: isScriptLoaded && isScriptLoadSucceed && typeof window.google != "undefined"
+        }
+      })
+    }
+  }),
+  pure
+)(App);

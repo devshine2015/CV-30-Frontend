@@ -2,10 +2,13 @@ import NewCompany from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import uuid from 'uuid/v4';
 import { withRouter } from 'react-router-dom';
+import { graphql } from 'react-apollo';
+import { handleCompany } from '../../../store/queries';
 
 const NewCompanyHOC = compose(
     withRouter,
-    withState('formData', 'setFormData', { id: uuid() }),
+    graphql(handleCompany, { name: 'handleCompany' }),
+    // withState('formData', 'setFormData', { id: uuid() }),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('isUploading', 'setIsUploading', false),
@@ -82,21 +85,21 @@ const NewCompanyHOC = compose(
 
             setIsUploading(false);
         },
-        handleFormChange: ({ setFormData }) => event => {
-            const target = event.currentTarget;
-            const value = target.type === 'checkbox' ? target.checked : target.value;
-            const name = target.name;
-            if (!name) {
-                throw Error('Field must have a name attribute!');
-            }
-            setFormData(state => ({ ...state, [name]: value }));
-        },
-        cancel: ({ history }) => () => {
-            history.goBack()
-        },
-        save: ({ formData }) => () => {
-            console.log(formData);
-        }
+        // handleFormChange: ({ setFormData }) => event => {
+        //     const target = event.currentTarget;
+        //     const value = target.type === 'checkbox' ? target.checked : target.value;
+        //     const name = target.name;
+        //     if (!name) {
+        //         throw Error('Field must have a name attribute!');
+        //     }
+        //     setFormData(state => ({ ...state, [name]: value }));
+        // },
+        // cancel: ({ history }) => () => {
+        //     history.goBack()
+        // },
+        // save: ({ formData }) => () => {
+        //     console.log(formData);
+        // }
     }),
     pure
 );

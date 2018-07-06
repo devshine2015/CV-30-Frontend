@@ -1,6 +1,16 @@
 export default {
     Query: {},
     Mutation: {
+        updateGoogleMaps: (_, { isLoaded }, { cache }) => {
+            const data = {
+                googleMaps: {
+                    __typename: "GoogleMapsAPI",
+                    isLoaded
+                }
+            };
+            cache.writeData({ data });
+            return null;
+        },
         updateAvatarTimestamp: (_, { timestamp }, { cache }) => {
             const data = {
                 localUser: {
