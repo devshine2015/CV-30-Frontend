@@ -1,0 +1,209 @@
+.newsFeedRoot {
+    background: #fff;
+    flex: 1;
+    .brandShow {
+        .centralColumn {
+            section {
+                margin-top: 50px;
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+            .newPost {
+                .postHeader {
+                    display: flex;
+                    align-items: flex-end;
+                    justify-content: space-between;
+                    .userProfile {
+                        display: flex;
+                        background: #fff;
+                        border: 2px solid #ebebeb;
+                        border-radius: 50px;
+                        padding: 5px 35px 5px 5px;
+                        align-items: center;
+                        .userAvatar {
+                            width: 80px;
+                            height: 80px;
+                            background: #565656;
+                            margin-right: 15px;
+                        }
+                        .postAs {
+                            color: #565656;
+                            font-size: 1rem;
+                            font-weight: 100;
+                            .userName {
+                                display: block;
+                                font-size: 1.25rem;
+                                font-weight: 500;
+                            }
+                        }
+                    }
+                    .mediaButton {
+                        background: #e6eff4;
+                        color: #565656;
+                        text-transform: none;
+                        border-radius: 20px;
+                        height: 35px;
+                        padding: 6px 20px;
+                        .icon {
+                            margin-right: 12px;
+                        }
+                    }
+                }
+                .postBody {
+                    display: flex;
+                    background: #fafafa;
+                    border-top-left-radius: 10px;
+                    border-top-right-radius: 10px;
+                    margin-top: 15px;
+                    border: 1px solid #ededed;
+                    padding: 15px 20px 50px;
+                }
+                .postFooter {
+                    display: flex;
+                    background: #fff;
+                    border: 1px solid #ededed;
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                    padding: 15px 20px;
+                    align-items: center;
+                    justify-content: space-between;
+                    .footerToggle {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                    }
+                    .postBtn {
+                        background: #ff9d00;
+                        color: #fff;
+                        text-transform: capitalize;
+                        font-size: 1rem;
+                    }
+                }
+            }
+            .profileActions {
+                display: flex;
+                justify-content: space-between;
+                .profileAction {
+                    display: flex;
+                    flex-direction: column;
+                    width: 32%;
+                    border: 1px solid #ebebeb;
+                    border-radius: 10px;
+                    padding: 20px 15px;
+                    box-sizing: border-box;
+                    height: 345px;
+                    h3 {
+                        font-size: 1.25rem;
+                        margin: 0;
+                        margin-bottom: 10px;
+                        color: #55b5cc;
+                    }
+                    p {
+                        font-size: 1rem;
+                        font-weight: 100;
+                        color: #565656;
+                    }
+                    .profileActionBtn {
+                        margin-top: auto;
+                    }
+                }
+            }
+            .articlesList {
+                .listItem {
+                    .articleBody {
+                        font-size: 1rem;
+                        color: #565656;
+                        font-weight: 100;
+                        .articleTitle {
+                            font-weight: bold;
+                        }
+                    }
+                    .articleMedia {
+                        min-height: 480px;
+                        background: #d3dce2;
+                        margin: 0 -15px;
+                    }
+                    .itemFooter {
+                        margin: 0;
+                        position: reltive;
+                    }
+                }
+            }
+            .socialSection {
+                display: flex;
+                position: relative;
+                flex-direction: column;
+                .comments {
+                    position: absolute;
+                    top: -29px;
+                    background: #fff;
+                    border-radius: 40px;
+                    border: 1px solid #ebebeb;
+                    padding: 5px 12px;
+                    right: 0;
+                    .counter {
+                        font-size: 1rem;
+                        color: #565656;
+                        font-weight: 100;
+                    }
+                    .commentBtn {
+                        margin-left: 30px;
+                        color: #277dba;
+                        &,
+                        &:hover,
+                        &:active {
+                            background: none;
+                        }
+                        &:hover {
+                            font-weight: bold;
+                        }
+                        &:active {
+                            color: #1b5e8e;
+                        }
+                        .fa-stack {
+                            margin-right: 10px;
+                        }
+                    }
+                }
+                .likes {
+                    color: #565656;
+                    font-weight: 100;
+                    font-size: .75rem;
+                }
+                .tags {
+                    display: flex;
+                    align-items: center;
+                    .addTagBtn {
+                        width: 35px;
+                        height: 35px;
+                        background: #277dba;
+                        color: #fff;
+                        margin-right: 15px;
+                    }
+                    .tag {
+                        font-size: 1rem;
+                        color: #277dba;
+                        margin-right: 20px;
+                        display: inline-flex;
+                        align-items: center;
+                        .votes {
+                            font-weight: bold;
+                            margin-right: 5px;
+                        }
+                        .voteBtn {
+                            color: #277dba;
+                            width: 24px;
+                            height: 24px;
+                            margin-right: 5px;
+                            background: rgba(39, 125, 186, 0.3);
+                            &:hover {
+                                background: rgba(39, 125, 186, 0.6);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

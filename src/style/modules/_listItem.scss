@@ -19,7 +19,7 @@
     }
     .rightOverlay {
         right: 10px;
-        top: -20px;
+        top: -17px;
     }
     .itemBody {
         display: flex;
@@ -45,7 +45,8 @@
 .userListRoot,
 .companiesListRoot,
 .jobsListRoot,
-.jobsList {
+.jobsList,
+.articlesList {
     flex: 1;
     background: #fff;
     .listItem {
@@ -103,6 +104,15 @@
                 color: #277dba;
                 font-weight: bold;
             }
+        }
+        .articleDate {
+            position: absolute;
+            top: -8px;
+            right: 204px;
+            color: #ababab;
+            background: #fff;
+            font-size: .75rem;
+            padding: 0 15px;
         }
         .itemBody {
             flex-wrap: wrap;

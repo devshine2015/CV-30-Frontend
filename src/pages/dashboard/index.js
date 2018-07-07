@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Navigation from '../../components/navigation';
 import { Switch, Route } from 'react-router-dom';
 
+import NewsFeed from '../feed/';
 import UserProfile from '../users/userProfile';
 import UserProfileSettings from '../users/settings';
 import Brand from '../companies/brand';
@@ -13,9 +14,6 @@ import CompaniesList from '../companies/list';
 import NewCompany from '../companies/new';
 import CompanySettings from '../companies/settings';
 
-const News = () => <div>News</div>;
-
-
 class Dashboard extends Component {
     render() {
         return (
@@ -23,7 +21,7 @@ class Dashboard extends Component {
                 <Navigation {...this.props} />
                 <div className='dashboardRoot'>
                     <Switch>
-                        <Route path='/:lang(en|ro)/dashboard/news' exact component={News} />
+                        <Route path='/:lang(en|ro)/dashboard/news' exact component={NewsFeed} />
 
                         <Route exact path='/:lang(en|ro)/dashboard/companies' component={CompaniesList} />
                         <Route exact path='/:lang(en|ro)/dashboard/companies/new' component={NewCompany} />

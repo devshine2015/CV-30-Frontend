@@ -10,7 +10,8 @@
     background-color: #bbb !important;
 }
 
-.mediaToggle {
+.mediaToggle,
+.footerToggle {
     display: flex;
     align-items: center;
     .mediaToggleLabel {
@@ -23,9 +24,11 @@
         font-size: 0.75rem;
         color: #565656;
         font-weight: bold;
+        transition: color .5s;
         &.active {
             font-size: 0.8rem;
             color: #3586bf;
+            transition: color .5s;
         }
     }
 }
