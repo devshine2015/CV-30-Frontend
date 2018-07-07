@@ -11,6 +11,7 @@ import Job from '../jobs/view';
 import UsersList from '../users/list';
 import CompaniesList from '../companies/list';
 import NewCompany from '../companies/new';
+import CompanySettings from '../companies/settings';
 
 const News = () => <div>News</div>;
 
@@ -26,8 +27,9 @@ class Dashboard extends Component {
 
                         <Route exact path='/:lang(en|ro)/dashboard/companies' component={CompaniesList} />
                         <Route exact path='/:lang(en|ro)/dashboard/companies/new' component={NewCompany} />
-                        <Route path='/:lang(en|ro)/dashboard/company/:companyId' component={Brand} />
-                        <Route path='/:lang(en|ro)/dashboard/company/:companyId/team/:teamId' component={Team} />
+                        <Route exact path='/:lang(en|ro)/dashboard/company/:companyId/settings' component={CompanySettings} />
+                        <Route exact path='/:lang(en|ro)/dashboard/company/:companyId/team/:teamId' component={Team} />
+                        <Route path='/:lang(en|ro)/dashboard/company/:companyId?' component={Brand} />
 
                         <Route path='/:lang(en|ro)/dashboard/jobs' exact component={Jobs} />
                         <Route path='/:lang(en|ro)/dashboard/job/:jobId' exact component={Job} />

@@ -40,11 +40,6 @@ const NewCompanyHOC = compose(
                 callback(error)
             }
         },
-        renameFile: () => filename => {
-            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['avatar', getExtension].join('.');
-            return fName;
-        },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
             let size = file.size;
             if (size > 500 * 1024) {

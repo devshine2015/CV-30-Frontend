@@ -449,3 +449,38 @@ export const setSalary = gql`
         }
     }
 `;
+
+export const getCompanyQuery = gql`
+query company($id: String!, $language: LanguageCodeType!) {
+  company(id: $id, language: $language) {
+    id
+    name
+    i18n {
+      headline
+      description
+    }
+    activityField
+    noOfEmployees
+    location
+    jobs {
+      id
+      name
+      expireDate
+      i18n {
+        title
+        description
+      }
+      team {
+        id
+        name
+        members {
+          id
+          firstName
+          lastName
+          email
+        }
+      }
+    }
+  }
+}
+`;

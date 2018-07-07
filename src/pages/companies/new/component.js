@@ -14,7 +14,7 @@ import schema from './validation';
 const NewCompany = props => {
     const {
         // getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, uploadProgress,
-        cancel, save, autocompleteHandle,
+        cancel, autocompleteHandle,
         googleMapsData: { googleMaps },
         values, touched, errors, isSubmitting, handleChange, handleSubmit, isValid
     } = props;
@@ -29,7 +29,7 @@ const NewCompany = props => {
             <Grid container className='mainBody newCompany'>
                 <Grid item lg={6} sm={11}>
                     <section className='locationSection'>
-                        { googleMaps.isLoaded && typeof window.google != "undefined" && <TextField
+                        {googleMaps.isLoaded && typeof window.google !== "undefined" && <TextField
                             error={touched.location && errors.location}
                             helperText={errors.location}
                             inputRef={autocompleteHandle}
@@ -121,11 +121,11 @@ const NewCompany = props => {
                         />
                     </section>
                     <section className='actions'>
-                        { isSubmitting && <CircularProgress /> }
-                        { !isSubmitting && <React.Fragment>
+                        {isSubmitting && <CircularProgress />}
+                        {!isSubmitting && <React.Fragment>
                             <Button className='cancelBtn' onClick={cancel}>Cancel</Button>
                             <Button className={isValid ? 'submitBtn' : ''} disabled={!isValid} onClick={handleSubmit}>Create company</Button>
-                        </React.Fragment> }
+                        </React.Fragment>}
                     </section>
                 </Grid>
             </Grid>

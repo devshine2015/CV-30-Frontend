@@ -66,7 +66,7 @@ export default compose(
       const { isScriptLoaded, isScriptLoadSucceed } = this.props;
       this.props.googleMapsMutation({
         variables: {
-          isLoaded: isScriptLoaded && isScriptLoadSucceed && typeof window.google != "undefined"
+          isLoaded: isScriptLoaded && isScriptLoadSucceed && typeof window.google !== "undefined"
         }
       })
     },
@@ -74,7 +74,7 @@ export default compose(
       const { isScriptLoaded, isScriptLoadSucceed } = this.props;
       this.props.googleMapsMutation({
         variables: {
-          isLoaded: isScriptLoaded && isScriptLoadSucceed && typeof window.google != "undefined"
+          isLoaded: isScriptLoaded && isScriptLoadSucceed && typeof window.google !== "undefined"
         }
       })
     }
