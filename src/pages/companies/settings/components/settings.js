@@ -152,7 +152,7 @@ const Settings = props => {
     const { name, headline, location, activityField, employees } = formData;
 
     let avatar = ''
-    // (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.png?${localUserData.localUser.timestamp}` : null
+    // (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
 
     return (
         <div className='settingsTab'>

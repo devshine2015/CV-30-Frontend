@@ -162,6 +162,7 @@ export const currentUserQuery = gql`
       linkedin
     }
     hasAvatar
+    avatarContentType
     hasProfileCover
     coverBackground
     story {
@@ -185,8 +186,8 @@ export const currentUserQuery = gql`
 `;
 
 export const updateAvatar = gql`
-    mutation updateAvatar($status:Boolean!){
-        avatar(status: $status){
+    mutation updateAvatar($status: Boolean!, $contentType: ImageType!){
+        avatar(status: $status, contentType: $contentType){
            status
         }
     }
@@ -239,6 +240,7 @@ export const getCurrentUser = gql`
             lastName
             email
             hasAvatar
+            avatarContentType
         }
     }
 `;
@@ -399,6 +401,7 @@ export const profilesQuery = gql`
                 }
             }
             hasAvatar
+            avatarContentType
             errors {
                 name
                 value

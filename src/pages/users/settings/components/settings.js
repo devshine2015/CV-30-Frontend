@@ -16,6 +16,7 @@ const SettingsHOC = compose(
     withState('uploadError', 'setUploadError', null),
     withState('settingsFormError', 'setSettingsFormError', ''),
     withState('settingsFormSuccess', 'setSettingsFormSuccess', false),
+    withState('fileParams', 'setFileParams', {}),
     withState('formData', 'setFormData', ({ currentUser }) => {
         if (!currentUser || !currentUser.profile)
             return {};
@@ -23,16 +24,17 @@ const SettingsHOC = compose(
         return { firstName, lastName, email };
     }),
     withHandlers({
-        getSignedUrl: ({ currentUser }) => async (file, callback) => {
-            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['avatar', getExtension].join('.');
+        getSignedUrl: ({ currentUser, setFileParams }) => async (file, callback) => {
+            // let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
+            // let fName = ['avatar', getExtension].join('.');
 
             const params = {
-                fileName: fName,
+                fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
                 id: currentUser.profile.id,
                 type: 'avatar'
             };
+            setFileParams(params);
 
             try {
                 let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
@@ -50,11 +52,15 @@ const SettingsHOC = compose(
                 callback(error)
             }
         },
-        renameFile: () => filename => {
-            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['avatar', getExtension].join('.');
-            return fName;
-        },
+        // renameFile: () => filename => {
+        //     let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+        //     let fName = ['avatar', getExtension].join('.');
+        //     return fName;
+        // },
+        // renameFile: ({ fileParams }) => () => {
+        //     debugger;
+        //     return `avatar.${fileParams.contentType.replace('image/', '')}`;
+        // },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
             let size = file.size;
             if (size > 500 * 1024) {
@@ -71,11 +77,13 @@ const SettingsHOC = compose(
             setUploadError(error);
             console.log(error);
         },
-        onFinishUpload: (props) => async () => {
-            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match } = props;
+        onFinishUpload: (props) => async (data) => {
+            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match, fileParams: { contentType } } = props;
+
             await updateAvatar({
                 variables: {
-                    status: true
+                    status: true,
+                    contentType: contentType.replace('image/', '')
                 },
                 refetchQueries: [{
                     query: currentUserQuery,
@@ -94,7 +102,6 @@ const SettingsHOC = compose(
             setIsUploading(false);
         },
         handleFormChange: props => event => {
-            debugger;
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
@@ -152,7 +159,7 @@ const Settings = props => {
     const { firstName, lastName, email, oldPassword, newPassword, newPasswordConfirm } = formData;
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.png?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
 
     return (
         <div className='settingsTab'>
