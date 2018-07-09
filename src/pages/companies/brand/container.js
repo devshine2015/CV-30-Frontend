@@ -1,7 +1,9 @@
 import Brand from './component';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
+import { graphql } from 'react-apollo';
 
+import { companyQuery } from '../../../store/queries';
 
 const company = {
     headerStories: [
@@ -124,7 +126,16 @@ const company = {
 
 const BrandHOC = compose(
     withRouter,
-    withState('data', 'setData', company),
+    graphql(companyQuery, {
+        name: "companyQuery",
+        options: props => ({
+            variables: {
+                id: props.match.params.companyId,
+                language: props.match.params.lang
+            }
+        })
+    }),
+    // withState('data', 'setData', company),
     withState('editMode', 'updateEditMode', false),
     withHandlers({
         switchEditMode: ({ editMode, updateEditMode }) => () => {

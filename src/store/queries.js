@@ -70,6 +70,36 @@ export const AuthenticateLocal = gql`
     }
 `;
 
+export const companyQuery = gql`
+    query company($id: String!, $language: LanguageCodeType!) {
+        company(id: $id, language: $language) {
+            id
+            name
+            featuredArticles {
+                id
+                featuredImage {
+                    path
+                }
+            }
+            storiesArticles {
+                id
+                featuredImage {
+                    path
+                }
+            }
+            faqs {
+                id
+            }
+            jobs {
+                id
+            }
+            noOfEmployees
+            location
+            activityField
+        }
+    }
+`;
+
 export const currentUserQuery = gql`
   query currentUser($id: String, $language: LanguageCodeType!) {
   profile(id: $id, language: $language) {

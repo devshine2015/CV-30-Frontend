@@ -7,7 +7,9 @@ import CompanyShow from './components/show';
 import CompanyFeed from './components/feed';
 
 const Brand = (props) => {
-    const { editMode, switchEditMode } = props;
+    const { editMode, switchEditMode, companyQuery: { loading, comapny } } = props;
+    if (loading) return null;
+
     const Show = () => {
         return (<CompanyShow {...props} />)
     };

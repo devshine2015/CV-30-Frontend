@@ -9,7 +9,7 @@ import SliderHOC from '../../../../hocs/slider';
 import ArticlePopup from '../../../../components/ArticlePopup';
 
 const Header = (props) => {
-    const { match, headerStories, keyWords, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen } = props;
+    const { match, headerStories, keyWords, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen, companyQuery: { company } } = props;
     const { lang, companyId } = match.params;
 
     return (
@@ -38,7 +38,7 @@ const Header = (props) => {
                     <Grid item lg={3} md={5} sm={12} xs={12} className='userAvatar'>
                         <Avatar alt="John" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.png" className='avatar' />
                         <div className='avatarTexts'>
-                            <h3>Ursus Romania</h3>
+                            <h3>{company.name}</h3>
                             <h4>Companie de bauturi</h4>
                         </div>
                         {editMode &&
@@ -123,9 +123,9 @@ const Header = (props) => {
 
                 </Grid>
                 <Grid container className='activityFields'>
-                    {
-                        keyWords.map((item, index) => <Chip label={item} className='chip activity' key={`activity-${index}`} />)
-                    }
+                    <Chip label={company.activityField} className='chip activity' />
+                    <Chip label={company.location} className='chip activity' />
+                    <Chip label={company.noOfEmployees} className='chip activity' />
                 </Grid>
 
                 <Grid container className='teamSlider'>
@@ -151,10 +151,10 @@ const Header = (props) => {
 }
 
 const HeaderHOC = compose(
-    withState('keyWords', 'setHeaderKeywords', ({ data }) => data.keyWords),
-    withState('headerStories', 'setHeaderStories', ({ data }) => data.headerStories),
+    withState('keyWords', 'setHeaderKeywords', ({ companyQuery: { company } }) => [company.activityField]),
+    withState('headerStories', 'setHeaderStories', ({ companyQuery: { company } }) => company.featuredArticles),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
-    withState('count', 'setCount', ({ data }) => data.headerStories.length - 1),
+    withState('count', 'setCount', ({ companyQuery: { company } }) => company.featuredArticles.length - 1),
     withState('expanded', 'updateExpanded', null),
     withHandlers({
         expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {

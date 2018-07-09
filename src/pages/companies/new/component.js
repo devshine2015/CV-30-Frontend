@@ -7,8 +7,9 @@ import {
 import { graphql } from 'react-apollo';
 import { compose, pure, lifecycle, withHandlers, withState } from 'recompose';
 import { withFormik } from 'formik';
+import { withRouter } from 'react-router-dom';
 
-import { googleMapsQuery } from '../../../store/queries';
+import { googleMapsQuery, companiesQuery } from '../../../store/queries';
 import schema from './validation';
 
 const NewCompany = props => {
@@ -134,6 +135,7 @@ const NewCompany = props => {
 }
 
 const NewCompanyHOC = compose(
+    withRouter,
     graphql(googleMapsQuery, { name: 'googleMapsData' }),
     withState('isAutocompleteInit', 'setAutocompleteInit', false),
     withState('autocompleteHandle', '', () => React.createRef()),
@@ -161,14 +163,23 @@ const NewCompanyHOC = compose(
             }
         }),
         validationSchema: schema,
-        handleSubmit: async (values, { props: { handleCompany, match }, setSubmitting }) => {
+        handleSubmit: async (values, { props: { handleCompany, match, history }, setSubmitting }) => {
             try {
-                await handleCompany({
+                const { data: { handleCompany: { status } } } = await handleCompany({
                     variables: {
                         language: match.params.lang,
                         details: values
-                    }
+                    },
+                    refetchQueries: [{
+                        query: companiesQuery,
+                        name: 'companiesQuery',
+                        fetchPolicy: 'network-only',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    }]
                 });
+                if (status) history.push(`/${match.params.lang}/dashboard/companies`);
             } catch (error) {
                 console.log(error);
             }

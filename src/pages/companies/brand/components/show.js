@@ -10,8 +10,8 @@ import Story from './story';
 
 
 const Show = (props) => {
-    const { expanded, expandPanel, editMode, data, edited, editPanel } = props;
-    const { faq, moreStories, jobs } = data;
+    const { expanded, expandPanel, editMode, companyQuery: { company: { faqs, storiesArticles, jobs } }, edited, editPanel } = props;
+    // const { faq, moreStories, jobs } = co;
     return (
         <Grid container className='mainBody brandShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -66,7 +66,7 @@ const Show = (props) => {
                 <section className='moreStories'>
                     <h2 className='titleHeading'>Afla <b>mai multe</b></h2>
                     {
-                        moreStories.map((story, index) => (
+                        storiesArticles.map((story, index) => (
                             <Story story={story} index={index} editMode={editMode} key={`story-${index}`} />
                         ))
                     }
@@ -76,7 +76,7 @@ const Show = (props) => {
                 <section className='qaSection'>
                     <h2 className='titleHeading'>Q &amp; A</h2>
                     {
-                        faq.map((item, index) => {
+                        faqs.map((item, index) => {
 
                             const panelId = 'panel-' + index;
                             if (edited !== panelId)
