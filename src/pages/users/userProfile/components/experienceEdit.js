@@ -172,7 +172,7 @@ const ExperienceEditHOC = compose(
                     title: file.name,
                     sourceType: type,
                     source: formData.id, //article id
-                    path: `/articles/${formData.id}/${file.name}`
+                    path: `/${type}/${formData.id}/${file.name}`
                 }];
                 setFormData(newFormData);
                 setIsSaving(true);
