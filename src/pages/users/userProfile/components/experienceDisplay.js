@@ -3,6 +3,7 @@ import ExperienceEdit from './experienceEdit';
 import { IconButton, Icon, Grid } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { FormattedDate, FormattedMessage } from 'react-intl';
+import ReactPlayer from 'react-player';
 
 const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, closeEditor, type }) => {
     if (!job) {
@@ -60,11 +61,26 @@ const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, clos
                             <p>{(job.i18n && job.i18n.length === 1) ? job.i18n[0].description : ''}</p>
                         </Grid>
                         <Grid item xs={4}>
-                            <div className='media'>
-                                <Icon className='playIcon'>
+                            {/* <div className='media'> */}
+                                {/* <Icon className='playIcon'>
                                     play_circle_filled
-                    </Icon>
-                            </div>
+                                </Icon> */}
+                                { job.videos && !!job.videos.length && <ReactPlayer
+                                    url={job.videos[0].path}
+                                    width='200'
+                                    height='140'
+                                    config={{
+                                        youtube: {
+                                            playerVars: {
+                                                showinfo: 0,
+                                                controls: 0,
+                                                modestbranding: 1,
+                                                loop: 1
+                                            }
+                                        }
+                                    }}
+                                    playing={false} /> }
+                            {/* </div> */}
                         </Grid>
                     </Grid>
                 </div>

@@ -135,18 +135,28 @@ export const currentUserQuery = gql`
       id
       position
       company
+      location
       startDate
       endDate
       isCurrent
       i18n {
         title
         description
+      }
+      videos {
+        id
+        path
+      }
+      images {
+        id
+        path
       }
     }
     projects {
       id
       position
       company
+      location
       i18n {
         title
         description
@@ -154,6 +164,14 @@ export const currentUserQuery = gql`
       startDate
       endDate
       isCurrent
+      videos {
+        id
+        path
+      }
+      images {
+        id
+        path
+      }
     }
     contact {
       phone

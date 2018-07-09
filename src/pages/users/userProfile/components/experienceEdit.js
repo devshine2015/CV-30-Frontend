@@ -1,13 +1,15 @@
 import React from 'react';
 import { TextField, Checkbox, FormLabel, FormControlLabel, IconButton, Icon, Switch as ToggleSwitch, FormGroup, Button } from '@material-ui/core';
-import { compose, pure, withState, withHandlers } from 'recompose';
+import { compose, pure, withState, withHandlers, lifecycle } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import { setExperience, setProject, currentUserQuery } from '../../../../store/queries';
+import uuid from 'uuid/v4';
+
+import { setExperience, setProject, currentUserQuery, googleMapsQuery } from '../../../../store/queries';
 
 const ExperienceEdit = (props) => {
-    const { formData, isVideoUrl, switchMediaType, handleFormChange, closeEditor, submitForm, type } = props;
-    const { position, company, location, startDate, endDate, isCurrent, description, videoURL } = formData;
+    const { formData, isVideoUrl, switchMediaType, handleFormChange, closeEditor, submitForm, type, autocompleteHandle } = props;
+    const { position, company, location, startDate, endDate, isCurrent, description, video } = formData;
 
     return (
         <form className='experienceForm' noValidate autoComplete='off'>
@@ -39,6 +41,7 @@ const ExperienceEdit = (props) => {
                     placeholder="Location..."
                     className='textField'
                     fullWidth
+                    inputRef={autocompleteHandle}
                     value={location || ''}
                     onChange={handleFormChange}
                 />
@@ -99,13 +102,16 @@ const ExperienceEdit = (props) => {
             <section className='mediaUpload'>
                 {isVideoUrl ?
                     <TextField
-                        name="videoURL"
+                        name="video"
                         label="Add video URL"
                         placeholder="Video URL..."
                         fullWidth
                         className='textField'
-                        onChange={handleFormChange}
-                        value={videoURL || ''}
+                        onChange={(e) => handleFormChange({
+                            ...video,
+                            path: e.currentTarget.value
+                        })}
+                        value={video && video.path || ''}
                     /> :
                     <label htmlFor="fileUpload">
                         <input
@@ -139,26 +145,38 @@ const ExperienceEditHOC = compose(
     withRouter,
     graphql(setExperience, { name: 'setExperience' }),
     graphql(setProject, { name: 'setProject' }),
+    graphql(googleMapsQuery, { name: 'googleMapsData' }),
     withRouter,
+    withState('isAutocompleteInit', 'setAutocompleteInit', false),
+    withState('autocompleteHandle', '', () => React.createRef()),
     withState('formData', 'setFormData', ({ job }) => {
         if (!job)
-            return {};
+            return {
+                video: {
+                    name: 'video',
+                    path: ''
+                }
+            };
 
-        const { id, company, position, location, startDate, endDate, isCurrent, i18n } = job;
-        const { description } = i18n;
+        const { id, company, position, location, startDate, endDate, isCurrent, i18n, videos } = job;
+        const { description } = i18n && i18n[0];
 
         let data = {
-            id, company, position, location, startDate, endDate, isCurrent, description
+            id, company, position, location, startDate, endDate, isCurrent, description, video: !!videos.length ? { ...videos[0], name: 'video' } : { name: 'video', path: '' }
         };
-
         return data;
     }),
     withState('isVideoUrl', 'changeMediaType', true),
     withHandlers({
         handleFormChange: props => event => {
+            if (typeof event.name != undefined && event.name == 'video') {
+                props.setFormData(state => ({ ...state, video: event }));
+                return;
+            }
+            
             const target = event.currentTarget;
-            const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
@@ -167,16 +185,25 @@ const ExperienceEditHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        submitForm: ({ formData, setExperience, setProject, type, match }) => async () => {
-            let { id, title, description, position, company, startDate, endDate, isCurrent } = formData;
+        submitForm: ({ formData, setExperience, setProject, type, match, closeEditor }) => async () => {
+            let { id, title, description, position, company, startDate, endDate, isCurrent, video, location } = formData;
+            const videos = [];
+            if (video.path && !!video.path.length) {
+                videos.push({
+                    id: video.id ? video.id : uuid(),
+                    source: id,
+                    path: video.path ? video.path : '',
+                    sourceType: type
+                });
+                debugger;
+            }
             switch (type) {
-
                 case 'experience':
                     try {
                         await setExperience({
                             variables: {
                                 experience: {
-                                    id, title, description, position, company, startDate, endDate, isCurrent
+                                    id, location, title, description, position, company, startDate, endDate, isCurrent, videos
                                 },
                                 language: match.params.lang
                             },
@@ -193,13 +220,14 @@ const ExperienceEditHOC = compose(
                     catch (err) {
                         console.log(err);
                     }
+                    closeEditor();
                     break;
                 case 'project':
                     try {
                         await setProject({
                             variables: {
                                 project: {
-                                    id, title, description, position, company, startDate, endDate, isCurrent
+                                    id, location, title, description, position, company, startDate, endDate, isCurrent, videos
                                 },
                                 language: match.params.lang
                             },
@@ -216,11 +244,35 @@ const ExperienceEditHOC = compose(
                     catch (err) {
                         console.log(err);
                     }
+                    closeEditor();
                     break;
                 default:
                     return false;
             }
 
+        },
+        initAutocomplete: ({ isAutocompleteInit, setAutocompleteInit, autocompleteHandle, setFormData }) => () => {
+            if (isAutocompleteInit) return;
+            const autocompleteInstance = new window.google.maps.places.Autocomplete(autocompleteHandle.current);
+            autocompleteInstance.addListener('place_changed', () => {
+                const place = autocompleteInstance.getPlace();
+                if (!place.geometry) {
+                    window.alert("No details available for input: '" + place.name + "'");
+                    return;
+                }
+                if (place) {
+                    setFormData(state => ({ ...state, 'location': place.formatted_address }));
+                }
+            });
+            setAutocompleteInit(true);
+        }
+    }),
+    lifecycle({
+        componentDidMount() {
+            if (this.props.googleMapsData.googleMaps.isLoaded && window.google && !this.props.isAutocompleteInit) this.props.initAutocomplete();
+        },
+        componentDidUpdate() {
+            if (this.props.googleMapsData.googleMaps.isLoaded && window.google && !this.props.isAutocompleteInit) this.props.initAutocomplete();
         }
     }),
     pure
