@@ -1,5 +1,8 @@
 import JobsList from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
+import { graphql } from 'react-apollo';
+import { getJobsQuery } from '../../../store/queries';
+import { withRouter } from 'react-router-dom';
 
 const jobs = [
     {
@@ -137,7 +140,16 @@ const jobs = [
 ];
 
 const JobsListHOC = compose(
-    withState('data', null, jobs),
+    withRouter,
+    graphql(getJobsQuery, {
+        name: 'getJobsQuery',
+        fetchPolicy: 'network-only',
+        options: props => ({
+            variables: {
+                language: props.match.params.lang
+            },
+        }),
+    }),
     withState('formData', 'setFormData', {}),
     withHandlers({
         handleFormChange: props => event => {

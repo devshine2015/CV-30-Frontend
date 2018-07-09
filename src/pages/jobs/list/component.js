@@ -4,14 +4,17 @@ import JobItem from './components/jobItem';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
 const JobsList = props => {
-    const { data, formData, handleFormChange } = props;
-    const { jobName, company, location, isPartTime, isFullTime, isProjectBased, isRemote, isStartup, isCorporation, isBoutique, isMultinational, handleSliderChange } = formData;
-    return (
+    const { loading, jobs } = props.getJobsQuery;
+    if (loading) {
+        return <div>Loading...</div>
+    } else {
+        const { formData, handleFormChange } = props;
+        const { jobName, company, location, isPartTime, isFullTime, isProjectBased, isRemote, isStartup, isCorporation, isBoutique, isMultinational, handleSliderChange } = formData;
+        return (
         <div className='jobsListRoot'>
             <Grid container className='header'>
                 <Grid item lg={6} md={6} sm={12} xs={12} className='centralColumn'>
@@ -48,7 +51,7 @@ const JobsList = props => {
             </Grid>
             <Grid container className='mainBody jobsList'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    {data.map((job, index) => (<JobItem {...job} key={`job-${index}`} />))}
+                    {jobs.map((job, index) => (<JobItem {...job} key={`job-${index}`} />))}
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
@@ -210,7 +213,7 @@ const JobsList = props => {
                 </Grid>
             </Grid>
         </div>
-    )
+    )}
 }
 
 export default JobsList;
