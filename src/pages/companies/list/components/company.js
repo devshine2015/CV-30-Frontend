@@ -17,7 +17,7 @@ const CompanyHOC = compose(
 
 const Company = props => {
     const { activeTab, handleTabChange, company } = props;
-    const { id, name, field, location, employees, i18n, jobs, team } = company;
+    const { id, name, field, location, noOfEmployees, i18n, jobs, team } = company;
 
     return (
         <div className='listItem companyListItem'>
@@ -34,7 +34,7 @@ const Company = props => {
                 </div>
             </div>
             <div className='rightOverlay'>
-                {location}&nbsp;|&nbsp;{employees || 0} Employees
+                { location }&nbsp;|&nbsp;{noOfEmployees || 0} Employees
             </div>
             <div className='itemBody'>
                 <p className='companyDescription'>

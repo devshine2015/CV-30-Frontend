@@ -464,6 +464,8 @@ export const companiesQuery = gql`
         companies(language: $language) {
             id
             name
+            location
+            noOfEmployees
             i18n {
                 headline
                 description

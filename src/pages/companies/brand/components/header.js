@@ -4,17 +4,25 @@ import { Grid, Avatar, Button, Chip, Hidden, Icon, IconButton } from '@material-
 import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
-import SliderHOC from '../../../../hocs/slider';
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+// Require Font Awesome.
+import 'font-awesome/css/font-awesome.css';
+import FroalaEditor from 'react-froala-wysiwyg';
 
+import SliderHOC from '../../../../hocs/slider';
 import ArticlePopup from '../../../../components/ArticlePopup';
 
 const Header = (props) => {
-    const { match, headerStories, keyWords, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen, companyQuery: { company } } = props;
+    const { headline, updateHeadline, match, headerStories, keyWords, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen, companyQuery: { company } } = props;
     const { lang, companyId } = match.params;
 
     return (
         <div className='header'>
-            <Hidden smDown>
+            <Hidden smDown style={{ pointerEvents: 'none' }}>
                 <ReactPlayer
                     url='https://www.youtube.com/watch?v=ysz5S6PUM-U'
                     width='100%'
@@ -74,15 +82,19 @@ const Header = (props) => {
 
                     </Grid>
                 </Grid>
-                <Grid container className='headerInfoContainer' >
+                <Grid container className='headerInfoContainer' style={{ pointerEvents: 'all' }}>
                     <Grid item lg={5} md={5} sm={12} xs={12} className='textInfo'>
-                        <h1>
-                            Noi suntem
-                            <b>Ursus Romania</b>
-                        </h1>
-                        <h3>
-                            Lorem ipsum dolor sit amet, cu mei reque inimicus. Exerci altera usu te.
-                            </h3>
+                        <FroalaEditor
+                            config={{
+                                placeholderText: 'This is where the company headline should be',
+                                iconsTemplate: 'font_awesome_5',
+                                toolbarInline: true,
+                                charCounterCount: false,
+                                toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                            }}
+                            model={headline}
+                            onModelChange={updateHeadline}
+                        />
                     </Grid>
                 </Grid>
                 <Grid container className='headerStories'>
@@ -156,7 +168,9 @@ const HeaderHOC = compose(
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
     withState('count', 'setCount', ({ companyQuery: { company } }) => company.featuredArticles.length - 1),
     withState('expanded', 'updateExpanded', null),
+    withState('headline', 'setHeadline', ''),
     withHandlers({
+        updateHeadline: ({ setHeadline }) => (text) => setHeadline(text),
         expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
             updateExpanded(expanded ? panel : false);
         },

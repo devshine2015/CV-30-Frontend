@@ -10,6 +10,8 @@ import { ApolloLink, } from 'apollo-link';
 import { defaults, resolvers } from './store';
 import { persistCache } from 'apollo-cache-persist';
 import localForage from 'localforage';
+import $ from 'jquery';
+window.$ = $;
 
 (async () => {
     const cache = new InMemoryCache();

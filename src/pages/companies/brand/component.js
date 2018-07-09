@@ -1,8 +1,8 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
-import Header from './components/header';
 
+import Header from './components/header';
 import CompanyShow from './components/show';
 import CompanyFeed from './components/feed';
 
