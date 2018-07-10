@@ -5,7 +5,7 @@ import { Avatar, CircularProgress, Chip } from '@material-ui/core';
 const JobItem = props => {
     const { i18n, company: { name: companyName, location }, expireDate, videos, images } = props;
     // TODO: appliedDate, jobLevel, benefits from props
-    const match = (Math.random() * 66).toFixed(0);
+    const match = Math.random() * 100;
     const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
     const jobLevels = ['entry', 'mid', 'senior'];
     const benefits = [
@@ -19,9 +19,6 @@ const JobItem = props => {
         }, {
             icon: 'fas fa-laptop',
             label: 'Laptop'
-        }, {
-            icon: 'fas fa-car',
-            label: 'Car'
         }
     ];
     const { title, description } = i18n[0];
@@ -54,7 +51,7 @@ const JobItem = props => {
                         }}
                     />
                     <span className='matchValue'>
-                        {match}%
+                        {match.toFixed(0)}%
                         <br />
                         <span className='matchText'>
                             match
@@ -80,7 +77,7 @@ const JobItem = props => {
                     </div>
                     <div className='benefits'>
                         {benefits && benefits.map(item => (
-                            <div className='benefit'>
+                            <div className='benefit' key={item.label}>
                                 <i className={item.icon} />
                                 {item.label}
                             </div>
