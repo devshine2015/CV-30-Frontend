@@ -125,7 +125,7 @@ const Header = (props) => {
                     }
                     {
                         editMode &&
-                        <Grid item className='storyContainer add' onClick={(event) => toggleStoryEditor(event.target)}>
+                        <Grid item className='storyContainer add' onClick={toggleStoryEditor}>
                             <span className='bigPlus'>+</span>
                             <span className='storyTitle'>+ Add featured article</span>
                         </Grid>
@@ -133,6 +133,7 @@ const Header = (props) => {
                     <ArticlePopup
                         open={isPopUpOpen}
                         onClose={closeStoryEditor}
+                        type='company_featured'
                     />
 
                 </Grid>

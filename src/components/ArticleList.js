@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 
 import { s3BucketURL } from '../constants/s3';
-import { getArticles, handleArticle, currentUserQuery } from '../store/queries';
+import { getArticles, handleArticle, currentUserQuery, companyQuery } from '../store/queries';
 
 const ArticleBrowserHOC = compose(
     withRouter,
@@ -28,13 +28,46 @@ const ArticleBrowserHOC = compose(
                 id: articleId
             };
             let options = {};
+            let refetchQuery = {};
 
             switch (type) {
                 case 'profile_isFeatured':
                     article.isFeatured = true;
+                    refetchQuery = {
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    };
                     break;
                 case 'profile_isAboutMe':
                     article.isAboutMe = true;
+                    refetchQuery = {
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    };
+                    break;
+                case 'company_featured':
+                    options = {
+                        articleId: articleId,
+                        companyId: match.params.companyId,
+                        isFeatured: true
+                    };
+                    refetchQuery = {
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: match.params.lang,
+                            id: match.params.companyId
+                        }
+                    };
                     break;
                 default:
                     return false;
@@ -47,14 +80,7 @@ const ArticleBrowserHOC = compose(
                         options,
                         language: match.params.lang
                     },
-                    refetchQueries: [{
-                        query: currentUserQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentUser',
-                        variables: {
-                            language: 'en'
-                        }
-                    }]
+                    refetchQueries: [refetchQuery]
                 })
             }
             catch (err) {
