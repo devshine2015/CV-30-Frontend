@@ -11,8 +11,8 @@ const Team = props => {
             <Header {...props} />
             <React.Fragment>
                 <Switch>
-                    <Route exact path='/:lang(en|ro)/dashboard/company/team' component={Show} />
-                    <Route exact path='/:lang(en|ro)/dashboard/company/team/feed' component={Feed} />
+                    <Route exact path='/:lang(en|ro)/dashboard/company/:companyId/team/:teamId' component={Show} />
+                    <Route exact path='/:lang(en|ro)/dashboard/company/:companyId/team/:teamId/feed' component={Feed} />
                 </Switch>
             </React.Fragment>
         </div>

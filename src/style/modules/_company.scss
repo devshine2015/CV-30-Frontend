@@ -388,6 +388,7 @@
                 .textContents {
                     padding: 20px 15px;
                     color: #565656;
+                    flex: 1;
                     h4 {
                         font-size: 1rem;
                         font-weight: normal;
@@ -395,6 +396,22 @@
                     p {
                         font-size: 0.75rem;
                         font-weight: 100;
+                    }
+                }
+            }
+            .sliderContents {
+                display: none;
+                &.active {
+                    display: flex;
+                }
+                .media {
+                    width: 600px;
+                    height: 360px;
+                    img {
+                        max-width: 100%;
+                        max-height: 100%;
+                        height: 100%;
+                        width: 100%;
                     }
                 }
             }

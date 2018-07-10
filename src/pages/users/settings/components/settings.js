@@ -25,9 +25,6 @@ const SettingsHOC = compose(
     }),
     withHandlers({
         getSignedUrl: ({ currentUser, setFileParams }) => async (file, callback) => {
-            // let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            // let fName = ['avatar', getExtension].join('.');
-
             const params = {
                 fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
@@ -52,15 +49,6 @@ const SettingsHOC = compose(
                 callback(error)
             }
         },
-        // renameFile: () => filename => {
-        //     let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-        //     let fName = ['avatar', getExtension].join('.');
-        //     return fName;
-        // },
-        // renameFile: ({ fileParams }) => () => {
-        //     debugger;
-        //     return `avatar.${fileParams.contentType.replace('image/', '')}`;
-        // },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
             let size = file.size;
             if (size > 500 * 1024) {
@@ -77,7 +65,7 @@ const SettingsHOC = compose(
             setUploadError(error);
             console.log(error);
         },
-        onFinishUpload: (props) => async (data) => {
+        onFinishUpload: (props) => async data => {
             const { setIsUploading, updateAvatar, updateAvatarTimestamp, match, fileParams: { contentType } } = props;
 
             await updateAvatar({

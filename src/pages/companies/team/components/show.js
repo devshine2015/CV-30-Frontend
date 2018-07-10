@@ -1,6 +1,8 @@
 import React from 'react';
-import { Grid, Avatar, Icon, IconButton } from '@material-ui/core';
+import { Grid, Avatar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import uuid from 'uuidv4';
+import ArticleSlider from '../../../../components/articleSlider';
 
 const jobs = [
     {
@@ -35,6 +37,84 @@ const jobs = [
     }
 ];
 
+const officeLife = [
+    {
+        id: uuid(),
+        images: [{
+            id: uuid(),
+            path: 'http://wowslider.com/sliders/demo-11/data/images/krasivyi_korabl_-1024x768.jpg'
+        }],
+        videos: [{
+            id: uuid(),
+            path: 'ceva'
+        }],
+        i18n: [{
+            title: 'some title 1',
+            description: 'some description'
+        }]
+    },
+    {
+        id: uuid(),
+        images: [{
+            id: uuid(),
+            path: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwObBmWDaXK4DxechC-rdwErL199LKP6qTC_oIh-5LeoOX-NMC'
+        }],
+        videos: [{
+            id: uuid(),
+            path: 'ceva'
+        }],
+        i18n: [{
+            title: 'some titl 22e',
+            description: 'some description'
+        }]
+    },
+    {
+        id: uuid(),
+        images: [{
+            id: uuid(),
+            path: 'http://ukphotosgallery.com/wp-content/uploads/2016/05/bg3.jpg'
+        }],
+        videos: [{
+            id: uuid(),
+            path: 'ceva'
+        }],
+        i18n: [{
+            title: 'some tit411241414le',
+            description: 'some descrip2423244ion'
+        }]
+    },
+    {
+        id: uuid(),
+        images: [{
+            id: uuid(),
+            path: 'https://www.w3schools.com/howto/img_forest.jpg'
+        }],
+        videos: [{
+            id: uuid(),
+            path: 'ceva'
+        }],
+        i18n: [{
+            title: 'some title',
+            description: 'some description'
+        }]
+    },
+    {
+        id: uuid(),
+        images: [{
+            id: uuid(),
+            path: 'https://www.w3schools.com/howto/img_forest.jpg'
+        }],
+        videos: [{
+            id: uuid(),
+            path: 'ceva'
+        }],
+        i18n: [{
+            title: 'some title',
+            description: 'some description'
+        }]
+    }
+];
+
 const Show = props => {
     const { match } = props;
     const lang = match.params.lang;
@@ -66,41 +146,12 @@ const Show = props => {
                         </div>
                     </div>
                 </section>
-                <section className='teamLife'>
-                    <div className='sliderHeader'>
-                        <h2 className='titleHeading'>Viata <b>la birou</b></h2>
-                        <div className='sliderControls'>
-                            <IconButton className='sliderArrow'>
-                                <Icon>
-                                    arrow_back_ios
-                                </Icon>
-                            </IconButton>
-
-                            <span className='sliderDot'></span>
-                            <span className='sliderDot'></span>
-                            <span className='sliderDot active'></span>
-                            <span className='sliderDot'></span>
-                            <span className='sliderDot'></span>
-
-                            <IconButton className='sliderArrow'>
-                                <Icon>
-                                    arrow_forward_ios
-                                </Icon>
-                            </IconButton>
-                        </div>
-                    </div>
-                    <div className='sliderContents'>
-                        <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider bla' />
-                        <div className='textContents'>
-                            <h4>
-                                Slide title
-                            </h4>
-                            <p>
-                                Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                                    Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                        </p>
-                        </div>
-                    </div>
+                <section className='teamLife'>{officeLife &&
+                    <ArticleSlider
+                        articles={officeLife}
+                        title={(<h2 className='titleHeading'>Viata <b>la birou</b></h2>)}
+                    />
+                }
                 </section>
                 <Link to={`/${lang}/dashboard/company/`} className='teamBackLink'>Inapoi la Ursus Romania</Link>
             </Grid>

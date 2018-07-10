@@ -3,7 +3,7 @@ import { Avatar, Button, TextField } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
-import { s3BucketURL } from '../../../../constants/s3';
+import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { currentUserQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation } from '../../../../store/queries';
 
 const SettingsHOC = compose(
@@ -152,7 +152,7 @@ const Settings = props => {
     const { name, headline, location, activityField, employees } = formData;
 
     let avatar = ''
-    // (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
 
     return (
         <div className='settingsTab'>

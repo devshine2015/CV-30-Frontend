@@ -40,7 +40,7 @@ const ExperienceEditHOC = compose(
     withState('uploadError', 'setUploadError', null),
     withHandlers({
         handleFormChange: props => event => {
-            if (typeof event.name != undefined && event.name == 'video') {
+            if (typeof event.name !== undefined && event.name === 'video') {
                 props.setFormData(state => ({ ...state, video: event }));
                 return;
             }
@@ -317,7 +317,7 @@ const ExperienceEdit = (props) => {
                             ...video,
                             path: e.currentTarget.value
                         })}
-                        value={video && video.path || ''}
+                        value={video ? video.path : ''}
                     /> :
                     <label htmlFor="fileUpload">
                         <S3Uploader
