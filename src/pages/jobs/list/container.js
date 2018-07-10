@@ -163,7 +163,8 @@ const JobsListHOC = compose(
         },
         handleSliderChange: () => (value) => {
             console.log(value);
-        }
+        },
+        handleSearchJobs: props => event => console.log(props.formData)
     }),
     pure
 );

@@ -12,7 +12,7 @@ const JobsList = props => {
     if (loading) {
         return <div>Loading...</div>
     } else {
-        const { formData, handleFormChange } = props;
+        const { formData, handleFormChange, handleSearchJobs } = props;
         const { jobName, company, location, isPartTime, isFullTime, isProjectBased, isRemote, isStartup, isCorporation, isBoutique, isMultinational, handleSliderChange } = formData;
         return (
         <div className='jobsListRoot'>
@@ -23,6 +23,7 @@ const JobsList = props => {
                         <TextField
                             name='jobName'
                             value={jobName || ''}
+                            onChange={handleFormChange}
                             label="Job title..."
                             type="search"
                             className='textField'
@@ -33,6 +34,7 @@ const JobsList = props => {
                         <TextField
                             name='location'
                             value={location || ''}
+                            onChange={handleFormChange}
                             label="Location..."
                             type="search"
                             className='textField'
@@ -40,7 +42,7 @@ const JobsList = props => {
                                 startAdornment: <InputAdornment position="start"><i className='fas fa-map-marker-alt' /></InputAdornment>,
                             }}
                         />
-                        <Button className='searchBtn'>
+                        <Button className='searchBtn' onClick={handleSearchJobs}>
                             Search
                     </Button>
                     </div>

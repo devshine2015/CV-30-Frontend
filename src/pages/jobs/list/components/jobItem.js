@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { Avatar, CircularProgress, Chip } from '@material-ui/core';
 
 const JobItem = props => {
-    const { i18n, company, expireDate, location, match, videos, images, benefits, jobLevels, appliedDate } = props;
+    const { i18n, company: { name: companyName, location }, expireDate, videos, images, benefits, jobLevels } = props;
+    const match = (Math.random() * 66).toFixed(0);
+    const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
     const { title, description } = i18n[0];
     return (
         <div className='listItem jobListItem'>
@@ -13,7 +15,7 @@ const JobItem = props => {
                 </Link>
                 <div className='leftOverlayTexts'>
                     <h6 className='companyName'>
-                        {company.name}
+                        {companyName}
                     </h6>
                     <p className='expires'>Expires on: <span>{new Date(expireDate).toLocaleDateString()}</span></p>
                 </div>
