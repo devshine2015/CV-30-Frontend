@@ -70,42 +70,6 @@ export const AuthenticateLocal = gql`
     }
 `;
 
-export const companyQuery = gql`
-    query company($id: String!, $language: LanguageCodeType!) {
-        company(id: $id, language: $language) {
-            id
-            name
-            featuredArticles {
-                id
-                featuredImage {
-                    path
-                }
-            }
-            storiesArticles {
-                id
-                featuredImage {
-                    path
-                }
-            }
-            faqs {
-                id
-            }
-            jobs {
-                id
-            }
-            noOfEmployees
-            location
-            activityField
-            teams {
-                id
-                name
-                hasProfileCover
-                profileBackgroundColor
-            }
-        }
-    }
-`;
-
 export const currentUserQuery = gql`
   query currentUser($id: String, $language: LanguageCodeType!) {
   profile(id: $id, language: $language) {
@@ -412,15 +376,6 @@ export const handleArticle = gql`
     }
 `;
 
-export const handleCompany = gql`
-    mutation handleCompany($language: LanguageCodeType!, $details: CompanyInput!) {
-        handleCompany(language: $language, details:  $details){
-            status
-            error
-        }
-    }
-`;
-
 export const profilesQuery = gql`
     query profiles($language: LanguageCodeType!) {
         profiles(language: $language) {
@@ -465,32 +420,6 @@ export const profilesQuery = gql`
     }
 `;
 
-export const companiesQuery = gql`
-    query companies($language: LanguageCodeType!) {
-        companies(language: $language) {
-            id
-            name
-            location
-            noOfEmployees
-            i18n {
-                headline
-                description
-            }
-            featuredArticles {
-                id
-                images {
-                    id
-                    path
-                }
-                videos {
-                    id
-                    path
-                }
-            }
-        }
-    }
-`;
-
 export const setStory = gql`
     mutation setStory($story: StoryInput, $language: LanguageCodeType!) {
         setStory(story: $story, language: $language) {
@@ -507,39 +436,4 @@ export const setSalary = gql`
             error
         }
     }
-`;
-
-export const getCompanyQuery = gql`
-query company($id: String!, $language: LanguageCodeType!) {
-  company(id: $id, language: $language) {
-    id
-    name
-    i18n {
-      headline
-      description
-    }
-    activityField
-    noOfEmployees
-    location
-    jobs {
-      id
-      name
-      expireDate
-      i18n {
-        title
-        description
-      }
-      team {
-        id
-        name
-        members {
-          id
-          firstName
-          lastName
-          email
-        }
-      }
-    }
-  }
-}
 `;
