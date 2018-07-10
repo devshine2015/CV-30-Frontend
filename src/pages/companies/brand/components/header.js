@@ -13,8 +13,8 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import SliderHOC from '../../../../hocs/slider';
 import ArticlePopup from '../../../../components/ArticlePopup';
+import AddTeam from './addTeam';
 
 const Header = (props) => {
     const { headline, updateHeadline, match, headerStories, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen, companyQuery: { company } } = props;
@@ -22,7 +22,7 @@ const Header = (props) => {
 
     return (
         <div className='header'>
-            <Hidden smDown style={{ pointerEvents: 'none' }}>
+            <Hidden smDown>
                 <ReactPlayer
                     url='https://www.youtube.com/watch?v=ysz5S6PUM-U'
                     width='100%'
@@ -37,7 +37,9 @@ const Header = (props) => {
                             }
                         }
                     }}
-                    playing={false} />
+                    playing={false}
+                // style={{ pointerEvents: 'none' }}
+                />
 
                 <div className='headerOverlay'></div>
             </Hidden>
@@ -143,6 +145,7 @@ const Header = (props) => {
                 <Grid container className='teamSlider'>
                     <Grid item className='teamSliderItem title'>
                         <h4>Cunoaste <b>echipa</b></h4>
+                        {editMode && <AddTeam {...props} />}
                     </Grid>
                     {
                         headerStories.map((story, index) => {
@@ -186,7 +189,6 @@ const HeaderHOC = compose(
             setIsPopUpOpen(false);
         }
     }),
-    SliderHOC,
     pure
 )
 

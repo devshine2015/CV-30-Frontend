@@ -217,16 +217,28 @@
                 color: #550019;
                 display: flex;
                 align-content: center;
-                justify-content: center;
+                justify-content: space-evenly;
+                flex-direction: column;
                 h4 {
                     font-weight: 100;
                     font-size: 1.5rem;
                     line-height: normal;
-                    margin: auto;
+                    margin: 0 auto;
                     b {
                         display: block;
                         font-weight: bold;
                     }
+                }
+                .addTeamBtn {
+                    background: #397db9;
+                    color: #fff;
+                    text-transform: capitalize;
+                    padding: 0;
+                    height: 30px;
+                    min-height: auto;
+                    font-size: 0.75rem;
+                    width: 140px;
+                    margin: 0 auto;
                 }
             }
         }
@@ -547,6 +559,48 @@
                     }
                 }
             }
+        }
+    }
+}
+
+.addTeamPopUp {
+    background: #fff;
+    border: 1px solid #707881;
+    border-radius: 5px !important;
+    width: 465px;
+    position: relative;
+    overflow: visible !important;
+    margin-top: 20px;
+    margin-left: 50px;
+    &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: -6px;
+        left: 45px;
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        transform: rotate(-45deg);
+        border-right: 1px solid #707881;
+        border-top: 1px solid #707881;
+    }
+    .popupHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        .helperText {
+            color: #a6a6a6;
+            font-size: 0.7rem;
+        }
+        .addSkillButton {
+            background: #397db9;
+            color: white;
+            text-transform: none;
+            min-width: 50px;
+            min-height: 25px;
+            padding: 0;
         }
     }
 }

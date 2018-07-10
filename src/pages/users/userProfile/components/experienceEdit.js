@@ -16,6 +16,7 @@ const ExperienceEditHOC = compose(
     withState('isAutocompleteInit', 'setAutocompleteInit', false),
     withState('autocompleteHandle', '', () => React.createRef()),
     withState('formData', 'setFormData', ({ job }) => {
+        debugger;
         if (!job) {
             return {
                 id: uuid(),

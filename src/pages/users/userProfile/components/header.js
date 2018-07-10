@@ -9,7 +9,6 @@ import ReactPlayer from 'react-player';
 
 import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
-import slider from '../../../../hocs/slider';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { updateAvatar, currentUserQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
 
@@ -132,7 +131,8 @@ const HeaderHOC = compose(
             const { setIsUploading, updateAvatar, updateAvatarTimestamp, match } = props;
             await updateAvatar({
                 variables: {
-                    status: true
+                    status: true,
+
                 },
                 refetchQueries: [{
                     query: currentUserQuery,
@@ -160,7 +160,6 @@ const HeaderHOC = compose(
             setIsArticlePopUpOpen(false);
         }
     }),
-    slider,
     pure
 );
 
