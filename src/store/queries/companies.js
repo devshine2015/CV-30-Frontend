@@ -82,7 +82,7 @@ query company($id: String!, $language: LanguageCodeType!) {
                 title
                 description
             }
-            teams {
+            team {
                 id
                 name
                 members {
