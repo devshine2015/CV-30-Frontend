@@ -3,10 +3,29 @@ import { Link } from 'react-router-dom';
 import { Avatar, CircularProgress, Chip } from '@material-ui/core';
 
 const JobItem = props => {
-    const { i18n, company: { name: companyName, location }, expireDate, videos, images, benefits, jobLevels } = props;
+    const { i18n, company: { name: companyName, location }, expireDate, videos, images } = props;
+    // TODO: appliedDate, jobLevel, benefits from props
     const match = (Math.random() * 66).toFixed(0);
     const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
+    const jobLevels = ['entry', 'mid', 'senior'];
+    const benefits = [
+        {
+            icon: 'fas fa-car',
+            label: 'Car'
+        },
+        {
+            icon: 'fas fa-mobile-alt',
+            label: 'Phone'
+        }, {
+            icon: 'fas fa-laptop',
+            label: 'Laptop'
+        }, {
+            icon: 'fas fa-car',
+            label: 'Car'
+        }
+    ];
     const { title, description } = i18n[0];
+
     return (
         <div className='listItem jobListItem'>
             <div className='leftOverlay'>
