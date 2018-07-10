@@ -10,6 +10,7 @@ query jobs($language: LanguageCodeType!) {
             description
         }
         company {
+            id
             name
             location
         }
@@ -31,9 +32,19 @@ query job($id: String!, $language: LanguageCodeType!) {
             id
             name
             location
-            featuredArticles {
+            officeArticles {
+                id
                 images {
-                    source
+                    id
+                    path
+                }
+                videos {
+                    id
+                    path
+                }
+                i18n {
+                    title
+                    description
                 }
             }
             teams {

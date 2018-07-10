@@ -31,7 +31,7 @@ const Show = props => {
         return <div>Job not found...</div>;
     } else {
         const { expanded, expandPanel } = props;
-        const { i18n, company: { name: companyName, i18n: companyText, faqs }, expireDate, videos, images } =job;
+        const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles }, expireDate, videos, images } =job;
         // TODO: appliedDate, jobLevel, benefits from props
         const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
         const jobLevels = ['entry', 'mid', 'senior'];
@@ -109,7 +109,7 @@ const Show = props => {
 
                     <section className='officeLife'>
                         <ArticleSlider
-                            articles={officeLife}
+                            articles={officeArticles || []}
                             title={(<h2 className='sectionTitle'>Office <b>life</b></h2>)}
                         />
                     </section>

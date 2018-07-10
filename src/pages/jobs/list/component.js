@@ -53,7 +53,7 @@ const JobsList = props => {
             </Grid>
             <Grid container className='mainBody jobsList'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    {jobs.map((job, index) => (<JobItem {...job} key={`job-${index}`} />))}
+                    {jobs && jobs.map((job, index) => (<JobItem {...job} key={`job-${index}`} />))}
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
