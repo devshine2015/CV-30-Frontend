@@ -1,5 +1,6 @@
 import Job from './component';
 import { compose, pure, withState, withHandlers } from 'recompose';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 const JobHOC = compose(
