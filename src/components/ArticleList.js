@@ -35,6 +35,9 @@ const ArticleBrowserHOC = compose(
                     break;
                 case 'profile_isAboutMe':
                     article.isAboutMe = true;
+                    break;
+                default:
+                    return false;
             }
 
             try {

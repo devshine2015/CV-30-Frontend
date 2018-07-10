@@ -96,6 +96,12 @@ export const companyQuery = gql`
             noOfEmployees
             location
             activityField
+            teams {
+                id
+                name
+                hasProfileCover
+                profileBackgroundColor
+            }
         }
     }
 `;
