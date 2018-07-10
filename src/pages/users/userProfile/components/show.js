@@ -3,8 +3,7 @@ import { Grid, Icon, IconButton, TextField, FormGroup, FormLabel, Switch as Togg
 // import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { setStory, setSalary, currentUserQuery } from '../../../../store/queries';
 import { withRouter } from 'react-router-dom';
-import ReactPlayer from 'react-player';
-import { s3BucketURL } from '../../../../constants/s3';
+
 
 import ExperienceEdit from './experienceEdit';
 import ExperienceDisplay from './experienceDisplay';
@@ -13,7 +12,7 @@ import { compose, graphql } from 'react-apollo';
 import { pure, withState, withHandlers } from 'recompose';
 import fields from '../../../../constants/contact';
 import ArticlePopUp from '../../../../components/ArticlePopup';
-import Slider from '../../../../hocs/slider';
+import ArticleSlider from '../../../../components/articleSlider';
 
 const ShowHOC = compose(
     withRouter,
@@ -22,7 +21,6 @@ const ShowHOC = compose(
     withState('newXP', 'setNewXP', false),
     withState('newProj', 'setNewProj', false),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
-    withState('count', 'setCount', ({ currentUser }) => currentUser.profile.aboutMeArticles ? currentUser.profile.aboutMeArticles.length - 1 : 0),
     withState('story', 'setMyStory', ({ currentUser }) => (currentUser.profile.story && currentUser.profile.story.i18n) ? currentUser.profile.story.i18n[0].description : ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', true),
@@ -114,7 +112,7 @@ const ShowHOC = compose(
         }
 
     }),
-    Slider,
+    // Slider,
     pure
 );
 
@@ -125,8 +123,7 @@ const Show = (props) => {
         openArticlePopUp, isPopUpOpen, closeArticlePopUp,
         toggleSalaryPrivate,
         story, updateStory, saveStory,
-        updateDesiredSalary, isSalaryPublic, desiredSalary, saveDesiredSalary,
-        activeItem, prevItem, nextItem, jumpToItem
+        updateDesiredSalary, isSalaryPublic, desiredSalary, saveDesiredSalary
     } = props;
 
     const { contact, experience, projects, aboutMeArticles, salary } = currentUser.profile;
@@ -220,69 +217,10 @@ const Show = (props) => {
                     </div>
                     {(aboutMeArticles && aboutMeArticles.length > 0) &&
                         <div className='knowHowContainer'>
-                            <div className='controls'>
-                                <h4>Know<b>how</b></h4>
-                                {(aboutMeArticles.length > 1) &&
-                                    <div className='sliderControls'>
-                                        <IconButton className='sliderArrow' onClick={prevItem}>
-                                            <Icon>
-                                                arrow_back_ios
-                                        </Icon>
-                                        </IconButton>
-                                        {
-                                            aboutMeArticles && aboutMeArticles.map((item, index) =>
-                                                (<span className={index === activeItem ? 'sliderDot active' : 'sliderDot'} key={`storyMarker - ${index}`} onClick={() => jumpToItem(index)} />)
-                                            )
-                                        }
-
-                                        <IconButton className='sliderArrow' onClick={nextItem}>
-                                            <Icon>
-                                                arrow_forward_ios
-                                        </Icon>
-                                        </IconButton>
-                                    </div>
-                                }
-                            </div>
-
-                            {
-                                aboutMeArticles.map((article, index) => {
-                                    let image, video;
-                                    if (article.images && article.images.length > 0) {
-                                        image = `${s3BucketURL}${article.images[0].path}`;
-                                    }
-                                    if (article.videos && article.videos.length > 0) {
-                                        video = article.videos[0].path;
-                                    }
-                                    return (
-                                        <div className={index === activeItem ? 'sliderContainer active' : 'sliderContainer'} key={article.id}>
-                                            <p>{article.i18n ? article.i18n[0].description : ''}</p>
-                                            <div className='media'>
-                                                {image &&
-                                                    <img src={image} alt={story.id} className='storyImg' />
-                                                }
-                                                {(video && !image) &&
-                                                    <ReactPlayer
-                                                        url={video}
-                                                        width='100%'
-                                                        height='100%'
-                                                        config={{
-                                                            youtube: {
-                                                                playerVars: {
-                                                                    showinfo: 0,
-                                                                    controls: 0,
-                                                                    modestbranding: 1,
-                                                                    loop: 1
-                                                                }
-                                                            }
-                                                        }}
-                                                        playing={false} />
-                                                }
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            }
-
+                            <ArticleSlider
+                                articles={aboutMeArticles}
+                                title={(<h4>Know<b>how</b></h4>)}
+                            />
                         </div>
                     }
                     {editMode &&

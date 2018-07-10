@@ -1,6 +1,9 @@
 import React from 'react';
 import { Grid, Button, IconButton, Icon, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
+import uuid from 'uuidv4';
+
+import ArticleSlider from '../../../../components/articleSlider';
 
 const ShowHOC = compose(
     withState('expanded', 'updateExpanded', null),
@@ -105,40 +108,10 @@ const Show = props => {
                     </section>
 
                     <section className='officeLife'>
-                        <div className='sliderHeader'>
-                            <h2 className='sectionTitle'>Office <b>life</b></h2>
-                            <div className='sliderControls'>
-                                <IconButton className='sliderArrow'>
-                                    <Icon>
-                                        arrow_back_ios
-                                    </Icon>
-                                </IconButton>
-
-                                <span className='sliderDot'></span>
-                                <span className='sliderDot'></span>
-                                <span className='sliderDot active'></span>
-                                <span className='sliderDot'></span>
-                                <span className='sliderDot'></span>
-
-                                <IconButton className='sliderArrow'>
-                                    <Icon>
-                                        arrow_forward_ios
-                                    </Icon>
-                                </IconButton>
-                            </div>
-                        </div>
-                        <div className='sliderContents'>
-                            <img src='http://www.petguide.com/wp-content/uploads/2016/10/yellow-bellied-slider.jpg' alt='slider bla' />
-                            <div className='textContents'>
-                                <h4>
-                                    Slide title
-                            </h4>
-                                <p>
-                                    Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                                        Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                        </p>
-                            </div>
-                        </div>
+                        <ArticleSlider
+                            articles={officeLife}
+                            title={(<h2 className='sectionTitle'>Office <b>life</b></h2>)}
+                        />
                     </section>
 
                     <section className='qaSection'>

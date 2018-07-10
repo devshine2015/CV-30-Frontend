@@ -17,7 +17,7 @@ import SliderHOC from '../../../../hocs/slider';
 import ArticlePopup from '../../../../components/ArticlePopup';
 
 const Header = (props) => {
-    const { headline, updateHeadline, match, headerStories, keyWords, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen, companyQuery: { company } } = props;
+    const { headline, updateHeadline, match, headerStories, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen, companyQuery: { company } } = props;
     const { lang, companyId } = match.params;
 
     return (

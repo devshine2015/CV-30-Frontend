@@ -14,6 +14,7 @@ import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { updateAvatar, currentUserQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
+import ArticleSlider from '../../../../components/articleSlider';
 
 
 const HeaderHOC = compose(
@@ -26,8 +27,8 @@ const HeaderHOC = compose(
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
-    withState('isUploading', 'setIsUploading', false),
     withState('forceCoverRender', 'setForceCoverRender', 0),
+    withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('isArticlePopUpOpen', 'setIsArticlePopUpOpen', false),
@@ -111,11 +112,6 @@ const HeaderHOC = compose(
                 callback(error)
             }
         },
-        renameFile: () => filename => {
-            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['avatar', getExtension].join('.');
-            return fName;
-        },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
             let size = file.size;
             if (size > 500 * 1024) {
@@ -173,9 +169,8 @@ const Header = (props) => {
     const { editMode, currentUser,
         closeColorPicker, toggleColorPicker, colorPickerAnchor,
         removeStory,
-        activeItem, prevItem, jumpToItem, nextItem,
         openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
-        getSignedUrl, renameFile, onProgress, onError, onFinishUpload, onUploadStart,
+        getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart,
         isUploading, uploadProgress,
         localUserData, refetchBgImage, forceCoverRender,
         isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor
@@ -250,7 +245,6 @@ const Header = (props) => {
                                     uploadRequestHeaders={{
                                         'x-amz-acl': 'public-read',
                                     }}
-                                    scrubFilename={(filename) => renameFile(filename)}
 
                                 />
                                 <Button component='span' className='badgeRoot' disabled={isUploading}>
@@ -394,62 +388,14 @@ const Header = (props) => {
                 </Hidden>
 
                 <Hidden mdUp>
-                    <div className='storySliderContainer'>
-                        {
-                            featuredArticles &&
-                            <div className='storiesSlider'>
-                                {
-                                    featuredArticles && featuredArticles.map((story, index) => {
-                                        let image, video;
-                                        if (story.images && story.images.length > 0) {
-                                            image = `${s3BucketURL}${story.images[0].path}`;
-                                        }
-                                        if (story.videos && story.videos.length > 0) {
-                                            video = story.videos[0].path;
-                                        }
-                                        return (
-                                            <div className={index === activeItem ? 'storyItem active' : 'storyItem'} key={story.id}>
-                                                {image &&
-                                                    <img src={image} alt={story.id} className='storyImg' />
-                                                }
-                                                {(video && !image) &&
-                                                    <ReactPlayer
-                                                        url={video}
-                                                        width='200'
-                                                        height='140'
-                                                        config={{
-                                                            youtube: {
-                                                                playerVars: {
-                                                                    showinfo: 0,
-                                                                    controls: 0,
-                                                                    modestbranding: 1,
-                                                                    loop: 1
-                                                                }
-                                                            }
-                                                        }}
-                                                        playing={false} />
-                                                }
-                                                <span className='storyTitle'>{story.i18n[0].title}</span>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
-                        }
-                    </div>
-                    <div className='storySliderControls'>
-                        <IconButton className='sliderArrow' onClick={prevItem}>
-                            <Icon>arrow_back_ios</Icon>
-                        </IconButton>
-                        {
-                            featuredArticles && featuredArticles.map((item, index) =>
-                                (<span className={index === activeItem ? 'sliderDot active' : 'sliderDot'} key={`storyMarker - ${index}`} onClick={() => jumpToItem(index)}></span>)
-                            )
-                        }
-                        <IconButton className='sliderArrow' onClick={nextItem}>
-                            <Icon>arrow_forward_ios</Icon>
-                        </IconButton>
-                    </div>
+
+                    {
+                        featuredArticles &&
+                        <ArticleSlider
+                            articles={featuredArticles}
+                        />
+                    }
+
                 </Hidden>
             </Grid>
 
