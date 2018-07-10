@@ -8,8 +8,8 @@ const UsersListHOC = compose(
     withRouter,
     graphql(profilesQuery, {
         name: 'profilesQuery',
-        fetchPolicy: 'network-only',
         options: props => ({
+            fetchPolicy: 'network-only',
             variables: {
                 language: props.match.params.lang
             },

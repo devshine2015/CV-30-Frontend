@@ -8,8 +8,8 @@ const JobsListHOC = compose(
     withRouter,
     graphql(getJobsQuery, {
         name: 'getJobsQuery',
-        fetchPolicy: 'network-only',
         options: props => ({
+            fetchPolicy: 'network-only',
             variables: {
                 language: props.match.params.lang
             },

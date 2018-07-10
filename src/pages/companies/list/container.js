@@ -8,8 +8,8 @@ const CompaniesListHOC = compose(
     withRouter,
     graphql(companiesQuery, {
         name: 'companiesQuery',
-        fetchPolicy: 'network-only',
         options: props => ({
+            fetchPolicy: 'network-only',
             variables: {
                 language: props.match.params.lang
             },
