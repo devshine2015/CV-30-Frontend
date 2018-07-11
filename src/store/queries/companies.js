@@ -111,3 +111,12 @@ export const handleCompany = gql`
         }
     }
 `;
+
+export const handleFAQ = gql`
+  mutation handleFAQ($language: LanguageCodeType!, $faq: FaqInput!) {
+    handleFAQ(language: $language, faq: $faq) {
+      status
+      error
+    }
+  }
+`;

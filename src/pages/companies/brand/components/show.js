@@ -10,8 +10,8 @@ import ArticleSlider from '../../../../components/articleSlider';
 
 
 const Show = (props) => {
-    const { expanded, expandPanel, editMode, companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } }, edited, editPanel } = props;
-    // const { faq, moreStories, jobs } = co;
+    const { expanded, expandPanel, editMode, companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } }, edited, editPanel, addQA, newQA } = props;
+
     return (
         <Grid container className='mainBody brandShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -46,7 +46,6 @@ const Show = (props) => {
                     <h2 className='titleHeading'>Q &amp; A</h2>
                     {
                         faqs.map((item, index) => {
-
                             const panelId = 'panel-' + index;
                             if (edited !== panelId)
                                 return (
@@ -63,7 +62,7 @@ const Show = (props) => {
                                             expandIcon: 'qaHeaderIcon',
                                             content: 'qaPanelHeaderContent'
                                         }}>
-                                            {item.question}
+                                            {item.i18n[0].question}
                                             {editMode &&
                                                 <IconButton onClick={(e) => editPanel(e, panelId)} className='editBtn'>
                                                     <Icon>edit</Icon>
@@ -71,7 +70,7 @@ const Show = (props) => {
                                             }
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-                                            {item.answer}
+                                            {item.i18n[0].answer}
                                         </ExpansionPanelDetails>
                                     </ExpansionPanel>
                                 )
@@ -79,11 +78,13 @@ const Show = (props) => {
                                 return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} />
                         })
                     }
-                    {editMode &&
-                        <div className='addQABtn'>
+                    {
+                        editMode &&
+                        <div className='addQABtn' onClick={addQA}>
                             + Add
                         </div>
                     }
+                    {editMode && newQA && <QuestionEdit onChange={expandPanel} expanded={expanded} panelId={`panel-${faqs.length}`} />}
                 </section>
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
@@ -123,6 +124,7 @@ const ShowHOC = compose(
     withState('expanded', 'updateExpanded', null),
     withState('edited', 'updateEdited', null),
     withState('editedStory', 'editStory', null),
+    withState('newQA', 'addNewQA', false),
     withHandlers({
         expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
             if (edited === panel) {
@@ -140,6 +142,9 @@ const ShowHOC = compose(
                 updateExpanded(panel);
                 e.stopPropagation();
             }
+        },
+        addQA: ({ addNewQA }) => () => {
+            addNewQA(true);
         }
     }),
     SliderHOC,
