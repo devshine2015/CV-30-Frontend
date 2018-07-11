@@ -15,10 +15,66 @@ import FroalaEditor from 'react-froala-wysiwyg';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import AddTeam from './addTeam';
+import { s3BucketURL } from '../../../../constants/s3';
+import { companyQuery } from '../../../../store/queries';
+
+const HeaderHOC = compose(
+    withState('isPopUpOpen', 'setIsPopUpOpen', false),
+    withState('expanded', 'updateExpanded', null),
+    withState('headline', 'setHeadline', ''),
+    withHandlers({
+        updateHeadline: ({ setHeadline }) => (text) => setHeadline(text),
+        expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
+            updateExpanded(expanded ? panel : false);
+        },
+        removeStory: ({ handleArticle, match }) => async article => {
+            try {
+                await handleArticle({
+                    variables: {
+                        article: {
+                            id: article.id
+                        },
+                        options: {
+                            articleId: article.id,
+                            companyId: match.params.companyId,
+                            isFeatured: false
+                        },
+                        language: match.params.lang,
+
+                    },
+                    refetchQueries: [{
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'companyQuery',
+                        variables: {
+                            language: match.params.lang,
+                            id: match.params.companyId
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
+
+        },
+        toggleStoryEditor: ({ setIsPopUpOpen }) => () => {
+            setIsPopUpOpen(true);
+        },
+        closeStoryEditor: ({ setIsPopUpOpen }) => () => {
+            setIsPopUpOpen(false);
+        }
+    }),
+    pure
+)
 
 const Header = (props) => {
-    const { headline, updateHeadline, match, headerStories, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen, companyQuery: { company } } = props;
+    const { headline, updateHeadline, match, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
+        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField } }
+    } = props;
     const { lang, companyId } = match.params;
+
+    let avatar = ''; //add logic to display avatar
 
     return (
         <div className='header'>
@@ -46,9 +102,11 @@ const Header = (props) => {
             <div className='headerContents'>
                 <Grid container className='headerLinks'>
                     <Grid item lg={3} md={5} sm={12} xs={12} className='userAvatar'>
-                        <Avatar alt="John" src="http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.png" className='avatar' />
+                        <Avatar alt={avatar} src={avatar} className='avatar'>
+                            {avatar ? null : name.charAt(0)}
+                        </Avatar>
                         <div className='avatarTexts'>
-                            <h3>{company.name}</h3>
+                            <h3>{name}</h3>
                             <h4>Companie de bauturi</h4>
                         </div>
                         {editMode &&
@@ -101,17 +159,43 @@ const Header = (props) => {
                 </Grid>
                 <Grid container className='headerStories'>
                     {
-                        headerStories.map((story, index) => {
+                        featuredArticles && featuredArticles.map(story => {
+                            let image, video;
+                            if (story.images && story.images.length > 0) {
+                                image = `${s3BucketURL}${story.images[0].path}`;
+                            }
+                            if (story.videos && story.videos.length > 0) {
+                                video = story.videos[0].path;
+                            }
                             return (
-                                <Grid item className='storyContainer' key={`headerStory-${index}`}>
-                                    <img src={story.img} alt="ceva" className='storyImg' />
-                                    <span className='storyTitle'>{story.title}</span>
+                                <Grid item className='storyContainer' key={story.id}>
+                                    {image &&
+                                        <img src={image} alt={story.id} className='storyImg' />
+                                    }
+                                    {(video && !image) &&
+                                        <ReactPlayer
+                                            url={video}
+                                            width='200'
+                                            height='140'
+                                            config={{
+                                                youtube: {
+                                                    playerVars: {
+                                                        showinfo: 0,
+                                                        controls: 0,
+                                                        modestbranding: 1,
+                                                        loop: 1
+                                                    }
+                                                }
+                                            }}
+                                            playing={false} />
+                                    }
+                                    <span className='storyTitle'>{story.i18n[0].title}</span>
                                     {
                                         editMode &&
                                         <Button
                                             variant='fab'
                                             size='small'
-                                            onClick={() => removeStory(index)}
+                                            onClick={() => removeStory(story)}
                                             classes={{
                                                 fab: 'removeStoryBtn'
                                             }}
@@ -138,9 +222,9 @@ const Header = (props) => {
 
                 </Grid>
                 <Grid container className='activityFields'>
-                    <Chip label={company.activityField} className='chip activity' />
-                    <Chip label={company.location} className='chip activity' />
-                    <Chip label={company.noOfEmployees} className='chip activity' />
+                    <Chip label={activityField} className='chip activity' />
+                    <Chip label={location} className='chip activity' />
+                    <Chip label={noOfEmployees} className='chip activity' />
                 </Grid>
 
                 <Grid container className='teamSlider'>
@@ -149,48 +233,21 @@ const Header = (props) => {
                         {editMode && <AddTeam {...props} />}
                     </Grid>
                     {
-                        headerStories.map((story, index) => {
-                            let url = `/${lang}/dashboard/company/team`; //will add params for company id and team id
-                            return (
-                                <Link to={url} className='teamSliderItem' key={`teamSliderItem-${index}`}>
-                                    <img src={story.img} alt="ceva" className='teamImg' />
-                                    <span className='teamText'>{story.title}</span>
-                                </Link>
-                            )
-                        })
+                        // headerStories.map((story, index) => {
+                        //     let url = `/${lang}/dashboard/company/team`; //will add params for company id and team id
+                        //     return (
+                        //         <Link to={url} className='teamSliderItem' key={`teamSliderItem-${index}`}>
+                        //             <img src={story.img} alt="ceva" className='teamImg' />
+                        //             <span className='teamText'>{story.title}</span>
+                        //         </Link>
+                        //     )
+                        // })
                     }
 
                 </Grid>
             </div>
         </div>
     )
-}
-
-const HeaderHOC = compose(
-    withState('keyWords', 'setHeaderKeywords', ({ companyQuery: { company } }) => [company.activityField]),
-    withState('headerStories', 'setHeaderStories', ({ companyQuery: { company } }) => company.featuredArticles),
-    withState('isPopUpOpen', 'setIsPopUpOpen', false),
-    withState('count', 'setCount', ({ companyQuery: { company } }) => company.featuredArticles.length - 1),
-    withState('expanded', 'updateExpanded', null),
-    withState('headline', 'setHeadline', ''),
-    withHandlers({
-        updateHeadline: ({ setHeadline }) => (text) => setHeadline(text),
-        expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
-            updateExpanded(expanded ? panel : false);
-        },
-        removeStory: ({ headerStories, setHeaderStories }) => (index) => {
-            let stories = [...headerStories];
-            stories.splice(index, 1);
-            setHeaderStories(stories);
-        },
-        toggleStoryEditor: ({ setIsPopUpOpen }) => () => {
-            setIsPopUpOpen(true);
-        },
-        closeStoryEditor: ({ setIsPopUpOpen }) => () => {
-            setIsPopUpOpen(false);
-        }
-    }),
-    pure
-)
+};
 
 export default HeaderHOC(Header);

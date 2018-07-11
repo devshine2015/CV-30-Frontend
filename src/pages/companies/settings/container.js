@@ -2,10 +2,10 @@ import CompanySettings from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 
-import { getCompanyQuery } from '../../../store/queries';
+import { companyQuery } from '../../../store/queries';
 
 const CompanySettingsHOC = compose(
-    graphql(getCompanyQuery, {
+    graphql(companyQuery, {
         name: 'currentCompany',
         options: (props) => ({
             variables: {

@@ -1,11 +1,13 @@
 import React from 'react';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconButton, Icon } from '@material-ui/core';
+import uuid from 'uuidv4';
 
+import { companyQuery } from '../../../../store/queries';
 
 const AddStory = props => {
     const { popupOpen, toggleEditor, formData, handleFormChange, isVideoUrl, switchMediaType, story, saveChanges, cancel } = props;
-    const { title, text, videoURL } = formData;
+    const { title, description, videoURL } = formData;
     return (
         <div className='addStoryWrapper'>
             {!story &&
@@ -27,16 +29,16 @@ const AddStory = props => {
                             value={title}
                         />
                         <TextField
-                            name="text"
+                            name="description"
                             label="Article body"
                             placeholder="Article body..."
                             className='textField'
                             multiline
-                            rows={4}
+                            rows={1}
                             rowsMax={10}
                             fullWidth
                             onChange={handleFormChange}
-                            value={text}
+                            value={description}
                         />
                         <FormGroup row className='mediaToggle'>
                             <span className='mediaToggleLabel'>Upload visuals</span>
@@ -97,7 +99,7 @@ const AddStory = props => {
 
 const AddStoryHOC = compose(
     withState('popupOpen', 'setPopupOpen', false),
-    withState('formData', 'setFormData', ({ story }) => (story || {})),
+    withState('formData', 'setFormData', ({ story }) => (story || { id: uuid() })),
     withState('isVideoUrl', 'changeMediaType', true),
     withHandlers({
         toggleEditor: ({ popupOpen, setPopupOpen }) => () => {
@@ -118,7 +120,34 @@ const AddStoryHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        saveChanges: () => () => { },
+        saveChanges: ({ handleArticle, match, formData, type }) => async () => {
+            try {
+                await handleArticle({
+                    variables: {
+                        article: formData,
+                        options: {
+                            companyId: match.params.companyId,
+                            isAtOffice: type === 'company_officeLife',
+                            isMoreStories: type === 'company_moreStories'
+                        },
+                        language: match.params.lang,
+
+                    },
+                    refetchQueries: [{
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'companyQuery',
+                        variables: {
+                            language: match.params.lang,
+                            id: match.params.companyId
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
+        },
     }),
     pure
 );

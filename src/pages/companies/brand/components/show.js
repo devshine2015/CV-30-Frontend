@@ -111,7 +111,7 @@ const Show = (props) => {
                         articles={officeLife}
                         title={(<h2 className='titleHeading'>Viata <b>la birou</b></h2>)}
                     />
-                    {editMode && <AddNewStory />}
+                    {editMode && <AddNewStory {...props} type='company_officeLife' />}
                 </section>
 
                 <section className='moreStories'>
@@ -121,7 +121,7 @@ const Show = (props) => {
                             <Story story={story} index={index} editMode={editMode} key={`story-${index}`} />
                         ))
                     }
-                    {editMode && <AddNewStory />}
+                    {editMode && <AddNewStory {...props} type='company_moreStories' />}
                 </section>
 
                 <section className='qaSection'>

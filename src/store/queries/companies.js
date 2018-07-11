@@ -2,38 +2,79 @@ import gql from 'graphql-tag';
 
 export const companyQuery = gql`
     query company($id: String!, $language: LanguageCodeType!) {
-        company(id: $id, language: $language) {
-            id
-            name
-            featuredArticles {
-                id
-                featuredImage {
-                    path
-                }
-            }
-            storiesArticles {
-                id
-                featuredImage {
-                    path
-                }
-            }
-            faqs {
-                id
-            }
-            jobs {
-                id
-            }
-            noOfEmployees
-            location
-            activityField
-            teams {
-                id
-                name
-                hasProfileCover
-                profileBackgroundColor
-            }
-        }
+  company(id: $id, language: $language) {
+    id
+    name
+    i18n {
+      headline
+      description
     }
+    featuredArticles {
+      id
+      i18n {
+        title
+        description
+      }
+      images {
+        id
+        path
+      }
+      videos {
+        id
+        path
+      }
+    }
+    officeArticles {
+      id
+      i18n {
+        title
+        description
+      }
+      images {
+        id
+        path
+      }
+      videos {
+        id
+        path
+      }
+    }
+    storiesArticles {
+      id
+      i18n {
+        title
+        description
+      }
+      images {
+        id
+        path
+      }
+      videos {
+        id
+        path
+      }
+    }
+    activityField
+    noOfEmployees
+    location
+    faqs {
+      id
+      i18n {
+        question
+        answer
+      }
+    }
+    jobs {
+      id
+      name
+      expireDate
+      i18n {
+        title
+        description
+      }
+    }
+  }
+}
 `;
 
 export const companiesQuery = gql`
@@ -60,41 +101,6 @@ export const companiesQuery = gql`
             }
         }
     }
-`;
-
-export const getCompanyQuery = gql`
-query company($id: String!, $language: LanguageCodeType!) {
-    company(id: $id, language: $language) {
-        id
-        name
-        noOfEmployees
-        i18n {
-            headline
-            description
-        }
-        activityField
-        location
-        jobs {
-            id
-            name
-            expireDate
-            i18n {
-                title
-                description
-            }
-            team {
-                id
-                name
-                members {
-                    id
-                    firstName
-                    lastName
-                    email
-                }
-            }
-        }
-    }
-}
 `;
 
 export const handleCompany = gql`
