@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import SliderHOC from '../../../../hocs/slider';
-import uuid from 'uuidv4';
 
 import AddNewStory from './addStory';
 import QuestionEdit from './questionEdit';
@@ -10,89 +9,8 @@ import Story from './story';
 import ArticleSlider from '../../../../components/articleSlider';
 
 
-
-
-const officeLife = [
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'http://wowslider.com/sliders/demo-11/data/images/krasivyi_korabl_-1024x768.jpg'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some title 1',
-            description: 'some description'
-        }]
-    },
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwObBmWDaXK4DxechC-rdwErL199LKP6qTC_oIh-5LeoOX-NMC'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some titl 22e',
-            description: 'some description'
-        }]
-    },
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'http://ukphotosgallery.com/wp-content/uploads/2016/05/bg3.jpg'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some tit411241414le',
-            description: 'some descrip2423244ion'
-        }]
-    },
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'https://www.w3schools.com/howto/img_forest.jpg'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some title',
-            description: 'some description'
-        }]
-    },
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'https://www.w3schools.com/howto/img_forest.jpg'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some title',
-            description: 'some description'
-        }]
-    }
-];
-
-
 const Show = (props) => {
-    const { expanded, expandPanel, editMode, companyQuery: { company: { faqs, storiesArticles, jobs } }, edited, editPanel } = props;
+    const { expanded, expandPanel, editMode, companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } }, edited, editPanel } = props;
     // const { faq, moreStories, jobs } = co;
     return (
         <Grid container className='mainBody brandShow'>
@@ -108,20 +26,20 @@ const Show = (props) => {
 
                 <section className='officeLife'>
                     <ArticleSlider
-                        articles={officeLife}
+                        articles={officeArticles}
                         title={(<h2 className='titleHeading'>Viata <b>la birou</b></h2>)}
                     />
-                    {editMode && <AddNewStory {...props} type='company_officeLife' />}
+                    {editMode && <AddNewStory type='company_officeLife' />}
                 </section>
 
                 <section className='moreStories'>
                     <h2 className='titleHeading'>Afla <b>mai multe</b></h2>
                     {
                         storiesArticles.map((story, index) => (
-                            <Story story={story} index={index} editMode={editMode} key={`story-${index}`} />
+                            <Story story={story} index={index} editMode={editMode} key={story.id} />
                         ))
                     }
-                    {editMode && <AddNewStory {...props} type='company_moreStories' />}
+                    {editMode && <AddNewStory type='company_moreStories' />}
                 </section>
 
                 <section className='qaSection'>
@@ -160,6 +78,11 @@ const Show = (props) => {
                             else
                                 return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} />
                         })
+                    }
+                    {editMode &&
+                        <div className='addQABtn'>
+                            + Add
+                        </div>
                     }
                 </section>
             </Grid>
@@ -200,7 +123,6 @@ const ShowHOC = compose(
     withState('expanded', 'updateExpanded', null),
     withState('edited', 'updateEdited', null),
     withState('editedStory', 'editStory', null),
-    withState('count', null, officeLife.length - 1),
     withHandlers({
         expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
             if (edited === panel) {

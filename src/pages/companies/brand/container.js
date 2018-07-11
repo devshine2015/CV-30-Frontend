@@ -3,7 +3,7 @@ import { compose, pure, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
-import { companyQuery, handleArticle } from '../../../store/queries';
+import { companyQuery } from '../../../store/queries';
 
 const BrandHOC = compose(
     withRouter,
@@ -17,7 +17,6 @@ const BrandHOC = compose(
             fetchPolicy: 'network-only'
         })
     }),
-    graphql(handleArticle, { name: 'handleArticle' }),
     withState('editMode', 'updateEditMode', false),
     withHandlers({
         switchEditMode: ({ editMode, updateEditMode }) => () => {
