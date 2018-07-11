@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { handleArticle, currentUserQuery } from '../store/queries';
+import { handleArticle, currentUserQuery, companyQuery } from '../store/queries';
 import { graphql } from 'react-apollo';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
@@ -39,6 +39,49 @@ const ArticleEditorHOC = compose(
                 return false;
 
             setIsSaving(true);
+
+            let refetchQuery = {};
+
+            switch (type) {
+                case 'profile_isFeatured':
+                    refetchQuery = {
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    };
+                    break;
+                case 'profile_isAboutMe':
+                    refetchQuery = {
+                        query: currentUserQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    };
+                    break;
+                case 'company_featured':
+                    options = {
+                        articleId: formData.id,
+                        companyId: match.params.companyId,
+                        isFeatured: true
+                    };
+                    refetchQuery = {
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: match.params.lang,
+                            id: match.params.companyId
+                        }
+                    };
+                    break;
+                default:
+                    return false;
+            }
             let article = {
                 id: formData.id,
                 title: formData.title,
@@ -60,10 +103,11 @@ const ArticleEditorHOC = compose(
             }
 
             let options = {
-                // articleId: formData.id,
-                // companyId: formData.id,
-                // isFeatured: true
+                articleId: formData.id,
+                companyId: match.params.companyId,
+                isFeatured: type === 'company_featured'
             };
+
 
             try {
                 await handleArticle({
@@ -72,14 +116,7 @@ const ArticleEditorHOC = compose(
                         article,
                         options
                     },
-                    refetchQueries: [{
-                        query: currentUserQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentUser',
-                        variables: {
-                            language: 'en'
-                        }
-                    }]
+                    refetchQueries: [refetchQuery]
                 });
                 onClose();
             }
@@ -123,7 +160,7 @@ const ArticleEditorHOC = compose(
                     id: uuid(),
                     title: file.name,
                     sourceType: 'article',
-                    source: formData.id, //article id
+                    source: formData.id,
                     path: `/articles/${formData.id}/${file.name}`
                 }];
                 setFormData(newFormData);

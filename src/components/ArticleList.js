@@ -24,15 +24,14 @@ const ArticleBrowserHOC = compose(
         updateArticle: props => async articleId => {
             const { match, type, handleArticle } = props;
 
-            let article = {
-                id: articleId
-            };
+            let article = {};
             let options = {};
             let refetchQuery = {};
 
             switch (type) {
                 case 'profile_isFeatured':
                     article.isFeatured = true;
+                    article.id = articleId;
                     refetchQuery = {
                         query: currentUserQuery,
                         fetchPolicy: 'network-only',
@@ -44,6 +43,7 @@ const ArticleBrowserHOC = compose(
                     break;
                 case 'profile_isAboutMe':
                     article.isAboutMe = true;
+                    article.id = articleId;
                     refetchQuery = {
                         query: currentUserQuery,
                         fetchPolicy: 'network-only',

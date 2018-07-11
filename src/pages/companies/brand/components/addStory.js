@@ -2,18 +2,21 @@ import React from 'react';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconButton, Icon } from '@material-ui/core';
 import uuid from 'uuidv4';
-
+import S3Uploader from 'react-s3-uploader';
 import { companyQuery } from '../../../../store/queries';
 
 const AddStory = props => {
-    const { popupOpen, toggleEditor, formData, handleFormChange, isVideoUrl, switchMediaType, story, saveChanges, cancel } = props;
+    const {
+        popupOpen, toggleEditor, formData, handleFormChange, isVideoUrl, switchMediaType, story, saveChanges, cancel,
+        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving
+    } = props;
     const { title, description, videoURL } = formData;
     return (
         <div className='addStoryWrapper'>
             {!story &&
                 <span className='addStoryBtn' onClick={toggleEditor}>
                     + Add
-            </span>
+                </span>
             }
             <div className={(popupOpen || story) ? 'newStoryForm open' : 'newStoryForm'}>
                 <form noValidate autoComplete='off'>
@@ -67,27 +70,32 @@ const AddStory = props => {
                                 onChange={handleFormChange}
                                 value={videoURL}
                             /> :
-                            <label htmlFor="fileUpload">
-                                <input
-                                    accept="image/*"
+                            <label htmlFor="uploadArticleImage">
+                                <S3Uploader
+                                    id="uploadArticleImage"
+                                    name="uploadArticleImage"
                                     className='hiddenInput'
-                                    id="fileUpload"
-                                    name="fileUpload"
-                                    multiple
-                                    type="file"
-                                    onChange={handleFormChange}
+                                    getSignedUrl={getSignedUrl}
+                                    accept="image/*"
+                                    preprocess={onUploadStart}
+                                    onProgress={onProgress}
+                                    onError={onError}
+                                    onFinish={onFinishUpload}
+                                    uploadRequestHeaders={{
+                                        'x-amz-acl': 'public-read'
+                                    }}
                                 />
-                                <Button component="span" className='uploadBtn'>
+                                <Button component='span' className='badgeRoot' disabled={isSaving}>
                                     Upload
-                                </Button>
+                        </Button>
                             </label>
                         }
                     </section>
                     <section className='footer'>
-                        <IconButton className='cancelBtn' onClick={cancel}>
+                        <IconButton className='cancelBtn' onClick={cancel} disabled={isSaving}>
                             <Icon>close</Icon>
                         </IconButton>
-                        <IconButton className='submitBtn' onClick={saveChanges}>
+                        <IconButton className='submitBtn' onClick={saveChanges} disabled={isSaving}>
                             <Icon>done</Icon>
                         </IconButton>
                     </section>
@@ -101,6 +109,9 @@ const AddStoryHOC = compose(
     withState('popupOpen', 'setPopupOpen', false),
     withState('formData', 'setFormData', ({ story }) => (story || { id: uuid() })),
     withState('isVideoUrl', 'changeMediaType', true),
+    withState('isSaving', 'setIsSaving', false),
+    withState('uploadProgress', 'setUploadProgress', 0),
+    withState('uploadError', 'setUploadError', null),
     withHandlers({
         toggleEditor: ({ popupOpen, setPopupOpen }) => () => {
             setPopupOpen(!popupOpen);
@@ -120,16 +131,38 @@ const AddStoryHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        saveChanges: ({ handleArticle, match, formData, type }) => async () => {
+        saveChanges: ({ handleArticle, match, formData, type, closeEditor }) => async () => {
+            let article = {
+                id: formData.id,
+                title: formData.title,
+                images: formData.images,
+                description: formData.description
+            };
+
+            if (formData.videoURL) {
+                article.videos = [
+                    {
+                        id: uuid(),
+                        title: formData.videoURL,
+                        sourceType: 'article',
+                        path: formData.videoURL
+                    }
+                ];
+
+            }
+
+            let options = {
+                articleId: formData.id,
+                companyId: match.params.companyId,
+                isAtOffice: type === 'company_officeLife',
+                isMoreStories: type === 'company_moreStories'
+            };
+
             try {
                 await handleArticle({
                     variables: {
-                        article: formData,
-                        options: {
-                            companyId: match.params.companyId,
-                            isAtOffice: type === 'company_officeLife',
-                            isMoreStories: type === 'company_moreStories'
-                        },
+                        article,
+                        options,
                         language: match.params.lang,
 
                     },
@@ -143,11 +176,68 @@ const AddStoryHOC = compose(
                         }
                     }]
                 });
+
+                closeEditor();
             }
             catch (err) {
                 console.log(err)
             }
         },
+        getSignedUrl: ({ formData }) => async (file, callback) => {
+            const params = {
+                fileName: file.name,
+                contentType: file.type,
+                id: formData.id,
+                type: 'article'
+            };
+
+            try {
+                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+                let responseJson = await response.json();
+                callback(responseJson);
+            } catch (error) {
+                console.error(error);
+                callback(error)
+            }
+        },
+        onUploadStart: ({ setIsSaving, formData, setFormData, match }) => (file, next) => {
+            let size = file.size;
+            if (size > 1024 * 1024) {
+                alert('File is too big!');
+            } else {
+                let newFormData = Object.assign({}, formData);
+
+                newFormData.images = [{
+                    id: uuid(),
+                    title: file.name,
+                    sourceType: 'article',
+                    source: formData.id,
+                    path: `/articles/${formData.id}/${file.name}`
+                }];
+                setFormData(newFormData);
+                setIsSaving(true);
+                next(file);
+            }
+        },
+        onProgress: ({ setUploadProgress }) => (percent) => {
+            setUploadProgress(percent);
+        },
+        onError: ({ setUploadError }) => error => {
+            setUploadError(error);
+            console.log(error);
+        },
+        onFinishUpload: props => data => {
+            console.log(data);
+            const { setIsSaving, } = props;
+            setIsSaving(false);
+        }
     }),
     pure
 );
