@@ -31,6 +31,7 @@ const HeaderHOC = compose(
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('isArticlePopUpOpen', 'setIsArticlePopUpOpen', false),
+    withState('fileType', 'setFileType', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -83,11 +84,8 @@ const HeaderHOC = compose(
             }
         },
         getSignedUrl: ({ currentUser }) => async (file, callback) => {
-            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['avatar', getExtension].join('.');
-
             const params = {
-                fileName: fName,
+                fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
                 id: currentUser.profile.id,
                 type: 'avatar'
@@ -109,12 +107,13 @@ const HeaderHOC = compose(
                 callback(error)
             }
         },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
+        onUploadStart: ({ setIsUploading, setFileType }) => (file, next) => {
             let size = file.size;
             if (size > 500 * 1024) {
                 alert('File is too big!');
             } else {
                 setIsUploading(true);
+                setFileType(file.type.replace('image/', ''))
                 next(file);
             }
         },
@@ -126,11 +125,11 @@ const HeaderHOC = compose(
             console.log(error);
         },
         onFinishUpload: (props) => async () => {
-            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match } = props;
+            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match, fileType } = props;
             await updateAvatar({
                 variables: {
                     status: true,
-
+                    contentType: fileType
                 },
                 refetchQueries: [{
                     query: currentUserQuery,
