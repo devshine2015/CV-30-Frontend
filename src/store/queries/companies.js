@@ -1,80 +1,86 @@
 import gql from 'graphql-tag';
 
 export const companyQuery = gql`
-    query company($id: String!, $language: LanguageCodeType!) {
-  company(id: $id, language: $language) {
-    id
-    name
-    i18n {
-      headline
-      description
-    }
-    featuredArticles {
-      id
-      i18n {
-        title
-        description
-      }
-      images {
-        id
-        path
-      }
-      videos {
-        id
-        path
-      }
-    }
-    officeArticles {
-      id
-      i18n {
-        title
-        description
-      }
-      images {
-        id
-        path
-      }
-      videos {
-        id
-        path
-      }
-    }
-    storiesArticles {
-      id
-      i18n {
-        title
-        description
-      }
-      images {
-        id
-        path
-      }
-      videos {
-        id
-        path
-      }
-    }
-    activityField
-    noOfEmployees
-    location
-    faqs {
-      id
-      i18n {
-        question
-        answer
-      }
-    }
-    jobs {
+  query company($id: String!, $language: LanguageCodeType!) {
+    company(id: $id, language: $language) {
       id
       name
-      expireDate
       i18n {
-        title
+        headline
         description
+      }
+      featuredArticles {
+        id
+        i18n {
+          title
+          description
+        }
+        images {
+          id
+          path
+          }
+        videos {
+          id
+          path
+        }
+      }
+      officeArticles {
+        id
+        i18n {
+          title
+          description
+        }
+        images {
+          id
+          path
+        }
+        videos {
+          id
+          path
+        }
+      }
+      storiesArticles {
+        id
+        i18n {
+          title
+          description
+        }
+        images {
+          id
+          path
+        }
+        videos {
+          id
+          path
+        }
+      }
+      activityField
+      noOfEmployees
+      location
+      faqs {
+        id
+        i18n {
+          question
+          answer
+        }
+      }
+      jobs {
+        id
+        name
+        expireDate
+        i18n {
+          title
+          description
+        }
+      }
+      teams {
+        id
+        name
+        hasProfileCover
+        profileBackgroundColor
       }
     }
   }
-}
 `;
 
 export const companiesQuery = gql`

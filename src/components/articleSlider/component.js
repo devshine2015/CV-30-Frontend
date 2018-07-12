@@ -49,8 +49,8 @@ const ArticleSlider = props => {
                                     {(video && !image) &&
                                         <ReactPlayer
                                             url={video}
-                                            width='200'
-                                            height='140'
+                                            width='100%'
+                                            height='100%'
                                             config={{
                                                 youtube: {
                                                     playerVars: {

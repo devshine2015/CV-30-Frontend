@@ -58,7 +58,6 @@ const HeaderHOC = compose(
             setSkillsAnchor(null);
         },
         removeStory: ({ handleArticle, match }) => async article => {
-            console.log(article);
             try {
                 await handleArticle({
                     variables: {
@@ -82,7 +81,6 @@ const HeaderHOC = compose(
             catch (err) {
                 console.log(err)
             }
-
         },
         getSignedUrl: ({ currentUser }) => async (file, callback) => {
             let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);

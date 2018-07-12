@@ -15,7 +15,6 @@ const AddTeamHOC = compose(
             setTeamName(team);
         },
         openTeamModal: ({ setTeamAnchor }) => target => {
-            debugger;
             setTeamAnchor(target);
         },
         closeTeamModal: ({ setTeamAnchor }) => () => {

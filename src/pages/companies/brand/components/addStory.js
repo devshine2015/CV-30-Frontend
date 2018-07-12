@@ -13,7 +13,6 @@ const AddStoryHOC = compose(
     withRouter,
     graphql(handleArticle, { name: 'handleArticle' }),
     withState('formData', 'setFormData', ({ story }) => {
-        debugger;
         if (!story)
             return { id: uuid() }
         else {

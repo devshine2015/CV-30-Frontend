@@ -16,9 +16,12 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ArticlePopup from '../../../../components/ArticlePopup';
 import AddTeam from './addTeam';
 import { s3BucketURL } from '../../../../constants/s3';
-import { companyQuery } from '../../../../store/queries';
+import { companyQuery, handleArticle } from '../../../../store/queries';
+import { graphql } from 'react-apollo';
+
 
 const HeaderHOC = compose(
+    graphql(handleArticle, { name: 'handleArticle' }),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
     withState('expanded', 'updateExpanded', null),
     withState('headline', 'setHeadline', ''),
@@ -175,8 +178,8 @@ const Header = (props) => {
                                     {(video && !image) &&
                                         <ReactPlayer
                                             url={video}
-                                            width='200'
-                                            height='140'
+                                            width='200px'
+                                            height='140px'
                                             config={{
                                                 youtube: {
                                                     playerVars: {

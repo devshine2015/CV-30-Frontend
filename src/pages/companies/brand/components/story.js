@@ -30,8 +30,8 @@ const Story = props => {
                     {(video && !image) &&
                         <ReactPlayer
                             url={video}
-                            width='200'
-                            height='140'
+                            width='600px'
+                            height='360px'
                             config={{
                                 youtube: {
                                     playerVars: {

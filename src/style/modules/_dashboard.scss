@@ -3,6 +3,7 @@
     min-height: calc(100vh - 62px);
     display: flex;
     flex-direction: column;
+    flex: 1;
     .mainBody {
         padding: 50px 0 0;
     }
