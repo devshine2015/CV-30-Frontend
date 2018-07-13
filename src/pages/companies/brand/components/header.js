@@ -18,6 +18,7 @@ import AddTeam from './addTeam';
 import { s3BucketURL } from '../../../../constants/s3';
 import { companyQuery, handleArticle } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
+import TeamSlider from './teamSlider';
 
 
 const HeaderHOC = compose(
@@ -73,7 +74,7 @@ const HeaderHOC = compose(
 
 const Header = (props) => {
     const { headline, updateHeadline, match, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
-        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField } }
+        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField, teams } }
     } = props;
     const { lang, companyId } = match.params;
 
@@ -231,23 +232,18 @@ const Header = (props) => {
                 </Grid>
 
                 <Grid container className='teamSlider'>
-                    <Grid item className='teamSliderItem title'>
-                        <h4>Cunoaste <b>echipa</b></h4>
-                        {editMode && <AddTeam {...props} />}
+                    <Grid item lg={9} md={9} sm={12} xs={12} className='slideContainer'>
+                        <div className='teamSliderItem title'>
+                            <h4>Cunoaste <b>echipa</b></h4>
+                            {editMode && <AddTeam {...props} />}
+                        </div>
+                        {
+                            (teams && teams.length > 0) &&
+                            <TeamSlider teams={teams} match={match} />
+                        }
                     </Grid>
-                    {
-                        // headerStories.map((story, index) => {
-                        //     let url = `/${lang}/dashboard/company/team`; //will add params for company id and team id
-                        //     return (
-                        //         <Link to={url} className='teamSliderItem' key={`teamSliderItem-${index}`}>
-                        //             <img src={story.img} alt="ceva" className='teamImg' />
-                        //             <span className='teamText'>{story.title}</span>
-                        //         </Link>
-                        //     )
-                        // })
-                    }
-
                 </Grid>
+
             </div>
         </div>
     )

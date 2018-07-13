@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import SliderHOC from '../../../../hocs/slider';
+import { Link } from 'react-router-dom';
 
 import AddNewStory from './addStory';
 import QuestionEdit from './questionEdit';
@@ -10,7 +10,12 @@ import ArticleSlider from '../../../../components/articleSlider';
 
 
 const Show = (props) => {
-    const { expanded, expandPanel, editMode, companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } }, edited, editPanel, addQA, newQA } = props;
+    const {
+        expanded, expandPanel, editMode,
+        companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } },
+        edited, editPanel, addQA, newQA,
+        match: { params: { lang, companyId } }
+    } = props;
 
     return (
         <Grid container className='mainBody brandShow'>
@@ -90,28 +95,40 @@ const Show = (props) => {
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
                     <h2 className="columnTitle">
-                        <b>Joburi</b> recente
+                        <b>Recent</b> jobs
                     </h2>
 
                     <div className='jobs'>
+
                         {
-                            jobs.map((job, index) => {
+                            jobs.map(job => {
                                 return (
                                     <div className='jobItem' key={job.id}>
                                         <div className='media'>
                                             <div className='mediaFake'>
                                                 <i className="fas fa-play fa-3x"></i>
                                             </div>
-                                            <span className='role'>{job.level}</span>
+                                            {job.level &&
+                                                <span className='role'>{job.level}</span>
+                                            }
                                         </div>
                                         <div className='info'>
-                                            <h5>{job.title}</h5>
-                                            <span>{job.date} - {job.location}</span>
+                                            <h5>{job.i18n[0].title}</h5>
+                                            <span>{job.i18n[0].description}</span>
                                         </div>
 
                                     </div>
                                 )
                             })
+                        }
+                        {
+                            editMode &&
+                            <Link className='addJobBtn' to={{
+                                pathname: `/${lang}/dashboard/jobs/new`,
+                                state: { companyId }
+                            }}>
+                                + Add new job
+                            </Link>
                         }
                     </div>
                 </div>
@@ -147,7 +164,6 @@ const ShowHOC = compose(
             addNewQA(true);
         }
     }),
-    SliderHOC,
     pure
 )
 

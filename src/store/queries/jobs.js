@@ -67,3 +67,12 @@ query job($id: String!, $language: LanguageCodeType!) {
     }
 }
 `;
+
+export const handleJob = gql`
+    mutation handleJob($language: LanguageCodeType!, $jobDetails: JobInput!) {
+        handleJob(language: $language, jobDetails: $jobDetails) {
+            status
+            error
+        }
+    }
+`;

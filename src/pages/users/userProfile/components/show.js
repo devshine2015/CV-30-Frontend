@@ -110,9 +110,7 @@ const ShowHOC = compose(
         closeArticlePopUp: ({ setIsPopUpOpen }) => () => {
             setIsPopUpOpen(false);
         }
-
     }),
-    // Slider,
     pure
 );
 

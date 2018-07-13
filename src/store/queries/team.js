@@ -8,3 +8,75 @@ export const handleTeam = gql`
         }
     }
 `;
+
+export const queryTeam = gql`
+    query team($id: String!, $language: LanguageCodeType!) {
+        team(id: $id, language: $language) {
+            id
+            name
+            company {
+                id
+                name
+            }
+            members {
+                id
+                firstName
+                lastName
+                email
+            }
+            officeArticles {
+                id
+                images {
+                    id
+                    path
+                }
+                videos {
+                    id
+                    path
+                }
+                i18n {
+                    title
+                    description
+                }
+            }
+            jobs {
+                id
+                name
+                expireDate
+                i18n {
+                    title
+                    description
+                }
+            }
+            hasProfileCover
+            profileBackgroundColor
+        }
+    }
+`;
+
+export const addMemberToTeam = gql`
+    mutation addMemberToTeam($teamId: String!, $memberId: String!) {
+        addMemberToTeam(teamId: $teamId, memberId: $memberId) {
+            status
+            error
+        }
+    }
+`;
+
+export const removeMemberFromTeam = gql`
+    mutation removeMemberFromTeam($teamId: String!, $memberId: String!) {
+        removeMemberFromTeam(teamId: $teamId, memberId: $memberId) {
+            status
+            error
+        }
+    }
+`;
+
+export const teamsQuery = gql`
+    query teams($language: LanguageCodeType!) {
+        teams(language: $language) {
+            id
+            name
+        }
+    }
+`;

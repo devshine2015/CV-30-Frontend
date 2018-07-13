@@ -20,6 +20,7 @@
     "react-apollo": "^2.1.9",
     "react-async-script-loader": "^0.3.0",
     "react-dom": "^16.4.1",
+    "react-flex-carousel": "^1.1.0",
     "react-froala-wysiwyg": "^2.8.4",
     "react-intl": "^2.4.0",
     "react-player": "^1.6.4",

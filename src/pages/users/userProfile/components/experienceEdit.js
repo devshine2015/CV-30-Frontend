@@ -28,7 +28,7 @@ const ExperienceEditHOC = compose(
         }
 
         const { id, company, position, location, startDate, endDate, isCurrent, i18n, videos } = job;
-        const { description } = i18n && i18n[0];
+        const { description } = i18n[0];
 
         let data = {
             id, company, position, location, startDate, endDate, isCurrent, description, video: !!videos.length ? { ...videos[0], name: 'video' } : { name: 'video', path: '' }

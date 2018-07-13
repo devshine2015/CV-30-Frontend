@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 
 import { s3BucketURL } from '../constants/s3';
-import { getArticles, handleArticle, currentUserQuery, companyQuery } from '../store/queries';
+import { getArticles, handleArticle, currentUserQuery, companyQuery, queryTeam } from '../store/queries';
 
 const ArticleBrowserHOC = compose(
     withRouter,
@@ -62,10 +62,25 @@ const ArticleBrowserHOC = compose(
                     refetchQuery = {
                         query: companyQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'companyQuery',
                         variables: {
                             language: match.params.lang,
                             id: match.params.companyId
+                        }
+                    };
+                    break;
+                case 'job_officeLife':
+                    options = {
+                        teamId: match.params.teamId,
+                        isAtOffice: true
+                    };
+                    refetchQuery = {
+                        query: queryTeam,
+                        fetchPolicy: 'network-only',
+                        name: 'queryTeam',
+                        variables: {
+                            language: match.params.lang,
+                            id: match.params.teamId
                         }
                     };
                     break;
@@ -101,7 +116,6 @@ const ArticleBrowser = props => {
         )
 
     return (
-
         <div className='articlesContainer'>
             {
                 (articles && articles.length > 0) ? articles.map(article => {

@@ -1,159 +1,132 @@
 import React from 'react';
 import { Grid, Avatar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import uuid from 'uuidv4';
+import { FormattedMessage } from 'react-intl';
+import { compose, withState, withHandlers } from 'recompose';
+
+
+import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import ArticleSlider from '../../../../components/articleSlider';
+import ArticlePopUp from '../../../../components/ArticlePopup';
+import MembersPopup from './memberPopup';
+import { removeMemberFromTeam, queryTeam } from '../../../../store/queries';
+import { graphql } from '../../../../../node_modules/react-apollo';
 
-const jobs = [
-    {
-        id: 'job-1',
-        title: 'Some job title',
-        date: '11-12-2018',
-        level: 'entry'
-    },
-    {
-        id: 'job-2',
-        title: 'Some job title',
-        date: '11-12-2018',
-        level: 'entry'
-    },
-    {
-        id: 'job-3',
-        title: 'Some job title',
-        date: '11-12-2018',
-        level: 'entry'
-    },
-    {
-        id: 'job-4',
-        title: 'Some job title',
-        date: '11-12-2018',
-        level: 'entry'
-    },
-    {
-        id: 'job-5',
-        title: 'Some job title',
-        date: '11-12-2018',
-        level: 'entry'
-    }
-];
-
-const officeLife = [
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'http://wowslider.com/sliders/demo-11/data/images/krasivyi_korabl_-1024x768.jpg'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some title 1',
-            description: 'some description'
-        }]
-    },
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwObBmWDaXK4DxechC-rdwErL199LKP6qTC_oIh-5LeoOX-NMC'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some titl 22e',
-            description: 'some description'
-        }]
-    },
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'http://ukphotosgallery.com/wp-content/uploads/2016/05/bg3.jpg'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some tit411241414le',
-            description: 'some descrip2423244ion'
-        }]
-    },
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'https://www.w3schools.com/howto/img_forest.jpg'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some title',
-            description: 'some description'
-        }]
-    },
-    {
-        id: uuid(),
-        images: [{
-            id: uuid(),
-            path: 'https://www.w3schools.com/howto/img_forest.jpg'
-        }],
-        videos: [{
-            id: uuid(),
-            path: 'ceva'
-        }],
-        i18n: [{
-            title: 'some title',
-            description: 'some description'
-        }]
-    }
-];
-
+const ShowHOC = compose(
+    graphql(removeMemberFromTeam, { name: 'removeMemberFromTeam' }),
+    withState('isArticlePopupOpen', 'setIsArticlePopupOpen', false),
+    withState('isMembersPopupOpen', 'setIsMembersPopupOpen', false),
+    withHandlers({
+        openArticlePopUp: ({ setIsArticlePopupOpen }) => () => {
+            setIsArticlePopupOpen(true);
+        },
+        closeArticlePopUp: ({ setIsArticlePopupOpen }) => () => {
+            setIsArticlePopupOpen(false);
+        },
+        openMembersPopup: ({ setIsMembersPopupOpen }) => () => {
+            setIsMembersPopupOpen(true);
+        },
+        closeMembersPopup: ({ setIsMembersPopupOpen }) => () => {
+            setIsMembersPopupOpen(false);
+        },
+        removeMember: ({ removeMemberFromTeam, match: { params: { lang, teamId } } }) => async memberId => {
+            try {
+                await removeMemberFromTeam({
+                    variables: {
+                        teamId,
+                        memberId
+                    },
+                    refetchQueries: [{
+                        query: queryTeam,
+                        fetchPolicy: 'network-only',
+                        name: 'queryTeam',
+                        variables: {
+                            language: lang,
+                            id: teamId
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+    })
+);
 const Show = props => {
-    const { match } = props;
-    const lang = match.params.lang;
+    const {
+        editMode,
+        isArticlePopupOpen, openArticlePopUp, closeArticlePopUp,
+        isMembersPopupOpen, openMembersPopup, closeMembersPopup,
+        match: { params: { lang, teamId } },
+        queryTeam: { team: { company, members, officeArticles, jobs } },
+        removeMember
+    } = props;
+
     return (
         <Grid container className='mainBody teamShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <section className='teamMembers'>
-                    <h2 className='titleHeading'>Membrii<b>echipei</b></h2>
+                    <h2 className='titleHeading'>Team<b>members</b></h2>
                     <div className='teamMembersContainer'>
-                        <div className='teamMember'>
-                            <Avatar src='https://bootdey.com/img/Content/avatar/avatar6.png' alt='teamMember' className='avatar' />
-                            <span className='teamMemberName'>John Doe</span>
-                            <i className='fas fa-check-circle' />
-                        </div>
-                        <div className='teamMember'>
-                            <Avatar src='https://bootdey.com/img/Content/avatar/avatar6.png' alt='teamMember' className='avatar' />
-                            <span className='teamMemberName'>John Doe</span>
-                            <i className='fas fa-check-circle' />
-                        </div>
-                        <div className='teamMember'>
-                            <Avatar src='https://bootdey.com/img/Content/avatar/avatar6.png' alt='teamMember' className='avatar' />
-                            <span className='teamMemberName'>John Doe</span>
-                            <i className='fas fa-check-circle' />
-                        </div>
-                        <div className='teamMember'>
-                            <Avatar src='https://bootdey.com/img/Content/avatar/avatar6.png' alt='teamMember' className='avatar' />
-                            <span className='teamMemberName'>John Doe</span>
-                            <i className='fas fa-check-circle' />
-                        </div>
+                        {members && members.map(profile => {
+                            const { id, hasAvatar, avatarContentType, firstName, lastName, email } = profile;
+                            let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
+                            let initials = (firstName && lastName) ? `${firstName.charAt(0)}${lastName.charAt(0)}` : email;
+                            const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
+                            return (
+                                <div className='teamMember' key={id}>
+                                    <Avatar src={avatar} className='avatar'>
+                                        {
+                                            !hasAvatar ?
+                                                initials
+                                                : null
+                                        }
+                                    </Avatar>
+                                    <span className='teamMemberName'>{fullName}</span>
+                                    <i className='fas fa-check-circle' onClick={() => removeMember(id)} />
+                                </div>
+                            )
+                        })}
                     </div>
+                    {editMode &&
+                        <React.Fragment>
+                            <div className='addItemBtn' onClick={openMembersPopup}>
+                                + Add Team Member
+                            </div>
+                            <MembersPopup
+                                open={isMembersPopupOpen}
+                                onClose={closeMembersPopup}
+                            />
+                        </React.Fragment>
+                    }
                 </section>
-                <section className='teamLife'>{officeLife &&
-                    <ArticleSlider
-                        articles={officeLife}
-                        title={(<h2 className='titleHeading'>Viata <b>la birou</b></h2>)}
-                    />
-                }
+                <section className='teamLife'>
+                    {(officeArticles && officeArticles.length > 0) &&
+                        <ArticleSlider
+                            articles={officeArticles}
+                            title={(<h2 className='titleHeading'>Life <b>at the office</b></h2>)}
+                        />
+                    }
+                    {editMode &&
+                        <React.Fragment>
+                            <div className='addItemBtn' onClick={openArticlePopUp}>
+                                + Add Article
+                            </div>
+                            <ArticlePopUp
+                                type='job_officeLife'
+                                open={isArticlePopupOpen}
+                                onClose={closeArticlePopUp}
+                            />
+                        </React.Fragment>
+                    }
                 </section>
-                <Link to={`/${lang}/dashboard/company/`} className='teamBackLink'>Inapoi la Ursus Romania</Link>
+                <FormattedMessage id="headerLinks.backTo" defaultMessage="Back to" description="User header back to link">
+                    {(text) => (
+                        <Link to={`/${lang}/dashboard/company/${company.id}`} className='teamBackLink'>{text}&nbsp;{company.name}</Link>
+                    )}
+                </FormattedMessage>
+
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
@@ -162,7 +135,7 @@ const Show = props => {
                     </h2>
                     <div className='jobs'>
                         {
-                            jobs.map((job, index) => {
+                            jobs.map(job => {
                                 return (
                                     <div className='jobItem' key={job.id}>
                                         <div className='media'>
@@ -180,6 +153,14 @@ const Show = props => {
                                 )
                             })
                         }
+                        {editMode &&
+                            <Link className='addItemBtn' to={{
+                                pathname: `/${lang}/dashboard/jobs/new`,
+                                state: { companyId: company.id, teamId }
+                            }}>
+                                + Add Job
+                            </Link>
+                        }
                     </div>
                 </div>
             </Grid>
@@ -187,4 +168,4 @@ const Show = props => {
     );
 }
 
-export default Show;
+export default ShowHOC(Show);

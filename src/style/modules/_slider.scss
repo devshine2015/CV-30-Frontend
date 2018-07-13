@@ -32,3 +32,137 @@
         }
     }
 }
+
+.teamSliderMain {
+    ul {
+        li {
+            img {
+                display: block;
+                max-width: 100%;
+                object-fit: cover;
+                margin: 0 auto;
+            }
+        }
+        &~div {
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            margin-top: -1em;
+            padding: 0;
+            button {
+                position: absolute;
+                font-size: inherit;
+                background-color: black;
+                height: 2em;
+                width: 2em;
+                opacity: .5;
+                padding: 0;
+                border: 0;
+                outline: none;
+                cursor: pointer;
+                &.prev {
+                    left: 0;
+                }
+                &.next {
+                    right: 0;
+                }
+            }
+        }
+    }
+    ol {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        bottom: .5em;
+        text-align: center;
+        width: 100%;
+        li {
+            display: inline-block;
+            min-width: 10px;
+            min-height: 10px;
+            width: .6em;
+            height: .6em;
+            background-color: #BEC0BC;
+            margin: 0 .5em;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            text-indent: 100%;
+        }
+    }
+    ol [aria-current="true"] {
+        pointer-events: none;
+        cursor: auto;
+        background-color: black;
+    }
+}
+
+/*
+.slider ul li>img {
+    display: block;
+    max-width: 100%;
+    object-fit: cover;
+    margin: 0 auto;
+}
+
+.slider ol {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    bottom: .5em;
+    text-align: center;
+    width: 100%;
+}
+
+.slider ol li {
+    display: inline-block;
+    min-width: 10px;
+    min-height: 10px;
+    width: .6em;
+    height: .6em;
+    background-color: #BEC0BC;
+    margin: 0 .5em;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    text-indent: 100%;
+}
+
+.slider ol [aria-current="true"] {
+    pointer-events: none;
+    cursor: auto;
+    background-color: black;
+}
+
+.slider ul~div {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    margin-top: -1em;
+    padding: 0;
+}
+
+.slider ul~div button {
+    position: absolute;
+    font-size: inherit;
+    background-color: black;
+    height: 2em;
+    width: 2em;
+    opacity: .5;
+    padding: 0;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+}
+
+.slider .prev {
+    left: 0;
+}
+
+.slider .next {
+    right: 0;
+}
+
+*/

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { handleArticle, currentUserQuery, companyQuery } from '../store/queries';
+import { handleArticle, currentUserQuery, companyQuery, queryTeam } from '../store/queries';
 import { graphql } from 'react-apollo';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
@@ -64,11 +64,6 @@ const ArticleEditorHOC = compose(
                     };
                     break;
                 case 'company_featured':
-                    options = {
-                        articleId: formData.id,
-                        companyId: match.params.companyId,
-                        isFeatured: true
-                    };
                     refetchQuery = {
                         query: companyQuery,
                         fetchPolicy: 'network-only',
@@ -76,6 +71,17 @@ const ArticleEditorHOC = compose(
                         variables: {
                             language: match.params.lang,
                             id: match.params.companyId
+                        }
+                    };
+                    break;
+                case 'job_officeLife':
+                    refetchQuery = {
+                        query: queryTeam,
+                        fetchPolicy: 'network-only',
+                        name: 'queryTeam',
+                        variables: {
+                            language: match.params.lang,
+                            id: match.params.teamId
                         }
                     };
                     break;
@@ -104,10 +110,14 @@ const ArticleEditorHOC = compose(
 
             let options = {
                 articleId: formData.id,
-                companyId: match.params.companyId,
-                isFeatured: type === 'company_featured'
+                isFeatured: type === 'company_featured' || type === 'job_officeLife',
+
             };
 
+            if (match.params.companyId)
+                options.companyId = match.params.companyId;
+            if (type === 'job_officeLife')
+                options.teamId = match.params.teamId;
 
             try {
                 await handleArticle({
@@ -122,8 +132,9 @@ const ArticleEditorHOC = compose(
             }
             catch (err) {
                 console.log(err);
+                setIsSaving(true);
+
             }
-            setIsSaving(true);
         },
         getSignedUrl: ({ formData }) => async (file, callback) => {
             const params = {
