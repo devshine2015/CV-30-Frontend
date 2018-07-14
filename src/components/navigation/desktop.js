@@ -4,7 +4,9 @@ import { FormattedMessage } from 'react-intl';
 import { NavLink, Link } from 'react-router-dom';
 import { Manager, Target, Popper } from 'react-popper';
 import classNames from 'classnames';
+
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
+import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
 
 const DesktopNav = props => {
     const { localUserData, currentUser, match, doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications } = props;
@@ -15,13 +17,13 @@ const DesktopNav = props => {
         return null;
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : defaultUserAvatar
 
     return (
         <React.Fragment>
             <Grid item sm={1} xs={1} md={1}>
                 <NavLink className='brand' to={`/${lang}/dashboard`}>
-                    <Avatar src="http://brandmark.io/logo-rank/random/pepsi.png" alt="logo" className='brandImg' />
+                    <Avatar src={cv30Logo} alt="logo" className='brandImg' imgProps={{ style: { objectFit: 'contain' } }} />
                 </NavLink>
             </Grid>
             <Grid item md={11} lg={11} className='mainNavContainer' id="mainNav">
@@ -65,7 +67,7 @@ const DesktopNav = props => {
                             this.target1 = node;
                         }}>
                             <Avatar alt="Gabriel" src={avatar} className='avatar'>
-                                {!user.hasAvatar && user.email.slice(0, 1)}
+                                {/* {!user.hasAvatar && user.email.slice(0, 1)} */}
                             </Avatar>
                             <span>{user.firstName || user.email}</span>
                         </Button>

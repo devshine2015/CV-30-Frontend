@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { NavLink, Link } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
+import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
 
 const MobileNav = (props) => {
     const {
@@ -22,14 +23,14 @@ const MobileNav = (props) => {
         return null;
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : defaultUserAvatar
 
 
     return (
         <React.Fragment>
             <Grid item>
                 <NavLink className='brand' to={`/${lang}/dashboard`}>
-                    <Avatar src="http://brandmark.io/logo-rank/random/pepsi.png" alt="logo" className='brandImg' />
+                    <Avatar src={cv30Logo} alt="logo" className='brandImg' imgProps={{ style: { objectFit: 'contain' } }} />
                 </NavLink>
             </Grid>
             <Grid item className='mobileNavContainer' id="mobileMainNav">
