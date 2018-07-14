@@ -3,12 +3,15 @@ import JobItem from '../../../jobs/list/components/jobItem';
 
 const jobs = [
     {
-        company: 'Vodafone',
-        expirationDate: '11-12-2019',
+        company: { name: 'Vodafone', location: "Brasov" },
+        expireDate: '11-12-2019',
         appliedDate: '11-12-2019',
         location: 'Timisoara',
         match: 65,
-        title: 'Some job title goes here',
+        i18n: [{
+            title: 'Some job title goes here',
+            description: 'Lorem ipsum dolor sit amet, te viderer alienum forensibus duo, has id quodsi pertinax persequeris, dolorem oportere his no. Ea ius commune quaerendum, et tollit quaestio pertinacia vis, labores singulis mea te. No vel prompta neglegentur comprehensam, ad sea alii tibique efficiendi.'
+        }],
         jobLevels: ['entry', 'mid', 'senior'],
         benefits: [
             {
@@ -60,14 +63,16 @@ const jobs = [
         images: [{
             url: ''
         }],
-        description: 'Lorem ipsum dolor sit amet, te viderer alienum forensibus duo, has id quodsi pertinax persequeris, dolorem oportere his no. Ea ius commune quaerendum, et tollit quaestio pertinacia vis, labores singulis mea te. No vel prompta neglegentur comprehensam, ad sea alii tibique efficiendi.'
     },
     {
-        company: 'Vodafone',
-        expirationDate: '11-12-2019',
+        company: { name: 'Vodafone', location: "Brasov" },
+        expireDate: '11-12-2019',
         location: 'Timisoara',
         match: 85,
-        title: 'Some job title goes here',
+        i18n: [{
+            title: 'Some job title goes here',
+            description: 'Lorem ipsum dolor sit amet, te viderer alienum forensibus duo, has id quodsi pertinax persequeris, dolorem oportere his no. Ea ius commune quaerendum, et tollit quaestio pertinacia vis, labores singulis mea te. No vel prompta neglegentur comprehensam, ad sea alii tibique efficiendi.'
+        }],
         jobLevels: ['entry', 'mid', 'senior', 'entry', 'mid', 'senior', 'entry', 'mid', 'senior', 'entry', 'mid', 'senior', 'entry', 'mid', 'senior', 'entry', 'mid', 'senior'],
         videos: [{
             url: ''
@@ -75,14 +80,16 @@ const jobs = [
         images: [{
             url: ''
         }],
-        description: 'Lorem ipsum dolor sit amet, te viderer alienum forensibus duo, has id quodsi pertinax persequeris, dolorem oportere his no. Ea ius commune quaerendum, et tollit quaestio pertinacia vis, labores singulis mea te. No vel prompta neglegentur comprehensam, ad sea alii tibique efficiendi.'
     },
     {
-        company: 'Vodafone',
-        expirationDate: '11-12-2019',
+        company: { name: 'Vodafone', location: "Brasov" },
+        expireDate: '11-12-2019',
         location: 'Timisoara',
         match: 95,
-        title: 'Some job title goes here',
+        i18n: [{
+            title: 'Some job title goes here',
+            description: 'Lorem ipsum dolor sit amet, te viderer alienum forensibus duo, has id quodsi pertinax persequeris, dolorem oportere his no. Ea ius commune quaerendum, et tollit quaestio pertinacia vis, labores singulis mea te. No vel prompta neglegentur comprehensam, ad sea alii tibique efficiendi.'
+        }],
         jobLevels: ['entry', 'mid', 'senior'],
         benefits: [
             {
@@ -100,12 +107,14 @@ const jobs = [
                 label: 'Car'
             }
         ],
-        description: 'Lorem ipsum dolor sit amet, te viderer alienum forensibus duo, has id quodsi pertinax persequeris, dolorem oportere his no. Ea ius commune quaerendum, et tollit quaestio pertinacia vis, labores singulis mea te. No vel prompta neglegentur comprehensam, ad sea alii tibique efficiendi.'
     },
     {
-        title: 'Some job title goes here',
-        company: 'Vodafone',
-        expirationDate: '11-12-2019',
+        i18n: [{
+            title: 'Some job title goes here',
+            description: 'Lorem ipsum dolor sit amet, te viderer alienum forensibus duo, has id quodsi pertinax persequeris, dolorem oportere his no. Ea ius commune quaerendum, et tollit quaestio pertinacia vis, labores singulis mea te. No vel prompta neglegentur comprehensam, ad sea alii tibique efficiendi.'
+        }],
+        company: { name: 'Vodafone', location: "Brasov" },
+        expireDate: '11-12-2019',
         location: 'Timisoara',
         match: 25,
         jobLevels: ['entry', 'mid', 'senior'],
@@ -131,10 +140,7 @@ const jobs = [
         images: [{
             url: ''
         }],
-        description: 'Lorem ipsum dolor sit amet, te viderer alienum forensibus duo, has id quodsi pertinax persequeris, dolorem oportere his no. Ea ius commune quaerendum, et tollit quaestio pertinacia vis, labores singulis mea te. No vel prompta neglegentur comprehensam, ad sea alii tibique efficiendi.'
-    },
-
-
+    }
 ];
 
 

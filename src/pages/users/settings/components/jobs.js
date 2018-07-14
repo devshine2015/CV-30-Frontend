@@ -140,9 +140,7 @@ const jobs = [
         images: [{
             url: ''
         }],
-    },
-
-
+    }
 ];
 
 
