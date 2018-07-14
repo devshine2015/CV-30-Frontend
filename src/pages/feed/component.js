@@ -1,9 +1,10 @@
 import React from 'react';
 import { Grid, Button, Icon, Avatar, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, IconButton } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { defaultUserAvatar } from '../../constants/utils';
 
 const NewsFeed = props => {
-    const { formData, handleFormChange, switchIsArticle, isArticle, article } = props;
+    const { formData, handleFormChange, switchIsArticle, isArticle/*, article*/ } = props;
     const { postBody } = formData;
     const { id, firstName, lastName, email, avatar, fullName } = props;
     return (
@@ -13,7 +14,12 @@ const NewsFeed = props => {
                     <section className='newPost'>
                         <div className='postHeader'>
                             <div className='userProfile'>
-                                <Avatar className='userAvatar' src='' alt='userAvatar' />
+                                <Avatar
+                                    className='userAvatar'
+                                    src={defaultUserAvatar}
+                                    alt='userAvatar'
+                                    imgProps={{ style: { objectFit: 'contain' } }}
+                                    style={{ backgroundColor: '#fff', margin: 3 }} />
                                 <span className='postAs'>
                                     Post as:
                                         <span className='userName'>Radu Daniel</span>
@@ -100,7 +106,8 @@ const NewsFeed = props => {
                         <div className='listItem userListItem'>
                             <div className='leftOverlay'>
                                 <Link to={`/dashboard/profile/${id}`}>
-                                    <Avatar alt={firstName || lastName || email} src={avatar} className='avatar' />
+                                    <Avatar alt={firstName || lastName || email} src={avatar || defaultUserAvatar} className='avatar' imgProps={{ style: { objectFit: 'contain' } }}
+                                    style={{ backgroundColor: '#fff', margin: 3 }} />
                                 </Link>
                                 <div className='leftOverlayTexts'>
                                     <h6 className='userName'>

@@ -4,6 +4,7 @@ import { Avatar, Tabs, Tab } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import JobItem from './jobItem';
 import TeamMember from './teamMember';
+import { defaultCompanyLogo } from '../../../../constants/utils';
 
 const CompanyHOC = compose(
     withState('activeTab', 'setActiveTab', false),
@@ -23,7 +24,7 @@ const Company = props => {
         <div className='listItem companyListItem'>
             <div className='leftOverlay'>
                 <Link to={`/dashboard/company/${id}`}>
-                    <Avatar alt="Gabriel" src="http://brandmark.io/logo-rank/random/pepsi.png" className='avatar' />
+                    <Avatar alt="Gabriel" src={ defaultCompanyLogo } className='avatar' style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }} />
                 </Link>
                 <div className='leftOverlayTexts'>
                     <h6 className='userName'>

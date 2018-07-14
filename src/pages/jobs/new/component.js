@@ -12,7 +12,7 @@ const NewJob = props => {
         handleFormChange,
         selectedBenefit, handleSelectBenefit,
         publishJob,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, renameFile, isUploading,
+        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
         teamsQuery: { loading, teams }
     } = props;
     if (loading)

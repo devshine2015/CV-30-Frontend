@@ -60,7 +60,7 @@ const AddTeamHOC = compose(
 )
 
 const AddTeam = props => {
-    const { match, teamAnchor, closeTeamModal, newTeam, updateNewTeam, addTeam, openTeamModal } = props;
+    const { teamAnchor, closeTeamModal, newTeam, updateNewTeam, addTeam, openTeamModal } = props;
     return (
         <React.Fragment>
             <Button className='addTeamBtn' onClick={(event) => openTeamModal(event.target)}>Add Team</Button>

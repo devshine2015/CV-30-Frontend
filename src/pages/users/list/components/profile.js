@@ -3,6 +3,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { Avatar, Chip, Tabs, Tab } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
+import { defaultUserAvatar } from '../../../../constants/utils';
 
 const ProfileHOC = compose(withState('activeTab', 'setActiveTab', false),
     withHandlers({
@@ -28,14 +29,14 @@ const Profile = props => {
     const { activeTab, handleTabChange, user } = props;
 
     let { id, firstName, lastName, email, hasAvatar, avatarContentType, skills, values, aboutMeArticles } = user;
-    let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : '';
+    let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : defaultUserAvatar;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
 
     return (
         <div className='listItem userListItem'>
             <div className='leftOverlay'>
                 <Link to={`/dashboard/profile/${id}`}>
-                    <Avatar alt={firstName || lastName || email} src={avatar} className='avatar' />
+                    <Avatar alt={firstName || lastName || email} src={avatar} className='avatar' imgProps={{ style: { objectFit: 'contain' } }} style={{ backgroundColor: '#fff', margin: 3 }} />
                 </Link>
                 <div className='leftOverlayTexts'>
                     <h6 className='userName'>

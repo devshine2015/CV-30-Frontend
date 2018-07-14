@@ -1,7 +1,7 @@
 import NewJob from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
-import uuid from 'uuidv4';
+// import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
 
 import { teamsQuery, handleJob } from '../../../store/queries';

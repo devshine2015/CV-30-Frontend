@@ -1,7 +1,7 @@
 import React from 'react';
 // import Slider from "react-flex-carousel";
 import { Link } from 'react-router-dom';
-import { compose, withState, withHandlers, pure, lifecycle } from 'recompose';
+import { compose, withState, withHandlers, pure } from 'recompose';
 
 const TeamSliderHOC = compose(
     withState(),

@@ -16,7 +16,8 @@ const AddStoryHOC = compose(
         if (!story)
             return { id: uuid() }
         else {
-            let { id, i18n, images, videos } = story;
+            // let { id, i18n, images, videos } = story;
+            let { id, i18n, videos } = story;
             return {
                 id,
                 title: i18n && i18n[0] ? i18n[0].title : '',

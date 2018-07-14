@@ -7,7 +7,7 @@ import Show from './components/show';
 import Feed from './components/feed';
 
 const Team = props => {
-    const { editMode, switchEditMode, queryTeam: { loading } } = props;
+    const { editMode, switchEditMode } = props;
     
     const ShowWithProps = () => {
         return (<Show {...props} />)

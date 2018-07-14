@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Button, IconButton, Icon, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import uuid from 'uuidv4';
+// import uuid from 'uuidv4';
 
 import ArticleSlider from '../../../../components/articleSlider';
 
@@ -31,10 +31,10 @@ const Show = props => {
         return <div>Job not found...</div>;
     } else {
         const { expanded, expandPanel } = props;
-        const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles }, expireDate, videos, images } =job;
+        const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles }, expireDate/*, videos, images*/ } =job;
         // TODO: appliedDate, jobLevel, benefits from props
-        const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
-        const jobLevels = ['entry', 'mid', 'senior'];
+        // const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
+        // const jobLevels = ['entry', 'mid', 'senior'];
         const benefits = [
             {
                 icon: 'fas fa-car',

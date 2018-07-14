@@ -3,7 +3,7 @@ import { Avatar, Button, TextField } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
-import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
+// import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { currentUserQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation } from '../../../../store/queries';
 
 const SettingsHOC = compose(
@@ -147,7 +147,7 @@ const SettingsHOC = compose(
     pure
 )
 const Settings = props => {
-    const { settingsFormSuccess, settingsFormError, getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, localUserData, currentUser, handleFormChange, formData, saveUserDetails } = props;
+    const { settingsFormSuccess, settingsFormError, getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading/*, localUserData, currentUser*/, handleFormChange, formData, saveUserDetails } = props;
     const { name, headline, location, activityField, employees } = formData;
 
     let avatar = ''
