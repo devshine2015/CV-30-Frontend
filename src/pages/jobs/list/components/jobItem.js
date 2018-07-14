@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, CircularProgress, Chip } from '@material-ui/core';
+import { defaultCompanyLogo } from '../../../../constants/utils';
 
 const JobItem = props => {
     const { i18n, company: { name: companyName, location }, expireDate, videos, images, id } = props;
@@ -27,7 +28,7 @@ const JobItem = props => {
         <div className='listItem jobListItem'>
             <div className='leftOverlay'>
                 <Link to={`/dashboard/job/${id}`}>
-                    <Avatar alt="Gabriel" src="http://brandmark.io/logo-rank/random/pepsi.png" className='avatar' />
+                    <Avatar alt="Gabriel" src={ defaultCompanyLogo } className='avatar' style={{ margin: 3, backgroundColor: '#fff' }} imgProps={{ style: { objectFit: 'contain' } }} />
                 </Link>
                 <div className='leftOverlayTexts'>
                     <h6 className='companyName'>
