@@ -10,7 +10,7 @@ import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 const TeamMembers = (props) => {
     const {
         open, onClose,
-        profilesQuery: { profiles },
+        profilesQuery: { loading, profiles },
         addTeamMember
     } = props;
 
@@ -30,7 +30,8 @@ const TeamMembers = (props) => {
                     </p>
                 </div>
                 <div className='popupBody'>
-                    <div className='membersContainer'>
+                    { loading && "Loading ..."}
+                    { !loading && <div className='membersContainer'>
                         {profiles.map(profile => {
                             const { id, hasAvatar, avatarContentType, firstName, lastName, email } = profile;
                             let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
@@ -51,7 +52,7 @@ const TeamMembers = (props) => {
                                 </div>
                             )
                         })}
-                    </div>
+                    </div> }
                 </div>
             </div>
         </Modal>
