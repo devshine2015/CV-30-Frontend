@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
+import { Icon } from '@material-ui/core';
 import 'pure-react-carousel/dist/react-carousel.es.css';
 
 const TeamSliderHOC = compose(
@@ -15,9 +16,9 @@ const TeamSlider = props => {
 
     return <CarouselProvider
         dragEnabled={false}
-        visibleSlides={2} // dinamyc
-        naturalSlideWidth={100}
-        naturalSlideHeight={125}
+        visibleSlides={3} // dinamyc
+        naturalSlideWidth={300}
+        naturalSlideHeight={200}
         totalSlides={teams.length}
         className="teamSliderMain"
     >
@@ -34,8 +35,12 @@ const TeamSlider = props => {
                 );
             })}
         </Slider>
-        <ButtonBack>Back</ButtonBack>
-        <ButtonNext>Next</ButtonNext>
+        <ButtonBack className='teamSliderBtn back'>
+            <Icon>chevron_left</Icon>
+        </ButtonBack>
+        <ButtonNext className='teamSliderBtn next'>
+            <Icon>chevron_right</Icon>
+        </ButtonNext>
     </CarouselProvider>;
 }
 

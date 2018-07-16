@@ -36,8 +36,29 @@
 .teamSliderMain {
     display: flex;
     width: 100%;
+    position: relative;
     .slidesContainer {
         // display: flex;
         width: 100%;
+    }
+    .teamSliderBtn {
+        background: none;
+        border: none;
+        position: absolute;
+        border-radius: 50%;
+        background: #fff;
+        color: #397db9;
+        width: 40px;
+        height: 40px;
+        min-width: auto;
+        min-height: auto;
+        box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+        align-self: center;
+        &.back {
+            left: 10px;
+        }
+        &.next {
+            right: 10px;
+        }
     }
 }
