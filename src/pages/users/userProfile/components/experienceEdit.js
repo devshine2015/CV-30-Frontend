@@ -16,7 +16,6 @@ const ExperienceEditHOC = compose(
     withState('isAutocompleteInit', 'setAutocompleteInit', false),
     withState('autocompleteHandle', '', () => React.createRef()),
     withState('formData', 'setFormData', ({ job }) => {
-        debugger;
         if (!job) {
             return {
                 id: uuid(),
@@ -28,7 +27,8 @@ const ExperienceEditHOC = compose(
         }
 
         const { id, company, position, location, startDate, endDate, isCurrent, i18n, videos } = job;
-        const { description } = i18n[0];
+        // const { description } = i18n[0];
+        let description = (i18n && i18n[0]) ? i18n[0].description : '';
 
         let data = {
             id, company, position, location, startDate, endDate, isCurrent, description, video: !!videos.length ? { ...videos[0], name: 'video' } : { name: 'video', path: '' }
@@ -58,7 +58,7 @@ const ExperienceEditHOC = compose(
             changeMediaType(!isVideoUrl);
         },
         submitForm: ({ formData, setExperience, setProject, type, match, closeEditor }) => async () => {
-            let { id, title, description, position, company, startDate, endDate, isCurrent, video, location } = formData;
+            let { id, title, description, position, company, startDate, endDate, isCurrent, images, video, location } = formData;
             const videos = [];
             if (video.path && !!video.path.length) {
                 videos.push({
@@ -68,14 +68,15 @@ const ExperienceEditHOC = compose(
                     sourceType: type
                 });
             }
+            debugger;
+
+            let data = { id, location, title, description, position, company, startDate, endDate, isCurrent, videos, images };
             switch (type) {
                 case 'experience':
                     try {
                         await setExperience({
                             variables: {
-                                experience: {
-                                    id, location, title, description, position, company, startDate, endDate, isCurrent, videos
-                                },
+                                experience: data,
                                 language: match.params.lang
                             },
                             refetchQueries: [{
@@ -97,9 +98,7 @@ const ExperienceEditHOC = compose(
                     try {
                         await setProject({
                             variables: {
-                                project: {
-                                    id, location, title, description, position, company, startDate, endDate, isCurrent, videos
-                                },
+                                project: data,
                                 language: match.params.lang
                             },
                             refetchQueries: [{

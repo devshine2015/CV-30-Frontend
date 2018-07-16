@@ -4,6 +4,7 @@ import { IconButton, Icon, Grid } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { FormattedDate, FormattedMessage } from 'react-intl';
 import ReactPlayer from 'react-player';
+import { s3BucketURL } from '../../../../constants/s3';
 
 const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, closeEditor, type }) => {
     if (!job) {
@@ -13,6 +14,14 @@ const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, clos
         if (editItem) {
             return <ExperienceEdit job={job} closeEditor={closeEditor} type={type} />
         } else {
+            let image, video;
+            if (job.images && job.images.length > 0) {
+                image = `${s3BucketURL}${job.images[0].path}`;
+                // image = job.images[0].path;
+            }
+            if (job.videos && job.videos.length > 0) {
+                video = job.videos[0].path;
+            }
 
             return (
                 <div className='experienceItem'>
@@ -61,14 +70,14 @@ const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, clos
                             <p>{(job.i18n && job.i18n.length === 1) ? job.i18n[0].description : ''}</p>
                         </Grid>
                         <Grid item xs={4}>
-                            {/* <div className='media'> */}
-                                {/* <Icon className='playIcon'>
-                                    play_circle_filled
-                                </Icon> */}
-                                { job.videos && !!job.videos.length && <ReactPlayer
-                                    url={job.videos[0].path}
-                                    width='200'
-                                    height='140'
+                            <div className='media'>
+                                {image &&
+                                    <img src={image} alt={job.id} className='articleImg' />
+                                }
+                                {(video && !image) && <ReactPlayer
+                                    url={video}
+                                    width='100%'
+                                    height='100%'
                                     config={{
                                         youtube: {
                                             playerVars: {
@@ -79,8 +88,8 @@ const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, clos
                                             }
                                         }
                                     }}
-                                    playing={false} /> }
-                            {/* </div> */}
+                                    playing={false} />}
+                            </div>
                         </Grid>
                     </Grid>
                 </div>
