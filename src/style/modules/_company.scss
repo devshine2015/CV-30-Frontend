@@ -114,6 +114,23 @@
             font-size: 1.5rem;
         }
     }
+    .headerInfoContainer {
+        .editorWrapper {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            padding: 10px;
+        }
+        .submitBtn {
+            display: flex;
+            background: #397db9;
+            color: #fff;
+            margin: 15px 0 0 auto;
+            width: 40px;
+            height: 40px;
+            min-width: auto;
+            min-height: auto;
+        }
+    }
     .headerStories {
         display: flex;
         margin-top: 50px;
@@ -376,6 +393,22 @@
                 }
             }
             .aboutSection {
+                .editorWrapper {
+                    background-color: #277dba30;
+                    border: 2px dashed #277dba;
+                    color: #fff;
+                    padding: 10px;
+                    .submitBtn {
+                        display: flex;
+                        background: #397db9;
+                        color: #fff;
+                        margin: 15px 0 0 auto;
+                        width: 40px;
+                        height: 40px;
+                        min-width: auto;
+                        min-height: auto;
+                    }
+                }
                 p {
                     color: #565656;
                     font-size: 1.15rem;

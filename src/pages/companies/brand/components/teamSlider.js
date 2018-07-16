@@ -1,5 +1,5 @@
 import React from 'react';
-// import Slider from "react-flex-carousel";
+import Slider from "react-flex-carousel";
 import { Link } from 'react-router-dom';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
@@ -21,7 +21,7 @@ const TeamSlider = props => {
         naturalSlideHeight={125}
         totalSlides={teams.length}
         className="teamSliderMain"
-        >
+    >
         <Slider className="slidesContainer" classNameTrayWrap="slidesContainer">
             {teams.map((team, index) => {
                 let url = `/${lang}/dashboard/team/${team.id}`;

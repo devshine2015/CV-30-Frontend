@@ -3,18 +3,98 @@ import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, Expansio
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { Link } from 'react-router-dom';
 
+
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+// Require Font Awesome.
+import 'font-awesome/css/font-awesome.css';
+import FroalaEditor from 'react-froala-wysiwyg';
+
 import AddNewStory from './addStory';
 import QuestionEdit from './questionEdit';
 import Story from './story';
 import ArticleSlider from '../../../../components/articleSlider';
+import { companyQuery, handleCompany } from '../../../../store/queries';
+import { graphql } from 'react-apollo';
 
+const ShowHOC = compose(
+    graphql(handleCompany, { name: 'handleCompany' }),
+    withState('expanded', 'updateExpanded', null),
+    withState('edited', 'updateEdited', null),
+    withState('editedStory', 'editStory', null),
+    withState('newQA', 'addNewQA', false),
+    withState('description', 'setDescription', props => {
+        let { companyQuery: { company: { i18n } } } = props;
+        if (!i18n || !i18n[0] || !i18n[0].description)
+            return '';
+        return i18n[0].description;
+
+    }),
+    withHandlers({
+        updateDescription: ({ setDescription }) => text => setDescription(text),
+        submitDescription: props => async () => {
+            let {
+                companyQuery: { company }, handleCompany, description, match
+            } = props;
+
+            try {
+                await handleCompany({
+                    variables: {
+                        language: match.params.lang,
+                        details: {
+                            id: company.id,
+                            description
+                        }
+                    },
+                    refetchQueries: [{
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'companyQuery',
+                        variables: {
+                            language: match.params.lang,
+                            id: company.id
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
+        },
+        expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
+            if (edited === panel) {
+                updateExpanded(panel);
+            } else {
+                if (edited)
+                    updateEdited(null);
+                updateExpanded(expanded ? panel : false);
+
+            }
+        },
+        editPanel: ({ updateEdited, updateExpanded, edited }) => (e, panel) => {
+            updateEdited(panel || false);
+            if (panel !== edited) {
+                updateExpanded(panel);
+                e.stopPropagation();
+            }
+        },
+        addQA: ({ addNewQA }) => () => {
+            addNewQA(true);
+        }
+    }),
+    pure
+);
 
 const Show = (props) => {
     const {
         expanded, expandPanel, editMode,
         companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } },
         edited, editPanel, addQA, newQA,
-        match: { params: { lang, companyId } }
+        match: { params: { lang, companyId } },
+        description, updateDescription, submitDescription
     } = props;
 
     return (
@@ -22,11 +102,26 @@ const Show = (props) => {
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <section className='aboutSection'>
                     <h2 className='titleHeading'>Despre <b>Ursus Romania</b></h2>
-                    <p>
-                        Nam ne sint nonumy lobortis, docendi recusabo intellegat ut eam. Mel quas mucius tincidunt at. Cu bonorum voluptatum vel, in cum sumo legere blandit.
-                        Dolore libris nominati te quo, et elit probatus duo. Eu movet consulatu qui, fuisset forensibus mel ea, detracto legendos quo in.
-                        Ex dicunt accusata adversarium vis, est an illum aliquam scriptorem, est no noster sanctus eleifend.
-                    </p>
+                    {
+                        editMode ?
+                            <div className='editorWrapper'>
+                                <FroalaEditor
+                                    config={{
+                                        placeholderText: 'This is where the company description should be',
+                                        iconsTemplate: 'font_awesome_5',
+                                        toolbarInline: true,
+                                        charCounterCount: false,
+                                        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                    }}
+                                    model={description}
+                                    onModelChange={updateDescription}
+                                />
+                                <IconButton className='submitBtn' onClick={submitDescription}>
+                                    <Icon>done</Icon>
+                                </IconButton>
+                            </div>
+                            : <p dangerouslySetInnerHTML={{ __html: description }} />
+                    }
                 </section>
 
                 <section className='officeLife'>
@@ -135,36 +230,6 @@ const Show = (props) => {
             </Grid>
         </Grid>
     );
-}
-
-const ShowHOC = compose(
-    withState('expanded', 'updateExpanded', null),
-    withState('edited', 'updateEdited', null),
-    withState('editedStory', 'editStory', null),
-    withState('newQA', 'addNewQA', false),
-    withHandlers({
-        expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
-            if (edited === panel) {
-                updateExpanded(panel);
-            } else {
-                if (edited)
-                    updateEdited(null);
-                updateExpanded(expanded ? panel : false);
-
-            }
-        },
-        editPanel: ({ updateEdited, updateExpanded, edited }) => (e, panel) => {
-            updateEdited(panel || false);
-            if (panel !== edited) {
-                updateExpanded(panel);
-                e.stopPropagation();
-            }
-        },
-        addQA: ({ addNewQA }) => () => {
-            addNewQA(true);
-        }
-    }),
-    pure
-)
+};
 
 export default ShowHOC(Show);

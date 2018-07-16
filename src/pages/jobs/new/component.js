@@ -91,7 +91,7 @@ const NewJob = props => {
                             <TextField
                                 name="expireDate"
                                 type="date"
-                                value={expireDate || new Date()}
+                                value={expireDate ? (new Date(expireDate)).toISOString().split("T")[0] : ''}
                                 onChange={handleFormChange}
                             />
                         </section>
@@ -124,7 +124,7 @@ const NewJob = props => {
                                     <em>Select a team</em>
                                 </MenuItem>
                                 {
-                                    teams && teams.map(team => <MenuItem value={team.id}>{team.name}</MenuItem>)
+                                    teams && teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
                                 }
 
                             </Select>

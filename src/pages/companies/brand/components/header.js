@@ -16,18 +16,56 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ArticlePopup from '../../../../components/ArticlePopup';
 import AddTeam from './addTeam';
 import { s3BucketURL } from '../../../../constants/s3';
-import { companyQuery, handleArticle } from '../../../../store/queries';
+import { companyQuery, handleArticle, handleCompany } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import TeamSlider from './teamSlider';
 
 
 const HeaderHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
+    graphql(handleCompany, { name: 'handleCompany' }),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
     withState('expanded', 'updateExpanded', null),
-    withState('headline', 'setHeadline', ''),
+    withState('headline', 'setHeadline', props => {
+        let { companyQuery: { company: { i18n } } } = props;
+        if (!i18n || !i18n[0] || !i18n[0].headline)
+            return '';
+        return i18n[0].headline;
+
+    }),
     withHandlers({
-        updateHeadline: ({ setHeadline }) => (text) => setHeadline(text),
+        updateHeadline: ({ setHeadline }) => (text) => {
+            setHeadline(text)
+        },
+        submitHeadline: props => async () => {
+            let {
+                companyQuery: { company }, handleCompany, headline, match
+            } = props;
+
+            try {
+                await handleCompany({
+                    variables: {
+                        language: match.params.lang,
+                        details: {
+                            id: company.id,
+                            headline
+                        }
+                    },
+                    refetchQueries: [{
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'companyQuery',
+                        variables: {
+                            language: match.params.lang,
+                            id: company.id
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
+        },
         expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
             updateExpanded(expanded ? panel : false);
         },
@@ -73,7 +111,7 @@ const HeaderHOC = compose(
 )
 
 const Header = (props) => {
-    const { headline, updateHeadline, match, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
+    const { headline, updateHeadline, submitHeadline, match, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
         companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField, teams } }
     } = props;
     const { lang, companyId } = match.params;
@@ -148,17 +186,26 @@ const Header = (props) => {
                 </Grid>
                 <Grid container className='headerInfoContainer' style={{ pointerEvents: 'all' }}>
                     <Grid item lg={5} md={5} sm={12} xs={12} className='textInfo'>
-                        <FroalaEditor
-                            config={{
-                                placeholderText: 'This is where the company headline should be',
-                                iconsTemplate: 'font_awesome_5',
-                                toolbarInline: true,
-                                charCounterCount: false,
-                                toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
-                            }}
-                            model={headline}
-                            onModelChange={updateHeadline}
-                        />
+                        {
+                            editMode ?
+                                <div className='editorWrapper'>
+                                    <FroalaEditor
+                                        config={{
+                                            placeholderText: 'This is where the company headline should be',
+                                            iconsTemplate: 'font_awesome_5',
+                                            toolbarInline: true,
+                                            charCounterCount: false,
+                                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                        }}
+                                        model={headline}
+                                        onModelChange={updateHeadline}
+                                    />
+                                    <IconButton className='submitBtn' onClick={submitHeadline}>
+                                        <Icon>done</Icon>
+                                    </IconButton>
+                                </div>
+                                : <span dangerouslySetInnerHTML={{ __html: headline }} />
+                        }
                     </Grid>
                 </Grid>
                 <Grid container className='headerStories'>
