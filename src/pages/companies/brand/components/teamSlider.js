@@ -1,5 +1,4 @@
 import React from 'react';
-import Slider from "react-flex-carousel";
 import { Link } from 'react-router-dom';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
