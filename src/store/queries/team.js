@@ -49,7 +49,8 @@ export const queryTeam = gql`
                 }
             }
             hasProfileCover
-            profileBackgroundColor
+            coverBackground
+            coverContentType
         }
     }
 `;

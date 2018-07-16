@@ -25,7 +25,7 @@ const ColorPickerHOC = compose(
                         teamDetails: {
                             id: teamId,
                             hasProfileCover: false,
-                            profileBackgroundColor: color.style,
+                            coverBackground: color.style,
                             companyId: company.id
                         }
                     },
@@ -87,7 +87,7 @@ const ColorPickerHOC = compose(
                         teamDetails: {
                             id: teamId,
                             hasProfileCover: true,
-                            profileBackgroundColor: '',
+                            coverBackground: '',
                             companyId: company.id
                         }
                     },

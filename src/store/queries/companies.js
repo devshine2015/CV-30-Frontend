@@ -77,7 +77,8 @@ export const companyQuery = gql`
         id
         name
         hasProfileCover
-        profileBackgroundColor
+        coverBackground
+        coverContentType
       }
     }
   }

@@ -26,7 +26,7 @@ const Header = props => {
     const {
         editMode,
         match: { params: { lang, teamId } },
-        queryTeam: { team: { company, hasProfileCover, profileBackgroundColor, name } },
+        queryTeam: { team: { company, hasProfileCover, coverBackground, name } },
         colorPickerAnchor, toggleColorPicker, closeColorPicker, refetchBgImage, forceCoverRender
     } = props;
 
@@ -36,8 +36,8 @@ const Header = props => {
         let newCover = `${s3BucketURL}/${teamsFolder}/${teamId}/cover.png?${forceCoverRender}`;
         headerStyle = { background: `url(${newCover})` };
     }
-    else if (profileBackgroundColor) {
-        headerStyle = { background: profileBackgroundColor }
+    else if (coverBackground) {
+        headerStyle = { background: coverBackground }
     }
 
     return (
