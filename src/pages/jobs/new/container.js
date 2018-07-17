@@ -21,13 +21,16 @@ const NewJobHOC = compose(
         return {
             id: uuid(),
             companyId,
-            teamId
+            teamId,
+            benefits: []
         };
     }),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('anchorEl', 'setAnchorEl', null),
+    withState('description', 'setDescription', ''),
+    withState('idealCandidate', 'setIdealCandidate', ''),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.target;
@@ -88,12 +91,16 @@ const NewJobHOC = compose(
             alert('done!');
             setIsUploading(false);
         },
-        publishJob: ({ handleJob, formData, match, history }) => async () => {
+        publishJob: ({ handleJob, formData, match, history, description, idealCandidate }) => async () => {
             try {
                 await handleJob({
                     variables: {
                         language: match.params.lang,
-                        jobDetails: formData
+                        jobDetails: {
+                            ...formData,
+                            description,
+                            idealCandidate
+                        }
                     }
                 });
                 history.push(`/${match.params.lang}/dashboard/job/${formData.id}`);
@@ -123,6 +130,8 @@ const NewJobHOC = compose(
             await delete contact[key];
             setFormData(contact);
         },
+        updateDescription: ({ setDescription }) => text => setDescription(text),
+        updateIdealCandidate: ({ setIdealCandidate }) => text => setIdealCandidate(text),
     }),
     pure
 );

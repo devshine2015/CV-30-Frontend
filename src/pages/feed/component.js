@@ -6,7 +6,7 @@ import { s3BucketURL, profilesFolder } from '../../constants/s3';
 
 const NewsFeed = props => {
     const { formData, handleFormChange, switchIsArticle, isArticle,
-        currentUser: { profile: { id, firstName, lastName, email, hasAvatar, avatarContentType, hasProfileCover } }
+        currentUser: { profile: { id, firstName, lastName, email, hasAvatar, avatarContentType } }
     } = props;
     const { postBody } = formData;
     let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;

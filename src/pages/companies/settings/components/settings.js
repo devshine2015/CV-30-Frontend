@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Button, TextField, FormLabel } from '@material-ui/core';
+import { Avatar, Button, TextField } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
@@ -42,7 +42,7 @@ const SettingsHOC = compose(
 
     }),
     withState('formData', 'setFormData', props => {
-        let { currentCompany: { company: { id, activityField, i18n, location, noOfEmployees, name } } } = props;
+        let { currentCompany: { company: { id, activityField, location, noOfEmployees, name } } } = props;
         if (!props.currentCompany || !props.currentCompany.company)
             return {};
 

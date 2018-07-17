@@ -1,17 +1,25 @@
 import React from 'react';
-import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon } from '@material-ui/core';
+import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon, FormControl, InputLabel, Input, MenuProps, Checkbox, ListItemText } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+// Require Font Awesome.
+import 'font-awesome/css/font-awesome.css';
+import FroalaEditor from 'react-froala-wysiwyg';
+
 import fields from '../../../constants/contact';
+import BenefitsList from '../../../constants/benefits';
 
 const NewJob = props => {
     const {
-        formData: { title,
-            description,
-            expireDate,
-            idealCandidate,
-            teamId },
+        formData: { title, expireDate, teamId, benefits },
         handleFormChange,
+        description, updateDescription,
+        idealCandidate, updateIdealCandidate,
         selectedBenefit, handleSelectBenefit,
         publishJob,
         getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
@@ -43,7 +51,7 @@ const NewJob = props => {
             </div>
             <Grid container className='mainBody jobEdit'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    <form className='jobEditForm' noValidate autoComplete='off'>
+                    <div className='jobEditForm'>
                         <section className='mediaUpload'>
                             <p className='helperText'>
                                 Add/Edit images or embed video links.
@@ -73,17 +81,16 @@ const NewJob = props => {
                         </section>
                         <section className='jobDescription'>
                             <h2 className='sectionTitle'>Job <b>description</b></h2>
-                            <TextField
-                                name="description"
-                                label="Write your article below."
-                                placeholder="Job description..."
-                                className='textField'
-                                fullWidth
-                                multiline
-                                rows={1}
-                                rowsMax={10}
-                                onChange={handleFormChange}
-                                value={description || ''}
+                            <FroalaEditor
+                                config={{
+                                    placeholderText: 'This is where the job description should be',
+                                    iconsTemplate: 'font_awesome_5',
+                                    toolbarInline: true,
+                                    charCounterCount: false,
+                                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                }}
+                                model={description}
+                                onModelChange={updateDescription}
                             />
                         </section>
                         <section className='expireDate'>
@@ -94,8 +101,9 @@ const NewJob = props => {
                             <TextField
                                 name="expireDate"
                                 type="date"
-                                value={expireDate ? (new Date(expireDate)).toISOString().split("T")[0] : ''}
+                                value={expireDate ? (new Date(expireDate)).toISOString().split("T")[0] : (new Date()).toISOString().split("T")[0]}
                                 onChange={handleFormChange}
+                                className='jobSelect'
                             />
                         </section>
                         <section className='benefits'>
@@ -103,15 +111,24 @@ const NewJob = props => {
                             <p className='helperText'>
                                 Add job benefits.
                             </p>
-                            <Select
-                                name='benefits'
-                                value={selectedBenefit || ''}
-                                onChange={handleSelectBenefit}
-                            >
-                                <MenuItem value="" disabled>
-                                    <em>Select benefits</em>
-                                </MenuItem>
-                            </Select>
+                            <FormControl className='formControl'>
+                                <Select
+                                    multiple
+                                    value={benefits}
+                                    onChange={handleFormChange}
+                                    input={<Input name="benefits" />}
+                                    renderValue={selected => selected.join(', ')}
+                                    className='jobSelect'
+                                >
+                                    {BenefitsList.map(benefit => (
+                                        <MenuItem key={benefit.id} value={benefit.id}>
+                                            <Checkbox checked={benefits.indexOf(benefit.id) > -1} />
+                                            <i className={benefit.icon} />
+                                            <ListItemText primary={benefit.label} />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                         </section>
                         <section className='team'>
                             <h2 className='sectionTitle'>Associated <b>team</b></h2>
@@ -122,6 +139,7 @@ const NewJob = props => {
                                 name='teamId'
                                 onChange={handleFormChange}
                                 value={teamId || ''}
+                                className='jobSelect'
                             >
                                 <MenuItem value="" disabled>
                                     <em>Select a team</em>
@@ -135,20 +153,19 @@ const NewJob = props => {
                         <section className='idealCandidate'>
                             <h2 className='sectionTitle'>Ideal <b>candidate</b></h2>
 
-                            <TextField
-                                name="idealCandidate"
-                                label="Describe the ideal candidate below."
-                                placeholder="The ideal candidate..."
-                                className='textField'
-                                fullWidth
-                                multiline
-                                rows={1}
-                                rowsMax={10}
-                                onChange={handleFormChange}
-                                value={idealCandidate || ''}
+                            <FroalaEditor
+                                config={{
+                                    placeholderText: 'Describe the ideal candidate...',
+                                    iconsTemplate: 'font_awesome_5',
+                                    toolbarInline: true,
+                                    charCounterCount: false,
+                                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                }}
+                                model={idealCandidate}
+                                onModelChange={updateIdealCandidate}
                             />
                         </section>
-                    </form>
+                    </div>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
@@ -159,7 +176,7 @@ const NewJob = props => {
 
                             <p className='message'>
                                 Add section
-            </p>
+                            </p>
                             <div>
                                 <Button className='addContactFieldBtn'
                                     aria-owns={anchorEl ? 'simple-menu' : null}
@@ -167,7 +184,7 @@ const NewJob = props => {
                                     onClick={handleClick}
                                 >
                                     Select field
-                </Button>
+                                </Button>
                                 <Menu
                                     id="simple-menu"
                                     anchorEl={anchorEl}
@@ -183,7 +200,7 @@ const NewJob = props => {
                                     }
                                 </Menu>
                             </div>
-                            <form className='contactDetailsEditForm' noValidate autoComplete='off'>
+                            <div className='contactDetailsEditForm'>
                                 {
                                     Object.keys(formData).map((key) => {
                                         const result = fields.find(field => field.id === key);
@@ -215,14 +232,14 @@ const NewJob = props => {
                                                     >
                                                         <Icon>
                                                             close
-                                    </Icon>
+                                                        </Icon>
                                                     </IconButton>
                                                 </div>
                                             )
                                         } else
                                             return null;
                                     })}
-                            </form>
+                            </div>
 
                         </section>
                         <Button className='saveBtn' onClick={publishJob}>
