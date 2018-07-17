@@ -6,17 +6,18 @@ import { Icon } from '@material-ui/core';
 import 'pure-react-carousel/dist/react-carousel.es.css';
 
 const TeamSliderHOC = compose(
-    withState(),
+    withState('visibleSlides', 'setVisibleSlides', 3),
     withHandlers(),
     pure
 )
 
 const TeamSlider = props => {
-    const { teams, match: { params: { lang } } } = props;
+    const { teams, match: { params: { lang } }, visibleSlides } = props;
+
 
     return <CarouselProvider
         dragEnabled={false}
-        visibleSlides={3} // dinamyc
+        visibleSlides={visibleSlides} // dinamyc
         naturalSlideWidth={300}
         naturalSlideHeight={200}
         totalSlides={teams.length}
@@ -35,12 +36,16 @@ const TeamSlider = props => {
                 );
             })}
         </Slider>
-        <ButtonBack className='teamSliderBtn back'>
-            <Icon>chevron_left</Icon>
-        </ButtonBack>
-        <ButtonNext className='teamSliderBtn next'>
-            <Icon>chevron_right</Icon>
-        </ButtonNext>
+        {(teams.length > visibleSlides) &&
+            <ButtonBack className='teamSliderBtn back'>
+                <Icon>chevron_left</Icon>
+            </ButtonBack>
+        }
+        {(teams.length > visibleSlides) &&
+            <ButtonNext className='teamSliderBtn next'>
+                <Icon>chevron_right</Icon>
+            </ButtonNext>
+        }
     </CarouselProvider>;
 }
 

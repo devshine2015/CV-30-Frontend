@@ -10,7 +10,6 @@ const UserProfileHOC = compose(
     graphql(currentUserQuery, {
         name: 'currentUser',
         options: (props) => ({
-
             variables: {
                 language: props.match.params.lang,
                 id: /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(props.match.params.profileId) ?

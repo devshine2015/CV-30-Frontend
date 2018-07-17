@@ -1,7 +1,21 @@
 import NewsFeed from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
+import { withRouter } from 'react-router-dom';
+import { graphql } from 'react-apollo';
+
+import { currentUserQuery } from '../../store/queries'
 
 const NewsFeedHOC = compose(
+    withRouter,
+    graphql(currentUserQuery, {
+        name: 'currentUser',
+        options: (props) => ({
+            variables: {
+                language: props.match.params.lang,
+                id: null
+            }
+        }),
+    }),
     withState('formData', 'setFormData', {}),
     withState('isArticle', 'updateIsArticle', false),
     withHandlers({

@@ -2,11 +2,15 @@ import React from 'react';
 import { Grid, Button, Icon, Avatar, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, IconButton } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { defaultUserAvatar } from '../../constants/utils';
+import { s3BucketURL, profilesFolder } from '../../constants/s3';
 
 const NewsFeed = props => {
-    const { formData, handleFormChange, switchIsArticle, isArticle/*, article*/ } = props;
+    const { formData, handleFormChange, switchIsArticle, isArticle,
+        currentUser: { profile: { id, firstName, lastName, email, hasAvatar, avatarContentType, hasProfileCover } }
+    } = props;
     const { postBody } = formData;
-    const { id, firstName, lastName, email, avatar, fullName } = props;
+    let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
+    let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
     return (
         <div className='newsFeedRoot'>
             <Grid container className='mainBody brandShow'>
@@ -16,13 +20,13 @@ const NewsFeed = props => {
                             <div className='userProfile'>
                                 <Avatar
                                     className='userAvatar'
-                                    src={defaultUserAvatar}
+                                    src={avatar || defaultUserAvatar}
                                     alt='userAvatar'
                                     imgProps={{ style: { objectFit: 'contain' } }}
                                     style={{ backgroundColor: '#fff', margin: 3 }} />
                                 <span className='postAs'>
                                     Post as:
-                                        <span className='userName'>Radu Daniel</span>
+                                        <span className='userName'>{fullName}</span>
                                 </span>
                             </div>
                             <Button className='mediaButton'>
@@ -107,11 +111,11 @@ const NewsFeed = props => {
                             <div className='leftOverlay'>
                                 <Link to={`/dashboard/profile/${id}`}>
                                     <Avatar alt={firstName || lastName || email} src={avatar || defaultUserAvatar} className='avatar' imgProps={{ style: { objectFit: 'contain' } }}
-                                    style={{ backgroundColor: '#fff', margin: 3 }} />
+                                        style={{ backgroundColor: '#fff', margin: 3 }} />
                                 </Link>
                                 <div className='leftOverlayTexts'>
                                     <h6 className='userName'>
-                                        <span>{fullName || 'John Doe'}</span>
+                                        <span>{fullName}</span>
                                         <i className='fas fa-caret-down' />
                                     </h6>
                                     <p className='userTitle'>Manager</p>
