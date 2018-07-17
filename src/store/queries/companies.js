@@ -51,7 +51,10 @@ export const companyQuery = gql`
       }
       videos {
         id
-        path
+        name
+        hasProfileCover
+        coverBackground
+        coverContentType
       }
     }
     activityField
