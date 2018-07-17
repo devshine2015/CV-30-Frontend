@@ -1,6 +1,8 @@
 import React from 'react';
-import { TextField, Grid, Button, Select, MenuItem } from '@material-ui/core';
+import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
+
+import fields from '../../../constants/contact';
 
 const NewJob = props => {
     const {
@@ -13,7 +15,8 @@ const NewJob = props => {
         selectedBenefit, handleSelectBenefit,
         publishJob,
         getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
-        teamsQuery: { loading, teams }
+        teamsQuery: { loading, teams },
+        anchorEl, handleClick, handleClose, addField, formData, removeTextField
     } = props;
     if (loading)
         return <div>Loading...</div>
@@ -149,6 +152,79 @@ const NewJob = props => {
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
+                        <section className='contact'>
+                            <h2 className="columnTitle">
+                                Contact&nbsp;<b>details</b>
+                            </h2>
+
+                            <p className='message'>
+                                Add section
+            </p>
+                            <div>
+                                <Button className='addContactFieldBtn'
+                                    aria-owns={anchorEl ? 'simple-menu' : null}
+                                    aria-haspopup="true"
+                                    onClick={handleClick}
+                                >
+                                    Select field
+                </Button>
+                                <Menu
+                                    id="simple-menu"
+                                    anchorEl={anchorEl}
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleClose}
+                                >
+                                    {
+                                        fields.map((item, index) => {
+                                            let key = 'addField-' + index;
+                                            let disabled = !!formData[item.id] || formData[item.id] === '';
+                                            return <MenuItem onClick={() => addField(item.id)} key={key} disabled={disabled}>{item.text}</MenuItem>
+                                        })
+                                    }
+                                </Menu>
+                            </div>
+                            <form className='contactDetailsEditForm' noValidate autoComplete='off'>
+                                {
+                                    Object.keys(formData).map((key) => {
+                                        const result = fields.find(field => field.id === key);
+                                        if (result) {
+                                            let text = result.text;
+                                            return (
+                                                <div className='formGroup' key={key}>
+                                                    <TextField
+                                                        name={key}
+                                                        label={text}
+                                                        placeholder={text}
+                                                        className='textField'
+                                                        onChange={handleFormChange}
+                                                        value={formData[key] || ''}
+                                                        InputProps={{
+                                                            classes: {
+                                                                root: 'contactTextInputRoot',
+                                                                input: 'contactTextInput',
+                                                            }
+                                                        }}
+                                                        InputLabelProps={{
+                                                            className: 'contactFormLabel'
+                                                        }}
+
+                                                    />
+                                                    <IconButton
+                                                        className='removeBtn'
+                                                        onClick={() => removeTextField(key)}
+                                                    >
+                                                        <Icon>
+                                                            close
+                                    </Icon>
+                                                    </IconButton>
+                                                </div>
+                                            )
+                                        } else
+                                            return null;
+                                    })}
+                            </form>
+
+                        </section>
                         <Button className='saveBtn' onClick={publishJob}>
                             Publish job
                         </Button>

@@ -285,6 +285,80 @@
                     margin: 0;
                     padding: 0;
                 }
+                .contact {
+                    padding: 15px 25px;
+                    background: #397db9;
+                }
+            }
+        }
+    }
+}
+
+.newJobRoot {
+    .columnRight {
+        .columnRightContent {
+            padding: 0 !important;
+            .columnTitle {
+                color: #fff !important;
+                font-weight: 100;
+                font-size: 2rem;
+                margin: 0;
+                padding: 0;
+            }
+            .contact {
+                padding: 15px 25px;
+                background: #397db9;
+                .message {
+                    font-size: 0.75rem;
+                    color: #fff;
+                    font-weight: 100;
+                }
+                .addContactFieldBtn {
+                    background: #4893cc;
+                    color: #fff;
+                }
+                .contactDetailsEditForm {
+                    padding: 20px 0;
+                }
+                .formGroup {
+                    display: flex;
+                    align-items: baseline;
+                    justify-content: space-between;
+                }
+                .textField {
+                    margin: 15px 0;
+                    width: 90%;
+                }
+                .contactFormLabel {
+                    color: #fff;
+                }
+                .contactTextInputRoot {
+                    border-color: #fff;
+                    &:before,
+                    &:after {
+                        border-color: #fff;
+                    }
+                }
+                .contactTextInput {
+                    color: #fff;
+                }
+                .removeBtn {
+                    width: 25px;
+                    min-width: auto;
+                    height: 25px;
+                    min-height: auto;
+                    border-radius: 50%;
+                    background: #fff;
+                    color: #ff0000;
+                }
+            }
+            .saveBtn {
+                background: #397db9;
+                color: #fff;
+                text-transform: capitalize;
+                font-size: 1.25rem;
+                font-weight: 500;
+                margin: 40px 20px 20px;
             }
         }
     }

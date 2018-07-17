@@ -27,6 +27,7 @@ const NewJobHOC = compose(
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
+    withState('anchorEl', 'setAnchorEl', null),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.target;
@@ -100,7 +101,37 @@ const NewJobHOC = compose(
             catch (err) {
                 console.log(err);
             }
-        }
+        },
+
+        handleClick: ({ setAnchorEl }) => event => {
+            setAnchorEl(event.currentTarget);
+        },
+
+        handleClose: ({ setAnchorEl }) => () => {
+            setAnchorEl(null);
+        },
+        addField: ({ setAnchorEl, formData, setFormData }) => (fieldId) => {
+            let contact = Object.assign({}, formData);
+            if (!contact[fieldId]) {
+                contact[fieldId] = '';
+                setFormData(contact);
+            }
+            setAnchorEl(null);
+        },
+        handleFormChange: props => event => {
+            const target = event.currentTarget;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+            if (!name) {
+                throw Error('Field must have a name attribute!');
+            }
+            props.setFormData(state => ({ ...state, [name]: value }));
+        },
+        removeTextField: ({ formData, setFormData }) => async (key) => {
+            let contact = Object.assign({}, formData);
+            await delete contact[key];
+            setFormData(contact);
+        },
     }),
     pure
 );
