@@ -5,6 +5,7 @@ import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
 
 import { teamsQuery, handleJob } from '../../../store/queries';
+
 const NewJobHOC = compose(
     withRouter,
     graphql(teamsQuery, {
@@ -29,8 +30,6 @@ const NewJobHOC = compose(
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('anchorEl', 'setAnchorEl', null),
-    withState('description', 'setDescription', ''),
-    withState('idealCandidate', 'setIdealCandidate', ''),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.target;
@@ -130,8 +129,8 @@ const NewJobHOC = compose(
             await delete contact[key];
             setFormData(contact);
         },
-        updateDescription: ({ setDescription }) => text => setDescription(text),
-        updateIdealCandidate: ({ setIdealCandidate }) => text => setIdealCandidate(text),
+        updateDescription: props => text => props.setFormData(state => ({ ...state, ['description']: text })),
+        updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, ['idealCandidate']: text }))
     }),
     pure
 );

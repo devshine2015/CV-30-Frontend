@@ -16,18 +16,19 @@ import BenefitsList from '../../../constants/benefits';
 
 const NewJob = props => {
     const {
-        formData: { title, expireDate, teamId, benefits },
+        formData: { title, expireDate, teamId, benefits, description, idealCandidate },
         handleFormChange,
-        description, updateDescription,
-        idealCandidate, updateIdealCandidate,
-        selectedBenefit, handleSelectBenefit,
+        updateDescription,
+        updateIdealCandidate,
         publishJob,
         getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
         teamsQuery: { loading, teams },
         anchorEl, handleClick, handleClose, addField, formData, removeTextField
     } = props;
+
     if (loading)
         return <div>Loading...</div>
+
     return (
         <div className='newJobRoot'>
             <div className='header'>
@@ -152,7 +153,6 @@ const NewJob = props => {
                         </section>
                         <section className='idealCandidate'>
                             <h2 className='sectionTitle'>Ideal <b>candidate</b></h2>
-
                             <FroalaEditor
                                 config={{
                                     placeholderText: 'Describe the ideal candidate...',
@@ -167,6 +167,7 @@ const NewJob = props => {
                         </section>
                     </div>
                 </Grid>
+
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
                         <section className='contact'>

@@ -1,16 +1,58 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { TextField, Grid, Button, Select, MenuItem } from '@material-ui/core';
+import { TextField, Grid, Button, Select, MenuItem, FormControl, Input, Checkbox, ListItemText, IconButton, Icon, Menu } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
+import { graphql } from 'react-apollo';
+
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+// Require Font Awesome.
+import 'font-awesome/css/font-awesome.css';
+import FroalaEditor from 'react-froala-wysiwyg';
+
+import fields from '../../../../constants/contact';
+import BenefitsList from '../../../../constants/benefits';
+import { teamsQuery, handleJob } from '../../../../store/queries';
 
 const EditHOC = compose(
-    withState('formData', 'setFormData', {}),
+    graphql(teamsQuery, {
+        name: 'teamsQuery',
+        options: props => ({
+            fetchPolicy: 'network-only',
+            variables: {
+                language: props.match.params.lang
+            }
+        })
+    }),
+    graphql(handleJob, { name: 'handleJob' }),
+    withState('formData', 'setFormData', props => {
+        console.log(props);
+        const { getJobQuery: { job: { id, team, i18n, expireDate, company } } } = props;
+
+        let jobEdit = {
+            id,
+            expireDate,
+            teamId: team.id,
+            companyId: company.id,
+            title: (i18n && i18n[0]) ? i18n[0].title : '',
+            description: (i18n && i18n[0]) ? i18n[0].description : '',
+            idealCandidate: (i18n && i18n[0]) ? i18n[0].idealCandidate : '',
+            benefits: []
+        };
+        // debugger;
+        return jobEdit;
+    }),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
+    withState('anchorEl', 'setAnchorEl', null),
+
     withHandlers({
         handleFormChange: props => event => {
-            const target = event.currentTarget;
+            const target = event.target;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
             if (!name) {
@@ -67,24 +109,63 @@ const EditHOC = compose(
         onFinishUpload: ({ setIsUploading }) => () => {
             alert('done!');
             setIsUploading(false);
-        }
+        },
+        updateDescription: props => text => props.setFormData(state => ({ ...state, ['description']: text })),
+        updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, ['idealCandidate']: text })),
+        publishJob: ({ handleJob, formData, match, history, description, idealCandidate }) => async () => {
+            try {
+                await handleJob({
+                    variables: {
+                        language: match.params.lang,
+                        jobDetails: {
+                            ...formData,
+                            description,
+                            idealCandidate
+                        }
+                    }
+                });
+                history.push(`/${match.params.lang}/dashboard/job/${formData.id}`);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        },
+
+        handleClick: ({ setAnchorEl }) => event => {
+            setAnchorEl(event.currentTarget);
+        },
+
+        handleClose: ({ setAnchorEl }) => () => {
+            setAnchorEl(null);
+        },
+        addField: ({ setAnchorEl, formData, setFormData }) => (fieldId) => {
+            let contact = Object.assign({}, formData);
+            if (!contact[fieldId]) {
+                contact[fieldId] = '';
+                setFormData(contact);
+            }
+            setAnchorEl(null);
+        },
+        removeTextField: ({ formData, setFormData }) => async (key) => {
+            let contact = Object.assign({}, formData);
+            await delete contact[key];
+            setFormData(contact);
+        },
     }),
     pure
 );
 const Edit = props => {
     const {
-        formData, handleFormChange,
-        selectedBenefit, handleSelectBenefit,
-        selectedTeam, handleSelectTeam,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, renameFile, isUploading
+        formData: { title, expireDate, benefits, teamId, description, idealCandidate }, handleFormChange,
+        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
+        updateDescription, updateIdealCandidate,
+        teamsQuery: { loading, teams },
+        anchorEl, handleClick, handleClose, addField, formData, removeTextField,
+        publishJob
     } = props;
 
-    const {
-        title,
-        description,
-        expirationDate,
-        idealCandidate
-    } = formData;
+    if (loading)
+        return <div>Loading...</div>
 
     return (
         <React.Fragment>
@@ -128,8 +209,6 @@ const Edit = props => {
                                     uploadRequestHeaders={{
                                         'x-amz-acl': 'public-read',
                                     }}
-                                    scrubFilename={(filename) => renameFile(filename)}
-
                                 />
                                 <Button component='span' className='mediaBtn' disabled={isUploading}>
                                     Add image
@@ -141,29 +220,29 @@ const Edit = props => {
                         </section>
                         <section className='jobDescription'>
                             <h2 className='sectionTitle'>Job <b>description</b></h2>
-                            <TextField
-                                name="description"
-                                label="Write your article below."
-                                placeholder="Job description..."
-                                className='textField'
-                                fullWidth
-                                multiline
-                                rows={1}
-                                rowsMax={10}
-                                onChange={handleFormChange}
-                                value={description}
+                            <FroalaEditor
+                                config={{
+                                    placeholderText: 'This is where the job description should be',
+                                    iconsTemplate: 'font_awesome_5',
+                                    toolbarInline: true,
+                                    charCounterCount: false,
+                                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                }}
+                                model={description}
+                                onModelChange={updateDescription}
                             />
                         </section>
-                        <section className='expirationDate'>
+                        <section className='expireDate'>
                             <h2 className='sectionTitle'>Expiration <b>date</b></h2>
                             <p className='helperText'>
                                 Select expiration date.
                             </p>
                             <TextField
-                                name="expirationDate"
+                                name="expireDate"
                                 type="date"
-                                value={expirationDate}
+                                value={expireDate ? (new Date(expireDate)).toISOString().split("T")[0] : (new Date()).toISOString().split("T")[0]}
                                 onChange={handleFormChange}
+                                className='jobSelect'
                             />
                         </section>
                         <section className='benefits'>
@@ -171,21 +250,24 @@ const Edit = props => {
                             <p className='helperText'>
                                 Add job benefits.
                             </p>
-                            <Select
-                                value={selectedBenefit}
-                                onChange={handleSelectBenefit}
-                                inputProps={{
-                                    name: 'age',
-                                    id: 'age-simple',
-                                }}
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
+                            <FormControl className='formControl'>
+                                <Select
+                                    multiple
+                                    value={benefits}
+                                    onChange={handleFormChange}
+                                    input={<Input name="benefits" />}
+                                    renderValue={selected => selected.join(', ')}
+                                    className='jobSelect'
+                                >
+                                    {BenefitsList.map(benefit => (
+                                        <MenuItem key={benefit.id} value={benefit.id}>
+                                            <Checkbox checked={benefits.indexOf(benefit.id) > -1} />
+                                            <i className={benefit.icon} />
+                                            <ListItemText primary={benefit.label} />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                         </section>
                         <section className='team'>
                             <h2 className='sectionTitle'>Associated <b>team</b></h2>
@@ -193,46 +275,118 @@ const Edit = props => {
                                 Add team.
                             </p>
                             <Select
-                                value={selectedTeam}
-                                onChange={handleSelectTeam}
-                                inputProps={{
-                                    name: 'age',
-                                    id: 'age-simple',
-                                }}
+                                name='teamId'
+                                onChange={handleFormChange}
+                                value={teamId || ''}
+                                className='jobSelect'
                             >
-                                <MenuItem value="">
-                                    <em>None</em>
+                                <MenuItem value="" disabled>
+                                    <em>Select a team</em>
                                 </MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {
+                                    teams && teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
+                                }
+
                             </Select>
                         </section>
                         <section className='idealCandidate'>
                             <h2 className='sectionTitle'>Ideal <b>candidate</b></h2>
-
-                            <TextField
-                                name="idealCandidate"
-                                label="Describe the ideal candidate below."
-                                placeholder="The ideal candidate..."
-                                className='textField'
-                                fullWidth
-                                multiline
-                                rows={1}
-                                rowsMax={10}
-                                onChange={handleFormChange}
-                                value={idealCandidate}
+                            <FroalaEditor
+                                config={{
+                                    placeholderText: 'Describe the ideal candidate...',
+                                    iconsTemplate: 'font_awesome_5',
+                                    toolbarInline: true,
+                                    charCounterCount: false,
+                                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                }}
+                                model={idealCandidate}
+                                onModelChange={updateIdealCandidate}
                             />
                         </section>
                     </form>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
-                    <div className='columnRightContent'></div>
+                    <div className='columnRightContent'>
+                        <section className='contact'>
+                            <h2 className="columnTitle">
+                                Contact&nbsp;<b>details</b>
+                            </h2>
+
+                            <p className='message'>
+                                Add section
+                            </p>
+                            <div>
+                                <Button className='addContactFieldBtn'
+                                    aria-owns={anchorEl ? 'simple-menu' : null}
+                                    aria-haspopup="true"
+                                    onClick={handleClick}
+                                >
+                                    Select field
+                                </Button>
+                                <Menu
+                                    id="simple-menu"
+                                    anchorEl={anchorEl}
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleClose}
+                                >
+                                    {
+                                        fields.map((item, index) => {
+                                            let key = 'addField-' + index;
+                                            let disabled = !!formData[item.id] || formData[item.id] === '';
+                                            return <MenuItem onClick={() => addField(item.id)} key={key} disabled={disabled}>{item.text}</MenuItem>
+                                        })
+                                    }
+                                </Menu>
+                            </div>
+                            <div className='contactDetailsEditForm'>
+                                {
+                                    Object.keys(formData).map((key) => {
+                                        const result = fields.find(field => field.id === key);
+                                        if (result) {
+                                            let text = result.text;
+                                            return (
+                                                <div className='formGroup' key={key}>
+                                                    <TextField
+                                                        name={key}
+                                                        label={text}
+                                                        placeholder={text}
+                                                        className='textField'
+                                                        onChange={handleFormChange}
+                                                        value={formData[key] || ''}
+                                                        InputProps={{
+                                                            classes: {
+                                                                root: 'contactTextInputRoot',
+                                                                input: 'contactTextInput',
+                                                            }
+                                                        }}
+                                                        InputLabelProps={{
+                                                            className: 'contactFormLabel'
+                                                        }}
+
+                                                    />
+                                                    <IconButton
+                                                        className='removeBtn'
+                                                        onClick={() => removeTextField(key)}
+                                                    >
+                                                        <Icon>
+                                                            close
+                                                        </Icon>
+                                                    </IconButton>
+                                                </div>
+                                            )
+                                        } else
+                                            return null;
+                                    })}
+                            </div>
+
+                        </section>
+                        <Button className='saveBtn' onClick={publishJob}>
+                            Publish job
+                        </Button>
+                    </div>
                 </Grid>
             </Grid>
-
         </React.Fragment>
-
     );
 }
 
