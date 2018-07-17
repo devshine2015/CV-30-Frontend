@@ -13,6 +13,7 @@ const ColorPickerHOC = compose(
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
+    withState('fileParams', 'setFileParams', {}),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
@@ -25,7 +26,8 @@ const ColorPickerHOC = compose(
                         teamDetails: {
                             id: teamId,
                             hasProfileCover: false,
-                            profileBackgroundColor: color.style,
+                            coverContentType: null,
+                            coverBackground: color.style,
                             companyId: company.id
                         }
                     },
@@ -44,13 +46,14 @@ const ColorPickerHOC = compose(
                 console.log(err);
             }
         },
-        getSignedUrl: ({ match: { params: { teamId } } }) => async (file, callback) => {
+        getSignedUrl: ({ match: { params: { teamId } }, setFileParams }) => async (file, callback) => {
             const params = {
                 fileName: `cover.${file.type.replace('image/', '')}`,
                 contentType: file.type,
                 id: teamId,
                 type: 'team_cover'
             };
+            setFileParams(params);
 
             try {
                 let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
@@ -79,7 +82,7 @@ const ColorPickerHOC = compose(
             setUploadError(error);
             console.log(error);
         },
-        onFinish: ({ setIsUploading, handleTeam, refetchBgImage, match: { params: { teamId, lang } }, company }) => async () => {
+        onFinish: ({ setIsUploading, handleTeam, refetchBgImage, match: { params: { teamId, lang } }, company, fileParams: { contentType } }) => async () => {
             try {
                 await handleTeam({
                     variables:
@@ -87,7 +90,8 @@ const ColorPickerHOC = compose(
                         teamDetails: {
                             id: teamId,
                             hasProfileCover: true,
-                            profileBackgroundColor: '',
+                            coverContentType: contentType.replace('image/', ''),
+                            coverBackground: null,
                             companyId: company.id
                         }
                     },
@@ -150,7 +154,7 @@ const ColorPicker = (props) => {
                         name="uploadCoverPhoto"
                         className='hiddenInput'
                         getSignedUrl={getSignedUrl}
-                        accept=".png"
+                        accept="image/*"
                         preprocess={onUploadStart}
                         onProgress={onProgress}
                         onError={onError}

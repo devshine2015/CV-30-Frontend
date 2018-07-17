@@ -10,48 +10,49 @@ export const handleTeam = gql`
 `;
 
 export const queryTeam = gql`
-    query team($id: String!, $language: LanguageCodeType!) {
-        team(id: $id, language: $language) {
-            id
-            name
-            company {
-                id
-                name
-            }
-            members {
-                id
-                firstName
-                lastName
-                email
-            }
-            officeArticles {
-                id
-                images {
-                    id
-                    path
-                }
-                videos {
-                    id
-                    path
-                }
-                i18n {
-                    title
-                    description
-                }
-            }
-            jobs {
-                id
-                name
-                expireDate
-                i18n {
-                    title
-                    description
-                }
-            }
-            hasProfileCover
-            profileBackgroundColor
-        }
+   query team($id: String!, $language: LanguageCodeType!) {
+  team(id: $id, language: $language) {
+    id
+    name
+    company {
+      id
+      name
     }
+    members {
+      id
+      firstName
+      lastName
+      email
+    }
+    officeArticles {
+      id
+      images {
+        id
+        path
+      }
+      videos {
+        id
+        path
+      }
+      i18n {
+        title
+        description
+      }
+    }
+    jobs {
+      id
+      name
+      expireDate
+      i18n {
+        title
+        description
+      }
+    }
+    hasProfileCover
+    coverContentType
+    coverBackground
+  }
+}
 `;
 
 export const addMemberToTeam = gql`
