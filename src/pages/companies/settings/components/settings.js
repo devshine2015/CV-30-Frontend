@@ -1,38 +1,61 @@
 import React from 'react';
-import { Avatar, Button, TextField } from '@material-ui/core';
+import { Avatar, Button, TextField, FormLabel } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
-// import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { currentUserQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation } from '../../../../store/queries';
+
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+// Require Font Awesome.
+import 'font-awesome/css/font-awesome.css';
+import FroalaEditor from 'react-froala-wysiwyg';
+
+import { s3BucketURL } from '../../../../constants/s3';
+import { companyQuery, updateAvatarTimestampMutation, handleCompany } from '../../../../store/queries';
 
 const SettingsHOC = compose(
-    graphql(updateAvatar, { name: 'updateAvatar' }),
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
-    graphql(localUserQuery, { name: 'localUserData' }),
-    graphql(updateUserSettingsMutation, { name: 'updateUserSettings' }),
-    withState('isUploading', 'setIsUploading', false),
+    graphql(handleCompany, { name: 'handleCompany' }),
+    withState('isSaving', 'setIsSaving', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('settingsFormError', 'setSettingsFormError', ''),
     withState('settingsFormSuccess', 'setSettingsFormSuccess', false),
-    withState('formData', 'setFormData', ({ currentUser }) => {
-        if (!currentUser || !currentUser.profile)
+    withState('fileParams', 'setFileParams', {}),
+    withState('headline', 'setHeadline', props => {
+        let { currentCompany: { company: { i18n } } } = props;
+        if (!i18n || !i18n[0] || !i18n[0].headline)
+            return '';
+        return i18n[0].headline;
+
+    }),
+    withState('description', 'setDescription', props => {
+        let { currentCompany: { company: { i18n } } } = props;
+        if (!i18n || !i18n[0] || !i18n[0].description)
+            return '';
+        return i18n[0].description;
+
+    }),
+    withState('formData', 'setFormData', props => {
+        let { currentCompany: { company: { id, activityField, i18n, location, noOfEmployees, name } } } = props;
+        if (!props.currentCompany || !props.currentCompany.company)
             return {};
-        let { firstName, lastName, email } = currentUser.profile;
-        return { firstName, lastName, email };
+
+        return { id, activityField, location, noOfEmployees, name };
     }),
     withHandlers({
-        getSignedUrl: ({ currentUser }) => async (file, callback) => {
-            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['avatar', getExtension].join('.');
-
+        getSignedUrl: ({ formData, setFileParams }) => async (file, callback) => {
             const params = {
-                fileName: fName,
+                fileName: file.name,
                 contentType: file.type,
-                id: currentUser.profile.id,
-                type: 'avatar'
+                id: formData.id,
+                type: 'company_cover'
             };
+
+            setFileParams(params);
 
             try {
                 let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
@@ -45,22 +68,19 @@ const SettingsHOC = compose(
                 });
                 let responseJson = await response.json();
                 callback(responseJson);
-            } catch (error) {
+            }
+
+            catch (error) {
                 console.error(error);
                 callback(error)
             }
         },
-        renameFile: () => filename => {
-            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['avatar', getExtension].join('.');
-            return fName;
-        },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
+        onUploadStart: ({ setIsSaving }) => (file, next) => {
             let size = file.size;
             if (size > 500 * 1024) {
                 alert('File is too big!');
             } else {
-                setIsUploading(true);
+                setIsSaving(true);
                 next(file);
             }
         },
@@ -72,26 +92,26 @@ const SettingsHOC = compose(
             console.log(error);
         },
         onFinishUpload: (props) => async () => {
-            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match } = props;
-            await updateAvatar({
-                variables: {
-                    status: true
-                },
-                refetchQueries: [{
-                    query: currentUserQuery,
-                    fetchPolicy: 'network-only',
-                    name: 'currentUser',
-                    variables: {
-                        language: match.params.lang
-                    }
-                }]
-            });
-            await updateAvatarTimestamp({
-                variables: {
-                    timestamp: Date.now()
-                }
-            });
-            setIsUploading(false);
+            const { setIsSaving, handleCompany, updateAvatarTimestamp, match } = props;
+            // await handleCompany({
+            //     variables: {
+            //         status: true
+            //     },
+            //     refetchQueries: [{
+            //         query: currentUserQuery,
+            //         fetchPolicy: 'network-only',
+            //         name: 'currentUser',
+            //         variables: {
+            //             language: match.params.lang
+            //         }
+            //     }]
+            // });
+            // await updateAvatarTimestamp({
+            //     variables: {
+            //         timestamp: Date.now()
+            //     }
+            // });
+            setIsSaving(false);
         },
         handleFormChange: props => event => {
             const target = event.currentTarget;
@@ -102,53 +122,55 @@ const SettingsHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
-        // saveUserDetails: ({ setSettingsFormSuccess, setSettingsFormError, updateUserSettings, formData: { firstName, lastName, oldPassword, newPassword, newPasswordConfirm }, match }) => async () => {
-        //     if (newPassword) {
-        //         if (!oldPassword) { alert('Please enter your current password'); return; }
-        //         if (newPassword !== newPasswordConfirm) { alert('New password and confirm new password do not match'); return; }
-        //     }
-        //     if (!firstName.trim()) {
-        //         alert('First name cannot be empty');
-        //         return;
-        //     }
-        //     if (!lastName.trim()) {
-        //         alert('Last name cannot be empty');
-        //         return;
-        //     }
-        //     if (newPassword === oldPassword && !!newPassword) {
-        //         alert('Are you trying to change the current password with the same one?');
-        //         return;
-        //     }
-        //     try {
-        //         const { data: { updateUserSettings: { status } } } = await updateUserSettings({
-        //             variables: {
-        //                 userSettings: {
-        //                     firstName,
-        //                     lastName,
-        //                     oldPassword: oldPassword ? oldPassword : '',
-        //                     newPassword: newPassword ? newPassword : ''
-        //                 }
-        //             },
-        //             refetchQueries: [{
-        //                 query: currentUserQuery,
-        //                 fetchPolicy: 'network-only',
-        //                 name: 'currentUser',
-        //                 variables: {
-        //                     language: match.params.lang
-        //                 }
-        //             }]
-        //         });
-        //         if (status) setSettingsFormSuccess(true);
-        //     } catch (error) {
-        //         setSettingsFormError(JSON.stringify(error));
-        //     }
-        // }
+        updateHeadline: ({ setHeadline }) => text => setHeadline(text),
+        updateDescription: ({ setDescription }) => text => setDescription(text),
+        saveUserDetails: props => async () => {
+            const {
+                handleCompany, setIsSaving,
+                setSettingsFormSuccess, setSettingsFormError, updateUserSettings,
+                formData: { id, activityField, location, noOfEmployees, name },
+                match,
+                headline, description,
+            } = props;
+
+            setIsSaving(true);
+
+            try {
+                await handleCompany({
+                    variables: {
+                        language: match.params.lang,
+                        details: {
+                            id, activityField, location, noOfEmployees, name, headline, description
+                        }
+                    },
+                    refetchQueries: [{
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'companyQuery',
+                        variables: {
+                            language: match.params.lang,
+                            id: id
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
+        }
     }),
     pure
 )
 const Settings = props => {
-    const { settingsFormSuccess, settingsFormError, getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading/*, localUserData, currentUser*/, handleFormChange, formData, saveUserDetails } = props;
-    const { name, headline, location, activityField, employees } = formData;
+    const {
+        settingsFormSuccess, settingsFormError,
+        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving,
+        handleFormChange, formData,
+        saveUserDetails,
+        headline, updateHeadline,
+        description, updateDescription
+    } = props;
+    const { name, location, activityField, noOfEmployees } = formData;
 
     let avatar = ''
     // (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
@@ -190,22 +212,12 @@ const Settings = props => {
                         }}
 
                     />
-                    <Button component='span' className='settingsUploadBtn' disabled={isUploading}>
+                    <Button component='span' className='settingsUploadBtn' disabled={isSaving}>
                         Change company background
                     </Button>
                 </label>
             </div>
             <div className='infoFields'>
-                <TextField
-                    name='headline'
-                    label='Company headline'
-                    placeholder='Enter company headline...'
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={headline || ''}
-                    type='text'
-                    fullWidth
-                />
                 <TextField
                     name='activityField'
                     label='Activity field'
@@ -225,13 +237,41 @@ const Settings = props => {
                     type='text'
                 />
                 <TextField
-                    name='employees'
-                    label='Number of employees'
-                    placeholder='Number of employees...'
+                    name='noOfEmployees'
+                    label='Number of noOfEmployees'
+                    placeholder='Number of noOfEmployees...'
                     className='textField'
                     onChange={handleFormChange}
-                    value={employees || ''}
+                    value={noOfEmployees || ''}
                     type='text'
+                />
+            </div>
+            <div className='textArea headline'>
+                <p className='label'>Company headline</p>
+                <FroalaEditor
+                    config={{
+                        placeholderText: 'This is where the company headline should be',
+                        iconsTemplate: 'font_awesome_5',
+                        toolbarInline: true,
+                        charCounterCount: false,
+                        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                    }}
+                    model={headline}
+                    onModelChange={updateHeadline}
+                />
+            </div>
+            <div className='textArea description'>
+                <p className='label'>Company description</p>
+                <FroalaEditor
+                    config={{
+                        placeholderText: 'This is where the company description should be',
+                        iconsTemplate: 'font_awesome_5',
+                        toolbarInline: true,
+                        charCounterCount: false,
+                        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                    }}
+                    model={description}
+                    onModelChange={updateDescription}
                 />
             </div>
             <div className='actions'>

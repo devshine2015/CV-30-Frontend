@@ -126,3 +126,27 @@
         padding-top: 95px;
     }
 }
+
+.companySettingsRoot {
+    .settingsTab {
+        .infoFields {
+            .textField {
+                width: 32%;
+            }
+        }
+        .textArea {
+            .fr-box {
+                padding: 10px;
+                background-color: #56565650;
+                border: 2px dashed #277dba;
+            }
+            .label {
+                margin: 30px 0 10px;
+                color: rgba(0, 0, 0, 0.54);
+                padding: 0;
+                font-size: 1rem;
+                line-height: 1;
+            }
+        }
+    }
+}
