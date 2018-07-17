@@ -198,7 +198,7 @@ const Header = (props) => {
     let headerStyle = null;
 
     if (hasProfileCover) {
-        let newCover = `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/cover.png?${Date.now()}-${forceCoverRender}`;
+        let newCover = `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/cover.${currentUser.profile.profileCoverContentType}?${Date.now()}-${forceCoverRender}`;
         headerStyle = { background: `url(${newCover})` };
     }
     else if (coverBackground) {

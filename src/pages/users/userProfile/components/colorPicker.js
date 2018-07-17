@@ -13,6 +13,7 @@ const ColorPickerHOC = compose(
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
+    withState('fileParams', 'setFileParams', {}),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
@@ -39,16 +40,15 @@ const ColorPickerHOC = compose(
                 console.log(err);
             }
         },
-        getSignedUrl: ({ profile }) => async (file, callback) => {
-            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['cover', getExtension].join('.');
-
+        getSignedUrl: ({ profile, setFileParams }) => async (file, callback) => {
             const params = {
-                fileName: fName,
+                fileName: `cover.${file.type.replace('image/', '')}`,
                 contentType: file.type,
                 id: profile.id,
                 type: 'profile_cover'
             };
+
+            setFileParams(params);
 
             try {
                 let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
@@ -77,12 +77,13 @@ const ColorPickerHOC = compose(
             setUploadError(error);
             console.log(error);
         },
-        onFinish: ({ setIsUploading, updateCoverMutation, refetchBgImage }) => async () => {
+        onFinish: ({ setIsUploading, updateCoverMutation, refetchBgImage, fileParams: { contentType } }) => async () => {
             try {
                 await updateCoverMutation({
                     variables:
                     {
-                        status: true
+                        status: true,
+                        contentType: contentType.replace('image/', '')
                     },
                     refetchQueries: [{
                         query: currentUserQuery,

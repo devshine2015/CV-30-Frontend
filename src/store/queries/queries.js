@@ -182,6 +182,7 @@ export const currentUserQuery = gql`
     hasAvatar
     avatarContentType
     hasProfileCover
+    profileCoverContentType
     coverBackground
     story {
       i18n {
@@ -264,8 +265,8 @@ export const getCurrentUser = gql`
 `;
 
 export const updateCoverMutation = gql`
-    mutation updateCoverMutation($status: Boolean, $color: String) {
-        profileCover(status: $status) {
+    mutation updateCoverMutation($status: Boolean, $color: String, $contentType: ImageType) {
+        profileCover(status: $status, contentType: $contentType) {
             status
             error
         }
