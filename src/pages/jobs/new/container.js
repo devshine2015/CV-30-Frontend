@@ -1,7 +1,7 @@
 import NewJob from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
-// import uuid from 'uuidv4';
+import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
 
 import { teamsQuery, handleJob } from '../../../store/queries';
@@ -19,7 +19,7 @@ const NewJobHOC = compose(
     graphql(handleJob, { name: 'handleJob' }),
     withState('formData', 'setFormData', ({ location: { state: { companyId, teamId } } }) => {
         return {
-            // id: uuid(),
+            id: uuid(),
             companyId,
             teamId
         };
@@ -96,7 +96,7 @@ const NewJobHOC = compose(
                         jobDetails: formData
                     }
                 });
-                //history.push(job.id??)
+                history.push(`/${match.params.lang}/dashboard/job/${formData.id}`);
             }
             catch (err) {
                 console.log(err);
@@ -117,15 +117,6 @@ const NewJobHOC = compose(
                 setFormData(contact);
             }
             setAnchorEl(null);
-        },
-        handleFormChange: props => event => {
-            const target = event.currentTarget;
-            const value = target.type === 'checkbox' ? target.checked : target.value;
-            const name = target.name;
-            if (!name) {
-                throw Error('Field must have a name attribute!');
-            }
-            props.setFormData(state => ({ ...state, [name]: value }));
         },
         removeTextField: ({ formData, setFormData }) => async (key) => {
             let contact = Object.assign({}, formData);
