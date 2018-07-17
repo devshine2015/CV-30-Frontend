@@ -112,19 +112,19 @@ const EditHOC = compose(
         },
         updateDescription: props => text => props.setFormData(state => ({ ...state, ['description']: text })),
         updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, ['idealCandidate']: text })),
-        publishJob: ({ handleJob, formData, match, history, description, idealCandidate }) => async () => {
+
+        publishJob: ({ handleJob, formData, match, history }) => async () => {
+            const { id, companyId, teamId, title, description, expireDate, idealCandidate } = formData;
             try {
                 await handleJob({
                     variables: {
                         language: match.params.lang,
                         jobDetails: {
-                            ...formData,
-                            description,
-                            idealCandidate
+                            id, companyId, teamId, title, description, expireDate, idealCandidate
                         }
                     }
                 });
-                history.push(`/${match.params.lang}/dashboard/job/${formData.id}`);
+
             }
             catch (err) {
                 console.log(err);

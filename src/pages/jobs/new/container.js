@@ -90,15 +90,14 @@ const NewJobHOC = compose(
             alert('done!');
             setIsUploading(false);
         },
-        publishJob: ({ handleJob, formData, match, history, description, idealCandidate }) => async () => {
+        publishJob: ({ handleJob, formData, match, history }) => async () => {
+            const { id, companyId, teamId, title, description, expireDate, idealCandidate } = formData;
             try {
                 await handleJob({
                     variables: {
                         language: match.params.lang,
                         jobDetails: {
-                            ...formData,
-                            description,
-                            idealCandidate
+                            id, companyId, teamId, title, description, expireDate, idealCandidate
                         }
                     }
                 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon, FormControl, InputLabel, Input, MenuProps, Checkbox, ListItemText } from '@material-ui/core';
+import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon, FormControl, Input, Checkbox, ListItemText } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 
 // Require Editor JS files.

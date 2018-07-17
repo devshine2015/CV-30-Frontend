@@ -20,51 +20,53 @@ query jobs($language: LanguageCodeType!) {
 
 export const getJobQuery = gql`
 query job($id: String!, $language: LanguageCodeType!) {
-    job(id: $id, language: $language) {
-        id
-        expireDate
-        i18n {
-            title
-            description
-            idealCandidate
-        }
-        company {
-            id
-            name
-            location
-            officeArticles {
-                id
-                images {
-                    id
-                    path
-                }
-                videos {
-                    id
-                    path
-                }
-                i18n {
-                    title
-                    description
-                }
-            }
-            teams {
-                id
-            }
-            i18n {
-                description
-            }
-            faqs {
-                id
-                i18n {
-                    answer
-                    question
-                }
-            }
-        }
-        team {
-            id
-        }
+  job(id: $id, language: $language) {
+    id
+    createdAt
+    expireDate
+    i18n {
+      title
+      description
+      idealCandidate
     }
+    company {
+      id
+      name
+      i18n {
+        description
+      }
+      officeArticles {
+        id
+        images {
+          id
+          path
+        }
+        videos {
+          id
+          path
+        }
+        i18n {
+          title
+          description
+        }
+      }
+      faqs {
+        id
+        i18n {
+          question
+          answer
+        }
+      }
+    }
+    team {
+      id
+      name
+    }
+    phone
+    email
+    facebook
+    linkedin
+  }
 }
 `;
 
