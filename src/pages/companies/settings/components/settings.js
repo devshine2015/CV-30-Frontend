@@ -27,6 +27,7 @@ const SettingsHOC = compose(
     withState('fileParams', 'setFileParams', {}),
     withState('headline', 'setHeadline', props => {
         let { currentCompany: { company: { i18n } } } = props;
+
         if (!i18n || !i18n[0] || !i18n[0].headline)
             return '';
         return i18n[0].headline;
@@ -34,6 +35,7 @@ const SettingsHOC = compose(
     }),
     withState('description', 'setDescription', props => {
         let { currentCompany: { company: { i18n } } } = props;
+
         if (!i18n || !i18n[0] || !i18n[0].description)
             return '';
         return i18n[0].description;
