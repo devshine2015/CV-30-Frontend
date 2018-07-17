@@ -4,31 +4,14 @@ import { Avatar, CircularProgress, Chip } from '@material-ui/core';
 import { defaultCompanyLogo } from '../../../../constants/utils';
 
 const JobItem = props => {
-    const { i18n, company: { name: companyName, location }, expireDate, videos, images, id } = props;
-    // TODO: appliedDate, jobLevel, benefits from props
-    const match = Math.random() * 100;
-    const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
-    const jobLevels = ['entry', 'mid', 'senior'];
-    const benefits = [
-        {
-            icon: 'fas fa-car',
-            label: 'Car'
-        },
-        {
-            icon: 'fas fa-mobile-alt',
-            label: 'Phone'
-        }, {
-            icon: 'fas fa-laptop',
-            label: 'Laptop'
-        }
-    ];
+    const { i18n, company: { name: companyName, location }, expireDate, videos, images, id, match, appliedDate, jobLevels, benefits } = props;
     const { title, description } = i18n[0];
 
     return (
         <div className='listItem jobListItem'>
             <div className='leftOverlay'>
                 <Link to={`/dashboard/job/${id}`}>
-                    <Avatar alt="Gabriel" src={ defaultCompanyLogo } className='avatar' style={{ margin: 3, backgroundColor: '#fff' }} imgProps={{ style: { objectFit: 'contain' } }} />
+                    <Avatar alt="Gabriel" src={defaultCompanyLogo} className='avatar' style={{ margin: 3, backgroundColor: '#fff' }} imgProps={{ style: { objectFit: 'contain' } }} />
                 </Link>
                 <div className='leftOverlayTexts'>
                     <h6 className='companyName'>
@@ -41,24 +24,24 @@ const JobItem = props => {
                 <div className='location'>
                     <i className='fas fa-lg fa-map-marker-alt' />
                     {location}
-                </div>
+                </div>                
                 <div className='match'>
                     <CircularProgress
                         variant='static'
                         size={80}
-                        value={match}
+                        value={match || 0}
                         classes={{
                             root: 'matchRoot'
                         }}
                     />
                     <span className='matchValue'>
-                        {match.toFixed(0)}%
+                        {match?match.toFixed(0):0}%
                         <br />
                         <span className='matchText'>
                             match
                         </span>
                     </span>
-                </div>
+                </div>                
             </div>
             {
                 appliedDate &&
