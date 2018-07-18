@@ -25,9 +25,7 @@ const ColorPickerHOC = compose(
                     {
                         teamDetails: {
                             id: teamId,
-                            hasProfileCover: false,
-                            coverContentType: null,
-                            coverBackground: color.style,
+                            coverBackground: color ? color.style : 'none',
                             companyId: company.id
                         }
                     },
@@ -91,7 +89,6 @@ const ColorPickerHOC = compose(
                             id: teamId,
                             hasProfileCover: true,
                             coverContentType: contentType.replace('image/', ''),
-                            coverBackground: null,
                             companyId: company.id
                         }
                     },

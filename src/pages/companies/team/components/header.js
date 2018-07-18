@@ -6,6 +6,7 @@ import { NavLink, Link } from 'react-router-dom';
 import ColorPicker from './colorPicker';
 
 import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
+import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const HeaderHOC = compose(
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
@@ -32,12 +33,15 @@ const Header = props => {
 
     let headerStyle = null;
 
+    if (coverBackground) {
+        headerStyle = { background: coverBackground }
+    } else {
+        headerStyle = { background: defaultHeaderOverlay }
+    }
+
     if (hasProfileCover) {
         let newCover = `${s3BucketURL}/${teamsFolder}/${teamId}/cover.${coverContentType}?${forceCoverRender}`;
-        headerStyle = { background: `url(${newCover})` };
-    }
-    else if (coverBackground) {
-        headerStyle = { background: coverBackground }
+        headerStyle.background += `, url(${newCover})`;
     }
 
     return (

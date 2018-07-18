@@ -196,6 +196,7 @@ const Header = (props) => {
     }) : [];
 
     let headerStyle = null;
+
     if (coverBackground) {
         headerStyle = { background: coverBackground }
     } else {
