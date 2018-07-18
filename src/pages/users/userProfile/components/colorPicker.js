@@ -23,8 +23,7 @@ const ColorPickerHOC = compose(
                 await updateCoverMutation({
                     variables:
                     {
-                        status: false,
-                        color: color.style
+                        color: color ? color.style : 'none'
                     },
                     refetchQueries: [{
                         query: currentUserQuery,
@@ -171,6 +170,11 @@ const ColorPicker = (props) => {
                                     key={`colorPicker-${index}`}
                                 />)
                         }
+                        <div
+                            className='color none'
+                            onClick={() => setBackgroundColor()}
+                            key='colorPicker-none'
+                        >None</div>
                     </div>
                 }
                 {

@@ -14,7 +14,7 @@ import { updateAvatar, currentUserQuery, updateAvatarTimestampMutation, localUse
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
-
+import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const HeaderHOC = compose(
     withRouter,
@@ -196,13 +196,15 @@ const Header = (props) => {
     }) : [];
 
     let headerStyle = null;
+    if (coverBackground) {
+        headerStyle = { background: coverBackground }
+    } else {
+        headerStyle = { background: defaultHeaderOverlay }
+    }
 
     if (hasProfileCover) {
-        let newCover = `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/cover.${currentUser.profile.profileCoverContentType}?${Date.now()}-${forceCoverRender}`;
-        headerStyle = { background: `url(${newCover})` };
-    }
-    else if (coverBackground) {
-        headerStyle = { background: coverBackground }
+        let newCover = `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/cover.${currentUser.profile.profileCoverContentType}?${forceCoverRender}`;
+        headerStyle.background += `, url(${newCover})`;
     }
 
     const avatarText = () => {
@@ -219,7 +221,7 @@ const Header = (props) => {
     const lang = props.match.params.lang;
 
     return (
-        <div className='header' style={headerStyle || null}>
+        <div className='header' style={headerStyle}>
             <Grid container className='headerLinks'>
                 <Grid item md={3} sm={12} xs={12} className='userAvatar'>
                     <Avatar alt={firstName} src={avatar} key={avatar} className='avatar'>
@@ -454,7 +456,7 @@ const Header = (props) => {
                 </Grid>
                 <SkillsEditor skillsModalData={skillsModalData} skillsAnchor={skillsAnchor} closeSkillsModal={closeSkillsModal} key={skillsModalData} />
             </Grid>
-        </div>
+        </div >
     )
 }
 
