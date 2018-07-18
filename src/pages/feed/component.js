@@ -6,8 +6,10 @@ import { s3BucketURL, profilesFolder } from '../../constants/s3';
 
 const NewsFeed = props => {
     const { formData, handleFormChange, switchIsArticle, isArticle,
-        currentUser: { profile: { id, firstName, lastName, email, hasAvatar, avatarContentType } }
+        currentUser: { loading, profile }
     } = props;
+    if (loading) return null;
+    const { id, firstName, lastName, email, hasAvatar, avatarContentType } = profile;
     const { postBody } = formData;
     let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
