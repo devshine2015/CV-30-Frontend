@@ -10,24 +10,26 @@ const ArticleSlider = props => {
         <div className='sliderRoot'>
             <div className='sliderHeader'>
                 {title || null}
-                <div className='sliderControls'>
-                    <IconButton className='sliderArrow' onClick={prevItem}>
-                        <Icon>
-                            arrow_back_ios
+                {articles.length > 1 &&
+                    <div className='sliderControls'>
+                        <IconButton className='sliderArrow' onClick={prevItem}>
+                            <Icon>
+                                arrow_back_ios
                                 </Icon>
-                    </IconButton>
-                    {
-                        articles.map((article, index) =>
-                            (<span className={index === activeItem ? 'sliderDot active' : 'sliderDot'} key={article.id} onClick={() => jumpToItem(index)}></span>)
-                        )
-                    }
+                        </IconButton>
+                        {
+                            articles.map((article, index) =>
+                                (<span className={index === activeItem ? 'sliderDot active' : 'sliderDot'} key={article.id} onClick={() => jumpToItem(index)}></span>)
+                            )
+                        }
 
-                    <IconButton className='sliderArrow' onClick={nextItem}>
-                        <Icon>
-                            arrow_forward_ios
+                        <IconButton className='sliderArrow' onClick={nextItem}>
+                            <Icon>
+                                arrow_forward_ios
                                 </Icon>
-                    </IconButton>
-                </div>
+                        </IconButton>
+                    </div>
+                }
             </div>
             <div className='sliderMain'>
                 {
