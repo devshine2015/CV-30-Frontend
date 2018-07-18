@@ -1,0 +1,55 @@
+.colorPickerPaper {
+    background: #fff;
+    border: 1px solid #707881;
+    border-radius: 5px !important;
+    width: 465px;
+    position: relative;
+    overflow: visible !important;
+    margin-top: 20px;
+    &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: -5px;
+        left: 45px;
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        transform: rotate(-45deg);
+    }
+    .popupHeader {
+        border-bottom: 2px solid #f4f4f4;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 10px 0 10px;
+        .picUploadButton {
+            background: #397db9;
+            padding: 5px;
+            margin: 0;
+            color: white;
+            text-transform: none;
+            height: 24px;
+            border-radius: 5px;
+        }
+    }
+    .pickerContainer {
+        padding: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        .color {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            &.none {
+                border: 1px solid #eee;
+                color: #ddd;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+}

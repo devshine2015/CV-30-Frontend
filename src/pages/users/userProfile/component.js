@@ -6,13 +6,14 @@ import { Switch, Route } from 'react-router-dom';
 import UserProfileShow from './components/show';
 import UserProfileFeed from './components/feed';
 import Header from './components/header';
+import Loader from '../../../components/Loader';
 
 const UserProfile = (props) => {
     const { editMode, switchEditMode, currentUser } = props;
 
     const Show = () => <UserProfileShow editMode={editMode} currentUser={currentUser} />
     if (currentUser.loading)
-        return <div>Loading</div>
+        return <Loader />
 
     return (<div className='userProfileRoot'>
         <FormGroup row className='editToggle'>

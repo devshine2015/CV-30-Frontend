@@ -2,12 +2,23 @@ import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import S3Uploader from 'react-s3-uploader';
-
-import { availableColors } from '../../../../constants/headerBackgrounds';
-import { updateCoverMutation, currentUserQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
+
+import { availableColors } from '../constants/headerBackgrounds';
+import { updateCoverMutation, currentUserQuery } from '../store/queries';
 
 const ColorPickerHOC = compose(
+    withRouter,
+    graphql(currentUserQuery, {
+        name: 'currentUser',
+        options: (props) => ({
+            variables: {
+                language: props.match.params.lang
+            },
+            fetchPolicy: 'network-only'
+        })
+    }),
     graphql(updateCoverMutation, { name: 'updateCoverMutation' }),
     withState('activeTab', 'setActiveTab', 'colors'),
     withState('isUploading', 'setIsUploading', false),
@@ -39,7 +50,7 @@ const ColorPickerHOC = compose(
                 console.log(err);
             }
         },
-        getSignedUrl: ({ profile, setFileParams }) => async (file, callback) => {
+        getSignedUrl: ({ currentUser: { profile }, setFileParams }) => async (file, callback) => {
             const params = {
                 fileName: `cover.${file.type.replace('image/', '')}`,
                 contentType: file.type,

@@ -128,8 +128,8 @@ const NewJobHOC = compose(
             await delete contact[key];
             setFormData(contact);
         },
-        updateDescription: props => text => props.setFormData(state => ({ ...state, ['description']: text })),
-        updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, ['idealCandidate']: text }))
+        updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
+        updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text }))
     }),
     pure
 );

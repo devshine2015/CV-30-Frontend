@@ -3,16 +3,21 @@ import { Grid, Button, Icon, Avatar, TextField, FormGroup, FormLabel, Switch as 
 import { Link } from 'react-router-dom';
 import { defaultUserAvatar } from '../../constants/utils';
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
+import Loader from '../../components/Loader';
 
 const NewsFeed = props => {
     const { formData, handleFormChange, switchIsArticle, isArticle,
         currentUser: { loading, profile }
     } = props;
-    if (loading) return null;
+
+    if (loading)
+        return <Loader />
+
     const { id, firstName, lastName, email, hasAvatar, avatarContentType } = profile;
     const { postBody } = formData;
     let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
+
     return (
         <div className='newsFeedRoot'>
             <Grid container className='mainBody brandShow'>
@@ -183,6 +188,7 @@ const NewsFeed = props => {
             </Grid>
         </div>
     );
+
 }
 
 export default NewsFeed;

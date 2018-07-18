@@ -1,12 +1,13 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import Profile from './components/profile';
+import Loader from '../../../components/Loader';
 
 const UsersList = props => {
     const { loading, profiles } = props.profilesQuery;
 
     if (loading) {
-        return <div>Loading...</div>
+        return <Loader />
     } else {
         return (
             <Grid container className='mainBody userListRoot'>

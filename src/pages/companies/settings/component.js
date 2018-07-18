@@ -2,12 +2,17 @@ import React from 'react';
 import { Grid, Tabs, Tab } from '@material-ui/core';
 import Settings from './components/settings';
 import Jobs from './components/jobs';
+import Loader from '../../../components/Loader';
 
 // import Notifications from './components/notifications';
 // import Following from './components/following';
 
 const CompanySettings = props => {
-    const { handleTabChange, activeTab } = props;
+    const { handleTabChange, activeTab, currentCompany: { loading } } = props;
+
+    if (loading)
+        return <Loader />
+
     return (
         <div className='companySettingsRoot'>
             <Grid container className='header'>

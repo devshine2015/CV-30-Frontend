@@ -7,7 +7,7 @@ import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import ReactPlayer from 'react-player';
 
-import ColorPicker from './colorPicker';
+import ColorPicker from '../../../../components/colorPicker';
 import SkillsEditor from './skillsEditor';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { updateAvatar, currentUserQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
@@ -264,7 +264,7 @@ const Header = (props) => {
                                 colorPickerAnchor={colorPickerAnchor}
                                 onClose={closeColorPicker}
                                 refetchBgImage={refetchBgImage}
-                                profile={currentUser.profile}
+                                type='profile'
                             />
                         </React.Fragment>
                     }

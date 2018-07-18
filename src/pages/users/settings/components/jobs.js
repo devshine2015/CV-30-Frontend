@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import JobItem from '../../../jobs/list/components/jobItem';
 import { getJobsQuery } from '../../../../store/queries';
+import Loader from '../../../../components/Loader';
 
 const JobListHOC = compose(
     withRouter,
@@ -20,7 +21,9 @@ const JobListHOC = compose(
 );
 
 const JobsList = props => {
-    const { getJobsQuery: { jobs } } = props;
+    const { getJobsQuery: { jobs, loading } } = props;
+    if (loading)
+        return <Loader />
     return (
         <div className='jobsList'>
             {jobs.map((job, index) => (<JobItem {...job} key={job.id} />))}

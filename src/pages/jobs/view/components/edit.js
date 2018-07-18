@@ -110,8 +110,8 @@ const EditHOC = compose(
             alert('done!');
             setIsUploading(false);
         },
-        updateDescription: props => text => props.setFormData(state => ({ ...state, ['description']: text })),
-        updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, ['idealCandidate']: text })),
+        updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
+        updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
 
         publishJob: ({ handleJob, formData, match, history }) => async () => {
             const { id, companyId, teamId, title, description, expireDate, idealCandidate } = formData;

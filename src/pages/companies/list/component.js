@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, TextField, Checkbox, Button } from '@material-ui/core';
 import Company from './components/company';
+import Loader from '../../../components/Loader';
 
 const CompaniesList = props => {
     const { handleFormChange, formData, companiesQuery } = props;
@@ -8,7 +9,7 @@ const CompaniesList = props => {
     const { isStartup, isCorporation, isBoutique, isMultinational } = formData;
 
     if (loading) {
-        return <div>Loading...</div>
+        return <Loader />
     } else {
         return (
             <Grid container className='mainBody companiesListRoot'>

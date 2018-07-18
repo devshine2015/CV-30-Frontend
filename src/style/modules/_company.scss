@@ -2,43 +2,8 @@
     background: #fbf2f5;
     .header {
         position: relative;
-        height: 90vh;
-        min-height: 90vh;
-        padding: 0;
-        @media (max-width: 960px) {
-            height: auto;
-        }
-        .headerOverlay {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            left: 0;
-            background: #550019;
-            opacity: .5;
-            pointer-events: none;
-        }
-        .headerContents {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            left: 0;
-            pointer-events: none;
-            padding: 25px 0 1px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            @media (max-width: 960px) {
-                position: relative;
-                top: auto;
-                bottom: auto;
-                left: auto;
-                right: auto;
-                background: #550019;
-                pointer-events: all;
-            }
-        }
+        background: #550019;
+        padding: 25px 0 0;
         .rightHeaderLinks {
             @media (max-width: 960px) {
                 justify-content: center;
