@@ -4,12 +4,14 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import { Icon } from '@material-ui/core';
 import 'pure-react-carousel/dist/react-carousel.es.css';
+import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
+import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const TeamSliderHOC = compose(
     withState('visibleSlides', 'setVisibleSlides', 3),
     withHandlers(),
     pure
-)
+);
 
 const TeamSlider = props => {
     const { teams, match: { params: { lang } }, visibleSlides } = props;
@@ -25,12 +27,24 @@ const TeamSlider = props => {
     >
         <Slider className="slidesContainer" classNameTrayWrap="slidesContainer">
             {teams.map((team, index) => {
-                let url = `/${lang}/dashboard/team/${team.id}`;
+                let { id, name, coverBackground, hasProfileCover, coverContentType } = team;
+                let url = `/${lang}/dashboard/team/${id}`;
+
+                let style = { background: defaultHeaderOverlay };
+
+                if (hasProfileCover) {
+                    let newCover = `${s3BucketURL}/${teamsFolder}/${id}/cover.${coverContentType}?${Date.now()}`;
+                    style.background = `url(${newCover})`;
+                } else if (coverBackground) {
+                    style = { background: coverBackground }
+                }
+
                 return (
-                    <Slide index={index} key={index}>
-                        <Link to={url} className='teamSliderItem' key={team.id}>
-                            <img src='https://www.projecttimes.com/media/k2/items/cache/6612da61425d98755836902a8bde1bce_XL.jpg' alt="ceva" className='teamImg' />
-                            <span className='teamText'>{team.name}</span>
+                    <Slide index={index} key={id}>
+                        <Link to={url} className='teamSliderItem'>
+                            <div className='teamImg' style={style}>
+                                <span className='teamText'>{name}</span>
+                            </div>
                         </Link>
                     </Slide>
                 );

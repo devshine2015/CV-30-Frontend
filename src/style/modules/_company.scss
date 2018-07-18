@@ -80,6 +80,7 @@
         }
     }
     .headerInfoContainer {
+        margin-top: 50px;
         .editorWrapper {
             background-color: rgba(0, 0, 0, 0.2);
             border: 2px dashed rgba(255, 255, 255, 0.2);
@@ -183,7 +184,6 @@
         overflow: hidden;
         max-height: 200px;
         margin-top: 50px;
-        pointer-events: all;
         .slideContainer {
             display: flex;
         }
@@ -196,6 +196,7 @@
             width: 320px;
             min-width: 320px;
             position: relative;
+            text-decoration: none;
             @media (max-width: 960px) {
                 height: 150px;
                 width: 240px;
@@ -235,21 +236,24 @@
             }
         }
         .teamImg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             max-height: 200px;
             max-width: 100%;
             width: 100%;
             height: 100%;
+            background-size: contain !important;
         }
         .teamText {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
+            padding: 5px;
             color: #fff;
             font-size: 1.5rem;
+            margin-top: auto;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            text-align: center;
             @media (max-width: 600px) {
-                padding: 5px;
                 font-size: 1.25rem;
             }
         }

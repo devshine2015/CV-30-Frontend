@@ -164,7 +164,7 @@ const Header = (props) => {
 
                 </Grid>
             </Grid>
-            <Grid container className='headerInfoContainer' style={{ pointerEvents: 'all' }}>
+            <Grid container className='headerInfoContainer'>
                 <Grid item lg={5} md={5} sm={12} xs={12} className='textInfo'>
                     {
                         editMode ?
