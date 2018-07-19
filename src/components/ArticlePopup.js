@@ -23,7 +23,7 @@ const ArticlePopUp = (props) => {
                     <h4>Add a story</h4>
                     <p>
                         Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro.
-                </p>
+                    </p>
                     <Tabs
                         value={activeTab}
                         onChange={handleTabChange}
