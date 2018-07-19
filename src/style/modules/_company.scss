@@ -192,17 +192,13 @@
             position: relative;
         }
         .teamSliderItem {
-            height: 200px;
             width: 320px;
-            min-width: 320px;
             position: relative;
             text-decoration: none;
             @media (max-width: 960px) {
-                height: 150px;
                 width: 240px;
             }
             @media (max-width: 600px) {
-                height: 100px;
                 width: 160px;
             }
             &.title {
@@ -232,6 +228,9 @@
                     font-size: 0.75rem;
                     width: 140px;
                     margin: 0 auto;
+                }
+                @media (max-width: 960px) {
+                    display: none;
                 }
             }
         }
