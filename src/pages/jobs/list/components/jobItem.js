@@ -24,7 +24,8 @@ const JobItem = props => {
                 <div className='location'>
                     <i className='fas fa-lg fa-map-marker-alt' />
                     {location}
-                </div>                
+                </div>
+                {/*                
                 <div className='match'>
                     <CircularProgress
                         variant='static'
@@ -41,7 +42,8 @@ const JobItem = props => {
                             match
                         </span>
                     </span>
-                </div>                
+                </div>       
+                */}
             </div>
             {
                 appliedDate &&
