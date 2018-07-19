@@ -7,27 +7,33 @@ import Show from './components/show';
 import Feed from './components/feed';
 
 const Team = props => {
-    const { editMode, switchEditMode, queryTeam: { loading } } = props;
-    
+    const {
+        editMode, switchEditMode,
+        queryTeam: { loading, team },
+        currentUser: { auth: { currentUser: { id: userId } } }
+    } = props;
+
     if (loading) return null;
 
     const ShowWithProps = () => {
         return (<Show {...props} />)
     };
-    
+
     return (
         <div className='teamRoot'>
-            <FormGroup row className='editToggle'>
-                <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
-                <ToggleSwitch checked={editMode} onChange={switchEditMode}
-                    classes={{
-                        switchBase: 'colorSwitchBase',
-                        checked: 'colorChecked',
-                        bar: 'colorBar',
-                    }}
-                    color="primary" />
-                <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
-            </FormGroup>
+            {(team.company.owner.id === userId) &&
+                <FormGroup row className='editToggle'>
+                    <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
+                    <ToggleSwitch checked={editMode} onChange={switchEditMode}
+                        classes={{
+                            switchBase: 'colorSwitchBase',
+                            checked: 'colorChecked',
+                            bar: 'colorBar',
+                        }}
+                        color="primary" />
+                    <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
+                </FormGroup>
+            }
             <Header {...props} />
             <React.Fragment>
                 <Switch>

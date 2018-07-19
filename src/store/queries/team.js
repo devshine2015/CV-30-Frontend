@@ -17,6 +17,9 @@ export const queryTeam = gql`
     company {
       id
       name
+      owner {
+        id
+      }
     }
     members {
       id

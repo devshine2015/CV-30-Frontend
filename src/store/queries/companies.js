@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const companyQuery = gql`
- query company($id: String!, $language: LanguageCodeType!) {
+query company($id: String!, $language: LanguageCodeType!) {
   company(id: $id, language: $language) {
     id
     name
@@ -79,6 +79,9 @@ export const companyQuery = gql`
       hasProfileCover
       coverContentType
       coverBackground
+    }
+    owner {
+      id
     }
   }
 }

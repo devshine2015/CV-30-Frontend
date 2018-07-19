@@ -3,11 +3,11 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
-import { currentUserQuery } from '../../store/queries'
+import { currentProfileQuery } from '../../store/queries'
 
 const NewsFeedHOC = compose(
     withRouter,
-    graphql(currentUserQuery, {
+    graphql(currentProfileQuery, {
         name: 'currentUser',
         options: (props) => ({
             variables: {

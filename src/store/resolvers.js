@@ -21,13 +21,15 @@ export default {
             cache.writeData({ data });
             return null;
         },
-        setAuthenticated: (_, { status }, { cache }) => {
+        setAuthenticated: (_, { status, user }, { cache }) => {
             const data = {
                 auth: {
                     __typename: "Authentication",
-                    loggedIn: status
+                    loggedIn: status,
+                    currentUser: user
                 }
             };
+            console.log(data);
             cache.writeData({ data });
             return null;
         },

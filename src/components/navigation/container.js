@@ -1,7 +1,7 @@
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
-import { currentUserQuery, localUserQuery } from '../../store/queries';
+import { getCurrentUser, localUserQuery } from '../../store/queries';
 import Navigation from './component';
 import Logout from '../../hocs/logout';
 
@@ -26,14 +26,8 @@ const notifications = [
 
 const NavigationHOC = compose(
     withRouter,
-    graphql(currentUserQuery, {
-        name: 'currentUser',
-        options: (props) => ({
-            variables: {
-                language: props.match.params.lang
-            },
-            fetchPolicy: 'network-only'
-        })
+    graphql(getCurrentUser, {
+        name: 'currentUser'
     }),
     graphql(localUserQuery, { name: 'localUserData' }),
     withState('profileMenuOpen', 'setProfileMenuStatus', false),

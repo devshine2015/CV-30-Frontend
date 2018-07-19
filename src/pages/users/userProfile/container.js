@@ -3,12 +3,12 @@ import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
 import UserProfile from './component';
-import { currentUserQuery } from '../../../store/queries'
+import { currentProfileQuery, getCurrentUser } from '../../../store/queries'
 
 const UserProfileHOC = compose(
     withRouter,
-    graphql(currentUserQuery, {
-        name: 'currentUser',
+    graphql(currentProfileQuery, {
+        name: 'currentProfile',
         options: (props) => ({
             variables: {
                 language: props.match.params.lang,
@@ -17,6 +17,9 @@ const UserProfileHOC = compose(
             },
             fetchPolicy: 'network-only'
         }),
+    }),
+    graphql(getCurrentUser, {
+        name: 'currentUser'
     }),
     withState('editMode', 'updateEditMode', false),
     withHandlers({

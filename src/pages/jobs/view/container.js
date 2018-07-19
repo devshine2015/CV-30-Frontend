@@ -1,8 +1,9 @@
 import Job from './component';
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
-import { getJobQuery } from '../../../store/queries';
 import { withRouter } from 'react-router-dom';
+
+import { getJobQuery, getCurrentUser } from '../../../store/queries';
 
 const JobHOC = compose(
     withRouter,
@@ -15,6 +16,9 @@ const JobHOC = compose(
                 language: props.match.params.lang
             },
         }),
+    }),
+    graphql(getCurrentUser, {
+        name: 'currentUser'
     }),
     withState('editMode', 'updateEditMode', false),
     withHandlers({

@@ -2,10 +2,10 @@ import UserSettings from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 
-import { currentUserQuery } from '../../../store/queries';
+import { currentProfileQuery } from '../../../store/queries';
 
 const UserSettingsHOC = compose(
-    graphql(currentUserQuery, {
+    graphql(currentProfileQuery, {
         name: 'currentUser',
         options: (props) => ({
             variables: {

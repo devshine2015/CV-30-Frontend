@@ -7,23 +7,21 @@ import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
 
 const MobileNav = (props) => {
+
     const {
+        localUserData: { loading: localUserLoading, localUser: { timestamp } },
+        currentUser: { auth: { currentUser } },
+        match: { params: { lang } }, doLogout,
         toggleMobileNav, mobileNavOpen, closeMobileNav,
         toggleMobileNotifications, mobileNotificationIsOpen, closeMobileNotifications, notifications,
-        toggleMobileProfile, mobileProfileIsOpen, closeMobileProfile,
-        match, doLogout,
-        localUserData, currentUser
+        toggleMobileProfile, mobileProfileIsOpen, closeMobileProfile
     } = props;
 
-    const user = currentUser.profile;
-
-    const lang = match.params.lang;
-
-    if (!user)
+    if (!currentUser)
         return null;
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : defaultUserAvatar
+        (!localUserLoading && currentUser.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.id}/avatar.${currentUser.avatarContentType}?${timestamp}` : defaultUserAvatar
 
 
     return (
@@ -115,19 +113,19 @@ const MobileNav = (props) => {
                 <Drawer anchor="left" open={mobileProfileIsOpen} onClose={closeMobileProfile} className='mobileProfileContainer' classes={{ paperAnchorLeft: 'sideDrawer' }}>
                     <div tabIndex={0} role="button" onClick={closeMobileProfile} onKeyDown={closeMobileProfile} className='content'>
                         <FormattedMessage id="nav.profile" defaultMessage="My profile" description="Profile menu item">
-                            {(text) => (<ListItem button component={NavLink} exact to={`/${lang}/dashboard/profile/${currentUser.profile.id}`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
+                            {(text) => (<ListItem button component={NavLink} exact to={`/${lang}/dashboard/profile/`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.appliedJobs" defaultMessage="Applied Jobs" description="Applied jobs menu item">
                             {(text) => (<ListItem button component={Link} to={{
-                                pathname: `/${lang}/dashboard/profile/${currentUser.profile.id}/settings`,
+                                pathname: `/${lang}/dashboard/profile/settings`,
                                 state: { activeTab: 'jobs' }
                             }} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.settings" defaultMessage="Settings" description="Settings menu item">
                             {(text) => (<ListItem button component={Link} to={{
-                                pathname: `/${lang}/dashboard/profile/${currentUser.profile.id}/settings`,
+                                pathname: `/${lang}/dashboard/profile/settings`,
                                 state: { activeTab: 'settings' }
                             }} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>

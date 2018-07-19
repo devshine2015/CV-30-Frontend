@@ -180,8 +180,12 @@ const NewCompanyHOC = compose(
                     }]
                 });
                 if (status) history.push(`/${match.params.lang}/dashboard/companies`);
-            } catch (error) {
-                console.log(error);
+            } catch ({ graphQLErrors }) {
+                graphQLErrors && graphQLErrors[0].reduce((result, current) => {
+                    result += "\n" + current.message;
+                    console.log(result);
+                    return result;
+                }, '');
             }
             setSubmitting(false);
         },

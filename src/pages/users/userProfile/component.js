@@ -9,26 +9,32 @@ import Header from './components/header';
 import Loader from '../../../components/Loader';
 
 const UserProfile = (props) => {
-    const { editMode, switchEditMode, currentUser } = props;
+    const {
+        editMode, switchEditMode,
+        currentProfile: { loading, profile },
+        currentUser: { auth: { currentUser: { id: userId } } }
+    } = props;
 
-    const Show = () => <UserProfileShow editMode={editMode} currentUser={currentUser} />
-    if (currentUser.loading)
+    const Show = () => <UserProfileShow editMode={editMode} profile={profile} />
+
+    if (loading)
         return <Loader />
 
     return (<div className='userProfileRoot'>
-        <FormGroup row className='editToggle'>
-            <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
-            <ToggleSwitch checked={editMode} onChange={switchEditMode}
-                classes={{
-                    switchBase: 'colorSwitchBase',
-                    checked: 'colorChecked',
-                    bar: 'colorBar',
-                }}
-                color="primary" />
-            <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
-        </FormGroup>
-
-        <Header currentUser={currentUser} editMode={editMode} />
+        {(profile.id === userId) &&
+            <FormGroup row className='editToggle'>
+                <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
+                <ToggleSwitch checked={editMode} onChange={switchEditMode}
+                    classes={{
+                        switchBase: 'colorSwitchBase',
+                        checked: 'colorChecked',
+                        bar: 'colorBar',
+                    }}
+                    color="primary" />
+                <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
+            </FormGroup>
+        }
+        <Header profile={profile} editMode={editMode} />
         <React.Fragment>
             <Switch>
                 <Route path='/:lang(en|ro)/dashboard/profile/feed' component={UserProfileFeed} />

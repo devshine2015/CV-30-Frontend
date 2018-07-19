@@ -6,11 +6,11 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../constants/headerBackgrounds';
-import { updateCoverMutation, currentUserQuery } from '../store/queries';
+import { updateCoverMutation, currentProfileQuery } from '../store/queries';
 
 const ColorPickerHOC = compose(
     withRouter,
-    graphql(currentUserQuery, {
+    graphql(currentProfileQuery, {
         name: 'currentUser',
         options: (props) => ({
             variables: {
@@ -37,7 +37,7 @@ const ColorPickerHOC = compose(
                         color: color ? color.style : 'none'
                     },
                     refetchQueries: [{
-                        query: currentUserQuery,
+                        query: currentProfileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
@@ -96,7 +96,7 @@ const ColorPickerHOC = compose(
                         contentType: contentType.replace('image/', '')
                     },
                     refetchQueries: [{
-                        query: currentUserQuery,
+                        query: currentProfileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {

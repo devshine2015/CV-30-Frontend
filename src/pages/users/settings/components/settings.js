@@ -4,7 +4,7 @@ import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { currentUserQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation } from '../../../../store/queries';
+import { currentProfileQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation } from '../../../../store/queries';
 
 const SettingsHOC = compose(
     graphql(updateAvatar, { name: 'updateAvatar' }),
@@ -74,7 +74,7 @@ const SettingsHOC = compose(
                     contentType: contentType.replace('image/', '')
                 },
                 refetchQueries: [{
-                    query: currentUserQuery,
+                    query: currentProfileQuery,
                     fetchPolicy: 'network-only',
                     name: 'currentUser',
                     variables: {
@@ -126,7 +126,7 @@ const SettingsHOC = compose(
                         }
                     },
                     refetchQueries: [{
-                        query: currentUserQuery,
+                        query: currentProfileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {

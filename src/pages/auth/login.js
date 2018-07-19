@@ -154,7 +154,7 @@ const LoginHOC = compose(
                 });
 
                 const {
-                    error, token, refreshToken,
+                    error, token, refreshToken
                 } = response.data.login;
 
                 if (error) {
@@ -164,7 +164,14 @@ const LoginHOC = compose(
                     setLoginError('Something went wrong.');
                     return false;
                 } else {
-                    await authLocal();
+                    const { id, email, firstName, lastName, hasAvatar, avatarContentType } = response.data.login;
+                    const currentUser = { id, email, firstName, lastName, hasAvatar, avatarContentType, __typename: 'Profile' };
+                    await authLocal({
+                        variables: {
+                            status: true,
+                            user: currentUser
+                        }
+                    });
                     history.push(`/${match.params.lang}/dashboard`);
                 }
             } catch (error) {

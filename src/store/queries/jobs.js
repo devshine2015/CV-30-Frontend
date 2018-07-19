@@ -57,6 +57,9 @@ query job($id: String!, $language: LanguageCodeType!) {
           answer
         }
       }
+      owner {
+        id
+      }
     }
     team {
       id

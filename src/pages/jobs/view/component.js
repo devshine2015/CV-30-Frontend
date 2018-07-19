@@ -6,25 +6,28 @@ import Loader from '../../../components/Loader';
 
 const Job = props => {
     const {
-        editMode, switchEditMode, getJobQuery: {loading}
+        editMode, switchEditMode, getJobQuery: { loading, job },
+        currentUser: { auth: { currentUser: { id: userId } } }
     } = props;
-    
+
     if (loading)
         return <Loader />
-    
+
     return (
         <div className='jobRoot'>
-            <FormGroup row className='editToggle'>
-                <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
-                <ToggleSwitch checked={editMode} onChange={switchEditMode}
-                    classes={{
-                        switchBase: 'colorSwitchBase',
-                        checked: 'colorChecked',
-                        bar: 'colorBar',
-                    }}
-                    color="primary" />
-                <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
-            </FormGroup>
+            {(job.company.owner.id === userId) &&
+                <FormGroup row className='editToggle'>
+                    <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
+                    <ToggleSwitch checked={editMode} onChange={switchEditMode}
+                        classes={{
+                            switchBase: 'colorSwitchBase',
+                            checked: 'colorChecked',
+                            bar: 'colorBar',
+                        }}
+                        color="primary" />
+                    <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
+                </FormGroup>
+            }
             {editMode ?
                 <Edit {...props} />
                 : <Show {...props} />

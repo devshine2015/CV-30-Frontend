@@ -10,7 +10,7 @@ import ReactPlayer from 'react-player';
 import ColorPicker from '../../../../components/colorPicker';
 import SkillsEditor from './skillsEditor';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { updateAvatar, currentUserQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
+import { updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
@@ -22,7 +22,7 @@ const HeaderHOC = compose(
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
     graphql(localUserQuery, { name: 'localUserData' }),
     graphql(handleArticle, { name: 'handleArticle' }),
-    withState('count', 'setCount', ({ currentUser }) => currentUser.profile.featuredArticles ? currentUser.profile.featuredArticles.length - 1 : 0),
+    withState('count', 'setCount', ({ profile }) => profile.featuredArticles ? profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
@@ -39,8 +39,8 @@ const HeaderHOC = compose(
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
             setColorPickerAnchor(null);
         },
-        openSkillsModal: ({ currentUser, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
-            const { skills, values } = currentUser.profile;
+        openSkillsModal: ({ profile, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
+            const { skills, values } = profile;
             if (type === 'values')
                 setSkillsModalData({
                     type: type,
@@ -69,7 +69,7 @@ const HeaderHOC = compose(
                         language: 'en'
                     },
                     refetchQueries: [{
-                        query: currentUserQuery,
+                        query: currentProfileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
@@ -83,11 +83,11 @@ const HeaderHOC = compose(
                 console.log(err)
             }
         },
-        getSignedUrl: ({ currentUser }) => async (file, callback) => {
+        getSignedUrl: ({ profile }) => async (file, callback) => {
             const params = {
                 fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
-                id: currentUser.profile.id,
+                id: profile.id,
                 type: 'avatar'
             };
 
@@ -132,7 +132,7 @@ const HeaderHOC = compose(
                     contentType: fileType
                 },
                 refetchQueries: [{
-                    query: currentUserQuery,
+                    query: currentProfileQuery,
                     fetchPolicy: 'network-only',
                     name: 'currentUser',
                     variables: {
@@ -162,7 +162,7 @@ const HeaderHOC = compose(
 
 
 const Header = (props) => {
-    const { editMode, currentUser,
+    const { editMode, profile,
         closeColorPicker, toggleColorPicker, colorPickerAnchor,
         removeStory,
         openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
@@ -179,16 +179,16 @@ const Header = (props) => {
         // skills,
         // values,
         coverBackground, hasProfileCover
-    } = currentUser.profile;
+    } = profile;
 
-    const skills = currentUser.profile.skills ? currentUser.profile.skills.map(item => {
+    const skills = profile.skills ? profile.skills.map(item => {
         return {
             id: item.id,
             title: item.i18n[0].title
         }
     }) : [];
 
-    const values = currentUser.profile.values ? currentUser.profile.values.map(item => {
+    const values = profile.values ? profile.values.map(item => {
         return {
             id: item.id,
             title: item.i18n[0].title
@@ -204,7 +204,7 @@ const Header = (props) => {
     }
 
     if (hasProfileCover) {
-        let newCover = `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/cover.${currentUser.profile.profileCoverContentType}?${forceCoverRender}`;
+        let newCover = `${s3BucketURL}/${profilesFolder}/${profile.id}/cover.${profile.profileCoverContentType}?${forceCoverRender}`;
         headerStyle.background += `, url(${newCover})`;
     }
 
@@ -217,7 +217,7 @@ const Header = (props) => {
     }
 
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
 
     const lang = props.match.params.lang;
 

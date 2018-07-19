@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { handleArticle, currentUserQuery, companyQuery, queryTeam } from '../store/queries';
+import { handleArticle, currentProfileQuery, companyQuery, queryTeam } from '../store/queries';
 import { graphql } from 'react-apollo';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
@@ -45,7 +45,7 @@ const ArticleEditorHOC = compose(
             switch (type) {
                 case 'profile_isFeatured':
                     refetchQuery = {
-                        query: currentUserQuery,
+                        query: currentProfileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
@@ -55,7 +55,7 @@ const ArticleEditorHOC = compose(
                     break;
                 case 'profile_isAboutMe':
                     refetchQuery = {
-                        query: currentUserQuery,
+                        query: currentProfileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {

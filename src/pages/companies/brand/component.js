@@ -8,7 +8,11 @@ import CompanyFeed from './components/feed';
 import Loader from '../../../components/Loader';
 
 const Brand = (props) => {
-    const { editMode, switchEditMode, companyQuery: { loading } } = props;
+    const {
+        editMode, switchEditMode,
+        companyQuery: { loading, company },
+        currentUser: { auth: { currentUser: { id: userId } } }
+    } = props;
     if (loading)
         return <Loader />
 
@@ -18,17 +22,19 @@ const Brand = (props) => {
 
     return (
         <div className='brandRoot'>
-            <FormGroup row className='editToggle'>
-                <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
-                <ToggleSwitch checked={editMode} onChange={switchEditMode}
-                    classes={{
-                        switchBase: 'colorSwitchBase',
-                        checked: 'colorChecked',
-                        bar: 'colorBar',
-                    }}
-                    color="primary" />
-                <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
-            </FormGroup>
+            {(company.owner.id === userId) &&
+                <FormGroup row className='editToggle'>
+                    <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
+                    <ToggleSwitch checked={editMode} onChange={switchEditMode}
+                        classes={{
+                            switchBase: 'colorSwitchBase',
+                            checked: 'colorChecked',
+                            bar: 'colorBar',
+                        }}
+                        color="primary" />
+                    <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
+                </FormGroup>
+            }
             <Header {...props} />
             <React.Fragment>
                 <Switch>

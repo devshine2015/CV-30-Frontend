@@ -2,6 +2,7 @@ export default {
     auth: {
         __typename: "Authentication",
         loggedIn: false,
+        currentUser: null
     },
     localUser: {
         __typename: "LocalUser",

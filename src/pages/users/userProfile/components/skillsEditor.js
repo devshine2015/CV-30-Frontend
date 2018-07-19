@@ -1,7 +1,7 @@
 import React from 'react';
 import { Popover, Button, FormControl, InputLabel, Input, InputAdornment, IconButton, Icon, Chip } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
-import { setSkills, setValues, removeSkill, removeValue, currentUserQuery } from '../../../../store/queries';
+import { setSkills, setValues, removeSkill, removeValue, currentProfileQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
@@ -51,7 +51,7 @@ const SkillsEditHOC = compose(
                                 id
                             },
                             refetchQueries: [{
-                                query: currentUserQuery,
+                                query: currentProfileQuery,
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
@@ -71,7 +71,7 @@ const SkillsEditHOC = compose(
                                 id
                             },
                             refetchQueries: [{
-                                query: currentUserQuery,
+                                query: currentProfileQuery,
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
@@ -106,7 +106,7 @@ const SkillsEditHOC = compose(
                                 skills: data
                             },
                             refetchQueries: [{
-                                query: currentUserQuery,
+                                query: currentProfileQuery,
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {
@@ -127,7 +127,7 @@ const SkillsEditHOC = compose(
                                 values: data
                             },
                             refetchQueries: [{
-                                query: currentUserQuery,
+                                query: currentProfileQuery,
                                 fetchPolicy: 'network-only',
                                 name: 'currentUser',
                                 variables: {

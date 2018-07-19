@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Icon, IconButton, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
 // import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
-import { setStory, setSalary, currentUserQuery } from '../../../../store/queries';
+import { setStory, setSalary, currentProfileQuery } from '../../../../store/queries';
 import { withRouter } from 'react-router-dom';
 
 
@@ -21,11 +21,11 @@ const ShowHOC = compose(
     withState('newXP', 'setNewXP', false),
     withState('newProj', 'setNewProj', false),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
-    withState('story', 'setMyStory', ({ currentUser }) => (currentUser.profile.story && currentUser.profile.story.i18n) ? currentUser.profile.story.i18n[0].description : ''),
+    withState('story', 'setMyStory', ({ profile }) => (profile.story && profile.story.i18n) ? profile.story.i18n[0].description : ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', true),
-    withState('isSalaryPublic', 'setSalaryPrivacy', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.isPublic : false),
-    withState('desiredSalary', 'setDesiredSalary', ({ currentUser }) => currentUser.profile.salary ? currentUser.profile.salary.amount : 0),
+    withState('isSalaryPublic', 'setSalaryPrivacy', ({ profile }) => profile.salary ? profile.salary.isPublic : false),
+    withState('desiredSalary', 'setDesiredSalary', ({ profile }) => profile.salary ? profile.salary.amount : 0),
     withHandlers({
         addNewExperience: ({ newXP, setNewXP }) => () => {
             setNewXP(!newXP);
@@ -63,7 +63,7 @@ const ShowHOC = compose(
                         language: match.params.lang
                     },
                     refetchQueries: [{
-                        query: currentUserQuery,
+                        query: currentProfileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
@@ -90,7 +90,7 @@ const ShowHOC = compose(
                         }
                     },
                     refetchQueries: [{
-                        query: currentUserQuery,
+                        query: currentProfileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentUser',
                         variables: {
@@ -115,7 +115,7 @@ const ShowHOC = compose(
 );
 
 const Show = (props) => {
-    const { editMode, currentUser,
+    const { editMode, profile,
         newXP, newProj, addNewExperience, closeNewExperience, addNewProject, closeNewProject,
         editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
         openArticlePopUp, isPopUpOpen, closeArticlePopUp,
@@ -124,7 +124,7 @@ const Show = (props) => {
         updateDesiredSalary, isSalaryPublic, desiredSalary, saveDesiredSalary
     } = props;
 
-    const { contact, experience, projects, aboutMeArticles, salary } = currentUser.profile;
+    const { contact, experience, projects, aboutMeArticles, salary } = profile;
 
     return (
         <Grid container className='mainBody userProfileShow'>
