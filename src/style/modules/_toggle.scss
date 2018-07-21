@@ -32,3 +32,18 @@
         }
     }
 }
+
+.editToggle {
+    display: flex;
+    justify-content: center;
+    background: #f9f9f9;
+    align-items: center;
+    label {
+        font-size: 0.75rem;
+        font-weight: bold;
+        color: #565656;
+        &.active {
+            color: #277dba;
+        }
+    }
+}

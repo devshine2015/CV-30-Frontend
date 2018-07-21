@@ -37,8 +37,8 @@ const UserProfile = (props) => {
         <Header profile={profile} editMode={editMode} />
         <React.Fragment>
             <Switch>
-                <Route path='/:lang(en|ro)/dashboard/profile/feed' component={UserProfileFeed} />
-                <Route path='/:lang(en|ro)/dashboard/profile' component={Show} />
+                <Route path='/:lang(en|ro)/profile/:profileId/feed' component={UserProfileFeed} />
+                <Route path='/:lang(en|ro)/profile/:profileId' component={Show} />
             </Switch>
         </React.Fragment>
     </div>

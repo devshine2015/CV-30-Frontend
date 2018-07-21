@@ -62,12 +62,10 @@ const TeamSliderHOC = compose(
 
 const TeamSlider = props => {
     const { teams, match: { params: { lang } }, visibleSlides, slideSize } = props;
-    console.log(visibleSlides);
-    console.log(slideSize);
 
     return <CarouselProvider
         dragEnabled={false}
-        visibleSlides={visibleSlides} // dinamyc
+        visibleSlides={visibleSlides}
         naturalSlideWidth={slideSize.width}
         naturalSlideHeight={slideSize.height}
         totalSlides={teams.length}
@@ -76,7 +74,7 @@ const TeamSlider = props => {
         <Slider className="slidesContainer" classNameTrayWrap="slidesContainer">
             {teams.map((team, index) => {
                 let { id, name, coverBackground, hasProfileCover, coverContentType } = team;
-                let url = `/${lang}/dashboard/team/${id}`;
+                let url = `/${lang}/team/${id}`;
 
                 let style = { background: defaultHeaderOverlay };
 

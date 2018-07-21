@@ -219,7 +219,7 @@ const Show = (props) => {
                         {
                             editMode &&
                             <Link className='addJobBtn' to={{
-                                pathname: `/${lang}/dashboard/jobs/new`,
+                                pathname: `/${lang}/jobs/new`,
                                 state: { companyId }
                             }}>
                                 + Add new job

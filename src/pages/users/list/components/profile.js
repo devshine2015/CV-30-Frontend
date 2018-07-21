@@ -1,11 +1,14 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { Avatar, Chip, Tabs, Tab } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link ,withRouter} from 'react-router-dom';
+
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { defaultUserAvatar } from '../../../../constants/utils';
 
-const ProfileHOC = compose(withState('activeTab', 'setActiveTab', false),
+const ProfileHOC = compose(
+    withRouter,
+    withState('activeTab', 'setActiveTab', false),
     withHandlers({
         handleTabChange: ({ activeTab, setActiveTab }) => (event, value) => {
             setActiveTab(activeTab === value ? false : value);
@@ -35,7 +38,7 @@ const Profile = props => {
     return (
         <div className='listItem userListItem'>
             <div className='leftOverlay'>
-                <Link to={`/dashboard/profile/${id}`}>
+                <Link to={`/${props.match.params.lang}/profile/${id}`}>
                     <Avatar alt={firstName || lastName || email} src={avatar} className='avatar' imgProps={{ style: { objectFit: 'contain' } }} style={{ backgroundColor: '#fff', margin: 3 }} />
                 </Link>
                 <div className='leftOverlayTexts'>

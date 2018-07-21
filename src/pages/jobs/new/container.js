@@ -101,7 +101,7 @@ const NewJobHOC = compose(
                         }
                     }
                 });
-                history.push(`/${match.params.lang}/dashboard/job/${formData.id}`);
+                history.push(`/${match.params.lang}/job/${formData.id}`);
             }
             catch (err) {
                 console.log(err);

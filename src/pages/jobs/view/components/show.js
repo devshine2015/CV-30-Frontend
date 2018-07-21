@@ -4,6 +4,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 // import uuid from 'uuidv4';
 
 import ArticleSlider from '../../../../components/articleSlider';
+import Loader from '../../../../components/Loader';
 
 const ShowHOC = compose(
     withState('expanded', 'updateExpanded', null),
@@ -25,7 +26,7 @@ const ShowHOC = compose(
 const Show = props => {
     const { loading, job } = props.getJobQuery;
     if (loading) {
-        return <div>Loading...</div>
+        return <Loader />
     } else if (!job) {
         //TODO
         return <div>Job not found...</div>;

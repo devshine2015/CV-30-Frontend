@@ -27,7 +27,7 @@ const MobileNav = (props) => {
     return (
         <React.Fragment>
             <Grid item>
-                <NavLink className='brand' to={`/${lang}/dashboard`}>
+                <NavLink className='brand' to={`/${lang}`}>
                     <Avatar src={cv30Logo} alt="logo" className='brandImg' imgProps={{ style: { objectFit: 'contain' } }} />
                 </NavLink>
             </Grid>
@@ -58,7 +58,7 @@ const MobileNav = (props) => {
                     <div tabIndex={0} role="button" onClick={closeMobileNav} onKeyDown={closeMobileNav} className='content'>
                         <FormattedMessage id="nav.newsFeed" defaultMessage="News feed" description="News feed menu item">
                             {(text) => (
-                                <ListItem button component={NavLink} exact to={`/${lang}/dashboard/news`} onClick={closeMobileNav} className='mobileNavItem'>
+                                <ListItem button component={NavLink} exact to={`/${lang}/news`} onClick={closeMobileNav} className='mobileNavItem'>
                                     <i className="fas fa-lg fa-newspaper"></i>
                                     {text}
                                 </ListItem>
@@ -67,7 +67,7 @@ const MobileNav = (props) => {
 
                         <FormattedMessage id="nav.companies" defaultMessage="Companies" description="Companies menu item">
                             {(text) => (
-                                <ListItem button component={NavLink} exact to={`/${lang}/dashboard/companies`} onClick={closeMobileNav} className='mobileNavItem'>
+                                <ListItem button component={NavLink} exact to={`/${lang}/companies`} onClick={closeMobileNav} className='mobileNavItem'>
                                     <i className="far fa-lg fa-building"></i>
                                     {text}
                                 </ListItem>
@@ -76,7 +76,7 @@ const MobileNav = (props) => {
 
                         <FormattedMessage id="nav.people" defaultMessage="People" description="People menu item">
                             {(text) => (
-                                <ListItem button component={NavLink} exact to={`/${lang}/dashboard/people`} onClick={closeMobileNav} className='mobileNavItem'>
+                                <ListItem button component={NavLink} exact to={`/${lang}/people`} onClick={closeMobileNav} className='mobileNavItem'>
                                     <i className="fas fa-lg fa-users"></i>
                                     {text}
                                 </ListItem>
@@ -85,7 +85,7 @@ const MobileNav = (props) => {
 
                         <FormattedMessage id="nav.jobs" defaultMessage="Jobs" description="Jobs menu item">
                             {(text) => (
-                                <ListItem button component={NavLink} exact to={`/${lang}/dashboard/jobs`} onClick={closeMobileNav} className='mobileNavItem'>
+                                <ListItem button component={NavLink} exact to={`/${lang}/jobs`} onClick={closeMobileNav} className='mobileNavItem'>
                                     <i className="fas fa-lg fa-book"></i>
                                     {text}
                                 </ListItem>
@@ -113,19 +113,19 @@ const MobileNav = (props) => {
                 <Drawer anchor="left" open={mobileProfileIsOpen} onClose={closeMobileProfile} className='mobileProfileContainer' classes={{ paperAnchorLeft: 'sideDrawer' }}>
                     <div tabIndex={0} role="button" onClick={closeMobileProfile} onKeyDown={closeMobileProfile} className='content'>
                         <FormattedMessage id="nav.profile" defaultMessage="My profile" description="Profile menu item">
-                            {(text) => (<ListItem button component={NavLink} exact to={`/${lang}/dashboard/profile/`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
+                            {(text) => (<ListItem button component={NavLink} exact to={`/${lang}/profile/`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.appliedJobs" defaultMessage="Applied Jobs" description="Applied jobs menu item">
                             {(text) => (<ListItem button component={Link} to={{
-                                pathname: `/${lang}/dashboard/profile/settings`,
+                                pathname: `/${lang}/profile/settings`,
                                 state: { activeTab: 'jobs' }
                             }} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.settings" defaultMessage="Settings" description="Settings menu item">
                             {(text) => (<ListItem button component={Link} to={{
-                                pathname: `/${lang}/dashboard/profile/settings`,
+                                pathname: `/${lang}/profile/settings`,
                                 state: { activeTab: 'settings' }
                             }} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>

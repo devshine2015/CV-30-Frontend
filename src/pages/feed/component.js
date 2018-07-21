@@ -7,7 +7,8 @@ import Loader from '../../components/Loader';
 
 const NewsFeed = props => {
     const { formData, handleFormChange, switchIsArticle, isArticle,
-        currentUser: { loading, profile }
+        currentUser: { loading, profile },
+        match: { params: { lang } }
     } = props;
 
     if (loading)
@@ -116,7 +117,7 @@ const NewsFeed = props => {
                     <section className='articlesList'>
                         <div className='listItem userListItem'>
                             <div className='leftOverlay'>
-                                <Link to={`/dashboard/profile/${id}`}>
+                                <Link to={`/${lang}/profile/${id}`}>
                                     <Avatar alt={firstName || lastName || email} src={avatar || defaultUserAvatar} className='avatar' imgProps={{ style: { objectFit: 'contain' } }}
                                         style={{ backgroundColor: '#fff', margin: 3 }} />
                                 </Link>

@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, CircularProgress, Chip } from '@material-ui/core';
 import { defaultCompanyLogo } from '../../../../constants/utils';
+import {compose}from 'recompose';
+import { withRouter } from 'react-router-dom';
 
 const JobItem = props => {
     const { i18n, company: { name: companyName, location }, expireDate, videos, images, id, match, appliedDate, jobLevels, benefits } = props;
@@ -10,7 +12,7 @@ const JobItem = props => {
     return (
         <div className='listItem jobListItem'>
             <div className='leftOverlay'>
-                <Link to={`/dashboard/job/${id}`}>
+                <Link to={`/${props.match.params.lang}/job/${id}`}>
                     <Avatar alt="Gabriel" src={defaultCompanyLogo} className='avatar' style={{ margin: 3, backgroundColor: '#fff' }} imgProps={{ style: { objectFit: 'contain' } }} />
                 </Link>
                 <div className='leftOverlayTexts'>
@@ -79,4 +81,4 @@ const JobItem = props => {
     );
 };
 
-export default JobItem;
+export default compose(withRouter)(JobItem);

@@ -17,14 +17,14 @@ const CompanyHOC = compose(
 
 
 const Company = props => {
-    const { activeTab, handleTabChange, company } = props;
+    const { activeTab, handleTabChange, company,match: {params: {lang}} } = props;
     const { id, name, field, location, noOfEmployees, i18n, jobs, team } = company;
 
     return (
         <div className='listItem companyListItem'>
             <div className='leftOverlay'>
-                <Link to={`/dashboard/company/${id}`}>
-                    <Avatar alt="Gabriel" src={ defaultCompanyLogo } className='avatar' style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }} />
+                <Link to={`/${lang}/company/${id}`}>
+                    <Avatar alt="Gabriel" src={defaultCompanyLogo} className='avatar' style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }} />
                 </Link>
                 <div className='leftOverlayTexts'>
                     <h6 className='userName'>
@@ -35,7 +35,7 @@ const Company = props => {
                 </div>
             </div>
             <div className='rightOverlay'>
-                { location }&nbsp;|&nbsp;{noOfEmployees || 0} Employees
+                {location}&nbsp;|&nbsp;{noOfEmployees || 0} Employees
             </div>
             <div className='itemBody'>
                 <p className='companyDescription'>

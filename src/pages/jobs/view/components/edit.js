@@ -16,6 +16,7 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import fields from '../../../../constants/contact';
 import BenefitsList from '../../../../constants/benefits';
 import { teamsQuery, handleJob } from '../../../../store/queries';
+import Loader from '../../../../components/Loader';
 
 const EditHOC = compose(
     graphql(teamsQuery, {
@@ -165,7 +166,7 @@ const Edit = props => {
     } = props;
 
     if (loading)
-        return <div>Loading...</div>
+        return <Loader />
 
     return (
         <React.Fragment>

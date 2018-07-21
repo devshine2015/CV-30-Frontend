@@ -4,7 +4,7 @@ import { Grid, Hidden } from '@material-ui/core';
 import DesktopNav from './desktop';
 import MobileNav from './mobile';
 
-const Navigation = (props) => {
+const Navigation = props => {
     return (
         <Grid container className='mainNav' >
             <Hidden smDown>

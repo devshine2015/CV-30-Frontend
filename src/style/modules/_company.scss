@@ -1,5 +1,6 @@
 .brandRoot {
     background: #fbf2f5;
+    margin-top: 65px;
     .header {
         position: relative;
         background: #550019;
@@ -262,12 +263,12 @@
         .columnRight {
             .columnRightContent {
                 top: -320px;
-                border-bottom: -320px;
+                margin-bottom: -320px;
                 border-top: 1px solid;
                 border-left: 1px solid;
                 border-color: #f0f0f0;
                 padding: 25px 20px;
-                height: calc(100%+320px);
+                height: calc(100% + 320px);
                 @media (max-width: 960px) {
                     top: auto;
                     margin-bottom: 50px;
@@ -693,6 +694,7 @@
 .newCompanyRoot {
     background: #fff;
     flex: 1 1;
+    margin-top: 65px;
     .header {
         display: flex;
         flex-wrap: wrap;

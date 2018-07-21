@@ -179,7 +179,7 @@ const NewCompanyHOC = compose(
                         }
                     }]
                 });
-                if (status) history.push(`/${match.params.lang}/dashboard/companies`);
+                if (status) history.push(`/${match.params.lang}/companies`);
             } catch ({ graphQLErrors }) {
                 graphQLErrors && graphQLErrors[0].reduce((result, current) => {
                     result += "\n" + current.message;

@@ -132,7 +132,7 @@ const Header = (props) => {
                         <h4>Companie de bauturi</h4>
                     </div>
                     {editMode &&
-                        <IconButton className='companySettingsBtn' component={Link} to={`/${lang}/dashboard/company/${companyId}/settings`}>
+                        <IconButton className='companySettingsBtn' component={Link} to={`/${lang}/company/${companyId}/settings`}>
                             <Icon>settings</Icon>
                         </IconButton>
                     }
@@ -140,7 +140,7 @@ const Header = (props) => {
                 <Grid item lg={3} md={5} sm={12} xs={12} className='rightHeaderLinks'>
                     <FormattedMessage id="headerLinks.profile" defaultMessage="Profile" description="User header profile link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/${lang}/dashboard/company/${companyId}`} className='headerLink'>
+                            <Button component={NavLink} exact to={`/${lang}/company/${companyId}`} className='headerLink'>
                                 {text}
                             </Button>
                         )}
@@ -148,7 +148,7 @@ const Header = (props) => {
 
                     <FormattedMessage id="headerLinks.feed" defaultMessage="Feed" description="User header feed link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/${lang}/dashboard/company/${companyId}/feed/`} className='headerLink'>
+                            <Button component={NavLink} exact to={`/${lang}/company/${companyId}/feed/`} className='headerLink'>
                                 {text}
                             </Button>
                         )}

@@ -1,8 +1,178 @@
-.LPstoriesContainer {
+.landingPageRoot {
     display: flex;
-    color: red;
-    flex-wrap: wrap;
-    .sliderContainer {
+    flex-direction: column;
+    margin-top: 65px;
+    background: #fff;
+    .introHeadline {
+        font-size: 4.25rem;
+    }
+    .introMessage {
+        font-size: 1.5rem;
+        font-weight: 300;
+    }
+    .header {
+        display: flex;
+        flex-grow: 1;
+        background-image: linear-gradient(to bottom, rgba(95, 155, 205, 0.75), rgba(95, 155, 205, 0.75)), url('http://www.businesselement.net/wp-content/uploads/2017/11/Office-Budget.jpg');
+        padding: 20px;
+        flex-direction: column;
+        min-height: calc(100vh - 65px);
+    }
+    .roundedImage {
+        max-width: 60px;
+        max-height: 60px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+    .brand {
+        font-size: 1.25rem;
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+    .headlineContainer {
+        margin: auto;
+        color: #fff;
+        justify-content: space-evenly;
+    }
+    .featureRow {
+        justify-content: space-evenly;
+        align-items: center;
+        margin-top: 100px;
+    }
+    .featureRowReverse {
+        flex-direction: row-reverse;
+        text-align: right;
+    }
+    .featureImage {
+        border-radius: 50%;
+        background: #d8d8d8;
+        width: 80%;
+        padding-bottom: 80%;
+        margin: auto;
+    }
+    .featureHeading {
+        font-size: 2.25rem;
+        color: #277dba;
+    }
+    .featureText {
+        font-weight: 300;
+        color: #9a9a9a;
+    }
+    .storiesContainer {
+        display: flex;
+        border-top: 2px solid #b7d3e7;
+        margin-top: 100px;
+        min-height: 80vh;
+    }
+    .storiesSliderContainer {
+        padding: 2% 5%;
+        background: #f3f8fb;
+    }
+    .storiesSliderTitle {
+        text-transform: uppercase;
+        font-size: 5rem;
+        font-weight: lighter;
+        color: #277dba;
+    }
+    .slideTitle {
+        color: #277dba;
+        font-size: 2.25rem;
+    }
+    .slideText {
+        font-weight: 300;
+        color: #9a9a9a;
+    }
+    .sliderControls {
+        display: flex;
+        align-items: center;
+    }
+    .sliderArrow {
+        background: none;
+        color: #277dba;
+    }
+    .sliderDot {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #dde1e4;
+        cursor: pointer;
+        margin: 0 5px;
+    }
+    .sliderDotActive {
+        background: #1b1b1b;
+    }
+    .slideImage {
+        max-height: 100%;
+        max-width: 100%;
         width: 100%;
+        height: 100%;
+        display: none;
+    }
+    .slideImageActive {
+        display: block;
+    }
+    .storyItem {
+        display: none;
+    }
+    .storyItemActive {
+        display: block;
+    }
+    .footer {
+        display: flex;
+        flex-grow: 1;
+        background-image: linear-gradient(to bottom, rgba(95, 155, 205, 0.75), rgba(95, 155, 205, 0.75)), url('http://www.businesselement.net/wp-content/uploads/2017/11/Office-Budget.jpg');
+        padding: 20px;
+        flex-direction: column;
+        min-height: 80vh;
+        .footerContainer {
+            justify-content: space-around;
+            margin-top: auto;
+            color: #fff;
+        }
+        .footerSignupButton {
+            width: 80%;
+            margin: 30px auto 0;
+            height: 60px;
+            background: #f7a944;
+            color: #fff;
+            font-size: 1.25rem;
+            &:hover {
+                background: #c07a0d;
+            }
+        }
+        .footerMenu {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .footerSocial {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .footerLinks {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        .footerCopyright {
+            font-size: 0.75rem;
+            color: #fff;
+        }
+        .footerButton {
+            color: #fff;
+            font-size: 1rem;
+            &:hover {
+                background: none;
+                color: #eee;
+            }
+        }
+        .footerSocialButton {
+            min-width: 0;
+            color: #fff;
+        }
     }
 }

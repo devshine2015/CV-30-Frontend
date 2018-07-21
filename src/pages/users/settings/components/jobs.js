@@ -26,7 +26,7 @@ const JobsList = props => {
         return <Loader />
     return (
         <div className='jobsList'>
-            {jobs.map((job, index) => (<JobItem {...job} key={job.id} />))}
+            {jobs && jobs.map(job => (<JobItem {...job} key={job.id} />))}
         </div>
     );
 }

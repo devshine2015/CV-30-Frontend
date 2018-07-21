@@ -6,15 +6,29 @@ import scriptLoader from 'react-async-script-loader';
 import { graphql } from 'react-apollo';
 
 import LandingPage from './pages/landingPage';
-import Dashboard from './pages/dashboard';
-import ProtectedRoute from './components/ProtectedRoute';
-import GuestRoute from './components/GuestRoute';
 import { updateGoogleMapsMutation } from './store/queries';
+
+import Navigation from './components/navigation';
 
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import ForgotPassword from './pages/auth/forgot';
 import ActivateAccount from './pages/auth/activate';
+
+import NewsFeed from './pages/feed/';
+import UserProfile from './pages/users/userProfile';
+import UserProfileSettings from './pages/users/settings';
+import Brand from './pages/companies/brand';
+import Team from './pages/companies/team';
+import Jobs from './pages/jobs/list';
+import Job from './pages/jobs/view';
+import NewJob from './pages/jobs/new';
+import UsersList from './pages/users/list';
+import CompaniesList from './pages/companies/list';
+import NewCompany from './pages/companies/new';
+import CompanySettings from './pages/companies/settings';
+
+
 
 //translation stuff
 import romanian from 'react-intl/locale-data/ro';
@@ -32,16 +46,33 @@ const messages = {
 
 const CVRouter = (props) => {
   const language = props.match.params.lang || 'en';
+
   return (
     <IntlProvider locale={language} messages={messages[language]}>
-      <Switch>
-        <Route exact path='/:lang(en|ro)' component={LandingPage} {...props} />
-        <GuestRoute exact path='/:lang(en|ro)/login' component={Login} />
-        <GuestRoute exact path='/:lang(en|ro)/register' component={Register} />
-        <GuestRoute exact path='/:lang(en|ro)/forgot' component={ForgotPassword} />
-        <GuestRoute exact path='/:lang(en|ro)/activate/:activationCode' component={ActivateAccount} />
-        <ProtectedRoute path='/:lang(en|ro)/dashboard' component={Dashboard} {...props} />
-      </Switch>
+      <React.Fragment>
+        <Navigation {...props} />
+        <Switch>
+          <Route exact path='/:lang(en|ro)' component={LandingPage} {...props} />
+          <Route exact path='/:lang(en|ro)/login' component={Login} />
+          <Route exact path='/:lang(en|ro)/register' component={Register} />
+          <Route exact path='/:lang(en|ro)/forgot' component={ForgotPassword} />
+          <Route exact path='/:lang(en|ro)/activate/:activationCode' component={ActivateAccount} />
+
+          <Route path='/:lang(en|ro)/news' exact component={NewsFeed} />
+          <Route exact path='/:lang(en|ro)/companies' component={CompaniesList} />
+          <Route exact path='/:lang(en|ro)/companies/new' component={NewCompany} />
+          <Route exact path='/:lang(en|ro)/company/:companyId/settings' component={CompanySettings} />
+          <Route path='/:lang(en|ro)/company/:companyId' component={Brand} />
+          <Route path='/:lang(en|ro)/team/:teamId' component={Team} />
+          <Route path='/:lang(en|ro)/jobs' exact component={Jobs} />
+          <Route path='/:lang(en|ro)/jobs/new' exact component={NewJob} />
+          <Route path='/:lang(en|ro)/job/:jobId' exact component={Job} />
+          <Route path='/:lang(en|ro)/people' exact component={UsersList} />
+          <Route path='/:lang(en|ro)/profile/:profileId?/settings' component={UserProfileSettings} />
+          <Route path='/:lang(en|ro)/profile/:profileId?' component={UserProfile} />
+
+        </Switch>
+      </React.Fragment>
     </IntlProvider>
   );
 };
@@ -50,8 +81,10 @@ const App = () => (
   <BrowserRouter>
     <Switch>
       <Route path='/:lang(en|ro)' component={CVRouter} />
-      <Route path='/:segment(login|register|forgot|activate|dashboard)' component={(props) => <Redirect to={`/${navigator.language.substr(0, 2)}/${props.location.pathname.replace(/^\/+/, "")}`} />} />
-      <Redirect from='/' to={'/en'} />
+      {/*
+        <Route path='/:segment(login|register|forgot|activate|dashboard)' component={(props) => <Redirect to={`/${navigator.language.substr(0, 2)}/${props.location.pathname.replace(/^\/+/, "")}`} />} />
+        <Redirect from='/' to={'/en'} />
+      */}
     </Switch>
   </BrowserRouter>
 );

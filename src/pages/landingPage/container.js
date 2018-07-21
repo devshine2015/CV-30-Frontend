@@ -1,7 +1,5 @@
 import { compose, pure, withState } from 'recompose';
-import { withStyles } from '@material-ui/core';
 import LandingPage from './component';
-import styles from './style';
 
 const stories = [
     {
@@ -27,7 +25,6 @@ const stories = [
 ];
 
 const LandingPageHOC = compose(
-    withStyles(styles),
     withState('stories', 'setStories', stories),
     pure
 )

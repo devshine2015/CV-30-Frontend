@@ -10,11 +10,12 @@ const CompaniesList = props => {
 
     if (loading) {
         return <Loader />
+    
     } else {
         return (
             <Grid container className='mainBody companiesListRoot'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    {companies && companies.map(company => (<Company company={company} key={company.id} />))}
+                    {companies && companies.map(company => (<Company company={company} key={company.id} {...props}/>))}
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>

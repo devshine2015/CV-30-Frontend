@@ -5,8 +5,8 @@ import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { availableColors } from '../constants/headerBackgrounds';
-import { updateCoverMutation, currentProfileQuery } from '../store/queries';
+import { availableColors } from '../../../../constants/headerBackgrounds';
+import { updateCoverMutation, currentProfileQuery } from '../../../../store/queries';
 
 const ColorPickerHOC = compose(
     withRouter,

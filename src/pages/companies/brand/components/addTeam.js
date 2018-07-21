@@ -44,7 +44,7 @@ const AddTeamHOC = compose(
                 const { error, status } = result;
                 if (status || !error)
                     history.push({
-                        pathname: `/${match.params.lang}/dashboard/team/${teamDetails.id}`,
+                        pathname: `/${match.params.lang}/team/${teamDetails.id}`,
                         state: { editMode: true }
                     });
                 else

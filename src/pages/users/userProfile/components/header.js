@@ -7,7 +7,7 @@ import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import ReactPlayer from 'react-player';
 
-import ColorPicker from '../../../../components/colorPicker';
+import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
@@ -286,7 +286,7 @@ const Header = (props) => {
                             <Button
                                 component={NavLink}
                                 exact
-                                to={props.match.params.profileId ? `/${lang}/dashboard/profile/${props.match.params.profileId}` : `/${lang}/dashboard/profile`}
+                                to={props.match.params.profileId ? `/${lang}/profile/${props.match.params.profileId}` : `/${lang}/profile`}
                                 className='headerLink'
                             >
                                 {text}
@@ -299,7 +299,7 @@ const Header = (props) => {
                             <Button
                                 component={NavLink}
                                 exact
-                                to={props.match.params.profileId ? `/${lang}/dashboard/profile/${props.match.params.profileId}/feed/` : `/${lang}/dashboard/profile/feed/`}
+                                to={props.match.params.profileId ? `/${lang}/profile/${props.match.params.profileId}/feed/` : `/${lang}/profile/feed/`}
                                 className='headerLink'
                             >
                                 {text}

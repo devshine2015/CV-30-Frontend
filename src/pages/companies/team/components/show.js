@@ -123,7 +123,7 @@ const Show = props => {
                 </section>
                 <FormattedMessage id="headerLinks.backTo" defaultMessage="Back to" description="User header back to link">
                     {(text) => (
-                        <Link to={`/${lang}/dashboard/company/${company.id}`} className='teamBackLink'>{text}&nbsp;{company.name}</Link>
+                        <Link to={`/${lang}/company/${company.id}`} className='teamBackLink'>{text}&nbsp;{company.name}</Link>
                     )}
                 </FormattedMessage>
 
@@ -155,7 +155,7 @@ const Show = props => {
                         }
                         {editMode &&
                             <Link className='addItemBtn' to={{
-                                pathname: `/${lang}/dashboard/jobs/new`,
+                                pathname: `/${lang}/jobs/new`,
                                 state: { companyId: company.id, teamId }
                             }}>
                                 + Add Job

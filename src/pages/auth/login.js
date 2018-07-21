@@ -23,15 +23,6 @@ const LoginComponent = (props) => {
 
     return (
         <div id="login" className="authContainer">
-            <Grid container>
-                <Grid item md={12} sm={12} xs={12}>
-                    <Link to="/" className="brand">
-                        <img src="http://brandmark.io/logo-rank/random/pepsi.png" className='roundedImage' alt="pepsic" />
-                        Brand
-                    </Link>
-                </Grid>
-            </Grid>
-
             <Grid container className='authContents'>
                 <Hidden mdDown>
                     <Grid item lg={4} className='authMessages'>
@@ -172,7 +163,7 @@ const LoginHOC = compose(
                             user: currentUser
                         }
                     });
-                    history.push(`/${match.params.lang}/dashboard`);
+                    history.push(`/${match.params.lang}/`);
                 }
             } catch (error) {
                 console.log(error);

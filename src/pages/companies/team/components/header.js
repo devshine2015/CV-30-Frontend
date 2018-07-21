@@ -50,7 +50,7 @@ const Header = props => {
                 <Grid item lg={3} md={5} sm={12} xs={12} className='leftHeaderLinks'>
                     <FormattedMessage id="headerLinks.backTo" defaultMessage="Back to" description="User header back to link">
                         {(text) => (
-                            <Button component={Link} to={`/${lang}/dashboard/company/${company.id}`} className='backButton'>
+                            <Button component={Link} to={`/${lang}/company/${company.id}`} className='backButton'>
                                 <i className='fas fa-angle-left' />
                                 {text}&nbsp;{company.name}
                             </Button>
@@ -61,7 +61,7 @@ const Header = props => {
                 <Grid item lg={3} md={5} sm={12} xs={12} className='rightHeaderLinks'>
                     <FormattedMessage id="headerLinks.profile" defaultMessage="Profile" description="User header profile link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/${lang}/dashboard/team/${teamId}`} className='headerLink'>
+                            <Button component={NavLink} exact to={`/${lang}/team/${teamId}`} className='headerLink'>
                                 {text}
                             </Button>
                         )}
@@ -69,7 +69,7 @@ const Header = props => {
 
                     <FormattedMessage id="headerLinks.feed" defaultMessage="Feed" description="User header feed link">
                         {(text) => (
-                            <Button component={NavLink} exact to={`/${lang}/dashboard/team/${teamId}/feed/`} className='headerLink'>
+                            <Button component={NavLink} exact to={`/${lang}/team/${teamId}/feed/`} className='headerLink'>
                                 {text}
                             </Button>
                         )}

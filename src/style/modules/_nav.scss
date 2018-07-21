@@ -7,6 +7,7 @@
     box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
     position: fixed;
     z-index: 1301;
+    min-height: 65px;
     @media (max-width: 960px) {
         padding: 5px 20px;
     }
@@ -17,7 +18,7 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background-color: rgb(85,170,190);
+        background-color: rgb(85, 170, 190);
         object-fit: contain;
         padding: 3px;
     }
@@ -55,6 +56,14 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
+    }
+    .loginButton {
+        margin-right: 10px;
+        background: #f7a944;
+        color: #fff;
+        &:hover {
+            background: #c07a0d;
+        }
     }
 }
 
