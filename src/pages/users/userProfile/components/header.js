@@ -39,8 +39,7 @@ const HeaderHOC = compose(
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
             setColorPickerAnchor(null);
         },
-        openSkillsModal: ({ profile, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
-            const { skills, values } = profile;
+        openSkillsModal: ({ profile: { skills, values }, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
             if (type === 'values')
                 setSkillsModalData({
                     type: type,
@@ -58,7 +57,7 @@ const HeaderHOC = compose(
             setSkillsModalData(null);
             setSkillsAnchor(null);
         },
-        removeStory: ({ handleArticle, match }) => async article => {
+        removeStory: ({ handleArticle, match: { params: { profileId } } }) => async article => {
             try {
                 await handleArticle({
                     variables: {
@@ -74,7 +73,7 @@ const HeaderHOC = compose(
                         name: 'currentUser',
                         variables: {
                             language: 'en',
-                            id: match.params.profileId
+                            id: profileId
                         }
                     }]
                 });
@@ -457,7 +456,7 @@ const Header = (props) => {
                 </Grid>
                 <SkillsEditor skillsModalData={skillsModalData} skillsAnchor={skillsAnchor} closeSkillsModal={closeSkillsModal} key={skillsModalData} />
             </Grid>
-        </div >
+        </div>
     )
 }
 

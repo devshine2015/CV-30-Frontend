@@ -81,10 +81,9 @@ const App = () => (
   <BrowserRouter>
     <Switch>
       <Route path='/:lang(en|ro)' component={CVRouter} />
-      {/*
-        <Route path='/:segment(login|register|forgot|activate|dashboard)' component={(props) => <Redirect to={`/${navigator.language.substr(0, 2)}/${props.location.pathname.replace(/^\/+/, "")}`} />} />
-        <Redirect from='/' to={'/en'} />
-      */}
+      <Route path='/:segment(login|register|forgot|activate|dashboard)' component={(props) => <Redirect to={`/${navigator.language.substr(0, 2)}/${props.location.pathname.replace(/^\/+/, "")}`} />} />
+      <Redirect from='/' to={'/en'} />
+
     </Switch>
   </BrowserRouter>
 );

@@ -83,6 +83,11 @@ query company($id: String!, $language: LanguageCodeType!) {
     owner {
       id
     }
+    hasLogo
+    logoContentType
+    hasCover
+    coverContentType
+    coverBackground
   }
 }
 `;
