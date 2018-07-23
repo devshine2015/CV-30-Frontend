@@ -4,14 +4,14 @@ import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import ColorPicker from './colorPicker';
-import { queryTeam, handleFollower, currentProfileQuery } from '../../../../store/queries';
+import { queryTeam, handleFollow, currentProfileQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 
 import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const HeaderHOC = compose(
-    graphql(handleFollower, { name: 'handleFollower' }),
+    graphql(handleFollow, { name: 'handleFollow' }),
     graphql(currentProfileQuery, {
         name: 'currentUser',
         options: (props) => ({
@@ -34,11 +34,11 @@ const HeaderHOC = compose(
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
         toggleFollow: props => async (isFollowing) => {
             let {
-                queryTeam: { team }, handleFollower, match
+                queryTeam: { team }, handleFollow, match
             } = props;
 
             try {
-                await handleFollower({
+                await handleFollow({
                     variables: {
                         details: {
                             teamId: team.id,
@@ -77,10 +77,15 @@ const Header = props => {
         match: { params: { lang, teamId } },
         queryTeam: { team: { company, hasProfileCover, coverContentType, coverBackground, name } },
         colorPickerAnchor, toggleColorPicker, closeColorPicker, refetchBgImage, forceCoverRender,
-        currentUser: { profile: { followingTeams }},
         toggleFollow
     } = props;
-    const isFollowing = followingTeams.find(te=> te.id === teamId) !== undefined;
+
+    const isFollowAllowed = !props.currentUser.loading;
+    let isFollowing = false;
+    if (isFollowAllowed) {
+        const { currentUser: { profile: { followingTeams }} } = props;
+        isFollowing = followingTeams.find(te=> te.id === teamId) !== undefined;
+    }   
 
     let headerStyle = null;
 
@@ -127,11 +132,11 @@ const Header = props => {
                     </FormattedMessage>
 
                     <FormattedMessage id="headerLinks.follow" defaultMessage={isFollowing?"Unfollow":"Follow"} description="User header follow button">
-                        {(text) => (
+                        {(text) => isFollowAllowed ? (
                             <Button className='headerButton' onClick={() => toggleFollow(isFollowing)}>
                                 {text}
                             </Button>
-                        )}
+                        ) : null}
                     </FormattedMessage>
                 </Grid>
             </Grid>

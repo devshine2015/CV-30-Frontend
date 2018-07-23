@@ -41,13 +41,15 @@ const Profile = props => {
                 <Link to={`/${props.match.params.lang}/profile/${id}`}>
                     <Avatar alt={firstName || lastName || email} src={avatar} className='avatar' imgProps={{ style: { objectFit: 'contain' } }} style={{ backgroundColor: '#fff', margin: 3 }} />
                 </Link>
-                <div className='leftOverlayTexts'>
-                    <h6 className='userName'>
-                        <span>{fullName}</span>
-                        <i className='fas fa-caret-down' />
-                    </h6>
-                    <p className='userTitle'>Manager</p>
-                </div>
+                <Link to={`/${props.match.params.lang}/profile/${id}`} style={{ textDecoration: 'none' }}>
+                    <div className='leftOverlayTexts'>
+                        <h6 className='userName'>
+                            <span>{fullName}</span>
+                            <i className='fas fa-caret-down' />
+                        </h6>
+                        <p className='userTitle'>Manager</p>
+                    </div>
+                </Link>
             </div>
             <div className='rightOverlay'>
                 Works at&nbsp;<span className='highlight'>CV30</span>&nbsp;-&nbsp;<span className='highlight'>Marketing team</span>

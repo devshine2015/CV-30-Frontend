@@ -10,7 +10,7 @@ import ReactPlayer from 'react-player';
 import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle } from '../../../../store/queries';
+import { updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle, handleFollow } from '../../../../store/queries';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
@@ -22,6 +22,17 @@ const HeaderHOC = compose(
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
     graphql(localUserQuery, { name: 'localUserData' }),
     graphql(handleArticle, { name: 'handleArticle' }),
+    graphql(handleFollow, { name: 'handleFollow' }),
+    graphql(currentProfileQuery, {
+        name: 'currentUser',
+        options: (props) => ({
+            variables: {
+                language: props.match.params.lang,
+                id: null
+            },
+            fetchPolicy: 'network-only'
+        }),
+    }),
     withState('count', 'setCount', ({ profile }) => profile.featuredArticles ? profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
@@ -155,6 +166,41 @@ const HeaderHOC = compose(
         },
         closeStoryEditor: ({ setIsArticlePopUpOpen }) => () => {
             setIsArticlePopUpOpen(false);
+        },
+        toggleFollow: props => async (isFollowing) => {
+            let {
+                handleFollow, match
+            } = props;
+
+            try {
+                await handleFollow({
+                    variables: {
+                        details: {
+                            followingId: match.params.profileId,
+                            isFollowing: !isFollowing
+                        }
+                    },
+                    refetchQueries: [{
+                        query: currentProfileQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: match.params.lang,
+                            id: match.params.profileId
+                        }
+                    }, {
+                        query: currentProfileQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentProfileQuery',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
         }
     }),
     pure
@@ -169,8 +215,10 @@ const Header = (props) => {
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart,
         isUploading, uploadProgress,
         localUserData, refetchBgImage, forceCoverRender,
-        isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor
+        isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor,
+        toggleFollow
     } = props;
+    
     const {
         firstName,
         lastName,
@@ -219,7 +267,18 @@ const Header = (props) => {
     let avatar =
         (!localUserData.loading && profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
 
-    const lang = props.match.params.lang;
+    const { lang, profileId } = props.match.params;
+     
+    let isFollowAllowed = !props.currentUser.loading;
+    let isFollowing = false;
+    if (isFollowAllowed) {
+        const { currentUser: { profile: { id: currentUserId, followees } } } = props;
+        if (currentUserId !== profileId) {
+            isFollowing = followees.find(u=> u.id === profileId) !== undefined;
+        } else {
+            isFollowAllowed = false;
+        }
+    }   
 
     return (
         <div className='header' style={headerStyle}>
@@ -307,12 +366,12 @@ const Header = (props) => {
                         )}
                     </FormattedMessage>
 
-                    <FormattedMessage id="userProfile.follow" defaultMessage="Follow" description="User header follow button">
-                        {(text) => (
-                            <Button className='headerButton'>
+                    <FormattedMessage id="userProfile.follow" defaultMessage={isFollowing?"Unfollow":"Follow"} description="User header follow button">
+                        {(text) => isFollowAllowed ? (
+                            <Button className='headerButton' onClick={() => toggleFollow(isFollowing)}>
                                 {text}
                             </Button>
-                        )}
+                        ) : null}
                     </FormattedMessage>
 
                 </Grid>

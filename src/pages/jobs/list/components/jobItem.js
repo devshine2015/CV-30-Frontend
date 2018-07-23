@@ -15,12 +15,14 @@ const JobItem = props => {
                 <Link to={`/${props.match.params.lang}/job/${id}`}>
                     <Avatar alt="Gabriel" src={defaultCompanyLogo} className='avatar' style={{ margin: 3, backgroundColor: '#fff' }} imgProps={{ style: { objectFit: 'contain' } }} />
                 </Link>
-                <div className='leftOverlayTexts'>
-                    <h6 className='companyName'>
-                        {companyName}
-                    </h6>
-                    <p className='expires'>Expires on: <span>{new Date(expireDate).toLocaleDateString()}</span></p>
-                </div>
+                <Link to={`/${props.match.params.lang}/job/${id}`} style={{ textDecoration: 'none' }}>
+                    <div className='leftOverlayTexts'>
+                        <h6 className='companyName'>
+                            {companyName}
+                        </h6>
+                        <p className='expires'>Expires on: <span>{new Date(expireDate).toLocaleDateString()}</span></p>
+                    </div>
+                </Link>
             </div>
             <div className='rightOverlay'>
                 <div className='location'>
