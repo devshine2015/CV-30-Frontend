@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactPlayer from 'react-player';
-import { Grid, Avatar, Button, Chip, Icon, IconButton } from '@material-ui/core';
+import { Grid, Avatar, Button, Chip, Icon, IconButton, CircularProgress } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
+
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
 // Require Editor CSS files.
@@ -15,13 +16,14 @@ import FroalaEditor from 'react-froala-wysiwyg';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import AddTeam from './addTeam';
-import { s3BucketURL } from '../../../../constants/s3';
+import { s3BucketURL, companiesFolder } from '../../../../constants/s3';
 import { companyQuery, handleArticle, handleCompany, handleFollow, currentProfileQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import TeamSlider from './teamSlider';
 
-import { defaultHeaderStyle } from '../../../../constants/utils';
-
+import S3Uploader from 'react-s3-uploader';
+import ColorPicker from './colorPicker';
+import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const HeaderHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
@@ -46,19 +48,34 @@ const HeaderHOC = compose(
         return i18n[0].headline;
 
     }),
+    withState('colorPickerAnchor', 'setColorPickerAnchor', null),
+    withState('fileType', 'setFileType', null),
+    withState('forceCoverRender', 'setForceCoverRender', 0),
+    withState('forceLogoRender', 'setForceLogoRender', 0),
+    withState('isUploading', 'setIsUploading', false),
+    withState('uploadProgress', 'setUploadProgress', 0),
+    withState('uploadError', 'setUploadError', null),
     withHandlers({
+        toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
+            setColorPickerAnchor(event.target);
+        },
+        closeColorPicker: ({ setColorPickerAnchor }) => () => {
+            setColorPickerAnchor(null);
+        },
         updateHeadline: ({ setHeadline }) => (text) => {
             setHeadline(text)
         },
         submitHeadline: props => async () => {
             let {
-                companyQuery: { company }, handleCompany, headline, match
+                companyQuery: { company },
+                match: { params: { lang: language } },
+                handleCompany, headline,
             } = props;
 
             try {
                 await handleCompany({
                     variables: {
-                        language: match.params.lang,
+                        language,
                         details: {
                             id: company.id,
                             headline
@@ -69,7 +86,7 @@ const HeaderHOC = compose(
                         fetchPolicy: 'network-only',
                         name: 'companyQuery',
                         variables: {
-                            language: match.params.lang,
+                            language,
                             id: company.id
                         }
                     }]
@@ -82,7 +99,7 @@ const HeaderHOC = compose(
         expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
             updateExpanded(expanded ? panel : false);
         },
-        removeStory: ({ handleArticle, match }) => async article => {
+        removeStory: ({ handleArticle, match: { params: { lang: language, companyId } } }) => async article => {
             try {
                 await handleArticle({
                     variables: {
@@ -91,19 +108,18 @@ const HeaderHOC = compose(
                         },
                         options: {
                             articleId: article.id,
-                            companyId: match.params.companyId,
+                            companyId: companyId,
                             isFeatured: false
                         },
-                        language: match.params.lang,
-
+                        language
                     },
                     refetchQueries: [{
                         query: companyQuery,
                         fetchPolicy: 'network-only',
                         name: 'companyQuery',
                         variables: {
-                            language: match.params.lang,
-                            id: match.params.companyId
+                            language,
+                            id: companyId
                         }
                     }]
                 });
@@ -119,9 +135,9 @@ const HeaderHOC = compose(
         closeStoryEditor: ({ setIsPopUpOpen }) => () => {
             setIsPopUpOpen(false);
         },
-        toggleFollow: props => async (isFollowing) => {
+        toggleFollow: props => async isFollowing => {
             let {
-                companyQuery: { company }, handleFollow, match
+                companyQuery: { company }, handleFollow, match: { params: { lang: language } }
             } = props;
 
             try {
@@ -137,7 +153,7 @@ const HeaderHOC = compose(
                         fetchPolicy: 'network-only',
                         name: 'companyQuery',
                         variables: {
-                            language: match.params.lang,
+                            language,
                             id: company.id
                         }
                     }, {
@@ -145,7 +161,7 @@ const HeaderHOC = compose(
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
-                            language: match.params.lang
+                            language
                         }
                     }]
                 });
@@ -153,28 +169,117 @@ const HeaderHOC = compose(
             catch (err) {
                 console.log(err)
             }
-        }
+        },
+        getSignedUrl: ({ companyQuery: { company } }) => async (file, callback) => {
+            const params = {
+                fileName: `logo.${file.type.replace('image/', '')}`,
+                contentType: file.type,
+                id: company.id,
+                type: 'logo'
+            };
+
+            try {
+                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+                let responseJson = await response.json();
+                callback(responseJson);
+            } catch (error) {
+                console.error(error);
+                callback(error)
+            }
+        },
+        onUploadStart: ({ setIsUploading, setFileType }) => (file, next) => {
+            let size = file.size;
+            if (size > 500 * 1024) {
+                alert('File is too big!');
+            } else {
+                setIsUploading(true);
+                setFileType(file.type.replace('image/', ''))
+                next(file);
+            }
+        },
+        onProgress: ({ setUploadProgress }) => (percent) => {
+            setUploadProgress(percent);
+        },
+        onError: ({ setUploadError }) => error => {
+            setUploadError(error);
+            console.log(error);
+        },
+        onFinishUpload: ({ setIsUploading, handleCompany, match: { params: { lang: language, companyId } }, fileType, setForceLogoRender }) => async () => {
+            try {
+                await handleCompany({
+                    variables: {
+                        language,
+                        details: {
+                            id: companyId,
+                            hasLogo: true,
+                            logoContentType: fileType
+                        }
+                    },
+                    refetchQueries: [{
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'companyQuery',
+                        variables: {
+                            language,
+                            id: companyId
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
+            setIsUploading(false);
+            setForceLogoRender(Date.now());
+        },
+        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
     }),
     pure
 )
 
 const Header = (props) => {
     const { headline, updateHeadline, submitHeadline, match, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
-        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField, teams } },
+        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField, teams, hasLogo, logoContentType, hasCover, coverContentType, coverBackground } },
+        getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress, refetchBgImage,
+        toggleColorPicker, colorPickerAnchor, closeColorPicker,
+        forceLogoRender, forceCoverRender,
         toggleFollow
     } = props;
     const { lang, companyId } = match.params;
-
+    
     const isFollowAllowed = !props.currentUser.loading;
     let isFollowing = false;
     if (isFollowAllowed) {
         const { currentUser: { profile: { followingCompanies }} } = props;
         isFollowing = followingCompanies.find(co=> co.id === companyId) !== undefined;
-    }    
-    let avatar = ''; //add logic to display avatar
+    }
+
+    let avatar =
+        hasLogo ? `${s3BucketURL}/${companiesFolder}/${companyId}/logo.${logoContentType}?${forceLogoRender}` : null;
+
+    let headerStyle = null;
+
+    if (coverBackground) {
+        headerStyle = { background: coverBackground }
+    } else {
+        headerStyle = { background: defaultHeaderOverlay }
+    }
+
+    if (hasCover) {
+        let newCover = `${s3BucketURL}/${companiesFolder}/${companyId}/cover.${coverContentType}?${forceCoverRender}`;
+        headerStyle.background += `, url(${newCover})`;
+    }
+
 
     return (
-        <div className='header'>
+        <div className='header' style={headerStyle}>
             <Grid container className='headerLinks'>
                 <Grid item lg={3} md={5} sm={12} xs={12} className='userAvatar'>
                     <Avatar alt={avatar} src={avatar} className='avatar'>
@@ -182,12 +287,52 @@ const Header = (props) => {
                     </Avatar>
                     <div className='avatarTexts'>
                         <h3>{name}</h3>
-                        <h4>Companie de bauturi</h4>
+                        <h4>{activityField}</h4>
                     </div>
+
                     {editMode &&
-                        <IconButton className='companySettingsBtn' component={Link} to={`/${lang}/company/${companyId}/settings`}>
-                            <Icon>settings</Icon>
-                        </IconButton>
+                        <React.Fragment>
+                            <label htmlFor="uploadProfileImg">
+                                <S3Uploader
+                                    id="uploadProfileImg"
+                                    name="uploadProfileImg"
+                                    className='hiddenInput'
+                                    getSignedUrl={getSignedUrl}
+                                    accept="image/*"
+                                    preprocess={onUploadStart}
+                                    onProgress={onProgress}
+                                    onError={onError}
+                                    onFinish={onFinishUpload}
+                                    uploadRequestHeaders={{
+                                        'x-amz-acl': 'public-read',
+                                    }}
+
+                                />
+                                <Button component='span' className='badgeRoot' disabled={isUploading}>
+                                    <Icon>
+                                        camera_alt
+                                    </Icon>
+                                </Button>
+                            </label>
+                            {isUploading &&
+                                <CircularProgress
+                                    className='avatarLoadCircle'
+                                    value={uploadProgress}
+                                    size={80}
+                                    variant='determinate'
+                                    thickness={2}
+                                />
+                            }
+                            <ColorPicker
+                                colorPickerAnchor={colorPickerAnchor}
+                                onClose={closeColorPicker}
+                                refetchBgImage={refetchBgImage}
+                                type='profile'
+                            />
+                            <IconButton className='companySettingsBtn' component={Link} to={`/${lang}/company/${companyId}/settings`}>
+                                <Icon>settings</Icon>
+                            </IconButton>
+                        </React.Fragment>
                     }
                 </Grid>
                 <Grid item lg={3} md={5} sm={12} xs={12} className='rightHeaderLinks'>
@@ -214,9 +359,14 @@ const Header = (props) => {
                             </Button>
                         ) : null}
                     </FormattedMessage>
-
                 </Grid>
             </Grid>
+            {editMode &&
+                <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
+                    <span className='text'>Change Background</span>
+                    <Icon className='icon'>brush</Icon>
+                </Button>
+            }
             <Grid container className='headerInfoContainer'>
                 <Grid item lg={5} md={5} sm={12} xs={12} className='textInfo'>
                     {
