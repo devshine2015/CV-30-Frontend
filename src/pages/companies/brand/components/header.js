@@ -16,7 +16,7 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ArticlePopup from '../../../../components/ArticlePopup';
 import AddTeam from './addTeam';
 import { s3BucketURL } from '../../../../constants/s3';
-import { companyQuery, handleArticle, handleCompany } from '../../../../store/queries';
+import { companyQuery, handleArticle, handleCompany, handleFollower, currentProfileQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import TeamSlider from './teamSlider';
 
@@ -26,6 +26,17 @@ import { defaultHeaderStyle } from '../../../../constants/utils';
 const HeaderHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(handleCompany, { name: 'handleCompany' }),
+    graphql(handleFollower, { name: 'handleFollower' }),
+    graphql(currentProfileQuery, {
+        name: 'currentUser',
+        options: (props) => ({
+            variables: {
+                language: props.match.params.lang,
+                id: null
+            },
+            fetchPolicy: 'network-only'
+        }),
+    }),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
     withState('expanded', 'updateExpanded', null),
     withState('headline', 'setHeadline', props => {
@@ -107,6 +118,41 @@ const HeaderHOC = compose(
         },
         closeStoryEditor: ({ setIsPopUpOpen }) => () => {
             setIsPopUpOpen(false);
+        },
+        toggleFollow: props => async (isFollowing) => {
+            let {
+                companyQuery: { company }, handleFollower, match
+            } = props;
+
+            try {
+                await handleFollower({
+                    variables: {
+                        details: {
+                            companyId: company.id,
+                            isFollowing: !isFollowing
+                        }
+                    },
+                    refetchQueries: [{
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'companyQuery',
+                        variables: {
+                            language: match.params.lang,
+                            id: company.id
+                        }
+                    }, {
+                        query: currentProfileQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentProfileQuery',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
         }
     }),
     pure
@@ -114,10 +160,12 @@ const HeaderHOC = compose(
 
 const Header = (props) => {
     const { headline, updateHeadline, submitHeadline, match, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
-        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField, teams } }
+        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField, teams } },
+        currentUser: { profile: { followingCompanies }},
+        toggleFollow
     } = props;
     const { lang, companyId } = match.params;
-
+    const isFollowing = followingCompanies.find(co=> co.id === companyId) !== undefined;
     let avatar = ''; //add logic to display avatar
 
     return (
@@ -154,9 +202,9 @@ const Header = (props) => {
                         )}
                     </FormattedMessage>
 
-                    <FormattedMessage id="headerLinks.follow" defaultMessage="Follow" description="User header follow button">
+                    <FormattedMessage id="headerLinks.follow" defaultMessage={isFollowing?"Unfollow":"Follow"} description="User header follow button">
                         {(text) => (
-                            <Button className='headerButton'>
+                            <Button className='headerButton' onClick={() => toggleFollow(isFollowing)}>
                                 {text}
                             </Button>
                         )}

@@ -4,11 +4,24 @@ import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import ColorPicker from './colorPicker';
+import { queryTeam, handleFollower, currentProfileQuery } from '../../../../store/queries';
+import { graphql } from 'react-apollo';
 
 import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const HeaderHOC = compose(
+    graphql(handleFollower, { name: 'handleFollower' }),
+    graphql(currentProfileQuery, {
+        name: 'currentUser',
+        options: (props) => ({
+            variables: {
+                language: props.match.params.lang,
+                id: null
+            },
+            fetchPolicy: 'network-only'
+        }),
+    }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withHandlers({
@@ -19,6 +32,41 @@ const HeaderHOC = compose(
             setColorPickerAnchor(null);
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+        toggleFollow: props => async (isFollowing) => {
+            let {
+                queryTeam: { team }, handleFollower, match
+            } = props;
+
+            try {
+                await handleFollower({
+                    variables: {
+                        details: {
+                            teamId: team.id,
+                            isFollowing: !isFollowing
+                        }
+                    },
+                    refetchQueries: [{
+                        query: queryTeam,
+                        fetchPolicy: 'network-only',
+                        name: 'queryTeam',
+                        variables: {
+                            language: match.params.lang,
+                            id: team.id
+                        }
+                    }, {
+                        query: currentProfileQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentProfileQuery',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
+        }
     }),
     pure
 );
@@ -28,8 +76,11 @@ const Header = props => {
         editMode,
         match: { params: { lang, teamId } },
         queryTeam: { team: { company, hasProfileCover, coverContentType, coverBackground, name } },
-        colorPickerAnchor, toggleColorPicker, closeColorPicker, refetchBgImage, forceCoverRender
+        colorPickerAnchor, toggleColorPicker, closeColorPicker, refetchBgImage, forceCoverRender,
+        currentUser: { profile: { followingTeams }},
+        toggleFollow
     } = props;
+    const isFollowing = followingTeams.find(te=> te.id === teamId) !== undefined;
 
     let headerStyle = null;
 
@@ -75,9 +126,9 @@ const Header = props => {
                         )}
                     </FormattedMessage>
 
-                    <FormattedMessage id="headerLinks.follow" defaultMessage="Follow" description="User header follow button">
+                    <FormattedMessage id="headerLinks.follow" defaultMessage={isFollowing?"Unfollow":"Follow"} description="User header follow button">
                         {(text) => (
-                            <Button className='headerButton'>
+                            <Button className='headerButton' onClick={() => toggleFollow(isFollowing)}>
                                 {text}
                             </Button>
                         )}

@@ -26,6 +26,7 @@ const Company = props => {
                 <Link to={`/${lang}/company/${id}`}>
                     <Avatar alt="Gabriel" src={defaultCompanyLogo} className='avatar' style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }} />
                 </Link>
+                <Link to={`/${lang}/company/${id}`} style={{ textDecoration: 'none' }}>
                 <div className='leftOverlayTexts'>
                     <h6 className='userName'>
                         {name}
@@ -33,6 +34,7 @@ const Company = props => {
                     </h6>
                     <p className='userTitle'>{field}</p>
                 </div>
+                </Link>
             </div>
             <div className='rightOverlay'>
                 {location}&nbsp;|&nbsp;{noOfEmployees || 0} Employees

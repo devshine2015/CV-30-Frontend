@@ -140,6 +140,18 @@ export const currentProfileQuery = gql`
       value
       statusCode
     }
+    followers {
+        id
+    }
+    followingCompanies {
+        id
+    }
+    followingJobs {
+        id
+    }
+    followingTeams {
+        id
+    }
   }
 }
 `;
@@ -377,6 +389,15 @@ export const setStory = gql`
 export const setSalary = gql`
     mutation setSalary($salary: SalaryInput) {
         setSalary(salary: $salary) {
+            status
+            error
+        }
+    }
+`;
+
+export const handleFollower = gql`
+    mutation handleFollower($details: FollowerInput!) {
+        handleFollower(details: $details) {
             status
             error
         }
