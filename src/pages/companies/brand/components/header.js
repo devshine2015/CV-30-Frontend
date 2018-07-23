@@ -4,6 +4,7 @@ import { Grid, Avatar, Button, Chip, Icon, IconButton, CircularProgress } from '
 import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
+
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
 // Require Editor CSS files.

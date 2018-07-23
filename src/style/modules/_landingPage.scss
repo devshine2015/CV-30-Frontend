@@ -17,6 +17,48 @@
         padding: 20px;
         flex-direction: column;
         min-height: calc(100vh - 65px);
+        .editorWrapper {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            .submitBtn {
+                display: flex;
+                background: #397db9;
+                color: #fff;
+                margin: 15px 0 0 auto;
+                width: 40px;
+                height: 40px;
+                min-width: auto;
+                min-height: auto;
+            }
+        }
+        .colorPickerButton {
+            background: #4893cc;
+            color: #fff;
+            padding: 2px 10px 2px 30px;
+            margin: 12px 0 0 30px;
+            max-width: 200px;
+            .icon {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                position: absolute;
+                left: -25px;
+                background: #397db9;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            &:hover {
+                background: #397db9;
+                .icon {
+                    background: #397db9;
+                }
+            }
+        }
+        .editToggle {
+            margin: -20px -20px 20px;
+        }
     }
     .roundedImage {
         max-width: 60px;
@@ -36,34 +78,61 @@
         color: #fff;
         justify-content: space-evenly;
     }
-    .featureRow {
-        justify-content: space-evenly;
-        align-items: center;
-        margin-top: 100px;
-    }
-    .featureRowReverse {
-        flex-direction: row-reverse;
-        text-align: right;
-    }
-    .featureImage {
-        border-radius: 50%;
-        background: #d8d8d8;
-        width: 80%;
-        padding-bottom: 80%;
-        margin: auto;
-    }
-    .featureHeading {
-        font-size: 2.25rem;
-        color: #277dba;
-    }
-    .featureText {
-        font-weight: 300;
-        color: #9a9a9a;
+    .featuresContainer {
+        padding-bottom: 100px;
+        .featureRow {
+            justify-content: space-evenly;
+            align-items: center;
+            margin-top: 100px;
+            &.featureRowReverse {
+                flex-direction: row-reverse;
+                text-align: right;
+            }
+            .featureImage {
+                border-radius: 50%;
+                background: #d8d8d8;
+                width: 80%;
+                padding-bottom: 80%;
+                margin: auto;
+                position: relative;
+                overflow: hidden;
+                img,
+                &>div {
+                    position: absolute;
+                    min-width: 100%;
+                    min-height: 100%;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    margin: 0;
+                }
+            }
+            .featureHeading {
+                font-size: 2.25rem;
+                color: #277dba;
+            }
+            .featureText {
+                font-weight: 300;
+                color: #9a9a9a;
+            }
+        }
+        .addFeaturedArticle {
+            display: flex;
+            border: 2px dashed #76acd2;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            cursor: pointer;
+            color: #277dba;
+            text-transform: none;
+            width: 60%;
+            margin: 50px auto 0;
+        }
     }
     .storiesContainer {
         display: flex;
         border-top: 2px solid #b7d3e7;
-        margin-top: 100px;
         min-height: 80vh;
     }
     .storiesSliderContainer {
