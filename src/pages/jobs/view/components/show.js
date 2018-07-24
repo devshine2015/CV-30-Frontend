@@ -2,11 +2,24 @@ import React from 'react';
 import { Grid, Button, IconButton, Icon, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 // import uuid from 'uuidv4';
+import { graphql } from 'react-apollo';
 
 import ArticleSlider from '../../../../components/articleSlider';
 import Loader from '../../../../components/Loader';
+import { handleApplyToJob, getJobQuery, currentProfileQuery } from '../../../../store/queries';
 
 const ShowHOC = compose(
+    graphql(handleApplyToJob, { name: 'handleApplyToJob' }),
+    graphql(currentProfileQuery, {
+        name: 'currentUser',
+        options: (props) => ({
+            variables: {
+                language: props.match.params.lang,
+                id: null
+            },
+            fetchPolicy: 'network-only'
+        }),
+    }),
     withState('expanded', 'updateExpanded', null),
     withHandlers({
         expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
@@ -17,6 +30,39 @@ const ShowHOC = compose(
                     updateEdited(null);
                 updateExpanded(expanded ? panel : false);
 
+            }
+        },
+        setApplyToJob: props => async (isApplying) => {
+            let {
+                handleApplyToJob, match
+            } = props;
+
+            try {
+                await handleApplyToJob({
+                    variables: {
+                        jobId: match.params.jobId,
+                        isApplying
+                    },
+                    refetchQueries: [{
+                        query: getJobQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'getJobQuery',
+                        variables: {
+                            id: match.params.jobId,
+                            language: match.params.lang
+                        }
+                    }, {
+                        query: currentProfileQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: match.params.lang,
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
             }
         }
     }),
@@ -31,7 +77,7 @@ const Show = props => {
         //TODO
         return <div>Job not found...</div>;
     } else {
-        const { expanded, expandPanel } = props;
+        const { expanded, expandPanel, setApplyToJob } = props;
         const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles }, expireDate/*, videos, images*/ } = job;
         // TODO: appliedDate, jobLevel, benefits from props
         // const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
@@ -52,6 +98,15 @@ const Show = props => {
         const { title, description, idealCandidate } = i18n[0];
         const { description: companyDescription } = companyText[0];
 
+        let isApplyAllowed = !props.currentUser.loading;
+        let didApply = false;
+        if (isApplyAllowed) {
+            const { currentUser: { profile: { id: currentUserId } } } = props;
+            console.log(job.applicants);
+            didApply = job.applicants.find(u=> u.id === currentUserId) !== undefined;
+            console.log(didApply, currentUserId);
+        }
+
         return (
             <React.Fragment>
                 <div className='header'>
@@ -63,12 +118,9 @@ const Show = props => {
                             <span className='company'>{companyName}</span>
                             <span className='availableJobs'>(2 jobs)</span>
                         </p>
-                        <Button className='applyButton'>
-                            Apply Now
-                    </Button>
-                        <Button className='appliedButton'>
-                            Already applied
-                </Button>
+                        {isApplyAllowed ? <Button className={didApply ? "appliedButton": "applyButton"} onClick={() => setApplyToJob(!didApply)}>
+                            {didApply ? "Already applied" : "Apply Now"}
+                        </Button> : null}
                     </Grid>
                     <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'></Grid>
                 </div>
@@ -132,9 +184,9 @@ const Show = props => {
                         </section>
 
                         <section className='actions'>
-                            <Button className='applyButton'>
-                                Apply now
-                        </Button>
+                            {isApplyAllowed ? <Button className={didApply ? "appliedButton": "applyButton"} onClick={() => setApplyToJob(!didApply)}>
+                                {didApply ? "Already applied" : "Apply Now"}
+                            </Button> : null}
                             <h2 className='sectionTitle'>Share <b>with a friend</b></h2>
                             <div className='socialLinks'>
                                 <IconButton className='socialLink'>

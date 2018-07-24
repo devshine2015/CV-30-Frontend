@@ -8,3 +8,12 @@ export const handleFollow = gql`
         }
     }
 `;
+
+export const handleApplyToJob = gql`
+    mutation handleApplyToJob($jobId: String!, $isApplying: Boolean!) {
+        handleApplyToJob(jobId: $jobId, isApplying: $isApplying) {
+            status
+            error
+        }
+    }
+`;

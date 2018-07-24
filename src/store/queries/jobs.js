@@ -69,6 +69,9 @@ query job($id: String!, $language: LanguageCodeType!) {
     email
     facebook
     linkedin
+    applicants {
+      id
+    }
   }
 }
 `;

@@ -155,6 +155,9 @@ export const currentProfileQuery = gql`
     followingTeams {
         id
     }
+    appliedJobs {
+        id
+    }
   }
 }
 `;
