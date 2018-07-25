@@ -28,7 +28,8 @@
     "nav.termsOfUse": "Terms of use",
     "nav.privaciPolicy": "Privacy policy",
 
-    "userProfile.contactMe": "Contact &lt;b&gt;me&lt;/b&gt;"
-
-
+    "appreciations.singular": "appreciations",
+    "appreciations.plural": "appreciations",
+    "comments.singular": "comment",
+    "comments.plural": "comments"
 }

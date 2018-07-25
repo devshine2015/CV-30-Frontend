@@ -185,3 +185,160 @@
         }
     }
 }
+
+.articleRoot {
+    background: #fff;
+    margin-top: 65px;
+    flex: 1;
+    .articleShow {
+        .centralColumn {
+            .acticleTitle {
+                font-size: 2rem;
+                font-weight: 100;
+                color: #565656;
+            }
+            .media {
+                width: 100%;
+                background: #989898;
+                margin: 40px 0;
+                img {
+                    width: 100%;
+                }
+            }
+        }
+        .columnRight {
+            .columnRightContent {
+                top: -50px;
+                margin-bottom: -50px;
+                border-left: 1px solid;
+                border-color: #f0f0f0;
+                padding: 25px 20px;
+                height: calc(100% + 50px);
+                .author {
+                    padding: 0 30px 0 2px;
+                    align-items: center;
+                    justify-content: space-between;
+                    border-radius: 35px;
+                    background: #fff;
+                    border: 1px solid #ededed;
+                    display: flex;
+                    .avatar {
+                        background-color: #565656;
+                        margin: 3px;
+                        width: 60px;
+                        height: 60px;
+                    }
+                    .texts {
+                        margin-left: 15px;
+                        padding: 15px 0;
+                        .userName,
+                        .userTitle {
+                            margin: 0;
+                            padding: 0;
+                            color: #565656;
+                        }
+                        .userName {
+                            display: flex;
+                            align-items: flex-start;
+                            font-size: 1rem;
+                            i {
+                                cursor: pointer;
+                                margin-left: 10px;
+                            }
+                        }
+                    }
+                }
+                .articleDate {
+                    color: #b6b6b6;
+                    font-size: 1rem;
+                    font-weight: 100;
+                    margin-left: 10px;
+                }
+                .likes,
+                .comments {
+                    color: #277dba;
+                    font-size: 2rem;
+                    font-weight: bold;
+                    .count {
+                        font-weight: 100;
+                    }
+                }
+                .likeBtn {
+                    color: #277dba;
+                    font-size: 1rem;
+                    font-weight: 500;
+                    text-transform: capitalize;
+                    padding: 0;
+                    .icon {
+                        background: #277dba;
+                        border-radius: 50%;
+                        color: #fff;
+                        width: 2rem;
+                        height: 2rem;
+                        font-size: 2rem;
+                        font-weight: bold;
+                        margin-right: 1rem;
+                        box-shadow: 0px 2px 5px 1px rgba(39, 125, 186, 0.3);
+                    }
+                    &:hover,
+                    &:active {
+                        background: none;
+                    }
+                    &:hover {
+                        .icon {
+                            box-shadow: 0px 2px 5px 1px rgba(39, 125, 186, 0.5);
+                        }
+                    }
+                    &:active {
+                        .icon {
+                            box-shadow: 0px 3px 5px 1px rgba(39, 125, 186, 0.6);
+                        }
+                    }
+                }
+                .commentsSection {
+                    .comment {
+                        margin-bottom: 30px;
+                        .author {
+                            border: none;
+                            justify-content: flex-start;
+                            padding: 0;
+                            .commentInfo {
+                                margin: 0;
+                                padding: 0;
+                                color: #565656;
+                                font-size: .75rem;
+                                .companyName {
+                                    color: #277dba;
+                                    font-weight: 500;
+                                }
+                                .commentDate {
+                                    color: #ababab;
+                                }
+                            }
+                        }
+                        .commentBody {
+                            font-size: .75rem;
+                            color: #ababab;
+                        }
+                    }
+                }
+                .addCommentBtn {
+                    border-radius: 35px;
+                    background: #fff;
+                    border: 1px solid #ededed;
+                    display: flex;
+                    color: #277dba;
+                    margin-left: auto;
+                    font-size: 1rem;
+                    font-weight: bold;
+                    text-transform: capitalize;
+                    padding: 15px 20px;
+                    .icon {
+                        font-size: 1.5rem;
+                        margin-right: 15px;
+                    }
+                }
+            }
+        }
+    }
+}

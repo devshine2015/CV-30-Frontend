@@ -27,6 +27,7 @@ import UsersList from './pages/users/list';
 import CompaniesList from './pages/companies/list';
 import NewCompany from './pages/companies/new';
 import CompanySettings from './pages/companies/settings';
+import Article from './pages/articles';
 
 
 
@@ -70,6 +71,7 @@ const CVRouter = (props) => {
           <Route path='/:lang(en|ro)/people' exact component={UsersList} />
           <Route path='/:lang(en|ro)/profile/:profileId?/settings' component={UserProfileSettings} />
           <Route path='/:lang(en|ro)/profile/:profileId?' component={UserProfile} />
+          <Route path='/:lang(en|ro)/article/:articleId' component={Article} />
 
         </Switch>
       </React.Fragment>
