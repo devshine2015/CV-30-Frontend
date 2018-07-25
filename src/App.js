@@ -69,6 +69,7 @@ const CVRouter = (props) => {
           <Route path='/:lang(en|ro)/jobs/new' exact component={NewJob} />
           <Route path='/:lang(en|ro)/job/:jobId' exact component={Job} />
           <Route path='/:lang(en|ro)/people' exact component={UsersList} />
+          <Route exact path='/:lang(en|ro)/profile/feed' component={UserProfile} />
           <Route path='/:lang(en|ro)/profile/:profileId?/settings' component={UserProfileSettings} />
           <Route path='/:lang(en|ro)/profile/:profileId?' component={UserProfile} />
           <Route path='/:lang(en|ro)/article/:articleId' component={Article} />

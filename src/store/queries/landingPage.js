@@ -21,7 +21,7 @@ export const landingPage = gql`
             i18n {
                 headline
                 footerMessage
-            }
+            }           
         }
     }
 `;

@@ -6,6 +6,7 @@ import { NavLink, withRouter, Link } from 'react-router-dom';
 import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import ReactPlayer from 'react-player';
+import { Redirect } from 'react-router-dom';
 
 import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
@@ -175,7 +176,7 @@ const HeaderHOC = compose(
                 await handleFollow({
                     variables: {
                         details: {
-                            followingId: match.params.profileId,
+                            userToFollowId: match.params.profileId,
                             isFollowing: !isFollowing
                         }
                     },
@@ -207,7 +208,13 @@ const HeaderHOC = compose(
 
 
 const Header = (props) => {
-    const { editMode, profile,
+    const { profile } = props;
+    const { lang, profileId } = props.match.params;
+
+    if (!profile || (profileId && profile.id !== profileId))
+        return <Redirect to={`/${props.match.params.lang}/profile/`} />;
+
+    const { editMode,
         closeColorPicker, toggleColorPicker, colorPickerAnchor,
         removeStory,
         openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
@@ -266,9 +273,7 @@ const Header = (props) => {
     let avatar =
         (!localUserData.loading && profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
 
-    const { lang, profileId } = props.match.params;
-
-    let isFollowAllowed = !props.currentUser.loading;
+    let isFollowAllowed = !props.currentUser.loading && profileId;
     let isFollowing = false;
     if (isFollowAllowed) {
         const { currentUser: { profile: { id: currentUserId, followees } } } = props;
