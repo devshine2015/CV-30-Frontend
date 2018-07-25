@@ -14,10 +14,14 @@ export const landingPage = gql`
         company(language: $language) {
             i18n {
                 headline
+                footerMessage
             }
             hasCover
             coverBackground
             coverContentType
+            hasFooterCover
+            footerCoverBackground
+            footerCoverContentType
         }
     }
 `;
