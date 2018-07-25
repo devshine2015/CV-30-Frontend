@@ -14,6 +14,7 @@ query jobs($language: LanguageCodeType!) {
             name
             location
         }
+        location
     }
 }
 `;
@@ -72,6 +73,7 @@ query job($id: String!, $language: LanguageCodeType!) {
     applicants {
       id
     }
+    location
   }
 }
 `;

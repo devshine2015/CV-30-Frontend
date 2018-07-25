@@ -88,7 +88,7 @@ const Company = props => {
             <div className={activeTab ? 'itemFooter open' : 'itemFooter'}>
                 {activeTab === 'jobs' &&
                     <div className='jobs'>
-                        {jobs.map((job, index) => <JobItem {...job} key={`job-${index}`} />)}
+                        {jobs.map((job, index) => <JobItem job={job} key={`job-${index}`} />)}
                     </div>
                 }
                 {

@@ -6,16 +6,16 @@ import {compose}from 'recompose';
 import { withRouter } from 'react-router-dom';
 
 const JobItem = props => {
-    const { i18n, company: { name: companyName, location }, expireDate, videos, images, id, match, appliedDate, jobLevels, benefits } = props;
+    const { match, job: { i18n, company: { name: companyName }, expireDate, videos, images, id, appliedDate, jobLevels, benefits, location } } = props;
     const { title, description } = i18n[0];
 
     return (
         <div className='listItem jobListItem'>
             <div className='leftOverlay'>
-                <Link to={`/${props.match.params.lang}/job/${id}`}>
+                <Link to={`/${match.params.lang}/job/${id}`}>
                     <Avatar alt="Gabriel" src={defaultCompanyLogo} className='avatar' style={{ margin: 3, backgroundColor: '#fff' }} imgProps={{ style: { objectFit: 'contain' } }} />
                 </Link>
-                <Link to={`/${props.match.params.lang}/job/${id}`} style={{ textDecoration: 'none' }}>
+                <Link to={`/${match.params.lang}/job/${id}`} style={{ textDecoration: 'none' }}>
                     <div className='leftOverlayTexts'>
                         <h6 className='companyName'>
                             {companyName}
