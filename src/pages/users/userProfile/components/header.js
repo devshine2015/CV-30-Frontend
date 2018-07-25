@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Avatar, Button, Icon, Hidden, Chip, CircularProgress } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from "recompose";
 import { FormattedMessage } from 'react-intl';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink, withRouter, Link } from 'react-router-dom';
 import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import ReactPlayer from 'react-player';
@@ -217,7 +217,7 @@ const Header = (props) => {
         isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor,
         toggleFollow
     } = props;
-    
+
     const {
         firstName,
         lastName,
@@ -267,17 +267,17 @@ const Header = (props) => {
         (!localUserData.loading && profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
 
     const { lang, profileId } = props.match.params;
-     
+
     let isFollowAllowed = !props.currentUser.loading;
     let isFollowing = false;
     if (isFollowAllowed) {
         const { currentUser: { profile: { id: currentUserId, followees } } } = props;
         if (currentUserId !== profileId) {
-            isFollowing = followees.find(u=> u.id === profileId) !== undefined;
+            isFollowing = followees.find(u => u.id === profileId) !== undefined;
         } else {
             isFollowAllowed = false;
         }
-    }   
+    }
 
     return (
         <div className='header' style={headerStyle}>
@@ -365,7 +365,7 @@ const Header = (props) => {
                         )}
                     </FormattedMessage>
 
-                    <FormattedMessage id="userProfile.follow" defaultMessage={isFollowing?"Unfollow":"Follow"} description="User header follow button">
+                    <FormattedMessage id="userProfile.follow" defaultMessage={isFollowing ? "Unfollow" : "Follow"} description="User header follow button">
                         {(text) => isFollowAllowed ? (
                             <Button className='headerButton' onClick={() => toggleFollow(isFollowing)}>
                                 {text}
@@ -389,27 +389,29 @@ const Header = (props) => {
                             }
                             return (
                                 <Grid item className='storyContainer' key={story.id}>
-                                    {image &&
-                                        <img src={image} alt={story.id} className='storyImg' />
-                                    }
-                                    {(video && !image) &&
-                                        <ReactPlayer
-                                            url={video}
-                                            width='200'
-                                            height='140'
-                                            config={{
-                                                youtube: {
-                                                    playerVars: {
-                                                        showinfo: 0,
-                                                        controls: 0,
-                                                        modestbranding: 1,
-                                                        loop: 1
+                                    <Link to={`/en/article/${story.id}`}>
+                                        {image &&
+                                            <img src={image} alt={story.id} className='storyImg' />
+                                        }
+                                        {(video && !image) &&
+                                            <ReactPlayer
+                                                url={video}
+                                                width='200'
+                                                height='140'
+                                                config={{
+                                                    youtube: {
+                                                        playerVars: {
+                                                            showinfo: 0,
+                                                            controls: 0,
+                                                            modestbranding: 1,
+                                                            loop: 1
+                                                        }
                                                     }
-                                                }
-                                            }}
-                                            playing={false} />
-                                    }
-                                    <span className='storyTitle'>{story.i18n[0].title}</span>
+                                                }}
+                                                playing={false} />
+                                        }
+                                        <span className='storyTitle'>{story.i18n[0].title}</span>
+                                    </Link>
                                     {
                                         editMode &&
                                         <Button

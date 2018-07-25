@@ -1,25 +1,107 @@
 import React from 'react';
-import { Grid, Button, Hidden } from '@material-ui/core';
+import { Grid, Button, Hidden, IconButton, Icon } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { compose, withState, withHandlers, pure } from 'recompose';
+
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+// Require Font Awesome.
+import 'font-awesome/css/font-awesome.css';
+import FroalaEditor from 'react-froala-wysiwyg';
+
+import ColorPicker from './colorPicker';
+import { s3BucketURL } from '../../../constants/s3';
+import { defaultHeaderOverlay } from '../../../constants/utils';
+
+const FooterHOC = compose(
+    withState('footerMessage', 'setFooterMessage', props => '<h1>Test message</h1>'),
+    withState('colorPickerAnchor', 'setColorPickerAnchor', null),
+    withState('forceCoverRender', 'setForceCoverRender', 0),
+    withHandlers({
+        toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
+            setColorPickerAnchor(event.target);
+        },
+        closeColorPicker: ({ setColorPickerAnchor }) => () => {
+            setColorPickerAnchor(null);
+        },
+        updateFooterMessage: ({ setFooterMessage }) => text => {
+            setFooterMessage(text)
+        },
+        submitFooterMessage: ({ footerMessage }) => () => {
+            console.log(footerMessage);
+        },
+        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+    }),
+    pure
+);
 
 const Footer = props => {
-    const { match: { params: { lang } } } = props;
+    const { editMode,
+        footerMessage, updateFooterMessage, submitFooterMessage,
+        toggleColorPicker, colorPickerAnchor, closeColorPicker, refetchBgImage, forceCoverRender,
+        landingPage: { landingPage: { footerCoverBackground, footerCoverContentType, hasFooterCover } },
+        match: { params: { lang } }
+    } = props;
+
+    let footerStyle = null;
+
+    if (footerCoverBackground) {
+        footerStyle = { background: footerCoverBackground }
+    } else {
+        footerStyle = { background: defaultHeaderOverlay }
+    }
+
+    if (hasFooterCover) {
+        let newCover = `${s3BucketURL}/landingPage/footerCover.${footerCoverContentType}?${forceCoverRender}`;
+        footerStyle.background += `, url(${newCover})`;
+    }
 
     return (
-        <footer className='footer'>
+        <footer className='footer' style={footerStyle}>
+            {
+                editMode &&
+                <React.Fragment>
+                    <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
+                        <span className='text'>Change Background</span>
+                        <Icon className='icon'>brush</Icon>
+                    </Button>
+                    <ColorPicker
+                        colorPickerAnchor={colorPickerAnchor}
+                        onClose={closeColorPicker}
+                        refetchBgImage={refetchBgImage}
+                        type='footer'
+                    />
+                </React.Fragment>
+            }
             <Grid container className='footerContainer'>
                 <Hidden mdDown>
                     <Grid item md={5} sm={12} xs={12}></Grid>
                 </Hidden>
                 <Grid item md={5} sm={12} xs={12}>
-                    <FormattedMessage id="landingPage.footerCreateAccount" defaultMessage="Create account" description="Footer create account title on app landing page">
-                        {(text) => (<h1 className='introHeadline'>{text}</h1>)}
-                    </FormattedMessage>
-
-                    <FormattedMessage id="landingPage.footerCreateAccountText" defaultMessage="Create account text" description="Footer create account text on app landing page">
-                        {(text) => (<p className='introMessage'>{text}</p>)}
-                    </FormattedMessage>
+                    {
+                        editMode ?
+                            <div className='editorWrapper'>
+                                <FroalaEditor
+                                    config={{
+                                        placeholderText: 'This is where the company footer message should be',
+                                        iconsTemplate: 'font_awesome_5',
+                                        toolbarInline: true,
+                                        charCounterCount: false,
+                                        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                    }}
+                                    model={footerMessage}
+                                    onModelChange={updateFooterMessage}
+                                />
+                                <IconButton className='submitBtn' onClick={submitFooterMessage}>
+                                    <Icon>done</Icon>
+                                </IconButton>
+                            </div>
+                            : <div dangerouslySetInnerHTML={{ __html: footerMessage }} />
+                    }
 
                     <Button component={Link} to={`/${lang}/register`} variant="raised" color="primary" type="button" className='footerSignupButton'>
                         Sign up
@@ -83,4 +165,4 @@ const Footer = props => {
     );
 };
 
-export default Footer;
+export default FooterHOC(Footer);

@@ -6,11 +6,11 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../constants/headerBackgrounds';
-import { handleCompany, companyQuery } from '../../../store/queries';
+import { landingPage, handleLandingPage } from '../../../store/queries';
 
 const ColorPickerHOC = compose(
     withRouter,
-    graphql(handleCompany, { name: 'handleCompany' }),
+    graphql(handleLandingPage, { name: 'handleLandingPage' }),
     withState('activeTab', 'setActiveTab', 'colors'),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
@@ -20,37 +20,55 @@ const ColorPickerHOC = compose(
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
         },
-        setBackgroundColor: ({ handleCompany, match: { params: { lang: language, companyId } } }) => async color => {
-            // try {
-            //     await handleCompany({
-            //         variables: {
-            //             language,
-            //             details: {
-            //                 id: companyId,
-            //                 coverBackground: color.style
-            //             }
-            //         },
-            //         refetchQueries: [{
-            //             query: companyQuery,
-            //             fetchPolicy: 'network-only',
-            //             name: 'companyQuery',
-            //             variables: {
-            //                 language,
-            //                 id: companyId
-            //             }
-            //         }]
-            //     });
-            // }
-            // catch (err) {
-            //     console.log(err)
-            // }
+        setBackgroundColor: ({ handleLandingPage, match: { params: { lang: language } }, type }) => async color => {
+            let details = {};
+            switch (type) {
+                case 'header':
+                    details = {
+                        coverBackground: color ? color.style : 'none'
+                    };
+                    break;
+                case 'footer':
+                    details = {
+                        footerCoverBackground: color ? color.style : 'none'
+                    };
+                    break;
+            }
+            try {
+                await handleLandingPage({
+                    variables: {
+                        language,
+                        details
+                    },
+                    refetchQueries: [{
+                        query: landingPage,
+                        fetchPolicy: 'network-only',
+                        name: 'landingPage',
+                        variables: {
+                            language
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
         },
-        getSignedUrl: ({ match: { params: { companyId } }, setFileParams }) => async (file, callback) => {
+        getSignedUrl: ({ match: { params: { companyId } }, setFileParams, type }) => async (file, callback) => {
+            let fileName;
+            switch (type) {
+                case 'header':
+                    fileName = `headerCover.${file.type.replace('image/', '')}`;
+                    break;
+                case 'footer':
+                    fileName = `footerCover.${file.type.replace('image/', '')}`;
+                    break;
+            }
+
             const params = {
-                fileName: `cover.${file.type.replace('image/', '')}`,
+                fileName,
                 contentType: file.type,
-                id: companyId,
-                type: 'company_cover'
+                type: 'landingPage_cover'
             };
 
             setFileParams(params);
@@ -82,31 +100,43 @@ const ColorPickerHOC = compose(
             setUploadError(error);
             console.log(error);
         },
-        onFinish: ({ setIsUploading, handleCompany, refetchBgImage, fileParams: { contentType }, match: { params: { companyId, lang: language } } }) => async () => {
-            // try {
-            //     await handleCompany({
-            //         variables: {
-            //             language,
-            //             details: {
-            //                 id: companyId,
-            //                 hasCover: true,
-            //                 coverContentType: contentType.replace('image/', '')
-            //             }
-            //         },
-            //         refetchQueries: [{
-            //             query: companyQuery,
-            //             fetchPolicy: 'network-only',
-            //             name: 'companyQuery',
-            //             variables: {
-            //                 language,
-            //                 id: companyId
-            //             }
-            //         }]
-            //     });
-            // }
-            // catch (err) {
-            //     console.log(err)
-            // }
+        onFinish: ({ setIsUploading, handleLandingPage, refetchBgImage, fileParams: { contentType }, match: { params: { lang: language } }, type }) => async () => {
+            let details = {};
+            switch (type) {
+                case 'header':
+                    details = {
+                        hasCover: true,
+                        coverContentType: contentType.replace('image/', '')
+                    };
+                    break;
+                case 'footer':
+
+                    details = {
+                        hasFooterCover: true,
+                        footerCoverContentType: contentType.replace('image/', '')
+                    };
+                    break;
+            }
+
+            try {
+                await handleLandingPage({
+                    variables: {
+                        language,
+                        details
+                    },
+                    refetchQueries: [{
+                        query: landingPage,
+                        fetchPolicy: 'network-only',
+                        name: 'landingPage',
+                        variables: {
+                            language
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
 
             setIsUploading(false);
             refetchBgImage();

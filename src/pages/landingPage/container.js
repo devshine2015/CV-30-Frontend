@@ -1,5 +1,8 @@
 import { compose, pure, withState, withHandlers } from 'recompose';
 import LandingPage from './component';
+import { graphql } from 'react-apollo';
+import { landingPage } from '../../store/queries';
+import { withRouter } from 'react-router-dom';
 
 const stories = [
     {
@@ -55,6 +58,16 @@ Id eos omnis singulis evertitur. Movet facete singulis quo ea, ne iusto laudem f
 ];
 
 const LandingPageHOC = compose(
+    withRouter,
+    graphql(landingPage, {
+        name: 'landingPage',
+        options: props => ({
+            fetchPolicy: 'network-only',
+            variables: {
+                language: props.match.params.lang
+            },
+        }),
+    }),
     withState('stories', 'setStories', stories),
     withState('editMode', 'updateEditMode', true),
     withHandlers({
@@ -63,6 +76,6 @@ const LandingPageHOC = compose(
         }
     }),
     pure
-)
+);
 
 export default LandingPageHOC(LandingPage);

@@ -12,6 +12,8 @@ import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
 import ColorPicker from './colorPicker';
+import { s3BucketURL } from '../../../constants/s3';
+import { defaultHeaderOverlay } from '../../../constants/utils';
 
 const HeaderHOC = compose(
     withState('headline', 'setHeadline', props => 'Test headline'),
@@ -29,7 +31,8 @@ const HeaderHOC = compose(
         },
         submitHeadline: ({ headline }) => () => {
             console.log(headline);
-        }
+        },
+        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
     }),
     pure
 );
@@ -38,10 +41,24 @@ const Header = props => {
     const {
         editMode, switchEditMode,
         headline, updateHeadline, submitHeadline,
-        toggleColorPicker, closeColorPicker, colorPickerAnchor, refetchBgImage
+        toggleColorPicker, closeColorPicker, colorPickerAnchor, refetchBgImage, forceCoverRender,
+        landingPage: { landingPage: { coverBackground, coverContentType, hasCover } }
     } = props;
+
+    let headerStyle = null;
+
+    if (coverBackground) {
+        headerStyle = { background: coverBackground }
+    } else {
+        headerStyle = { background: defaultHeaderOverlay }
+    }
+
+    if (hasCover) {
+        let newCover = `${s3BucketURL}/landingPage/headerCover.${coverContentType}?${forceCoverRender}`;
+        headerStyle.background += `, url(${newCover})`;
+    }
     return (
-        <div className='header'>
+        <div className='header' style={headerStyle}>
             <FormGroup row className='editToggle'>
                 <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
                 <ToggleSwitch checked={editMode} onChange={switchEditMode}
@@ -64,7 +81,7 @@ const Header = props => {
                         colorPickerAnchor={colorPickerAnchor}
                         onClose={closeColorPicker}
                         refetchBgImage={refetchBgImage}
-                        type='landing_page'
+                        type='header'
                     />
                 </React.Fragment>
             }

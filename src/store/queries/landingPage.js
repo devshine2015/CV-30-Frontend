@@ -10,14 +10,18 @@ export const handleLandingPage = gql`
 `;
 
 export const landingPage = gql`
-    query company($language: LanguageCodeType!) {
-        company(language: $language) {
+    query landingPage($language: LanguageCodeType!) {
+        landingPage(language: $language) {
+            hasCover
+            coverContentType
+            coverBackground
+            hasFooterCover
+            footerCoverContentType
+            footerCoverBackground
             i18n {
                 headline
+                footerMessage
             }
-            hasCover
-            coverBackground
-            coverContentType
         }
     }
 `;
