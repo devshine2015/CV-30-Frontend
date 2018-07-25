@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Hidden, IconButton, Icon, Button, FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
+import { graphql } from 'react-apollo';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -14,9 +15,14 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
+import { handleLandingPage, landingPage } from '../../../store/queries';
 
 const HeaderHOC = compose(
-    withState('headline', 'setHeadline', props => 'Test headline'),
+    graphql(handleLandingPage, { name: 'handleLandingPage' }),
+    withState('headline', 'setHeadline', props => {
+        let { landingPage: { landingPage: { i18n } } } = props;
+        return (i18n && i18n[0] && i18n[0].headline) ? i18n[0].headline : '';
+    }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withHandlers({
@@ -29,8 +35,28 @@ const HeaderHOC = compose(
         updateHeadline: ({ setHeadline }) => text => {
             setHeadline(text)
         },
-        submitHeadline: ({ headline }) => () => {
-            console.log(headline);
+        submitHeadline: ({ headline, handleLandingPage, match: { params: { lang: language } } }) => async () => {
+            try {
+                await handleLandingPage({
+                    variables: {
+                        language,
+                        details: {
+                            headline
+                        }
+                    },
+                    refetchQueries: [{
+                        query: landingPage,
+                        fetchPolicy: 'network-only',
+                        name: 'landingPage',
+                        variables: {
+                            language
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
     }),

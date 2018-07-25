@@ -3,6 +3,7 @@ import { Grid, Button, Hidden, IconButton, Icon } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
+import { graphql } from 'react-apollo';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -16,9 +17,14 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
+import { handleLandingPage, landingPage } from '../../../store/queries';
 
 const FooterHOC = compose(
-    withState('footerMessage', 'setFooterMessage', props => '<h1>Test message</h1>'),
+    graphql(handleLandingPage, { name: 'handleLandingPage' }),
+    withState('footerMessage', 'setFooterMessage', props => {
+        let { landingPage: { landingPage: { i18n } } } = props;
+        return (i18n && i18n[0] && i18n[0].footerMessage) ? i18n[0].footerMessage : '';
+    }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withHandlers({
@@ -31,8 +37,28 @@ const FooterHOC = compose(
         updateFooterMessage: ({ setFooterMessage }) => text => {
             setFooterMessage(text)
         },
-        submitFooterMessage: ({ footerMessage }) => () => {
-            console.log(footerMessage);
+        submitFooterMessage: ({ footerMessage, handleLandingPage, match: { params: { lang: language } } }) => async () => {
+            try {
+                await handleLandingPage({
+                    variables: {
+                        language,
+                        details: {
+                            footerMessage
+                        }
+                    },
+                    refetchQueries: [{
+                        query: landingPage,
+                        fetchPolicy: 'network-only',
+                        name: 'landingPage',
+                        variables: {
+                            language
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err)
+            }
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
     }),
