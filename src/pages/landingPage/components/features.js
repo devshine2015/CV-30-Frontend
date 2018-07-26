@@ -1,16 +1,27 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { Grid, Avatar } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import ReactPlayer from 'react-player';
 
+import ArticlePopUp from './articlePopUp';
 const FeaturesHOC = compose(
-    withState(),
-    withHandlers(),
+    withState('articlePopUpOpen', 'setArticlePopUpOpen', false),
+    withHandlers({
+        toggleArticlePopUp: ({ setArticlePopUpOpen }) => () => {
+            setArticlePopUpOpen(true);
+        },
+        closeArticlePopUp: ({ setArticlePopUpOpen }) => () => {
+            setArticlePopUpOpen(false);
+        },
+    }),
     pure
 );
 
 const Features = props => {
-    const { stories, editMode } = props;
+    const {
+        stories, editMode,
+        articlePopUpOpen, toggleArticlePopUp, closeArticlePopUp
+    } = props;
     return (
         <div className='featuresContainer'>
             {stories && stories.map((story, index) => {
@@ -59,10 +70,11 @@ const Features = props => {
             })}
             {
                 editMode &&
-                <div className='addFeaturedArticle'>
+                <div className='addFeaturedArticle' onClick={toggleArticlePopUp}>
                     + Add Story
                 </div>
             }
+            <ArticlePopUp open={articlePopUpOpen} onClose={closeArticlePopUp} />
         </div>
 
     );

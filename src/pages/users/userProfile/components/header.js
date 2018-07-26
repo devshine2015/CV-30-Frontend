@@ -218,8 +218,7 @@ const Header = (props) => {
         closeColorPicker, toggleColorPicker, colorPickerAnchor,
         removeStory,
         openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
-        getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart,
-        isUploading, uploadProgress,
+        getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress,
         localUserData, refetchBgImage, forceCoverRender,
         isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor,
         toggleFollow
