@@ -3,7 +3,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { getArticle } from '../../store/queries';
+import { getArticle, getCurrentUser } from '../../store/queries';
 
 const ArticleHOC = compose(
     withRouter,
@@ -16,6 +16,9 @@ const ArticleHOC = compose(
                 language: props.match.params.lang
             },
         }),
+    }),
+    graphql(getCurrentUser, {
+        name: 'currentUser'
     }),
     withState('editMode', 'updateEditMode', false),
     withHandlers({
