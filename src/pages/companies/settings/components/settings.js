@@ -20,11 +20,8 @@ const SettingsHOC = compose(
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
     graphql(handleCompany, { name: 'handleCompany' }),
     withState('isSaving', 'setIsSaving', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
     withState('settingsFormError', 'setSettingsFormError', ''),
     withState('settingsFormSuccess', 'setSettingsFormSuccess', false),
-    withState('fileParams', 'setFileParams', {}),
     withState('headline', 'setHeadline', props => {
         let { currentCompany: { company: { i18n } } } = props;
 
@@ -49,72 +46,6 @@ const SettingsHOC = compose(
         return { id, activityField, location, noOfEmployees, name };
     }),
     withHandlers({
-        getSignedUrl: ({ formData, setFileParams }) => async (file, callback) => {
-            const params = {
-                fileName: file.name,
-                contentType: file.type,
-                id: formData.id,
-                type: 'company_cover'
-            };
-
-            setFileParams(params);
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            }
-
-            catch (error) {
-                console.error(error);
-                callback(error)
-            }
-        },
-        onUploadStart: ({ setIsSaving }) => (file, next) => {
-            let size = file.size;
-            if (size > 500 * 1024) {
-                alert('File is too big!');
-            } else {
-                setIsSaving(true);
-                next(file);
-            }
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
-            console.log(error);
-        },
-        onFinishUpload: (props) => async () => {
-            const { setIsSaving, handleCompany, updateAvatarTimestamp, match } = props;
-            // await handleCompany({
-            //     variables: {
-            //         status: true
-            //     },
-            //     refetchQueries: [{
-            //         query: currentUserQuery,
-            //         fetchPolicy: 'network-only',
-            //         name: 'currentUser',
-            //         variables: {
-            //             language: match.params.lang
-            //         }
-            //     }]
-            // });
-            // await updateAvatarTimestamp({
-            //     variables: {
-            //         timestamp: Date.now()
-            //     }
-            // });
-            setIsSaving(false);
-        },
         handleFormChange: props => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -195,29 +126,6 @@ const Settings = props => {
                         }
                     }}
                 />
-            </div>
-            <div className='profilePicture'>
-                <Avatar src={avatar} alt='profile picture' key={avatar} className='settingsAvatar' />
-                <label htmlFor="uploadProfileImg">
-                    <S3Uploader
-                        id="uploadProfileImg"
-                        name="uploadProfileImg"
-                        className='hiddenInput'
-                        getSignedUrl={getSignedUrl}
-                        accept="image/*"
-                        preprocess={onUploadStart}
-                        onProgress={onProgress}
-                        onError={onError}
-                        onFinish={onFinishUpload}
-                        uploadRequestHeaders={{
-                            'x-amz-acl': 'public-read',
-                        }}
-
-                    />
-                    <Button component='span' className='settingsUploadBtn' disabled={isSaving}>
-                        Change company background
-                    </Button>
-                </label>
             </div>
             <div className='infoFields'>
                 <TextField
