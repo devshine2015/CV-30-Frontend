@@ -394,7 +394,7 @@ const Header = (props) => {
                             }
                             return (
                                 <Grid item className='storyContainer' key={story.id}>
-                                    <Link to={`/en/article/${story.id}`}>
+                                    <Link to={`/${props.match.params.lang}/article/${story.id}`}>
                                         {image &&
                                             <img src={image} alt={story.id} className='storyImg' />
                                         }
