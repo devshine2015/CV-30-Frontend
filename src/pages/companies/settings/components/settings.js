@@ -1,6 +1,5 @@
 import React from 'react';
-import { Avatar, Button, TextField } from '@material-ui/core';
-import S3Uploader from 'react-s3-uploader';
+import { Button, TextField } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 
@@ -13,7 +12,6 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import { s3BucketURL } from '../../../../constants/s3';
 import { companyQuery, updateAvatarTimestampMutation, handleCompany } from '../../../../store/queries';
 
 const SettingsHOC = compose(
@@ -105,8 +103,6 @@ const Settings = props => {
     } = props;
     const { name, location, activityField, noOfEmployees } = formData;
 
-    let avatar = ''
-    // (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
 
     return (
         <div className='settingsTab'>
