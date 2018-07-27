@@ -71,6 +71,7 @@ const ArticleBrowserHOC = compose(
                     break;
                 case 'job_officeLife':
                     options = {
+                        articleId: articleId,
                         teamId: match.params.teamId,
                         isAtOffice: true
                     };
