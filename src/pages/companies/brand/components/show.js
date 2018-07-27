@@ -19,6 +19,7 @@ import Story from './story';
 import ArticleSlider from '../../../../components/articleSlider';
 import { companyQuery, handleCompany } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
+import Feedback from '../../../../components/Feedback';
 
 const ShowHOC = compose(
     graphql(handleCompany, { name: 'handleCompany' }),
@@ -33,15 +34,12 @@ const ShowHOC = compose(
         return i18n[0].description;
 
     }),
+    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         updateDescription: ({ setDescription }) => text => setDescription(text),
-        submitDescription: props => async () => {
-            let {
-                companyQuery: { company }, handleCompany, description, match
-            } = props;
-
+        submitDescription: ({ companyQuery: { company }, handleCompany, description, match, setFeedbackMessage }) => async () => {
             try {
-                await handleCompany({
+                let result = await handleCompany({
                     variables: {
                         language: match.params.lang,
                         details: {
@@ -59,9 +57,12 @@ const ShowHOC = compose(
                         }
                     }]
                 });
+
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
         },
         expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
@@ -83,7 +84,8 @@ const ShowHOC = compose(
         },
         addQA: ({ addNewQA }) => () => {
             addNewQA(true);
-        }
+        },
+        closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
     }),
     pure
 );
@@ -94,7 +96,8 @@ const Show = (props) => {
         companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } },
         edited, editPanel, addQA, newQA,
         match: { params: { lang, companyId } },
-        description, updateDescription, submitDescription
+        description, updateDescription, submitDescription,
+        feedbackMessage, closeFeedback
     } = props;
 
     return (
@@ -228,6 +231,10 @@ const Show = (props) => {
                     </div>
                 </div>
             </Grid>
+            <Feedback
+                handleClose={closeFeedback}
+                {...feedbackMessage}
+            />
         </Grid>
     );
 };
