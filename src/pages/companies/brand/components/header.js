@@ -24,6 +24,7 @@ import TeamSlider from './teamSlider';
 import S3Uploader from 'react-s3-uploader';
 import ColorPicker from './colorPicker';
 import { defaultHeaderOverlay } from '../../../../constants/utils';
+import Feedback from '../../../../components/Feedback';
 
 const HeaderHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
@@ -55,6 +56,7 @@ const HeaderHOC = compose(
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
+    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -70,6 +72,7 @@ const HeaderHOC = compose(
                 companyQuery: { company },
                 match: { params: { lang: language } },
                 handleCompany, headline,
+                setFeedbackMessage
             } = props;
 
             try {
@@ -91,15 +94,17 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
         },
         expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
             updateExpanded(expanded ? panel : false);
         },
-        removeStory: ({ handleArticle, match: { params: { lang: language, companyId } } }) => async article => {
+        removeStory: ({ handleArticle, match: { params: { lang: language, companyId } }, setFeedbackMessage }) => async article => {
             try {
                 await handleArticle({
                     variables: {
@@ -123,9 +128,11 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
 
         },
@@ -135,11 +142,7 @@ const HeaderHOC = compose(
         closeStoryEditor: ({ setIsPopUpOpen }) => () => {
             setIsPopUpOpen(false);
         },
-        toggleFollow: props => async isFollowing => {
-            let {
-                companyQuery: { company }, handleFollow, match: { params: { lang: language } }
-            } = props;
-
+        toggleFollow: ({ companyQuery: { company }, handleFollow, match: { params: { lang: language } }, setFeedbackMessage }) => async isFollowing => {
             try {
                 await handleFollow({
                     variables: {
@@ -165,12 +168,14 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
         },
-        getSignedUrl: ({ companyQuery: { company } }) => async (file, callback) => {
+        getSignedUrl: ({ companyQuery: { company }, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: `logo.${file.type.replace('image/', '')}`,
                 contentType: file.type,
@@ -191,7 +196,8 @@ const HeaderHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                setFeedbackMessage({ type: 'error', message: error.message });
             }
         },
         onUploadStart: ({ setIsUploading, setFileType }) => (file, next) => {
@@ -207,11 +213,12 @@ const HeaderHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
+        onError: ({ setUploadError, setFeedbackMessage }) => error => {
             setUploadError(error);
             console.log(error);
+            setFeedbackMessage({ type: 'error', message: error.message });
         },
-        onFinishUpload: ({ setIsUploading, handleCompany, match: { params: { lang: language, companyId } }, fileType, setForceLogoRender }) => async () => {
+        onFinishUpload: ({ setIsUploading, handleCompany, match: { params: { lang: language, companyId } }, fileType, setForceLogoRender, setFeedbackMessage }) => async () => {
             try {
                 await handleCompany({
                     variables: {
@@ -232,14 +239,17 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
+                setFeedbackMessage({ type: 'success', message: 'File uploaded successfully.' });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
             setIsUploading(false);
             setForceLogoRender(Date.now());
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+        closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
     }),
     pure
 )
@@ -250,15 +260,16 @@ const Header = (props) => {
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress, refetchBgImage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker,
         forceLogoRender, forceCoverRender,
-        toggleFollow
+        toggleFollow,
+        feedbackMessage, closeFeedback,
     } = props;
     const { lang, companyId } = match.params;
-    
+
     const isFollowAllowed = !props.currentUser.loading;
     let isFollowing = false;
     if (isFollowAllowed) {
-        const { currentUser: { profile: { followingCompanies }} } = props;
-        isFollowing = followingCompanies.find(co=> co.id === companyId) !== undefined;
+        const { currentUser: { profile: { followingCompanies } } } = props;
+        isFollowing = followingCompanies.find(co => co.id === companyId) !== undefined;
     }
 
     let avatar =
@@ -352,7 +363,7 @@ const Header = (props) => {
                         )}
                     </FormattedMessage>
 
-                    <FormattedMessage id="headerLinks.follow" defaultMessage={isFollowing?"Unfollow":"Follow"} description="User header follow button">
+                    <FormattedMessage id="headerLinks.follow" defaultMessage={isFollowing ? "Unfollow" : "Follow"} description="User header follow button">
                         {(text) => isFollowAllowed ? (
                             <Button className='headerButton' onClick={() => toggleFollow(isFollowing)}>
                                 {text}
@@ -473,6 +484,10 @@ const Header = (props) => {
                     }
                 </Grid>
             </Grid>
+            <Feedback
+                handleClose={closeFeedback}
+                {...feedbackMessage}
+            />
         </div>
     )
 };
