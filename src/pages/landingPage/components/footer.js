@@ -65,9 +65,8 @@ const FooterHOC = compose(
             }
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
-        closeFeedback: ({ setFeedbackMessage }) => () => {
-            setFeedbackMessage(null);
-        }
+        closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
+
     }),
     pure
 );
