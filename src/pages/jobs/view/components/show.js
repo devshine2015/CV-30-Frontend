@@ -102,9 +102,7 @@ const Show = props => {
         let didApply = false;
         if (isApplyAllowed) {
             const { currentUser: { profile: { id: currentUserId } } } = props;
-            console.log(job.applicants);
             didApply = job.applicants.find(u=> u.id === currentUserId) !== undefined;
-            console.log(didApply, currentUserId);
         }
 
         return (

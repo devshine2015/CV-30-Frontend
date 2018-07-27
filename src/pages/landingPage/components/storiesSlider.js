@@ -53,10 +53,11 @@ const StoriesSlider = props => {
                     }
 
                     if (image)
-                        return (<img src={image} alt={story.id} className={itemClass} />)
+                        return (<img src={image} alt={story.id} className={itemClass} key={story.id}/>)
 
                     if (video && !image)
                         return (<ReactPlayer
+                            key={story.id}
                             url={video}
                             width='100%'
                             height='100%'

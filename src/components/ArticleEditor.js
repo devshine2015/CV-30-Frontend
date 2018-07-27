@@ -110,8 +110,8 @@ const ArticleEditorHOC = compose(
 
             let options = {
                 articleId: formData.id,
-                isFeatured: type === 'company_featured' || type === 'job_officeLife',
-
+                isFeatured: type === 'company_featured',
+                isAtOffice: type === 'job_officeLife'
             };
 
             if (match.params.companyId)
