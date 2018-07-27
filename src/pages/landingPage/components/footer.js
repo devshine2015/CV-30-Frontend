@@ -18,6 +18,7 @@ import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
 import { handleLandingPage, landingPage } from '../../../store/queries';
+import Feedback from '../../../components/Feedback';
 
 const FooterHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
@@ -27,6 +28,7 @@ const FooterHOC = compose(
     }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
+    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -37,7 +39,7 @@ const FooterHOC = compose(
         updateFooterMessage: ({ setFooterMessage }) => text => {
             setFooterMessage(text)
         },
-        submitFooterMessage: ({ footerMessage, handleLandingPage, match: { params: { lang: language } } }) => async () => {
+        submitFooterMessage: ({ footerMessage, handleLandingPage, match: { params: { lang: language } }, setFeedbackMessage }) => async () => {
             try {
                 await handleLandingPage({
                     variables: {
@@ -55,18 +57,25 @@ const FooterHOC = compose(
                         }
                     }]
                 });
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
-                console.log(err)
+                console.log(JSON.stringify(err));
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+        closeFeedback: ({ setFeedbackMessage }) => () => {
+            setFeedbackMessage(null);
+        }
     }),
     pure
 );
 
 const Footer = props => {
-    const { editMode,
+    const {
+        editMode,
+        feedbackMessage, closeFeedback,
         footerMessage, updateFooterMessage, submitFooterMessage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker, refetchBgImage, forceCoverRender,
         landingPage: { landingPage: { footerCoverBackground, footerCoverContentType, hasFooterCover } },
@@ -187,6 +196,12 @@ const Footer = props => {
                     </Button>
                 </Grid>
             </Grid>
+            {feedbackMessage &&
+                <Feedback
+                    handleClose={closeFeedback}
+                    {...feedbackMessage}
+                />
+            }
         </footer>
     );
 };

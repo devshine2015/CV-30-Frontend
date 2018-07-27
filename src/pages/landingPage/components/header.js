@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Hidden, IconButton, Icon, Button, FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
+import { Grid, Hidden, IconButton, Icon, Button, FormGroup, FormLabel, Switch as ToggleSwitch, Snackbar } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 
@@ -16,6 +16,7 @@ import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
 import { handleLandingPage, landingPage } from '../../../store/queries';
+import Feedback from '../../../components/Feedback';
 
 const HeaderHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
@@ -25,6 +26,7 @@ const HeaderHOC = compose(
     }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
+    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -35,7 +37,7 @@ const HeaderHOC = compose(
         updateHeadline: ({ setHeadline }) => text => {
             setHeadline(text)
         },
-        submitHeadline: ({ headline, handleLandingPage, match: { params: { lang: language } } }) => async () => {
+        submitHeadline: ({ headline, handleLandingPage, match: { params: { lang: language } }, setFeedbackMessage }) => async () => {
             try {
                 await handleLandingPage({
                     variables: {
@@ -53,12 +55,17 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+        closeFeedback: ({ setFeedbackMessage }) => () => {
+            setFeedbackMessage(null);
+        }
     }),
     pure
 );
@@ -66,6 +73,7 @@ const HeaderHOC = compose(
 const Header = props => {
     const {
         editMode, switchEditMode,
+        feedbackMessage, closeFeedback,
         headline, updateHeadline, submitHeadline,
         toggleColorPicker, closeColorPicker, colorPickerAnchor, refetchBgImage, forceCoverRender,
         landingPage: { landingPage: { coverBackground, coverContentType, hasCover } }
@@ -138,6 +146,12 @@ const Header = props => {
                     <Grid item md={5} sm={12} xs={12}></Grid>
                 </Hidden>
             </Grid>
+            {feedbackMessage &&
+                <Feedback
+                    handleClose={closeFeedback}
+                    {...feedbackMessage}
+                />
+            }
         </div>
     );
 };

@@ -1,0 +1,23 @@
+.feedbackRoot {
+    &.success {
+        background: #397db9;
+    }
+    &.info {
+        background: #277dba;
+    }
+    &.error {
+        background: #550019;
+    }
+    &.warning {
+        background: #f7a944;
+    }
+}
+
+.messageRoot {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    .icon {
+        margin-right: 10px;
+    }
+}
