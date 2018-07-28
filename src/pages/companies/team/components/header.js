@@ -77,13 +77,13 @@ const Header = props => {
         match: { params: { lang, teamId } },
         queryTeam: { team: { company, hasProfileCover, coverContentType, coverBackground, name } },
         colorPickerAnchor, toggleColorPicker, closeColorPicker, refetchBgImage, forceCoverRender,
-        toggleFollow
+        toggleFollow, currentUser
     } = props;
 
-    const isFollowAllowed = !props.currentUser.loading;
+    const isFollowAllowed = !currentUser.loading && currentUser.profile;
     let isFollowing = false;
     if (isFollowAllowed) {
-        const { currentUser: { profile: { followingTeams }} } = props;
+        const { profile: { followingTeams } } = currentUser;
         isFollowing = followingTeams.find(te=> te.id === teamId) !== undefined;
     }   
 

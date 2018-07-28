@@ -221,7 +221,7 @@ const Header = (props) => {
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress,
         localUserData, refetchBgImage, forceCoverRender,
         isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor,
-        toggleFollow
+        toggleFollow, currentUser
     } = props;
 
     const {
@@ -274,10 +274,10 @@ const Header = (props) => {
             `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}`
             : defaultUserAvatar;
 
-    let isFollowAllowed = !props.currentUser.loading && profileId;
+    let isFollowAllowed = !currentUser.loading && currentUser.profile && profileId;
     let isFollowing = false;
     if (isFollowAllowed) {
-        const { currentUser: { profile: { id: currentUserId, followees } } } = props;
+        const { profile: { id: currentUserId, followees } } = currentUser;
         if (currentUserId !== profileId) {
             isFollowing = followees.find(u => u.id === profileId) !== undefined;
         } else {

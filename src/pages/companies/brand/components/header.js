@@ -260,15 +260,15 @@ const Header = (props) => {
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress, refetchBgImage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker,
         forceLogoRender, forceCoverRender,
-        toggleFollow,
+        toggleFollow, currentUser,
         feedbackMessage, closeFeedback,
     } = props;
     const { lang, companyId } = match.params;
 
-    const isFollowAllowed = !props.currentUser.loading;
+    const isFollowAllowed = !currentUser.loading && currentUser.profile;
     let isFollowing = false;
     if (isFollowAllowed) {
-        const { currentUser: { profile: { followingCompanies } } } = props;
+        const { profile: { followingCompanies } } = currentUser;
         isFollowing = followingCompanies.find(co => co.id === companyId) !== undefined;
     }
 
