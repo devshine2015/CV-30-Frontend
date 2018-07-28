@@ -72,9 +72,7 @@ const DesktopNav = props => {
                             <Button aria-owns={profileMenuOpen ? 'profileMenu' : null} aria-haspopup="true" onClick={toggleProfileMenu} className='profileButton' ref={node => {
                                 this.target1 = node;
                             }}>
-                                <Avatar alt="Gabriel" src={avatar} className='avatar'>
-                                    {/* {!user.hasAvatar && user.email.slice(0, 1)} */}
-                                </Avatar>
+                                <Avatar alt="Gabriel" src={avatar} className='avatar' />                                    
                                 <span>{currentUser.firstName || currentUser.email}</span>
                             </Button>
                         </Target>
@@ -85,19 +83,19 @@ const DesktopNav = props => {
                                         <Paper className='profileMenu'>
                                             <MenuList role="menu">
                                                 <FormattedMessage id="nav.profile" defaultMessage="My profile" description="Profile menu item">
-                                                    {(text) => (<MenuItem component={Link} to={`/${lang}/profile`} onClick={closeProfileMenu}>{text}</MenuItem>)}
+                                                    {(text) => (<MenuItem component={Link} to={`/${lang}/myProfile`} onClick={closeProfileMenu}>{text}</MenuItem>)}
                                                 </FormattedMessage>
 
                                                 <FormattedMessage id="nav.appliedJobs" defaultMessage="Applied Jobs" description="Applied jobs menu item">
                                                     {(text) => (<MenuItem component={Link} to={{
-                                                        pathname: `/${lang}/profile/settings`,
+                                                        pathname: `/${lang}/myProfile/settings`,
                                                         state: { activeTab: 'jobs' }
                                                     }} onClick={closeProfileMenu}>{text}</MenuItem>)}
                                                 </FormattedMessage>
 
                                                 <FormattedMessage id="nav.settings" defaultMessage="Settings" description="Settings menu item">
                                                     {(text) => (<MenuItem component={Link} to={{
-                                                        pathname: `/${lang}/profile/settings`,
+                                                        pathname: `/${lang}/myProfile/settings`,
                                                         state: { activeTab: 'settings' }
                                                     }} onClick={closeProfileMenu}>{text}</MenuItem>)}
                                                 </FormattedMessage>

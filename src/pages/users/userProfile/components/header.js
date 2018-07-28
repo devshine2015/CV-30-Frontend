@@ -15,7 +15,7 @@ import { updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, local
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
-import { defaultHeaderOverlay } from '../../../../constants/utils';
+import { defaultHeaderOverlay, defaultUserAvatar } from '../../../../constants/utils';
 
 const HeaderHOC = compose(
     withRouter,
@@ -270,7 +270,9 @@ const Header = (props) => {
     }
 
     let avatar =
-        (!localUserData.loading && profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && profile.hasAvatar) ?
+            `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}`
+            : defaultUserAvatar;
 
     let isFollowAllowed = !props.currentUser.loading && profileId;
     let isFollowing = false;
@@ -287,9 +289,7 @@ const Header = (props) => {
         <div className='header' style={headerStyle}>
             <Grid container className='headerLinks'>
                 <Grid item md={3} sm={12} xs={12} className='userAvatar'>
-                    <Avatar alt={firstName} src={avatar} key={avatar} className='avatar'>
-                        {!avatar && avatarText()}
-                    </Avatar>
+                    <Avatar alt={firstName} src={avatar} key={avatar} className='avatar' />
                     {editMode &&
                         <React.Fragment>
                             <label htmlFor="uploadProfileImg">
@@ -348,7 +348,7 @@ const Header = (props) => {
                             <Button
                                 component={NavLink}
                                 exact
-                                to={props.match.params.profileId ? `/${lang}/profile/${props.match.params.profileId}` : `/${lang}/profile`}
+                                to={props.match.params.profileId ? `/${lang}/profile/${props.match.params.profileId}` : `/${lang}/myProfile`}
                                 className='headerLink'
                             >
                                 {text}
@@ -361,7 +361,7 @@ const Header = (props) => {
                             <Button
                                 component={NavLink}
                                 exact
-                                to={props.match.params.profileId ? `/${lang}/profile/${props.match.params.profileId}/feed/` : `/${lang}/profile/feed/`}
+                                to={props.match.params.profileId ? `/${lang}/profile/${props.match.params.profileId}/feed/` : `/${lang}/myProfile/feed/`}
                                 className='headerLink'
                             >
                                 {text}

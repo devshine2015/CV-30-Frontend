@@ -113,19 +113,19 @@ const MobileNav = (props) => {
                 <Drawer anchor="left" open={mobileProfileIsOpen} onClose={closeMobileProfile} className='mobileProfileContainer' classes={{ paperAnchorLeft: 'sideDrawer' }}>
                     <div tabIndex={0} role="button" onClick={closeMobileProfile} onKeyDown={closeMobileProfile} className='content'>
                         <FormattedMessage id="nav.profile" defaultMessage="My profile" description="Profile menu item">
-                            {(text) => (<ListItem button component={NavLink} exact to={`/${lang}/profile/`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
+                            {(text) => (<ListItem button component={NavLink} exact to={`/${lang}/myProfile/`} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.appliedJobs" defaultMessage="Applied Jobs" description="Applied jobs menu item">
                             {(text) => (<ListItem button component={Link} to={{
-                                pathname: `/${lang}/profile/settings`,
+                                pathname: `/${lang}/myProfile/settings`,
                                 state: { activeTab: 'jobs' }
                             }} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
 
                         <FormattedMessage id="nav.settings" defaultMessage="Settings" description="Settings menu item">
                             {(text) => (<ListItem button component={Link} to={{
-                                pathname: `/${lang}/profile/settings`,
+                                pathname: `/${lang}/myProfile/settings`,
                                 state: { activeTab: 'settings' }
                             }} onClick={closeMobileProfile} className='mobileNavItem'>{text}</ListItem>)}
                         </FormattedMessage>
