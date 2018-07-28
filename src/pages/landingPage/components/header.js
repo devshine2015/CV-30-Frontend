@@ -21,8 +21,13 @@ import Feedback from '../../../components/Feedback';
 const HeaderHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
     withState('headline', 'setHeadline', props => {
-        let { landingPage: { landingPage: { i18n } } } = props;
-        return (i18n && i18n[0] && i18n[0].headline) ? i18n[0].headline : '';
+        try {
+            let { landingPage: { landingPage: { i18n } } } = props;
+            return (i18n && i18n[0] && i18n[0].headline) ? i18n[0].headline : '';
+        }
+        catch (err) {
+            return '';
+        }
     }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
@@ -74,8 +79,10 @@ const Header = props => {
         feedbackMessage, closeFeedback,
         headline, updateHeadline, submitHeadline,
         toggleColorPicker, closeColorPicker, colorPickerAnchor, refetchBgImage, forceCoverRender,
-        landingPage: { landingPage: { coverBackground, coverContentType, hasCover } }
+        landingPage: { landingPage }
     } = props;
+
+    const { coverBackground, coverContentType, hasCover } = landingPage || {};
 
     let headerStyle = null;
 
