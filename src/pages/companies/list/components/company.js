@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import JobItem from './jobItem';
 import TeamMember from './teamMember';
 import { defaultCompanyLogo } from '../../../../constants/utils';
+import { s3BucketURL, companiesFolder } from '../../../../constants/s3';
 
 const CompanyHOC = compose(
     withState('activeTab', 'setActiveTab', false),
@@ -17,23 +18,25 @@ const CompanyHOC = compose(
 
 
 const Company = props => {
-    const { activeTab, handleTabChange, company,match: {params: {lang}} } = props;
-    const { id, name, field, location, noOfEmployees, i18n, jobs, team } = company;
-
+    const { activeTab, handleTabChange, company, match: { params: { lang } } } = props;
+    const { id, name, field, location, noOfEmployees, i18n, jobs, team, hasLogo, logoContentType } = company;
+    let avatar =
+        hasLogo ? `${s3BucketURL}/${companiesFolder}/${id}/logo.${logoContentType}` : defaultCompanyLogo;
+//style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }}
     return (
         <div className='listItem companyListItem'>
             <div className='leftOverlay'>
                 <Link to={`/${lang}/company/${id}`}>
-                    <Avatar alt="Gabriel" src={defaultCompanyLogo} className='avatar' style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }} />
+                    <Avatar alt="Gabriel" src={avatar} className='avatar'  />
                 </Link>
                 <Link to={`/${lang}/company/${id}`} style={{ textDecoration: 'none' }}>
-                <div className='leftOverlayTexts'>
-                    <h6 className='userName'>
-                        {name}
-                        <i className='fas fa-caret-down' />
-                    </h6>
-                    <p className='userTitle'>{field}</p>
-                </div>
+                    <div className='leftOverlayTexts'>
+                        <h6 className='userName'>
+                            {name}
+                            <i className='fas fa-caret-down' />
+                        </h6>
+                        <p className='userTitle'>{field}</p>
+                    </div>
                 </Link>
             </div>
             <div className='rightOverlay'>

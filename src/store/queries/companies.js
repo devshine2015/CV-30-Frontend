@@ -93,29 +93,31 @@ query company($id: String!, $language: LanguageCodeType!) {
 `;
 
 export const companiesQuery = gql`
-    query companies($language: LanguageCodeType!) {
-        companies(language: $language) {
-            id
-            name
-            location
-            noOfEmployees
-            i18n {
-                headline
-                description
-            }
-            featuredArticles {
-                id
-                images {
-                    id
-                    path
-                }
-                videos {
-                    id
-                    path
-                }
-            }
+  query companies($language: LanguageCodeType!) {
+    companies(language: $language) {
+      id
+      name
+      location
+      noOfEmployees
+      i18n {
+        headline
+        description
+      }
+      featuredArticles {
+        id
+        images {
+          id
+          path
         }
+        videos {
+          id
+          path
+        }
+      }
+      hasLogo
+      logoContentType
     }
+  }
 `;
 
 export const handleCompany = gql`

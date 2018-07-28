@@ -23,7 +23,7 @@ import TeamSlider from './teamSlider';
 
 import S3Uploader from 'react-s3-uploader';
 import ColorPicker from './colorPicker';
-import { defaultHeaderOverlay } from '../../../../constants/utils';
+import { defaultHeaderOverlay, defaultCompanyLogo } from '../../../../constants/utils';
 import Feedback from '../../../../components/Feedback';
 
 const HeaderHOC = compose(
@@ -273,7 +273,7 @@ const Header = (props) => {
     }
 
     let avatar =
-        hasLogo ? `${s3BucketURL}/${companiesFolder}/${companyId}/logo.${logoContentType}?${forceLogoRender}` : null;
+        hasLogo ? `${s3BucketURL}/${companiesFolder}/${companyId}/logo.${logoContentType}?${forceLogoRender}` : defaultCompanyLogo;
 
     let headerStyle = null;
 
@@ -293,9 +293,7 @@ const Header = (props) => {
         <div className='header' style={headerStyle}>
             <Grid container className='headerLinks'>
                 <Grid item lg={3} md={5} sm={12} xs={12} className='userAvatar'>
-                    <Avatar alt={avatar} src={avatar} className='avatar'>
-                        {avatar ? null : name.charAt(0)}
-                    </Avatar>
+                    <Avatar alt={avatar} src={avatar} className='avatar'/>
                     <div className='avatarTexts'>
                         <h3>{name}</h3>
                         <h4>{activityField}</h4>
