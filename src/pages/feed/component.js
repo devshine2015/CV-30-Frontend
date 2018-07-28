@@ -14,7 +14,7 @@ const NewsFeed = props => {
     if (loading)
         return <Loader />
 
-    const { id, firstName, lastName, email, hasAvatar, avatarContentType } = profile;
+    const { id, firstName, lastName, email, hasAvatar, avatarContentType } = profile || {};
     const { postBody } = formData;
     let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
@@ -23,61 +23,63 @@ const NewsFeed = props => {
         <div className='newsFeedRoot'>
             <Grid container className='mainBody brandShow'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    <section className='newPost'>
-                        <div className='postHeader'>
-                            <div className='userProfile'>
-                                <Avatar
-                                    className='userAvatar'
-                                    src={avatar || defaultUserAvatar}
-                                    alt='userAvatar'
-                                    imgProps={{ style: { objectFit: 'contain' } }}
-                                    style={{ backgroundColor: '#fff', margin: 3 }} />
-                                <span className='postAs'>
-                                    Post as:
+                    {id &&
+                        <section className='newPost'>
+                            <div className='postHeader'>
+                                <div className='userProfile'>
+                                    <Avatar
+                                        className='userAvatar'
+                                        src={avatar || defaultUserAvatar}
+                                        alt='userAvatar'
+                                        imgProps={{ style: { objectFit: 'contain' } }}
+                                        style={{ backgroundColor: '#fff', margin: 3 }} />
+                                    <span className='postAs'>
+                                        Post as:
                                         <span className='userName'>{fullName}</span>
-                                </span>
-                            </div>
-                            <Button className='mediaButton'>
-                                <Icon className='icon'>
-                                    camera_alt
+                                    </span>
+                                </div>
+                                <Button className='mediaButton'>
+                                    <Icon className='icon'>
+                                        camera_alt
                                 </Icon>
-                                + Photo / Video
+                                    + Photo / Video
                             </Button>
-                        </div>
-                        <div className='postBody'>
-                            <TextField
-                                name="postBody"
-                                placeholder="Say something..."
-                                fullWidth
-                                className='textField'
-                                onChange={handleFormChange}
-                                value={postBody}
-                                type='text'
-                                multiline
-                                rows={1}
-                                rowsMax={10}
-                                InputProps={{
-                                    disableUnderline: true
-                                }}
-                            />
-                        </div>
-                        <div className='postFooter'>
-                            <FormGroup className='footerToggle'>
-                                <FormLabel className={!isArticle ? 'active' : ''}>Post</FormLabel>
-                                <ToggleSwitch checked={isArticle} onChange={switchIsArticle}
-                                    classes={{
-                                        switchBase: 'colorSwitchBase',
-                                        checked: 'colorChecked',
-                                        bar: 'colorBar',
+                            </div>
+                            <div className='postBody'>
+                                <TextField
+                                    name="postBody"
+                                    placeholder="Say something..."
+                                    fullWidth
+                                    className='textField'
+                                    onChange={handleFormChange}
+                                    value={postBody}
+                                    type='text'
+                                    multiline
+                                    rows={1}
+                                    rowsMax={10}
+                                    InputProps={{
+                                        disableUnderline: true
                                     }}
-                                    color="primary" />
-                                <FormLabel className={isArticle ? 'active' : ''}>Article</FormLabel>
-                            </FormGroup>
-                            <Button className='postBtn'>
-                                Post
+                                />
+                            </div>
+                            <div className='postFooter'>
+                                <FormGroup className='footerToggle'>
+                                    <FormLabel className={!isArticle ? 'active' : ''}>Post</FormLabel>
+                                    <ToggleSwitch checked={isArticle} onChange={switchIsArticle}
+                                        classes={{
+                                            switchBase: 'colorSwitchBase',
+                                            checked: 'colorChecked',
+                                            bar: 'colorBar',
+                                        }}
+                                        color="primary" />
+                                    <FormLabel className={isArticle ? 'active' : ''}>Article</FormLabel>
+                                </FormGroup>
+                                <Button className='postBtn'>
+                                    Post
                             </Button>
-                        </div>
-                    </section>
+                            </div>
+                        </section>
+                    }
                     <section className='profileActions'>
                         <div className='profileAction'>
                             <h3>
