@@ -69,7 +69,7 @@ const LandingPageHOC = compose(
         }),
     }),
     withState('stories', 'setStories', stories),
-    withState('editMode', 'updateEditMode', true),
+    withState('editMode', 'updateEditMode', false),
     withHandlers({
         switchEditMode: ({ editMode, updateEditMode }) => () => {
             updateEditMode(!editMode);
