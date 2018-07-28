@@ -8,12 +8,15 @@ import UserProfileFeed from './components/feed';
 import Header from './components/header';
 import Loader from '../../../components/Loader';
 
-const UserProfile = (props) => {
+const UserProfile = props => {
+    console.log(props);
     const {
         editMode, switchEditMode,
         currentProfile: { loading, profile },
-        currentUser: { auth: { currentUser: { id: userId } } }
+        currentUser: { auth: { currentUser } }
     } = props;
+
+    const { id: userId } = currentUser || {};
 
     const Show = () => <UserProfileShow editMode={editMode} profile={profile} />
 

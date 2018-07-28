@@ -11,8 +11,10 @@ const Brand = (props) => {
     const {
         editMode, switchEditMode,
         companyQuery: { loading, company },
-        currentUser: { auth: { currentUser: { id: userId } } }
+        currentUser: { auth: { currentUser } }
     } = props;
+
+    const { id: userId } = currentUser || {};
     if (loading)
         return <Loader />
 
