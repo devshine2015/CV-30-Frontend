@@ -48,7 +48,6 @@ const ProfilesListHOC = compose(
     pure
 )
 const ProfilesList = props => {
-    debugger;
     const {
         profilesQuery: { loading, profiles },
         addTeamMember
