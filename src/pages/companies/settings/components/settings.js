@@ -12,11 +12,12 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import { companyQuery, updateAvatarTimestampMutation, handleCompany } from '../../../../store/queries';
+import { companyQuery, updateAvatarTimestampMutation, handleCompany, setFeedbackMessage } from '../../../../store/queries';
 
 const SettingsHOC = compose(
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
     graphql(handleCompany, { name: 'handleCompany' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('isSaving', 'setIsSaving', false),
     withState('settingsFormError', 'setSettingsFormError', ''),
     withState('settingsFormSuccess', 'setSettingsFormSuccess', false),
@@ -62,6 +63,7 @@ const SettingsHOC = compose(
                 formData: { id, activityField, location, noOfEmployees, name },
                 match,
                 headline, description,
+                setFeedbackMessage
             } = props;
 
             setIsSaving(true);
@@ -84,9 +86,21 @@ const SettingsHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         }
     }),

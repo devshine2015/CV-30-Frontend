@@ -6,7 +6,7 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
-import { updateCoverMutation, currentProfileQuery } from '../../../../store/queries';
+import { updateCoverMutation, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
 
 const ColorPickerHOC = compose(
     withRouter,
@@ -20,6 +20,7 @@ const ColorPickerHOC = compose(
         })
     }),
     graphql(updateCoverMutation, { name: 'updateCoverMutation' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('activeTab', 'setActiveTab', 'colors'),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
@@ -29,7 +30,7 @@ const ColorPickerHOC = compose(
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
         },
-        setBackgroundColor: ({ updateCoverMutation }) => async color => {
+        setBackgroundColor: ({ updateCoverMutation, setFeedbackMessage }) => async color => {
             try {
                 await updateCoverMutation({
                     variables:
@@ -45,9 +46,21 @@ const ColorPickerHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
         getSignedUrl: ({ currentUser: { profile }, setFileParams }) => async (file, callback) => {
@@ -73,7 +86,13 @@ const ColorPickerHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
             }
         },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
@@ -83,11 +102,16 @@ const ColorPickerHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
+        onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
         },
-        onFinish: ({ setIsUploading, updateCoverMutation, refetchBgImage, fileParams: { contentType } }) => async () => {
+        onFinish: ({ setFeedbackMessage, setIsUploading, updateCoverMutation, refetchBgImage, fileParams: { contentType } }) => async () => {
             try {
                 await updateCoverMutation({
                     variables:
@@ -104,9 +128,21 @@ const ColorPickerHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
             setIsUploading(false);
             refetchBgImage();

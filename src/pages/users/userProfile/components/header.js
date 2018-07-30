@@ -11,7 +11,7 @@ import { Redirect } from 'react-router-dom';
 import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle, handleFollow } from '../../../../store/queries';
+import { setFeedbackMessage, updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle, handleFollow } from '../../../../store/queries';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
@@ -34,6 +34,7 @@ const HeaderHOC = compose(
             fetchPolicy: 'network-only'
         }),
     }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('count', 'setCount', ({ currentProfile: { profile } }) => profile.featuredArticles ? profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
@@ -41,7 +42,6 @@ const HeaderHOC = compose(
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
     withState('isArticlePopUpOpen', 'setIsArticlePopUpOpen', false),
     withState('fileType', 'setFileType', null),
     withHandlers({
@@ -51,7 +51,7 @@ const HeaderHOC = compose(
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
             setColorPickerAnchor(null);
         },
-        openSkillsModal: ({ profile: { skills, values }, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
+        openSkillsModal: ({ currentProfile: { profile: { skills, values } }, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
             if (type === 'values')
                 setSkillsModalData({
                     type: type,
@@ -69,7 +69,7 @@ const HeaderHOC = compose(
             setSkillsModalData(null);
             setSkillsAnchor(null);
         },
-        removeStory: ({ handleArticle, match: { params: { profileId } } }) => async article => {
+        removeStory: ({ setFeedbackMessage, handleArticle, match: { params: { profileId } } }) => async article => {
             try {
                 await handleArticle({
                     variables: {
@@ -89,12 +89,24 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
-        getSignedUrl: ({ currentProfile: { profile } }) => async (file, callback) => {
+        getSignedUrl: ({ currentProfile: { profile }, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
@@ -115,7 +127,14 @@ const HeaderHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
+                callback(error);
+
             }
         },
         onUploadStart: ({ setIsUploading, setFileType }) => (file, next) => {
@@ -131,33 +150,54 @@ const HeaderHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
+        onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
-        },
-        onFinishUpload: (props) => async () => {
-            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match, fileType } = props;
-            await updateAvatar({
+            await setFeedbackMessage({
                 variables: {
-                    status: true,
-                    contentType: fileType
-                },
-                refetchQueries: [{
-                    query: currentProfileQuery,
-                    fetchPolicy: 'network-only',
-                    name: 'currentUser',
-                    variables: {
-                        language: 'en',
-                        id: match.params.profileId
-                    }
-                }]
-            });
-            await updateAvatarTimestamp({
-                variables: {
-                    timestamp: Date.now()
+                    status: 'error',
+                    message: error || error.message
                 }
             });
-
+        },
+        onFinishUpload: (props) => async () => {
+            const { setFeedbackMessage, setIsUploading, updateAvatar, updateAvatarTimestamp, match, fileType } = props;
+            try {
+                await updateAvatar({
+                    variables: {
+                        status: true,
+                        contentType: fileType
+                    },
+                    refetchQueries: [{
+                        query: currentProfileQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: 'en',
+                            id: match.params.profileId
+                        }
+                    }]
+                });
+                await updateAvatarTimestamp({
+                    variables: {
+                        timestamp: Date.now()
+                    }
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
             setIsUploading(false);
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
@@ -167,11 +207,7 @@ const HeaderHOC = compose(
         closeStoryEditor: ({ setIsArticlePopUpOpen }) => () => {
             setIsArticlePopUpOpen(false);
         },
-        toggleFollow: props => async isFollowing => {
-            let {
-                handleFollow, match
-            } = props;
-
+        toggleFollow: ({ handleFollow, match, setFeedbackMessage }) => async isFollowing => {
             try {
                 await handleFollow({
                     variables: {
@@ -197,9 +233,21 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         }
     }),

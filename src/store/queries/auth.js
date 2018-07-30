@@ -23,6 +23,7 @@ export const LogoutMutation = gql`
             error
         }
         setAuthenticated(status: false, currentUser: null) @client
+        resetEditMode @client
     }
 `;
 

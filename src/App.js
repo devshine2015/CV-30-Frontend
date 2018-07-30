@@ -30,6 +30,7 @@ import CompanySettings from './pages/companies/settings';
 import Article from './pages/articles';
 
 import ProtectedRoute from './components/ProtectedRoute';
+import Feedback from './components/Feedback';
 
 
 
@@ -72,14 +73,14 @@ const CVRouter = (props) => {
           <Route path='/:lang(en|ro)/job/:jobId' exact component={Job} />
           <Route path='/:lang(en|ro)/people' exact component={UsersList} />
           <Route exact path='/:lang(en|ro)/profile/feed' component={UserProfile} />
-          
+
           <Route path='/:lang(en|ro)/profile/:profileId' component={UserProfile} />
           <Route path='/:lang(en|ro)/article/:articleId' component={Article} />
-          
-          <ProtectedRoute exact path='/:lang(en|ro)/myProfile/settings' component={UserProfileSettings} />
-          <Route  path='/:lang(en|ro)/myProfile/' component={UserProfile} />
 
+          <ProtectedRoute exact path='/:lang(en|ro)/myProfile/settings' component={UserProfileSettings} />
+          <Route path='/:lang(en|ro)/myProfile/' component={UserProfile} />
         </Switch>
+        <Feedback />
       </React.Fragment>
     </IntlProvider>
   );
@@ -89,9 +90,8 @@ const App = () => (
   <BrowserRouter>
     <Switch>
       <Route path='/:lang(en|ro)' component={CVRouter} />
-      <Route path='/:segment(login|register|forgot|activate|dashboard)' component={(props) => <Redirect to={`/${navigator.language.substr(0, 2)}/${props.location.pathname.replace(/^\/+/, "")}`} />} />
+      <Route path='/:segment(login|register|forgot|activate)' component={(props) => <Redirect to={`/${navigator.language.substr(0, 2)}/${props.location.pathname.replace(/^\/+/, "")}`} />} />
       <Redirect from='/' to={'/en'} />
-
     </Switch>
   </BrowserRouter>
 );

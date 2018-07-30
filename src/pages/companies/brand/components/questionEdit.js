@@ -4,11 +4,12 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { handleFAQ, companyQuery } from '../../../../store/queries';
+import { handleFAQ, companyQuery, setFeedbackMessage } from '../../../../store/queries';
 
 const QuestionEditHOC = compose(
     withRouter,
     graphql(handleFAQ, { name: 'handleFAQ' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', ({ question }) => {
         if (question)
             return {
@@ -33,7 +34,7 @@ const QuestionEditHOC = compose(
         cancel: props => () => {
             console.log('cancel!');
         },
-        save: ({ formData, match, handleFAQ }) => async () => {
+        save: ({ formData, match, handleFAQ, setFeedbackMessage }) => async () => {
             let { id, question, answer } = formData;
             try {
                 await handleFAQ({
@@ -55,9 +56,21 @@ const QuestionEditHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         }
     }),

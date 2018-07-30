@@ -56,7 +56,7 @@ export const getCurrentUser = gql`
 export const setEditMode = gql`
     mutation setEditMode($status: Boolean!) {
         setEditMode(status: $status) @client {
-            __typename,
+            __typename
             status
         }
     }
@@ -65,17 +65,44 @@ export const setEditMode = gql`
 export const resetEditMode = gql`
     mutation resetEditMode {
         resetEditMode @client {
-            __typename,
+            __typename
             status
         }
     }
 `;
 
 export const getEditMode = gql`
-query getEditMode {
-    editMode @client {
-        __typename
-        status
+    query getEditMode {
+        editMode @client {
+            __typename
+            status
+        }
     }
-}
 `;
+
+export const getFeedbackMessage = gql`
+    query getFeedbackMessage {
+        feedbackMessage {
+            __typename
+            status
+            message
+        }
+    }
+`;
+
+export const setFeedbackMessage = gql`
+    mutation setFeedbackMessage($status: String!, $message: String!) {
+        setFeedbackMessage(status: $status, message: $message) @client {
+            __typename
+            status
+            message
+        }
+    }
+`;
+
+export const resetFeedbackMessage = gql`
+    mutation resetFeedbackMessage {
+        resetFeedbackMessage @client
+    }
+`;
+

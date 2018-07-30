@@ -1,7 +1,7 @@
 import React from 'react';
 import { Popover, Button, FormControl, InputLabel, Input, InputAdornment, IconButton, Icon, Chip } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
-import { setSkills, setValues, removeSkill, removeValue, currentProfileQuery } from '../../../../store/queries';
+import { setSkills, setValues, removeSkill, removeValue, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ const SkillsEditHOC = compose(
     graphql(setValues, { name: 'setValues' }),
     graphql(removeSkill, { name: 'removeSkill' }),
     graphql(removeValue, { name: 'removeValue' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('displaySkills', 'setDisplaySkills', ({ skillsModalData }) => {
         if (skillsModalData && skillsModalData.data) {
             let newArr = skillsModalData.data.map(item => ({
@@ -39,7 +40,7 @@ const SkillsEditHOC = compose(
                 alert('duplicate!');
             }
         },
-        removeChip: ({ displaySkills, setDisplaySkills, skillsModalData, removeSkill, removeValue, match }) => async chipIndex => {
+        removeChip: ({ setFeedbackMessage, displaySkills, setDisplaySkills, skillsModalData, removeSkill, removeValue, match }) => async chipIndex => {
             const { type } = skillsModalData;
             let id = displaySkills[chipIndex].id;
 
@@ -59,9 +60,21 @@ const SkillsEditHOC = compose(
                                 }
                             }]
                         });
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'success',
+                                message: 'Changes saved successfully.'
+                            }
+                        });
                     }
-                    catch (error) {
-                        console.log(error);
+                    catch (err) {
+                        console.log(err);
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'error',
+                                message: err.message
+                            }
+                        });
                     }
                     break;
                 case 'values':
@@ -79,9 +92,21 @@ const SkillsEditHOC = compose(
                                 }
                             }]
                         });
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'success',
+                                message: 'Changes saved successfully.'
+                            }
+                        });
                     }
-                    catch (error) {
-                        console.log(error);
+                    catch (err) {
+                        console.log(err);
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'error',
+                                message: err.message
+                            }
+                        });
                     }
                     break;
                 default:
@@ -92,7 +117,7 @@ const SkillsEditHOC = compose(
             chipData.splice(chipIndex, 1);
             setDisplaySkills(chipData);
         },
-        saveData: ({ displaySkills, skillsModalData, setSkills, setValues, closeSkillsModal, match }) => async () => {
+        saveData: ({ setFeedbackMessage, displaySkills, skillsModalData, setSkills, setValues, closeSkillsModal, match }) => async () => {
             const { type } = skillsModalData;
             console.log(displaySkills);
             let data = displaySkills.map(item => item.title);
@@ -114,9 +139,21 @@ const SkillsEditHOC = compose(
                                 }
                             }]
                         });
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'success',
+                                message: 'Changes saved successfully.'
+                            }
+                        });
                     }
                     catch (err) {
                         console.log(err);
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'error',
+                                message: err.message
+                            }
+                        });
                     }
                     break;
                 case 'values':
@@ -135,9 +172,21 @@ const SkillsEditHOC = compose(
                                 }
                             }]
                         });
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'success',
+                                message: 'Changes saved successfully.'
+                            }
+                        });
                     }
                     catch (err) {
                         console.log(err);
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'error',
+                                message: err.message
+                            }
+                        });
                     }
                     break;
                 default:

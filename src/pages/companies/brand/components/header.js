@@ -17,14 +17,13 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ArticlePopup from '../../../../components/ArticlePopup';
 import AddTeam from './addTeam';
 import { s3BucketURL, companiesFolder } from '../../../../constants/s3';
-import { companyQuery, handleArticle, handleCompany, handleFollow, currentProfileQuery } from '../../../../store/queries';
+import { companyQuery, handleArticle, handleCompany, handleFollow, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import TeamSlider from './teamSlider';
 
 import S3Uploader from 'react-s3-uploader';
 import ColorPicker from './colorPicker';
 import { defaultHeaderOverlay, defaultCompanyLogo } from '../../../../constants/utils';
-import Feedback from '../../../../components/Feedback';
 
 const HeaderHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
@@ -40,6 +39,7 @@ const HeaderHOC = compose(
             fetchPolicy: 'network-only'
         }),
     }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
     withState('expanded', 'updateExpanded', null),
     withState('headline', 'setHeadline', props => {
@@ -56,7 +56,6 @@ const HeaderHOC = compose(
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
-    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -94,11 +93,21 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
-                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
-                setFeedbackMessage({ type: 'error', message: err.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
         expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
@@ -128,11 +137,21 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
-                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
-                setFeedbackMessage({ type: 'error', message: err.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
 
         },
@@ -168,11 +187,21 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
-                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
-                setFeedbackMessage({ type: 'error', message: err.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
         getSignedUrl: ({ companyQuery: { company }, setFeedbackMessage }) => async (file, callback) => {
@@ -197,7 +226,12 @@ const HeaderHOC = compose(
             } catch (error) {
                 console.error(error);
                 callback(error);
-                setFeedbackMessage({ type: 'error', message: error.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error.message
+                    }
+                });
             }
         },
         onUploadStart: ({ setIsUploading, setFileType }) => (file, next) => {
@@ -213,10 +247,14 @@ const HeaderHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError, setFeedbackMessage }) => error => {
-            setUploadError(error);
+        onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
-            setFeedbackMessage({ type: 'error', message: error.message });
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error.message
+                }
+            });
         },
         onFinishUpload: ({ setIsUploading, handleCompany, match: { params: { lang: language, companyId } }, fileType, setForceLogoRender, setFeedbackMessage }) => async () => {
             try {
@@ -239,17 +277,26 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
-                setFeedbackMessage({ type: 'success', message: 'File uploaded successfully.' });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'File uploaded successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
-                setFeedbackMessage({ type: 'error', message: err.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
             setIsUploading(false);
             setForceLogoRender(Date.now());
         },
-        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
-        closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
+        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now())
     }),
     pure
 )
@@ -262,8 +309,7 @@ const Header = props => {
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress, refetchBgImage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker,
         forceLogoRender, forceCoverRender,
-        toggleFollow, currentUser,
-        feedbackMessage, closeFeedback
+        toggleFollow, currentUser
     } = props;
     const { lang, companyId } = match.params;
 
@@ -484,10 +530,6 @@ const Header = props => {
                     }
                 </Grid>
             </Grid>
-            <Feedback
-                handleClose={closeFeedback}
-                {...feedbackMessage}
-            />
         </div>
     )
 };

@@ -15,11 +15,12 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
-import { handleLandingPage, landingPage } from '../../../store/queries';
-import Feedback from '../../../components/Feedback';
+import { handleLandingPage, landingPage, setFeedbackMessage } from '../../../store/queries';
 
 const HeaderHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+
     withState('headline', 'setHeadline', props => {
         try {
             let { landingPage: { landingPage: { i18n } } } = props;
@@ -31,7 +32,6 @@ const HeaderHOC = compose(
     }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
-    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -60,11 +60,21 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
-                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
-                setFeedbackMessage({ type: 'error', message: err.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
@@ -151,12 +161,6 @@ const Header = props => {
                     <Grid item md={5} sm={12} xs={12}></Grid>
                 </Hidden>
             </Grid>
-            {feedbackMessage &&
-                <Feedback
-                    handleClose={closeFeedback}
-                    {...feedbackMessage}
-                />
-            }
         </div>
     );
 };

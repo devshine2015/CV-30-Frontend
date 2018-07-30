@@ -7,11 +7,12 @@ import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
 import { companyQuery } from '../../../../store/queries';
-import { handleArticle } from '../../../../store/queries';
+import { handleArticle, setFeedbackMessage } from '../../../../store/queries';
 
 const AddStoryHOC = compose(
     withRouter,
     graphql(handleArticle, { name: 'handleArticle' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', ({ story }) => {
         if (!story)
             return { id: uuid() }
@@ -50,7 +51,7 @@ const AddStoryHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        saveChanges: ({ handleArticle, match, formData, type, setPopupOpen }) => async () => {
+        saveChanges: ({ handleArticle, match, formData, type, setPopupOpen, setFeedbackMessage }) => async () => {
             let article = {
                 id: formData.id,
                 title: formData.title,
@@ -95,14 +96,25 @@ const AddStoryHOC = compose(
                         }
                     }]
                 });
-
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
                 setPopupOpen(false);
             }
             catch (err) {
-                console.log(err)
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+                console.log(err);
             }
         },
-        getSignedUrl: ({ formData }) => async (file, callback) => {
+        getSignedUrl: ({ formData, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: file.name,
                 contentType: file.type,
@@ -123,7 +135,13 @@ const AddStoryHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
             }
         },
         onUploadStart: ({ setIsSaving, formData, setFormData, match }) => (file, next) => {
@@ -148,14 +166,26 @@ const AddStoryHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
+        onError: ({ setUploadError, setFeedbackMessage }) => error => {
             setUploadError(error);
             console.log(error);
+            setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
         },
         onFinishUpload: props => data => {
             console.log(data);
-            const { setIsSaving, } = props;
+            const { setIsSaving, setFeedbackMessage } = props;
             setIsSaving(false);
+            setFeedbackMessage({
+                variables: {
+                    status: 'success',
+                    message: 'File uploaded successfully.'
+                }
+            });
         }
     }),
     pure

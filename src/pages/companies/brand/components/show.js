@@ -17,12 +17,13 @@ import AddNewStory from './addStory';
 import QuestionEdit from './questionEdit';
 import Story from './story';
 import ArticleSlider from '../../../../components/articleSlider';
-import { companyQuery, handleCompany } from '../../../../store/queries';
+import { companyQuery, handleCompany, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import Feedback from '../../../../components/Feedback';
 
 const ShowHOC = compose(
     graphql(handleCompany, { name: 'handleCompany' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('expanded', 'updateExpanded', null),
     withState('edited', 'updateEdited', null),
     withState('editedStory', 'editStory', null),
@@ -32,9 +33,7 @@ const ShowHOC = compose(
         if (!i18n || !i18n[0] || !i18n[0].description)
             return '';
         return i18n[0].description;
-
     }),
-    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         updateDescription: ({ setDescription }) => text => setDescription(text),
         submitDescription: ({ companyQuery: { company }, handleCompany, description, match, setFeedbackMessage }) => async () => {
@@ -57,12 +56,21 @@ const ShowHOC = compose(
                         }
                     }]
                 });
-
-                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
-                setFeedbackMessage({ type: 'error', message: err.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
         expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
@@ -232,10 +240,6 @@ const Show = (props) => {
                     </div>
                 </div>
             </Grid>
-            <Feedback
-                handleClose={closeFeedback}
-                {...feedbackMessage}
-            />
         </Grid>
     );
 };

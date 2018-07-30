@@ -15,8 +15,6 @@ export default {
     editMode: {
         __typename: "EditMode",
         status: false
-
-
     },
     feedbackMessage: {
         __typename: "FeedbackMessage",

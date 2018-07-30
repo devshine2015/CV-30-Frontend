@@ -4,7 +4,7 @@ import { graphql } from 'react-apollo';
 import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
 
-import { teamsQuery, handleJob } from '../../../store/queries';
+import { teamsQuery, handleJob, setFeedbackMessage } from '../../../store/queries';
 
 const NewJobHOC = compose(
     withRouter,
@@ -18,6 +18,7 @@ const NewJobHOC = compose(
         })
     }),
     graphql(handleJob, { name: 'handleJob' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', ({ location: { state: { companyId, teamId } } }) => {
         return {
             id: uuid(),
@@ -28,7 +29,6 @@ const NewJobHOC = compose(
     }),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
     withState('anchorEl', 'setAnchorEl', null),
     withHandlers({
         handleFormChange: props => event => {
@@ -40,7 +40,7 @@ const NewJobHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
-        getSignedUrl: () => async (file, callback) => {
+        getSignedUrl: ({ setFeedbackMessage }) => async (file, callback) => {
             let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
             let fName = ['job', getExtension].join('.');
 
@@ -62,13 +62,14 @@ const NewJobHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
             }
-        },
-        renameFile: () => filename => {
-            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['job', getExtension].join('.');
-            return fName;
         },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
             let size = file.size;
@@ -82,15 +83,25 @@ const NewJobHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
+        onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
         },
-        onFinishUpload: ({ setIsUploading }) => () => {
-            alert('done!');
+        onFinishUpload: ({ setIsUploading, setFeedbackMessage }) => async () => {
             setIsUploading(false);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'success',
+                    message: 'File uploaded successfully.'
+                }
+            });
         },
-        publishJob: ({ handleJob, formData, match, history }) => async () => {
+        publishJob: ({ handleJob, formData, match, history, setFeedbackMessage }) => async () => {
             const { id, companyId, teamId, title, description, expireDate, idealCandidate } = formData;
             try {
                 await handleJob({
@@ -101,10 +112,22 @@ const NewJobHOC = compose(
                         }
                     }
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
                 history.push(`/${match.params.lang}/job/${formData.id}`);
             }
             catch (err) {
                 console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
 

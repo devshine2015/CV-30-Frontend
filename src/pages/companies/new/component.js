@@ -9,7 +9,7 @@ import { compose, pure, lifecycle, withHandlers, withState } from 'recompose';
 import { withFormik } from 'formik';
 import { withRouter } from 'react-router-dom';
 
-import { googleMapsQuery, companiesQuery } from '../../../store/queries';
+import { googleMapsQuery, companiesQuery, setFeedbackMessage } from '../../../store/queries';
 import schema from './validation';
 
 const NewCompany = props => {
@@ -137,6 +137,7 @@ const NewCompany = props => {
 const NewCompanyHOC = compose(
     withRouter,
     graphql(googleMapsQuery, { name: 'googleMapsData' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('isAutocompleteInit', 'setAutocompleteInit', false),
     withState('autocompleteHandle', '', () => React.createRef()),
     withFormik({
@@ -163,7 +164,7 @@ const NewCompanyHOC = compose(
             }
         }),
         validationSchema: schema,
-        handleSubmit: async (values, { props: { handleCompany, match, history }, setSubmitting }) => {
+        handleSubmit: async (values, { props: { handleCompany, match, history, setFeedbackMessage }, setSubmitting }) => {
             try {
                 const { data: { handleCompany: { status } } } = await handleCompany({
                     variables: {
@@ -179,13 +180,23 @@ const NewCompanyHOC = compose(
                         }
                     }]
                 });
-                if (status) history.push(`/${match.params.lang}/companies`);
-            } catch ({ graphQLErrors }) {
-                graphQLErrors && graphQLErrors[0].reduce((result, current) => {
-                    result += "\n" + current.message;
-                    console.log(result);
-                    return result;
-                }, '');
+
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+
+                history.push(`/${match.params.lang}/companies`);
+
+            } catch (err) {
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
             setSubmitting(false);
         },

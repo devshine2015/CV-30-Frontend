@@ -15,9 +15,8 @@ import FroalaEditor from 'react-froala-wysiwyg';
 
 import fields from '../../../../constants/contact';
 import BenefitsList from '../../../../constants/benefits';
-import { teamsQuery, handleJob } from '../../../../store/queries';
+import { teamsQuery, handleJob, setFeedbackMessage } from '../../../../store/queries';
 import Loader from '../../../../components/Loader';
-import Feedback from '../../../../components/Feedback';
 
 const EditHOC = compose(
     graphql(teamsQuery, {
@@ -30,8 +29,8 @@ const EditHOC = compose(
         })
     }),
     graphql(handleJob, { name: 'handleJob' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', props => {
-        console.log(props);
         const { getJobQuery: { job: { id, team, i18n, expireDate, company } } } = props;
 
         let jobEdit = {
@@ -44,14 +43,13 @@ const EditHOC = compose(
             idealCandidate: (i18n && i18n[0]) ? i18n[0].idealCandidate : '',
             benefits: []
         };
-        // debugger;
+
         return jobEdit;
     }),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('anchorEl', 'setAnchorEl', null),
-    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.target;
@@ -85,7 +83,12 @@ const EditHOC = compose(
             } catch (error) {
                 console.error(error);
                 callback(error);
-                setFeedbackMessage({ type: 'error', message: error || error.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
             }
         },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
@@ -100,13 +103,23 @@ const EditHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
+        onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
         },
-        onFinishUpload: ({ setIsUploading }) => () => {
-            alert('done!');
+        onFinishUpload: ({ setIsUploading }) => async () => {
             setIsUploading(false);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'success',
+                    message: 'File uploaded successfully.'
+                }
+            });
         },
         updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
         updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
@@ -122,11 +135,21 @@ const EditHOC = compose(
                         }
                     }
                 });
-                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
-                setFeedbackMessage({ type: 'error', message: err.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
 
@@ -386,10 +409,6 @@ const Edit = props => {
                     </div>
                 </Grid>
             </Grid>
-            <Feedback
-                handleClose={closeFeedback}
-                {...feedbackMessage}
-            />
         </React.Fragment>
     );
 }

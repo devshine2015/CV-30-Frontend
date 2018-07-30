@@ -4,10 +4,11 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import uuid from 'uuidv4';
 
-import { handleTeam, companyQuery } from '../../../../store/queries';
+import { handleTeam, companyQuery, setFeedbackMessage } from '../../../../store/queries';
 
 const AddTeamHOC = compose(
     graphql(handleTeam, { name: 'handleTeam' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('newTeam', 'setTeamName', ''),
     withState('teamAnchor', 'setTeamAnchor', null),
     withHandlers({
@@ -20,7 +21,7 @@ const AddTeamHOC = compose(
         closeTeamModal: ({ setTeamAnchor }) => () => {
             setTeamAnchor(null);
         },
-        addTeam: ({ newTeam, match, handleTeam, history }) => async () => {
+        addTeam: ({ newTeam, match, handleTeam, history, setFeedbackMessage }) => async () => {
             const teamDetails = {
                 id: uuid(),
                 name: newTeam,
@@ -42,16 +43,36 @@ const AddTeamHOC = compose(
                     }]
                 });
                 const { error, status } = result;
-                if (status || !error)
+                if (status || !error) {
                     history.push({
                         pathname: `/${match.params.lang}/team/${teamDetails.id}`,
                         state: { editMode: true }
                     });
-                else
+                    await setFeedbackMessage({
+                        variables: {
+                            status: 'success',
+                            message: 'Changes saved successfully.'
+                        }
+                    });
+                }
+                else {
                     console.log(error);
+                    await setFeedbackMessage({
+                        variables: {
+                            status: 'error',
+                            message: error || error.message
+                        }
+                    });
+                }
             }
             catch (err) {
                 console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         }
 

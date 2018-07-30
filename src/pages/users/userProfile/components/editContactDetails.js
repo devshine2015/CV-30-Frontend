@@ -3,14 +3,14 @@ import { Button, Menu, MenuItem, TextField, Icon, IconButton } from '@material-u
 import { compose, pure, withState, withHandlers } from 'recompose';
 
 import fields from '../../../../constants/contact';
-import { setContact, currentProfileQuery } from '../../../../store/queries';
+import { setContact, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import Feedback from '../../../../components/Feedback';
 
 const EditContactDetailsHOC = compose(
     withRouter,
     graphql(setContact, { name: 'setContact' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', ({ contact }) => {
         if (!contact) {
             return {};
@@ -28,7 +28,6 @@ const EditContactDetailsHOC = compose(
 
     }),
     withState('anchorEl', 'setAnchorEl', null),
-    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         handleClick: ({ setAnchorEl }) => event => {
             setAnchorEl(event.currentTarget);
@@ -75,11 +74,21 @@ const EditContactDetailsHOC = compose(
                         }
                     }]
                 });
-                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
-                setFeedbackMessage({ type: 'error', message: err.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
         closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
@@ -163,10 +172,6 @@ const EditContactDetails = ({
                     <Icon>done</Icon>
                 </IconButton>
             </form>
-            <Feedback
-                handleClose={closeFeedback}
-                {...feedbackMessage}
-            />
         </div>
     );
 };

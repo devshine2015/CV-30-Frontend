@@ -9,11 +9,12 @@ import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import ArticleSlider from '../../../../components/articleSlider';
 import ArticlePopUp from '../../../../components/ArticlePopup';
 import MembersPopup from './memberPopup';
-import { removeMemberFromTeam, queryTeam } from '../../../../store/queries';
+import { removeMemberFromTeam, queryTeam, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from '../../../../../node_modules/react-apollo';
 
 const ShowHOC = compose(
     graphql(removeMemberFromTeam, { name: 'removeMemberFromTeam' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('isArticlePopupOpen', 'setIsArticlePopupOpen', false),
     withState('isMembersPopupOpen', 'setIsMembersPopupOpen', false),
     withHandlers({
@@ -29,7 +30,7 @@ const ShowHOC = compose(
         closeMembersPopup: ({ setIsMembersPopupOpen }) => () => {
             setIsMembersPopupOpen(false);
         },
-        removeMember: ({ removeMemberFromTeam, match: { params: { lang, teamId } } }) => async memberId => {
+        removeMember: ({ removeMemberFromTeam, setFeedbackMessage, match: { params: { lang, teamId } } }) => async memberId => {
             try {
                 await removeMemberFromTeam({
                     variables: {
@@ -46,9 +47,21 @@ const ShowHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         }
     })

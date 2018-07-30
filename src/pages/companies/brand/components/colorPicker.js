@@ -6,21 +6,21 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
-import { handleCompany, companyQuery } from '../../../../store/queries';
+import { handleCompany, companyQuery, setFeedbackMessage } from '../../../../store/queries';
 
 const ColorPickerHOC = compose(
     withRouter,
     graphql(handleCompany, { name: 'handleCompany' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('activeTab', 'setActiveTab', 'colors'),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
     withState('fileParams', 'setFileParams', {}),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
         },
-        setBackgroundColor: ({ handleCompany, match: { params: { lang: language, companyId } } }) => async color => {
+        setBackgroundColor: ({ handleCompany, match: { params: { lang: language, companyId } }, setFeedbackMessage }) => async color => {
             try {
                 await handleCompany({
                     variables: {
@@ -40,12 +40,24 @@ const ColorPickerHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
-        getSignedUrl: ({ match: { params: { companyId } }, setFileParams }) => async (file, callback) => {
+        getSignedUrl: ({ match: { params: { companyId } }, setFileParams, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: `cover.${file.type.replace('image/', '')}`,
                 contentType: file.type,
@@ -68,7 +80,13 @@ const ColorPickerHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
             }
         },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
@@ -78,11 +96,21 @@ const ColorPickerHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
+        onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
         },
-        onFinish: ({ setIsUploading, handleCompany, refetchBgImage, fileParams: { contentType }, match: { params: { companyId, lang: language } } }) => async () => {
+        onFinish: ({
+            setIsUploading, handleCompany, refetchBgImage,
+            fileParams: { contentType },
+            match: { params: { companyId, lang: language } },
+            setFeedbackMessage
+        }) => async () => {
             try {
                 await handleCompany({
                     variables: {
@@ -103,9 +131,21 @@ const ColorPickerHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
 
             setIsUploading(false);

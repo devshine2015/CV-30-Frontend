@@ -104,7 +104,6 @@ const ExperienceDisplayHOC = compose(
         toggleEditItem: ({ setEditItem, editItem }) => () => {
             setEditItem(!editItem);
         },
-        saveData: () => () => { },
         closeEditor: ({ setEditItem }) => () => {
             setEditItem(false);
         }

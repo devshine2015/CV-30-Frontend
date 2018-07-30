@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import ColorPicker from './colorPicker';
-import { queryTeam, handleFollow, currentProfileQuery } from '../../../../store/queries';
+import { queryTeam, handleFollow, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 
 import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
@@ -22,6 +22,7 @@ const HeaderHOC = compose(
             fetchPolicy: 'network-only'
         }),
     }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withHandlers({
@@ -32,9 +33,9 @@ const HeaderHOC = compose(
             setColorPickerAnchor(null);
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
-        toggleFollow: props => async (isFollowing) => {
+        toggleFollow: props => async isFollowing => {
             let {
-                queryTeam: { team }, handleFollow, match
+                queryTeam: { team }, handleFollow, match, setFeedbackMessage
             } = props;
 
             try {
@@ -62,9 +63,21 @@ const HeaderHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         }
     }),

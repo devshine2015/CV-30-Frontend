@@ -6,14 +6,14 @@ import { withRouter } from 'react-router-dom';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
 
-import { setExperience, setProject, currentProfileQuery, googleMapsQuery } from '../../../../store/queries';
-import Feedback from '../../../../components/Feedback';
+import { setExperience, setProject, currentProfileQuery, googleMapsQuery, setFeedbackMessage } from '../../../../store/queries';
 
 const ExperienceEditHOC = compose(
     withRouter,
     graphql(setExperience, { name: 'setExperience' }),
     graphql(setProject, { name: 'setProject' }),
     graphql(googleMapsQuery, { name: 'googleMapsData' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('isAutocompleteInit', 'setAutocompleteInit', false),
     withState('autocompleteHandle', '', () => React.createRef()),
     withState('formData', 'setFormData', ({ job }) => {
@@ -40,7 +40,6 @@ const ExperienceEditHOC = compose(
     withState('isSaving', 'setIsSaving', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
-    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         handleFormChange: props => event => {
             if (typeof event.name !== undefined && event.name === 'video') {
@@ -71,7 +70,7 @@ const ExperienceEditHOC = compose(
                 });
             }
             let data = { id, location, title, description, position, company, startDate, endDate, isCurrent, videos, images };
-            debugger;
+
             switch (type) {
                 case 'experience':
                     try {
@@ -89,12 +88,22 @@ const ExperienceEditHOC = compose(
                                 }
                             }]
                         });
-                        setFeedbackMessage({ type: 'success', message: 'File uploaded successfully.' });
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'success',
+                                message: 'Changes saved successfully.'
+                            }
+                        });
                     }
 
                     catch (err) {
                         console.log(err);
-                        setFeedbackMessage({ type: 'error', message: err.message });
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'error',
+                                message: err.message
+                            }
+                        });
                     }
                     break;
                 case 'project':
@@ -113,11 +122,21 @@ const ExperienceEditHOC = compose(
                                 }
                             }]
                         });
-                        setFeedbackMessage({ type: 'success', message: 'File uploaded successfully.' });
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'success',
+                                message: 'Changes saved successfully.'
+                            }
+                        });
                     }
                     catch (err) {
                         console.log(err);
-                        setFeedbackMessage({ type: 'error', message: err.message });
+                        await setFeedbackMessage({
+                            variables: {
+                                status: 'error',
+                                message: err.message
+                            }
+                        });
                     }
                     break;
                 default:
@@ -160,7 +179,12 @@ const ExperienceEditHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                setFeedbackMessage({ type: 'error', message: error || error.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
                 callback(error);
             }
         },
@@ -187,17 +211,25 @@ const ExperienceEditHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setIsSaving, setUploadError }) => error => {
+        onError: ({ setIsSaving, setFeedbackMessage }) => async  error => {
             console.log(error);
-            setUploadError(error);
             setIsSaving(false);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
         },
-        onFinishUpload: (props) => async () => {
-            const { setIsSaving } = props;
-            console.log('success!');
+        onFinishUpload: ({ setIsSaving, setFeedbackMessage }) => async () => {
             setIsSaving(false);
-        },
-        closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
+            await setFeedbackMessage({
+                variables: {
+                    status: 'success',
+                    message: 'Changes saved successfully.'
+                }
+            });
+        }
     }),
     lifecycle({
         componentDidMount() {
@@ -219,8 +251,7 @@ const ExperienceEdit = (props) => {
         submitForm,
         type,
         autocompleteHandle,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving,
-        feedbackMessage, closeFeedback
+        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving
     } = props;
     const { position, company, location, startDate, endDate, isCurrent, description, video } = formData;
 
@@ -355,10 +386,6 @@ const ExperienceEdit = (props) => {
                     <Icon>done</Icon>
                 </IconButton>
             </section>
-            <Feedback
-                handleClose={closeFeedback}
-                {...feedbackMessage}
-            />
         </form>
     )
 };

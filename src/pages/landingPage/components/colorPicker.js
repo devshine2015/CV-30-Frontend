@@ -6,21 +6,21 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../constants/headerBackgrounds';
-import { landingPage, handleLandingPage } from '../../../store/queries';
+import { landingPage, handleLandingPage, setFeedbackMessage } from '../../../store/queries';
 
 const ColorPickerHOC = compose(
     withRouter,
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('activeTab', 'setActiveTab', 'colors'),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
     withState('fileParams', 'setFileParams', {}),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
         },
-        setBackgroundColor: ({ handleLandingPage, match: { params: { lang: language } }, type }) => async color => {
+        setBackgroundColor: ({ handleLandingPage, setFeedbackMessage, match: { params: { lang: language } }, type }) => async color => {
             let details = {};
             switch (type) {
                 case 'header':
@@ -49,9 +49,21 @@ const ColorPickerHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
         getSignedUrl: ({ match: { params: { companyId } }, setFileParams, type }) => async (file, callback) => {
@@ -86,7 +98,13 @@ const ColorPickerHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
             }
         },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
@@ -96,11 +114,16 @@ const ColorPickerHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
+        onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
         },
-        onFinish: ({ setIsUploading, handleLandingPage, refetchBgImage, fileParams: { contentType }, match: { params: { lang: language } }, type }) => async () => {
+        onFinish: ({ setFeedbackMessage, setIsUploading, handleLandingPage, refetchBgImage, fileParams: { contentType }, match: { params: { lang: language } }, type }) => async () => {
             let details = {};
             switch (type) {
                 case 'header':
@@ -133,9 +156,21 @@ const ColorPickerHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'File uploaded successfully.'
+                    }
+                });
             }
             catch (err) {
-                console.log(err)
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
 
             setIsUploading(false);

@@ -1,8 +1,28 @@
 import React from 'react';
 import { Snackbar, IconButton } from '@material-ui/core';
 import { Close, CheckCircle, Error, Info, Warning } from '@material-ui/icons';
+import { compose, pure, withHandlers } from 'recompose';
+import { graphql } from 'react-apollo';
 
-const Feedback = ({ handleClose, message, type }) => (
+import { getFeedbackMessage, resetFeedbackMessage } from '../store/queries';
+
+const FeedbackHOC = compose(
+    graphql(getFeedbackMessage, { name: 'getFeedbackMessage' }),
+    graphql(resetFeedbackMessage, { name: 'resetFeedbackMessage' }),
+    withHandlers({
+        handleClose: ({ resetFeedbackMessage }) => async () => {
+            try {
+                await resetFeedbackMessage();
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+    }),
+    pure
+);
+
+const Feedback = ({ handleClose, getFeedbackMessage: { feedbackMessage: { status, message } } }) => (
     <Snackbar
         anchorOrigin={{
             vertical: 'bottom',
@@ -12,14 +32,14 @@ const Feedback = ({ handleClose, message, type }) => (
         autoHideDuration={3000}
         onClose={handleClose}
         ContentProps={{
-            className: `feedbackRoot ${type}`
+            className: `feedbackRoot ${status}`
         }}
         message={(
-            <span className={`messageRoot ${type}`}>
-                {(type === 'success') && <CheckCircle className='icon' />}
-                {(type === 'error') && <Error className='icon' />}
-                {(type === 'info') && <Info className='icon' />}
-                {(type === 'warning') && <Warning className='icon' />}
+            <span className={`messageRoot ${status}`}>
+                {(status === 'success') && <CheckCircle className='icon' />}
+                {(status === 'error') && <Error className='icon' />}
+                {(status === 'info') && <Info className='icon' />}
+                {(status === 'warning') && <Warning className='icon' />}
                 {message}
             </span>
         )}
@@ -36,4 +56,4 @@ const Feedback = ({ handleClose, message, type }) => (
     />
 );
 
-export default Feedback;
+export default FeedbackHOC(Feedback);

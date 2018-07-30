@@ -4,21 +4,21 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import S3Uploader from 'react-s3-uploader';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
-import { handleTeam, queryTeam } from '../../../../store/queries';
+import { handleTeam, queryTeam, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 
 const ColorPickerHOC = compose(
     graphql(handleTeam, { name: 'handleTeam' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('activeTab', 'setActiveTab', 'colors'),
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
     withState('fileParams', 'setFileParams', {}),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
         },
-        setBackgroundColor: ({ handleTeam, match: { params: { lang, teamId } }, company }) => async color => {
+        setBackgroundColor: ({ setFeedbackMessage, handleTeam, match: { params: { lang, teamId } }, company }) => async color => {
             try {
                 await handleTeam({
                     variables:
@@ -39,12 +39,24 @@ const ColorPickerHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
-        getSignedUrl: ({ match: { params: { teamId } }, setFileParams }) => async (file, callback) => {
+        getSignedUrl: ({ setFeedbackMessage, match: { params: { teamId } }, setFileParams }) => async (file, callback) => {
             const params = {
                 fileName: `cover.${file.type.replace('image/', '')}`,
                 contentType: file.type,
@@ -66,7 +78,13 @@ const ColorPickerHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
             }
         },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
@@ -76,9 +94,14 @@ const ColorPickerHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
+        onError: () => async error => {
             console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
         },
         onFinish: ({ setIsUploading, handleTeam, refetchBgImage, match: { params: { teamId, lang } }, company, fileParams: { contentType } }) => async () => {
             try {

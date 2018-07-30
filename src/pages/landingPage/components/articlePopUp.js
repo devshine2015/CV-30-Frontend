@@ -6,13 +6,14 @@ import { graphql } from 'react-apollo';
 import uuid from 'uuidv4';
 import S3Uploader from 'react-s3-uploader';
 
-import { handleArticle, landingPage } from '../../../store/queries';
+import { handleArticle, landingPage, setFeedbackMessage } from '../../../store/queries';
 
 const ArticlePopUpHOC = compose(
     withRouter,
     graphql(handleArticle, {
         name: 'handleArticle'
     }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', props => {
         return {
             id: uuid()
@@ -21,7 +22,6 @@ const ArticlePopUpHOC = compose(
     withState('isVideoUrl', 'changeMediaType', true),
     withState('isSaving', 'setIsSaving', false),
     withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.currentTarget;
@@ -35,7 +35,7 @@ const ArticlePopUpHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        saveArticle: ({ formData, handleArticle, setIsSaving, isSaving, match, onClose }) => async () => {
+        saveArticle: ({ formData, handleArticle, setIsSaving, isSaving, match, onClose, setFeedbackMessage }) => async () => {
             // if (isSaving)
             //     return false;
 
@@ -52,10 +52,22 @@ const ArticlePopUpHOC = compose(
             //         refetchQueries: [refetchQuery]
             //     });
             //     onClose();
+            // await setFeedbackMessage({
+            //     variables: {
+            //         status: 'success',
+            //         message: 'Changes saved successfully.'
+            //     }
+            // });
             // }
             // catch (err) {
             //     console.log(err);
             //     setIsSaving(true);
+            // await setFeedbackMessage({
+            //     variables: {
+            //         status: 'error',
+            //         message: err.message
+            //     }
+            // });
 
             // }
         },
@@ -80,7 +92,13 @@ const ArticlePopUpHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
             }
         },
         onUploadStart: ({ setIsSaving, formData, setFormData, match }) => (file, next) => {
@@ -105,14 +123,23 @@ const ArticlePopUpHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
+        onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
         },
-        onFinishUpload: props => data => {
-            console.log(data);
-            const { setIsSaving, } = props;
+        onFinishUpload: ({ setIsSaving, setFeedbackMessage }) => async data => {
             setIsSaving(false);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'success',
+                    message: 'File uploaded successfully.'
+                }
+            });
         },
     }),
     pure

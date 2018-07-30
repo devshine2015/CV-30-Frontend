@@ -13,10 +13,11 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import { handleArticle, } from '../../../store/queries';
+import { handleArticle, setFeedbackMessage } from '../../../store/queries';
 
 const ArticleEditHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', props => {
         const { getArticle: { article: { images, videos, i18n } } } = props;
         return {
@@ -40,7 +41,7 @@ const ArticleEditHOC = compose(
             props.setFormData(state => ({ ...state, 'description': text }));
         },
         saveArticle: props => async () => {
-            const { handleArticle, formData: { title, description }, getArticle: { article: { id } }, setIsSaving, match } = props;
+            const { handleArticle, formData: { title, description }, getArticle: { article: { id } }, setIsSaving, match, setFeedbackMessage } = props;
 
             const article = {
                 id,
@@ -55,10 +56,22 @@ const ArticleEditHOC = compose(
                         article
                     }
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
                 setIsSaving(true);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         }
     }),

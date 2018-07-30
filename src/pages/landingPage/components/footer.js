@@ -17,11 +17,12 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
-import { handleLandingPage, landingPage } from '../../../store/queries';
+import { handleLandingPage, landingPage, setFeedbackMessage } from '../../../store/queries';
 import Feedback from '../../../components/Feedback';
 
 const FooterHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('footerMessage', 'setFooterMessage', props => {
         try {
             let { landingPage: { landingPage: { i18n } } } = props;
@@ -33,7 +34,6 @@ const FooterHOC = compose(
     }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
-    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -62,11 +62,21 @@ const FooterHOC = compose(
                         }
                     }]
                 });
-                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(JSON.stringify(err));
-                setFeedbackMessage({ type: 'error', message: err.message });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
         },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
@@ -79,7 +89,6 @@ const FooterHOC = compose(
 const Footer = props => {
     const {
         editMode,
-        feedbackMessage, closeFeedback,
         footerMessage, updateFooterMessage, submitFooterMessage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker, refetchBgImage, forceCoverRender,
         landingPage: { landingPage },
@@ -202,12 +211,6 @@ const Footer = props => {
                     </Button>
                 </Grid>
             </Grid>
-            {feedbackMessage &&
-                <Feedback
-                    handleClose={closeFeedback}
-                    {...feedbackMessage}
-                />
-            }
         </footer>
     );
 };

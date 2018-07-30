@@ -4,13 +4,15 @@ import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { currentProfileQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation } from '../../../../store/queries';
+import { currentProfileQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation, setFeedbackMessage } from '../../../../store/queries';
 
 const SettingsHOC = compose(
     graphql(updateAvatar, { name: 'updateAvatar' }),
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
     graphql(localUserQuery, { name: 'localUserData' }),
     graphql(updateUserSettingsMutation, { name: 'updateUserSettings' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
@@ -24,7 +26,7 @@ const SettingsHOC = compose(
         return { firstName, lastName, email };
     }),
     withHandlers({
-        getSignedUrl: ({ currentUser, setFileParams }) => async (file, callback) => {
+        getSignedUrl: ({ currentUser, setFileParams, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
@@ -46,7 +48,13 @@ const SettingsHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
             }
         },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
@@ -61,32 +69,53 @@ const SettingsHOC = compose(
         onProgress: ({ setUploadProgress }) => (percent) => {
             setUploadProgress(percent);
         },
-        onError: ({ setUploadError }) => error => {
-            setUploadError(error);
+        onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
-        },
-        onFinishUpload: (props) => async data => {
-            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match, fileParams: { contentType } } = props;
-
-            await updateAvatar({
+            await setFeedbackMessage({
                 variables: {
-                    status: true,
-                    contentType: contentType.replace('image/', '')
-                },
-                refetchQueries: [{
-                    query: currentProfileQuery,
-                    fetchPolicy: 'network-only',
-                    name: 'currentUser',
-                    variables: {
-                        language: match.params.lang
-                    }
-                }]
-            });
-            await updateAvatarTimestamp({
-                variables: {
-                    timestamp: Date.now()
+                    status: 'error',
+                    message: error || error.message
                 }
             });
+        },
+        onFinishUpload: (props) => async data => {
+            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match, fileParams: { contentType }, setFeedbackMessage } = props;
+            try {
+                await updateAvatar({
+                    variables: {
+                        status: true,
+                        contentType: contentType.replace('image/', '')
+                    },
+                    refetchQueries: [{
+                        query: currentProfileQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentUser',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    }]
+                });
+                await updateAvatarTimestamp({
+                    variables: {
+                        timestamp: Date.now()
+                    }
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
             setIsUploading(false);
         },
         handleFormChange: props => event => {

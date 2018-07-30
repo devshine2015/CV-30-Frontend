@@ -35,7 +35,6 @@ export default {
             return null;
         },
         setEditMode: (_, { status }, { cache }) => {
-            debugger;
             const data = {
                 editMode: {
                     __typename: "EditMode",
@@ -45,7 +44,7 @@ export default {
             cache.writeData({ data });
             return null;
         },
-        resetEditMode: (_, props, { cache }) => {
+        resetEditMode: (_, params, { cache }) => {
             const data = {
                 editMode: {
                     __typename: "EditMode",
@@ -55,28 +54,27 @@ export default {
             cache.writeData({ data });
             return null;
         },
-        setFeedbackMessage: (_, { type, message }, { cache }) => { },
-        resetFeedbackMessage: (_, { }, { cache }) => { }
+        setFeedbackMessage: (_, { status, message }, { cache }) => {
+            const data = {
+                feedbackMessage: {
+                    __typename: "FeedbackMessage",
+                    status,
+                    message
+                }
+            };
+            cache.writeData({ data });
+            return null;
+        },
+        resetFeedbackMessage: (_, params, { cache }) => {
+            const data = {
+                feedbackMessage: {
+                    __typename: "FeedbackMessage",
+                    status: null,
+                    message: null
+                }
+            };
+            cache.writeData({ data });
+            return null;
+        }
     }
 };
-
-
-/*
-editMode: {
-        __typename: "EditMode",
-        edit: {
-            profile: false,
-            company: false,
-            team: false,
-            job: false,
-            landingPage: false,
-        }
-    },
-    feedbackMessage: {
-        __typename: "FeedbackMessage",
-        message: {
-            type: null,
-            message: null
-        }
-    }
-*/
