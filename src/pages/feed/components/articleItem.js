@@ -3,27 +3,16 @@ import { Button, Icon, IconButton } from '@material-ui/core';
 
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-import ArticleAuthorAvatar from './articleAuthorAvatar';
+import AuthorAvatarHeader from './authorAvatarHeader';
 
 const ArticleItem = props => {
     const { match, article: { author, i18n, createdAt } } = props;
     const { title, description } = i18n[0];
-    const { firstName, lastName, email } = author;
     const { lang } = match.params;
-    const fullName = (firstName && lastName) ? `${firstName.charAt(0)}${lastName.charAt(0)}` : email;
 
     return (
         <div className='listItem userListItem'>
-            <div className='leftOverlay'>
-                <ArticleAuthorAvatar profile={author} lang={lang} />
-                <div className='leftOverlayTexts'>
-                    <h6 className='userName'>
-                        <span>{fullName}</span>
-                        <i className='fas fa-caret-down' />
-                    </h6>
-                    <p className='userTitle'>Manager</p>
-                </div>
-            </div>
+            <AuthorAvatarHeader profile={author} lang={lang} />
             <span className='articleDate'>{new Date(createdAt).toLocaleDateString()}</span>
             <div className='rightOverlay'>
                 Works at&nbsp;<span className='highlight'>CV30</span>&nbsp;-&nbsp;<span className='highlight'>Marketing team</span>
