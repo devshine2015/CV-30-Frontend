@@ -9,21 +9,80 @@ export const getArticles = gql`
                 email
                 firstName
                 lastName
-                }
+                hasAvatar
+                avatarContentType
+            }
             images {
                 id
                 path
-                }
+            }
             videos {
                 id
                 path
-                }
+            }
             i18n {
                 title
                 description
+            }
+            createdAt
+            updatedAt
+        }
+    }
+`;
+
+export const getNewsFeedArticles = gql`
+    query newsFeedArticles($language: LanguageCodeType!) {
+        newsFeedArticles(language: $language) {
+            following {
+                id
+                author {
+                    id
+                    email
+                    firstName
+                    lastName
+                    hasAvatar
+                    avatarContentType
                 }
-            created_at
-            updated_at
+                images {
+                    id
+                    path
+                }
+                videos {
+                    id
+                    path
+                }
+                i18n {
+                    title
+                    description
+                }
+                createdAt
+                updatedAt
+            }
+            others {
+                id
+                author {
+                    id
+                    email
+                    firstName
+                    lastName
+                    hasAvatar
+                    avatarContentType
+                }
+                images {
+                    id
+                    path
+                }
+                videos {
+                    id
+                    path
+                }
+                i18n {
+                    title
+                    description
+                }
+                createdAt
+                updatedAt
+            }
         }
     }
 `;
@@ -46,6 +105,8 @@ export const getArticle = gql`
                 email
                 firstName
                 lastName
+                hasAvatar
+                avatarContentType
             }
             images {
                 id
@@ -59,8 +120,8 @@ export const getArticle = gql`
                 title
                 description
             }
-            created_at
-            updated_at
+            createdAt
+            updatedAt
         }
     }
 `;

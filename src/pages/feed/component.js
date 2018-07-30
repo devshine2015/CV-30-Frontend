@@ -1,25 +1,26 @@
 import React from 'react';
 import { Grid, Button, Icon, Avatar, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, IconButton } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { defaultUserAvatar } from '../../constants/utils';
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import Loader from '../../components/Loader';
-import EditToggle from '../../components/EditToggle';
+import ArticleItem from './components/articleItem';
 
 const NewsFeed = props => {
     const {
         formData, handleFormChange, switchIsArticle, isArticle,
         currentUser: { loading, profile },
+        newsFeedArticlesQuery,
         match: { params: { lang } }
     } = props;
 
-    if (loading)
+    if (loading || newsFeedArticlesQuery.loading)
         return <Loader />
 
     const { id, firstName, lastName, email, hasAvatar, avatarContentType } = profile || {};
     const { postBody } = formData;
     let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
+    const followingArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.following : [];
 
     return (
         <div className='newsFeedRoot'>
@@ -119,71 +120,7 @@ const NewsFeed = props => {
                         </div>
                     </section>
                     <section className='articlesList'>
-                        <div className='listItem userListItem'>
-                            <div className='leftOverlay'>
-                                <Link to={`/${lang}/profile/${id}`}>
-                                    <Avatar alt={firstName || lastName || email} src={avatar || defaultUserAvatar} className='avatar' imgProps={{ style: { objectFit: 'contain' } }}
-                                        style={{ backgroundColor: '#fff', margin: 3 }} />
-                                </Link>
-                                <div className='leftOverlayTexts'>
-                                    <h6 className='userName'>
-                                        <span>{fullName}</span>
-                                        <i className='fas fa-caret-down' />
-                                    </h6>
-                                    <p className='userTitle'>Manager</p>
-                                </div>
-                            </div>
-                            <span className='articleDate'>15-11-2017</span>
-                            <div className='rightOverlay'>
-                                Works at&nbsp;<span className='highlight'>CV30</span>&nbsp;-&nbsp;<span className='highlight'>Marketing team</span>
-                            </div>
-                            <div className='itemBody'>
-                                <p className='articleBody'>
-                                    <span className='articleTitle'>This is the article title.</span> &nbsp;
-                                    Lorem ipsum dolor sit amet, eu his scripta perpetua. Lorem ipsum dolor sit amet, eu his scripta perpetua. Lorem ipsum dolor sit amet, eu his scripta perpetua. Lorem ipsum dolor sit amet, eu his scripta perpetua. Lorem ipsum dolor sit amet, eu his scripta perpetua. Lorem ipsum dolor sit amet, eu his scripta perpetua.
-                                </p>
-                                <div className='articleMedia'>
-                                </div>
-                                <div className='socialSection'>
-                                    <div className='comments'>
-                                        <span className='counter'>3 Comments</span>
-                                        <Button className='commentBtn' disableRipple>
-                                            <span className="fa-stack">
-                                                <i className="fas fa-comment-alt fa-2x"></i>
-                                                <i className="fas fa-plus fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                            Comment
-                                        </Button>
-                                    </div>
-                                    <p className='likes'>Appreciated 101 times.</p>
-                                    <div className='tags'>
-                                        <IconButton className='addTagBtn'>
-                                            <Icon>add</Icon>
-                                        </IconButton>
-                                        <span className='tag'>
-                                            <span className='votes'>125</span>
-                                            <span className='title'>Marketing</span>
-                                        </span>
-                                        <span className='tag'>
-                                            <span className='votes'>125</span>
-                                            <span className='title'>Marketing</span>
-                                        </span>
-                                        <span className='tag'>
-                                            <IconButton className='voteBtn'>
-                                                <Icon>add</Icon>
-                                            </IconButton>
-                                            <span className='title'>Marketing</span>
-                                        </span>
-                                        <span className='tag'>
-                                            <IconButton className='voteBtn'>
-                                                <Icon>add</Icon>
-                                            </IconButton>
-                                            <span className='title'>Marketing</span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {followingArticles.length > 0 && followingArticles.map((article) => (<ArticleItem article={article} key={article.id} />))}
                     </section>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
