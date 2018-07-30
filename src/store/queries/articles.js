@@ -22,8 +22,8 @@ export const getArticles = gql`
                 title
                 description
                 }
-            created_at
-            updated_at
+            createdAt
+            updatedAt
         }
     }
 `;
@@ -51,8 +51,8 @@ export const getNewsFeedArticles = gql`
                     title
                     description
                     }
-                created_at
-                updated_at
+                createdAt
+                updatedAt
             }
             others {
                 id
@@ -74,8 +74,8 @@ export const getNewsFeedArticles = gql`
                     title
                     description
                     }
-                created_at
-                updated_at
+                createdAt
+                updatedAt
             }
         }
     }
@@ -112,8 +112,8 @@ export const getArticle = gql`
                 title
                 description
             }
-            created_at
-            updated_at
+            createdAt
+            updatedAt
         }
     }
 `;
