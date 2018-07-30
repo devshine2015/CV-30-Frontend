@@ -1,15 +1,5 @@
 import gql from 'graphql-tag';
 
-
-
-export const updateUserSettingsMutation = gql`
-    mutation updateUserSettings($userSettings: UserSettingsInput) {
-        updateUserSettings(userSettings: $userSettings) {  
-            status
-        }
-    }
-`;
-
 export const currentProfileQuery = gql`
   query currentUser($id: String, $language: LanguageCodeType!) {
   profile(id: $id, language: $language) {
@@ -162,66 +152,20 @@ export const currentProfileQuery = gql`
 }
 `;
 
+export const updateUserSettingsMutation = gql`
+    mutation updateUserSettings($userSettings: UserSettingsInput) {
+        updateUserSettings(userSettings: $userSettings) {  
+            status
+        }
+    }
+`;
+
+
+
 export const updateAvatar = gql`
     mutation updateAvatar($status: Boolean!, $contentType: ImageType!){
         avatar(status: $status, contentType: $contentType){
            status
-        }
-    }
-`;
-
-export const updateGoogleMapsMutation = gql`
-    mutation updateGoogleMaps($isLoaded: Boolean!){
-        updateGoogleMaps(isLoaded: $isLoaded) @client{
-            googleMaps {
-               __typename
-               isLoaded
-           }
-        }
-    }
-`;
-
-export const googleMapsQuery = gql`
-    query googleMapsData{
-        googleMaps @client {
-            isLoaded
-        }
-    }
-`;
-
-export const updateAvatarTimestampMutation = gql`
-    mutation updateAvatarTimestamp($timestamp: Int!){
-        updateAvatarTimestamp(timestamp: $timestamp) @client{
-           localUser {
-               __typename
-               timestamp
-           }
-        }
-    }
-`;
-
-export const localUserQuery = gql`
-    query localUserQuery {
-        localUser @client {
-            timestamp
-        }
-    }
-`;
-
-
-export const getCurrentUser = gql`
-    query getCurrentUser {
-        auth @client {
-             __typename
-            currentUser {
-                id
-                firstName
-                lastName
-                email
-                hasAvatar
-                avatarContentType
-                 __typename
-            }
         }
     }
 `;

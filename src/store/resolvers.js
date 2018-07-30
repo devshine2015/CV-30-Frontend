@@ -1,3 +1,5 @@
+import gql from 'graphql-tag';
+
 export default {
     Query: {},
     Mutation: {
@@ -32,5 +34,49 @@ export default {
             cache.writeData({ data });
             return null;
         },
+        setEditMode: (_, { status }, { cache }) => {
+            debugger;
+            const data = {
+                editMode: {
+                    __typename: "EditMode",
+                    status
+                }
+            };
+            cache.writeData({ data });
+            return null;
+        },
+        resetEditMode: (_, props, { cache }) => {
+            const data = {
+                editMode: {
+                    __typename: "EditMode",
+                    status: false
+                }
+            };
+            cache.writeData({ data });
+            return null;
+        },
+        setFeedbackMessage: (_, { type, message }, { cache }) => { },
+        resetFeedbackMessage: (_, { }, { cache }) => { }
     }
 };
+
+
+/*
+editMode: {
+        __typename: "EditMode",
+        edit: {
+            profile: false,
+            company: false,
+            team: false,
+            job: false,
+            landingPage: false,
+        }
+    },
+    feedbackMessage: {
+        __typename: "FeedbackMessage",
+        message: {
+            type: null,
+            message: null
+        }
+    }
+*/

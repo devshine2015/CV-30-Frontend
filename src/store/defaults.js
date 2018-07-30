@@ -11,5 +11,17 @@ export default {
     googleMaps: {
         __typename: "GoogleMapsAPI",
         isLoaded: false
+    },
+    editMode: {
+        __typename: "EditMode",
+        status: false
+
+
+    },
+    feedbackMessage: {
+        __typename: "FeedbackMessage",
+        status: null,
+        message: null
+
     }
 };

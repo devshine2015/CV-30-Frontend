@@ -52,19 +52,3 @@ export const ActivateAccountMutation = gql`
         }
     }
 `;
-
-export const IS_AUTHENTICATED = gql`
-    query {
-        auth @client {
-            __typename
-            loggedIn
-            currentUser
-        }
-    }
-`;
-
-export const AuthenticateLocal = gql`
-    mutation setAuthenticated($user: User) {
-        setAuthenticated(status: true, user: $user) @client
-    }
-`;
