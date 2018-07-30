@@ -28,6 +28,59 @@ export const getArticles = gql`
     }
 `;
 
+export const getNewsFeedArticles = gql`
+    query newsFeedArticles($language: LanguageCodeType!) {
+        newsFeedArticles(language: $language) {
+            following {
+                id
+                author {
+                    id
+                    email
+                    firstName
+                    lastName
+                    }
+                images {
+                    id
+                    path
+                    }
+                videos {
+                    id
+                    path
+                    }
+                i18n {
+                    title
+                    description
+                    }
+                created_at
+                updated_at
+            }
+            others {
+                id
+                author {
+                    id
+                    email
+                    firstName
+                    lastName
+                    }
+                images {
+                    id
+                    path
+                    }
+                videos {
+                    id
+                    path
+                    }
+                i18n {
+                    title
+                    description
+                    }
+                created_at
+                updated_at
+            }
+        }
+    }
+`;
+
 export const handleArticle = gql`
     mutation handleArticle($language: LanguageCodeType!, $article: ArticleInput, $options: ArticleOptions) {
         handleArticle(language: $language, article: $article, options: $options) {
