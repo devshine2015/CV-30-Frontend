@@ -34,7 +34,7 @@ const HeaderHOC = compose(
             fetchPolicy: 'network-only'
         }),
     }),
-    withState('count', 'setCount', ({ profile }) => profile.featuredArticles ? profile.featuredArticles.length - 1 : 0),
+    withState('count', 'setCount', ({ currentProfile: { profile } }) => profile.featuredArticles ? profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
@@ -94,7 +94,7 @@ const HeaderHOC = compose(
                 console.log(err)
             }
         },
-        getSignedUrl: ({ profile }) => async (file, callback) => {
+        getSignedUrl: ({ currentProfile: { profile } }) => async (file, callback) => {
             const params = {
                 fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
@@ -167,7 +167,7 @@ const HeaderHOC = compose(
         closeStoryEditor: ({ setIsArticlePopUpOpen }) => () => {
             setIsArticlePopUpOpen(false);
         },
-        toggleFollow: props => async (isFollowing) => {
+        toggleFollow: props => async isFollowing => {
             let {
                 handleFollow, match
             } = props;
@@ -207,14 +207,15 @@ const HeaderHOC = compose(
 );
 
 
-const Header = (props) => {
-    const { profile } = props;
+const Header = props => {
+    const { currentProfile: { profile } } = props;
     const { lang, profileId } = props.match.params;
 
     if (!profile || (profileId && profile.id !== profileId))
-        return <Redirect to={`/${props.match.params.lang}/profile/`} />;
+        return <Redirect to={`/${props.match.params.lang}/myProfile/`} />;
 
-    const { editMode,
+    const {
+        getEditMode: { editMode: { status: editMode } },
         closeColorPicker, toggleColorPicker, colorPickerAnchor,
         removeStory,
         openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,

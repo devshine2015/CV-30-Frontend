@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 import { defaultUserAvatar } from '../../constants/utils';
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import Loader from '../../components/Loader';
+import EditToggle from '../../components/EditToggle';
 
 const NewsFeed = props => {
-    const { formData, handleFormChange, switchIsArticle, isArticle,
+    const {
+        formData, handleFormChange, switchIsArticle, isArticle,
         currentUser: { loading, profile },
         match: { params: { lang } }
     } = props;

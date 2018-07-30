@@ -1,9 +1,9 @@
-import { compose, pure, withState, withHandlers } from 'recompose';
+import { compose, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
 import UserProfile from './component';
-import { currentProfileQuery, getCurrentUser } from '../../../store/queries'
+import { currentProfileQuery, getCurrentUser, getEditMode } from '../../../store/queries'
 
 const UserProfileHOC = compose(
     withRouter,
@@ -21,12 +21,7 @@ const UserProfileHOC = compose(
     graphql(getCurrentUser, {
         name: 'currentUser'
     }),
-    withState('editMode', 'updateEditMode', false),
-    withHandlers({
-        switchEditMode: ({ editMode, updateEditMode }) => () => {
-            updateEditMode(!editMode);
-        }
-    }),
+    graphql(getEditMode, { name: 'getEditMode' }),
     pure
 );
 

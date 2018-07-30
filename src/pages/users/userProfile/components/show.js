@@ -22,11 +22,11 @@ const ShowHOC = compose(
     withState('newXP', 'setNewXP', false),
     withState('newProj', 'setNewProj', false),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
-    withState('story', 'setMyStory', ({ profile }) => (profile.story && profile.story.i18n) ? profile.story.i18n[0].description : ''),
+    withState('story', 'setMyStory', ({ currentProfile: { profile } }) => (profile.story && profile.story.i18n) ? profile.story.i18n[0].description : ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', true),
-    withState('isSalaryPublic', 'setSalaryPrivacy', ({ profile }) => profile.salary ? profile.salary.isPublic : false),
-    withState('desiredSalary', 'setDesiredSalary', ({ profile }) => profile.salary ? profile.salary.amount : 0),
+    withState('isSalaryPublic', 'setSalaryPrivacy', ({ currentProfile: { profile } }) => profile.salary ? profile.salary.isPublic : false),
+    withState('desiredSalary', 'setDesiredSalary', ({ currentProfile: { profile } }) => profile.salary ? profile.salary.amount : 0),
     withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         addNewExperience: ({ newXP, setNewXP }) => () => {
@@ -120,8 +120,10 @@ const ShowHOC = compose(
     pure
 );
 
-const Show = (props) => {
-    const { editMode, profile,
+const Show = props => {
+    const {
+        getEditMode: { editMode: { status: editMode } },
+        currentProfile: { profile },
         newXP, newProj, addNewExperience, closeNewExperience, addNewProject, closeNewProject,
         editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
         openArticlePopUp, isPopUpOpen, closeArticlePopUp,

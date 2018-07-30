@@ -5,10 +5,10 @@ import { FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core'
 import Header from './components/header';
 import Show from './components/show';
 import Feed from './components/feed';
+import EditToggle from '../../../components/EditToggle';
 
 const Team = props => {
     const {
-        editMode, switchEditMode,
         queryTeam: { loading, team },
         currentUser: { auth: { currentUser: { id: userId } } }
     } = props;
@@ -22,17 +22,7 @@ const Team = props => {
     return (
         <div className='teamRoot'>
             {(team.company.owner.id === userId) &&
-                <FormGroup row className='editToggle'>
-                    <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
-                    <ToggleSwitch checked={editMode} onChange={switchEditMode}
-                        classes={{
-                            switchBase: 'colorSwitchBase',
-                            checked: 'colorChecked',
-                            bar: 'colorBar',
-                        }}
-                        color="primary" />
-                    <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
-                </FormGroup>
+                <EditToggle />
             }
             <Header {...props} />
             <React.Fragment>

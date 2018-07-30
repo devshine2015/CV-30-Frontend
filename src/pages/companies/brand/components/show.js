@@ -92,7 +92,8 @@ const ShowHOC = compose(
 
 const Show = (props) => {
     const {
-        expanded, expandPanel, editMode,
+        expanded, expandPanel,
+        getEditMode: { editMode: { status: editMode } },
         companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } },
         edited, editPanel, addQA, newQA,
         match: { params: { lang, companyId } },

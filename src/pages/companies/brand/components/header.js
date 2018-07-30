@@ -254,8 +254,10 @@ const HeaderHOC = compose(
     pure
 )
 
-const Header = (props) => {
-    const { headline, updateHeadline, submitHeadline, match, editMode, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
+const Header = props => {
+    const {
+        getEditMode: { editMode: { status: editMode } },
+        headline, updateHeadline, submitHeadline, match, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
         companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField, teams, hasLogo, logoContentType, hasCover, coverContentType, coverBackground } },
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress, refetchBgImage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker,

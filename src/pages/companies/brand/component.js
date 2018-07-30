@@ -6,10 +6,11 @@ import Header from './components/header';
 import CompanyShow from './components/show';
 import CompanyFeed from './components/feed';
 import Loader from '../../../components/Loader';
+import EditToggle from '../../../components/EditToggle';
 
-const Brand = (props) => {
-    const {
-        editMode, switchEditMode,
+const Brand = props => {
+    console.log(props);
+    const {       
         companyQuery: { loading, company },
         currentUser: { auth: { currentUser } }
     } = props;
@@ -25,17 +26,7 @@ const Brand = (props) => {
     return (
         <div className='brandRoot'>
             {(company.owner.id === userId) &&
-                <FormGroup row className='editToggle'>
-                    <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
-                    <ToggleSwitch checked={editMode} onChange={switchEditMode}
-                        classes={{
-                            switchBase: 'colorSwitchBase',
-                            checked: 'colorChecked',
-                            bar: 'colorBar',
-                        }}
-                        color="primary" />
-                    <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
-                </FormGroup>
+                <EditToggle />
             }
             <Header {...props} />
             <React.Fragment>

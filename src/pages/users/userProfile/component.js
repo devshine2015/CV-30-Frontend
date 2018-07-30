@@ -7,37 +7,26 @@ import UserProfileShow from './components/show';
 import UserProfileFeed from './components/feed';
 import Header from './components/header';
 import Loader from '../../../components/Loader';
+import EditToggle from '../../../components/EditToggle';
 
 const UserProfile = props => {
-    console.log(props);
     const {
-        editMode, switchEditMode,
         currentProfile: { loading, profile },
         currentUser: { auth: { currentUser } }
     } = props;
 
     const { id: userId } = currentUser || {};
 
-    const Show = () => <UserProfileShow editMode={editMode} profile={profile} />
+    const Show = () => <UserProfileShow {...props} />
 
     if (loading)
         return <Loader />
 
     return (<div className='userProfileRoot'>
         {(profile.id === userId) &&
-            <FormGroup row className='editToggle'>
-                <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
-                <ToggleSwitch checked={editMode} onChange={switchEditMode}
-                    classes={{
-                        switchBase: 'colorSwitchBase',
-                        checked: 'colorChecked',
-                        bar: 'colorBar',
-                    }}
-                    color="primary" />
-                <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
-            </FormGroup>
+            <EditToggle />
         }
-        <Header profile={profile} editMode={editMode} />
+        <Header {...props} />
         <React.Fragment>
             <Switch>
                 <Route exact path='/:lang(en|ro)/myProfile/feed' component={UserProfileFeed} />

@@ -73,7 +73,7 @@ const HeaderHOC = compose(
 
 const Header = props => {
     const {
-        editMode,
+        getEditMode: { editMode: { status: editMode } },
         match: { params: { lang, teamId } },
         queryTeam: { team: { company, hasProfileCover, coverContentType, coverBackground, name } },
         colorPickerAnchor, toggleColorPicker, closeColorPicker, refetchBgImage, forceCoverRender,
@@ -84,8 +84,8 @@ const Header = props => {
     let isFollowing = false;
     if (isFollowAllowed) {
         const { profile: { followingTeams } } = currentUser;
-        isFollowing = followingTeams.find(te=> te.id === teamId) !== undefined;
-    }   
+        isFollowing = followingTeams.find(te => te.id === teamId) !== undefined;
+    }
 
     let headerStyle = null;
 
@@ -131,7 +131,7 @@ const Header = props => {
                         )}
                     </FormattedMessage>
 
-                    <FormattedMessage id="headerLinks.follow" defaultMessage={isFollowing?"Unfollow":"Follow"} description="User header follow button">
+                    <FormattedMessage id="headerLinks.follow" defaultMessage={isFollowing ? "Unfollow" : "Follow"} description="User header follow button">
                         {(text) => isFollowAllowed ? (
                             <Button className='headerButton' onClick={() => toggleFollow(isFollowing)}>
                                 {text}

@@ -55,7 +55,7 @@ const ShowHOC = compose(
 );
 const Show = props => {
     const {
-        editMode,
+        getEditMode: { editMode: { status: editMode } },
         isArticlePopupOpen, openArticlePopUp, closeArticlePopUp,
         isMembersPopupOpen, openMembersPopup, closeMembersPopup,
         match: { params: { lang, teamId } },

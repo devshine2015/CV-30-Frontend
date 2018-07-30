@@ -1,9 +1,9 @@
 import Team from './component';
-import { compose, pure, withState, withHandlers } from 'recompose';
+import { compose, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
-import { queryTeam, getCurrentUser } from '../../../store/queries';
+import { queryTeam, getCurrentUser, getEditMode } from '../../../store/queries';
 
 
 const TeamHOC = compose(
@@ -21,14 +21,7 @@ const TeamHOC = compose(
     graphql(getCurrentUser, {
         name: 'currentUser'
     }),
-    withState('editMode', 'updateEditMode', props => {
-        return (props.location.state && props.location.state.editMode) ? props.location.state.editMode : false;
-    }),
-    withHandlers({
-        switchEditMode: ({ editMode, updateEditMode }) => () => {
-            updateEditMode(!editMode);
-        }
-    }),
+    graphql(getEditMode, { name: 'getEditMode' }),
     pure
 );
 export default TeamHOC(Team);
