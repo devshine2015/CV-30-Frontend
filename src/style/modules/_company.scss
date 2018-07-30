@@ -231,6 +231,7 @@
         }
         .teamSliderItem {
             width: 320px;
+            min-height: 100px;
             position: relative;
             text-decoration: none;
             @media (max-width: 960px) {

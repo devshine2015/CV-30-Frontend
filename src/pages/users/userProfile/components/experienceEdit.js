@@ -7,6 +7,7 @@ import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
 
 import { setExperience, setProject, currentProfileQuery, googleMapsQuery } from '../../../../store/queries';
+import Feedback from '../../../../components/Feedback';
 
 const ExperienceEditHOC = compose(
     withRouter,
@@ -39,6 +40,7 @@ const ExperienceEditHOC = compose(
     withState('isSaving', 'setIsSaving', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
+    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         handleFormChange: props => event => {
             if (typeof event.name !== undefined && event.name === 'video') {
@@ -57,7 +59,7 @@ const ExperienceEditHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        submitForm: ({ formData, setExperience, setProject, type, match, closeEditor }) => async () => {
+        submitForm: ({ formData, setExperience, setProject, type, match, closeEditor, setFeedbackMessage }) => async () => {
             let { id, title, description, position, company, startDate, endDate, isCurrent, images, video, location } = formData;
             const videos = [];
             if (video.path && !!video.path.length) {
@@ -68,9 +70,8 @@ const ExperienceEditHOC = compose(
                     sourceType: type
                 });
             }
-            debugger;
-
             let data = { id, location, title, description, position, company, startDate, endDate, isCurrent, videos, images };
+            debugger;
             switch (type) {
                 case 'experience':
                     try {
@@ -88,11 +89,13 @@ const ExperienceEditHOC = compose(
                                 }
                             }]
                         });
+                        setFeedbackMessage({ type: 'success', message: 'File uploaded successfully.' });
                     }
+
                     catch (err) {
                         console.log(err);
+                        setFeedbackMessage({ type: 'error', message: err.message });
                     }
-                    closeEditor();
                     break;
                 case 'project':
                     try {
@@ -110,11 +113,12 @@ const ExperienceEditHOC = compose(
                                 }
                             }]
                         });
+                        setFeedbackMessage({ type: 'success', message: 'File uploaded successfully.' });
                     }
                     catch (err) {
                         console.log(err);
+                        setFeedbackMessage({ type: 'error', message: err.message });
                     }
-                    closeEditor();
                     break;
                 default:
                     return false;
@@ -135,7 +139,7 @@ const ExperienceEditHOC = compose(
             });
             setAutocompleteInit(true);
         },
-        getSignedUrl: ({ formData, type }) => async (file, callback) => {
+        getSignedUrl: ({ formData, type, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: file.name,
                 contentType: file.type,
@@ -156,7 +160,8 @@ const ExperienceEditHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                setFeedbackMessage({ type: 'error', message: error || error.message });
+                callback(error);
             }
         },
         onUploadStart: ({ setIsSaving, formData, setFormData, type }) => (file, next) => {
@@ -191,7 +196,8 @@ const ExperienceEditHOC = compose(
             const { setIsSaving } = props;
             console.log('success!');
             setIsSaving(false);
-        }
+        },
+        closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
     }),
     lifecycle({
         componentDidMount() {
@@ -213,7 +219,8 @@ const ExperienceEdit = (props) => {
         submitForm,
         type,
         autocompleteHandle,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving
+        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving,
+        feedbackMessage, closeFeedback
     } = props;
     const { position, company, location, startDate, endDate, isCurrent, description, video } = formData;
 
@@ -348,6 +355,10 @@ const ExperienceEdit = (props) => {
                     <Icon>done</Icon>
                 </IconButton>
             </section>
+            <Feedback
+                handleClose={closeFeedback}
+                {...feedbackMessage}
+            />
         </form>
     )
 };

@@ -6,6 +6,7 @@ import fields from '../../../../constants/contact';
 import { setContact, currentProfileQuery } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
+import Feedback from '../../../../components/Feedback';
 
 const EditContactDetailsHOC = compose(
     withRouter,
@@ -27,6 +28,7 @@ const EditContactDetailsHOC = compose(
 
     }),
     withState('anchorEl', 'setAnchorEl', null),
+    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         handleClick: ({ setAnchorEl }) => event => {
             setAnchorEl(event.currentTarget);
@@ -57,7 +59,7 @@ const EditContactDetailsHOC = compose(
             await delete contact[key];
             setFormData(contact);
         },
-        updateContact: ({ setContact, formData, match }) => async () => {
+        updateContact: ({ setContact, formData, match, setFeedbackMessage }) => async () => {
             try {
                 await setContact({
                     variables: {
@@ -72,17 +74,23 @@ const EditContactDetailsHOC = compose(
                             id: match.params.profileId
                         }
                     }]
-                })
+                });
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
                 console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
-        }
+        },
+        closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
     }),
     pure
 );
 
-const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, handleFormChange, formData, removeTextField, open, updateContact }) => {
+const EditContactDetails = ({
+    anchorEl, handleClick, handleClose, addField, handleFormChange, formData,
+    removeTextField, open, updateContact, feedbackMessage, closeFeedback
+}) => {
     return (
         <div className={open ? 'editContactDetails open' : 'editContactDetails'}>
             <p className='message'>
@@ -155,6 +163,10 @@ const EditContactDetails = ({ anchorEl, handleClick, handleClose, addField, hand
                     <Icon>done</Icon>
                 </IconButton>
             </form>
+            <Feedback
+                handleClose={closeFeedback}
+                {...feedbackMessage}
+            />
         </div>
     );
 };

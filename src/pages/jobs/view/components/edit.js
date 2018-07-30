@@ -17,6 +17,7 @@ import fields from '../../../../constants/contact';
 import BenefitsList from '../../../../constants/benefits';
 import { teamsQuery, handleJob } from '../../../../store/queries';
 import Loader from '../../../../components/Loader';
+import Feedback from '../../../../components/Feedback';
 
 const EditHOC = compose(
     graphql(teamsQuery, {
@@ -50,7 +51,7 @@ const EditHOC = compose(
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('anchorEl', 'setAnchorEl', null),
-
+    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.target;
@@ -61,7 +62,7 @@ const EditHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
-        getSignedUrl: () => async (file, callback) => {
+        getSignedUrl: ({ setFeedbackMessage }) => async (file, callback) => {
             let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
             let fName = ['job', getExtension].join('.');
 
@@ -83,13 +84,9 @@ const EditHOC = compose(
                 callback(responseJson);
             } catch (error) {
                 console.error(error);
-                callback(error)
+                callback(error);
+                setFeedbackMessage({ type: 'error', message: error || error.message });
             }
-        },
-        renameFile: () => filename => {
-            let getExtension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['job', getExtension].join('.');
-            return fName;
         },
         onUploadStart: ({ setIsUploading }) => (file, next) => {
             let size = file.size;
@@ -114,7 +111,7 @@ const EditHOC = compose(
         updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
         updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
 
-        publishJob: ({ handleJob, formData, match, history }) => async () => {
+        publishJob: ({ handleJob, formData, match, setFeedbackMessage }) => async () => {
             const { id, companyId, teamId, title, description, expireDate, idealCandidate } = formData;
             try {
                 await handleJob({
@@ -125,10 +122,11 @@ const EditHOC = compose(
                         }
                     }
                 });
-
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
                 console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
         },
 
@@ -162,7 +160,8 @@ const Edit = props => {
         updateDescription, updateIdealCandidate,
         teamsQuery: { loading, teams },
         anchorEl, handleClick, handleClose, addField, formData, removeTextField,
-        publishJob
+        publishJob,
+        feedbackMessage, closeFeedback
     } = props;
 
     if (loading)
@@ -387,6 +386,10 @@ const Edit = props => {
                     </div>
                 </Grid>
             </Grid>
+            <Feedback
+                handleClose={closeFeedback}
+                {...feedbackMessage}
+            />
         </React.Fragment>
     );
 }

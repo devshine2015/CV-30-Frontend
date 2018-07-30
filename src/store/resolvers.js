@@ -29,7 +29,6 @@ export default {
                     currentUser: user
                 }
             };
-            console.log(data);
             cache.writeData({ data });
             return null;
         },

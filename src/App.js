@@ -29,6 +29,8 @@ import NewCompany from './pages/companies/new';
 import CompanySettings from './pages/companies/settings';
 import Article from './pages/articles';
 
+import ProtectedRoute from './components/ProtectedRoute';
+
 
 
 //translation stuff
@@ -61,12 +63,12 @@ const CVRouter = (props) => {
 
           <Route path='/:lang(en|ro)/news' exact component={NewsFeed} />
           <Route exact path='/:lang(en|ro)/companies' component={CompaniesList} />
-          <Route exact path='/:lang(en|ro)/companies/new' component={NewCompany} />
-          <Route exact path='/:lang(en|ro)/company/:companyId/settings' component={CompanySettings} />
+          <ProtectedRoute exact path='/:lang(en|ro)/companies/new' component={NewCompany} />
+          <ProtectedRoute exact path='/:lang(en|ro)/company/:companyId/settings' component={CompanySettings} />
           <Route path='/:lang(en|ro)/company/:companyId' component={Brand} />
           <Route path='/:lang(en|ro)/team/:teamId' component={Team} />
           <Route path='/:lang(en|ro)/jobs' exact component={Jobs} />
-          <Route path='/:lang(en|ro)/jobs/new' exact component={NewJob} />
+          <ProtectedRoute path='/:lang(en|ro)/jobs/new' exact component={NewJob} />
           <Route path='/:lang(en|ro)/job/:jobId' exact component={Job} />
           <Route path='/:lang(en|ro)/people' exact component={UsersList} />
           <Route exact path='/:lang(en|ro)/profile/feed' component={UserProfile} />
@@ -74,7 +76,7 @@ const CVRouter = (props) => {
           <Route path='/:lang(en|ro)/profile/:profileId' component={UserProfile} />
           <Route path='/:lang(en|ro)/article/:articleId' component={Article} />
           
-          <Route exact path='/:lang(en|ro)/myProfile/settings' component={UserProfileSettings} />
+          <ProtectedRoute exact path='/:lang(en|ro)/myProfile/settings' component={UserProfileSettings} />
           <Route  path='/:lang(en|ro)/myProfile/' component={UserProfile} />
 
         </Switch>

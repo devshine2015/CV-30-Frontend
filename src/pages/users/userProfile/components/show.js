@@ -13,6 +13,7 @@ import { pure, withState, withHandlers } from 'recompose';
 import fields from '../../../../constants/contact';
 import ArticlePopUp from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
+import Feedback from '../../../../components/Feedback';
 
 const ShowHOC = compose(
     withRouter,
@@ -26,6 +27,7 @@ const ShowHOC = compose(
     withState('contactExpanded', 'setContactExpanded', true),
     withState('isSalaryPublic', 'setSalaryPrivacy', ({ profile }) => profile.salary ? profile.salary.isPublic : false),
     withState('desiredSalary', 'setDesiredSalary', ({ profile }) => profile.salary ? profile.salary.amount : 0),
+    withState('feedbackMessage', 'setFeedbackMessage', null),
     withHandlers({
         addNewExperience: ({ newXP, setNewXP }) => () => {
             setNewXP(!newXP);
@@ -52,7 +54,7 @@ const ShowHOC = compose(
         updateStory: ({ setMyStory }) => text => {
             setMyStory(text);
         },
-        saveStory: ({ setStory, story, match }) => async () => {
+        saveStory: ({ setStory, story, match, setFeedbackMessage }) => async () => {
             try {
                 await setStory({
                     variables: {
@@ -71,15 +73,17 @@ const ShowHOC = compose(
                         }
                     }]
                 });
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
                 console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
         },
         updateDesiredSalary: ({ setDesiredSalary }) => salary => {
             setDesiredSalary(salary);
         },
-        saveDesiredSalary: ({ setSalary, isSalaryPublic, desiredSalary, match }) => async () => {
+        saveDesiredSalary: ({ setSalary, isSalaryPublic, desiredSalary, match, setFeedbackMessage }) => async () => {
             try {
                 await setSalary({
                     variables: {
@@ -99,9 +103,11 @@ const ShowHOC = compose(
                         }
                     }]
                 });
+                setFeedbackMessage({ type: 'success', message: 'Changes saved successfully.' });
             }
             catch (err) {
                 console.log(err);
+                setFeedbackMessage({ type: 'error', message: err.message });
             }
         },
         openArticlePopUp: ({ setIsPopUpOpen }) => () => {
@@ -121,7 +127,8 @@ const Show = (props) => {
         openArticlePopUp, isPopUpOpen, closeArticlePopUp,
         toggleSalaryPrivate,
         story, updateStory, saveStory,
-        updateDesiredSalary, isSalaryPublic, desiredSalary, saveDesiredSalary
+        updateDesiredSalary, isSalaryPublic, desiredSalary, saveDesiredSalary,
+        feedbackMessage, closeFeedback
     } = props;
 
     const { contact, experience, projects, aboutMeArticles, salary } = profile;
@@ -306,6 +313,10 @@ const Show = (props) => {
                     </div>
                 </div>
             </Grid>
+            <Feedback
+                handleClose={closeFeedback}
+                {...feedbackMessage}
+            />
         </Grid>
     );
 };

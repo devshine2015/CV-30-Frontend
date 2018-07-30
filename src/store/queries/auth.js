@@ -58,6 +58,7 @@ export const IS_AUTHENTICATED = gql`
         auth @client {
             __typename
             loggedIn
+            currentUser
         }
     }
 `;

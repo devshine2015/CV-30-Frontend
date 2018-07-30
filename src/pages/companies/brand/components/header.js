@@ -261,7 +261,7 @@ const Header = (props) => {
         toggleColorPicker, colorPickerAnchor, closeColorPicker,
         forceLogoRender, forceCoverRender,
         toggleFollow, currentUser,
-        feedbackMessage, closeFeedback,
+        feedbackMessage, closeFeedback
     } = props;
     const { lang, companyId } = match.params;
 
@@ -293,7 +293,7 @@ const Header = (props) => {
         <div className='header' style={headerStyle}>
             <Grid container className='headerLinks'>
                 <Grid item lg={3} md={5} sm={12} xs={12} className='userAvatar'>
-                    <Avatar alt={avatar} src={avatar} className='avatar'/>
+                    <Avatar alt={avatar} src={avatar} className='avatar' />
                     <div className='avatarTexts'>
                         <h3>{name}</h3>
                         <h4>{activityField}</h4>
