@@ -8,6 +8,7 @@ import { s3BucketURL, profilesFolder } from '../../../constants/s3';
 const articleAuthorAvatar = props => {
     const { hasAvatar, avatarContentType, id, firstName, lastName, email } = props.profile;
     const avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : defaultUserAvatar;
+    console.log(props.profile.hasAvatar, avatar);
 
     return  (
         <Link to={`/${props.lang}/profile/${id}`}>

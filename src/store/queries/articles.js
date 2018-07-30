@@ -9,19 +9,21 @@ export const getArticles = gql`
                 email
                 firstName
                 lastName
-                }
+                hasAvatar
+                avatarContentType
+            }
             images {
                 id
                 path
-                }
+            }
             videos {
                 id
                 path
-                }
+            }
             i18n {
                 title
                 description
-                }
+            }
             createdAt
             updatedAt
         }
@@ -38,19 +40,21 @@ export const getNewsFeedArticles = gql`
                     email
                     firstName
                     lastName
-                    }
+                    hasAvatar
+                    avatarContentType
+                }
                 images {
                     id
                     path
-                    }
+                }
                 videos {
                     id
                     path
-                    }
+                }
                 i18n {
                     title
                     description
-                    }
+                }
                 createdAt
                 updatedAt
             }
@@ -61,19 +65,21 @@ export const getNewsFeedArticles = gql`
                     email
                     firstName
                     lastName
-                    }
+                    hasAvatar
+                    avatarContentType
+                }
                 images {
                     id
                     path
-                    }
+                }
                 videos {
                     id
                     path
-                    }
+                }
                 i18n {
                     title
                     description
-                    }
+                }
                 createdAt
                 updatedAt
             }
@@ -99,6 +105,8 @@ export const getArticle = gql`
                 email
                 firstName
                 lastName
+                hasAvatar
+                avatarContentType
             }
             images {
                 id
