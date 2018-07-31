@@ -83,7 +83,7 @@ export const getEditMode = gql`
 
 export const getFeedbackMessage = gql`
     query getFeedbackMessage {
-        feedbackMessage {
+        feedbackMessage @client {
             __typename
             status
             message

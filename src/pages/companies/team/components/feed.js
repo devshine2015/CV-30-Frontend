@@ -24,7 +24,6 @@ const FeedHOC = compose(
 );
 
 const Feed = props => {
-    console.log(props);
     const {
         feedArticlesQuery,
     } = props;

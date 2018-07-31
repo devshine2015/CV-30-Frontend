@@ -8,9 +8,10 @@ export default compose(
         name: 'logout'
     }),
     withHandlers({
-        doLogout: ({ logout, client }) => async () => {
+        doLogout: ({ logout, client, history }) => async () => {
             await logout();
             client.resetStore();
+            history.push("/");
         }
     }),
     pure

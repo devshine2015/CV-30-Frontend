@@ -16,6 +16,7 @@ import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
 import { handleLandingPage, landingPage, setFeedbackMessage, getCurrentUser } from '../../../store/queries';
+import Loader from '../../../components/Loader';
 
 const HeaderHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
@@ -90,10 +91,13 @@ const Header = props => {
         feedbackMessage, closeFeedback,
         headline, updateHeadline, submitHeadline,
         toggleColorPicker, closeColorPicker, colorPickerAnchor, refetchBgImage, forceCoverRender,
-        landingPage: { landingPage },
-        currentUser: { auth: { currentUser }}
+        landingPage: { loading, landingPage }
     } = props;
 
+    if (loading || props.currentUser.loading)
+        return <Loader />;
+
+    const { auth: { currentUser } } = props.currentUser;
     const god = currentUser ? currentUser.god : false;
     const editMode = god ? props.editMode : false;
 
