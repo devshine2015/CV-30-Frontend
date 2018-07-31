@@ -3,7 +3,7 @@ import { Grid, Button, Icon, Avatar, TextField, FormGroup, FormLabel, Switch as 
 import { defaultUserAvatar } from '../../constants/utils';
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import Loader from '../../components/Loader';
-import ArticleItem from './components/articleItem';
+import ArticlesList from './components/articlesList';
 
 const NewsFeed = props => {
     const {
@@ -120,7 +120,7 @@ const NewsFeed = props => {
                         </div>
                     </section>
                     <section className='articlesList'>
-                        {followingArticles.length > 0 && followingArticles.map((article) => (<ArticleItem article={article} key={article.id} />))}
+                        <ArticlesList articles={followingArticles} />
                     </section>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>

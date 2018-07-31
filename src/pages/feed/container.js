@@ -3,7 +3,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
-import { currentProfileQuery, getNewsFeedArticles } from '../../store/queries'
+import { currentProfileQuery, getNewsFeedArticles } from '../../store/queries';
 
 const NewsFeedHOC = compose(
     withRouter,
