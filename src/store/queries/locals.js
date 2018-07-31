@@ -47,6 +47,7 @@ export const getCurrentUser = gql`
                 email
                 hasAvatar
                 avatarContentType
+                god
                  __typename
             }
         }

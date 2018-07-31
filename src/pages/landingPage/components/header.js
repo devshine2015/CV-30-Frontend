@@ -15,11 +15,12 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
-import { handleLandingPage, landingPage, setFeedbackMessage } from '../../../store/queries';
+import { handleLandingPage, landingPage, setFeedbackMessage, getCurrentUser } from '../../../store/queries';
 
 const HeaderHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+    graphql(getCurrentUser, { name: 'currentUser' }),
 
     withState('headline', 'setHeadline', props => {
         try {
@@ -85,12 +86,16 @@ const HeaderHOC = compose(
 
 const Header = props => {
     const {
-        editMode, switchEditMode,
+        switchEditMode,
         feedbackMessage, closeFeedback,
         headline, updateHeadline, submitHeadline,
         toggleColorPicker, closeColorPicker, colorPickerAnchor, refetchBgImage, forceCoverRender,
-        landingPage: { landingPage }
+        landingPage: { landingPage },
+        currentUser: { auth: { currentUser }}
     } = props;
+
+    const god = currentUser ? currentUser.god : false;
+    const editMode = god ? props.editMode : false;
 
     const { coverBackground, coverContentType, hasCover } = landingPage || {};
 
@@ -108,17 +113,20 @@ const Header = props => {
     }
     return (
         <div className='header' style={headerStyle}>
-            <FormGroup row className='editToggle'>
-                <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
-                <ToggleSwitch checked={editMode} onChange={switchEditMode}
-                    classes={{
-                        switchBase: 'colorSwitchBase',
-                        checked: 'colorChecked',
-                        bar: 'colorBar',
-                    }}
-                    color="primary" />
-                <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
-            </FormGroup>
+            {
+                god &&
+                <FormGroup row className='editToggle'>
+                    <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
+                    <ToggleSwitch checked={editMode} onChange={switchEditMode}
+                        classes={{
+                            switchBase: 'colorSwitchBase',
+                            checked: 'colorChecked',
+                            bar: 'colorBar',
+                        }}
+                        color="primary" />
+                    <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
+                </FormGroup>
+            }
             {
                 editMode &&
                 <React.Fragment>

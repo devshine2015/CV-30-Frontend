@@ -12,6 +12,7 @@ export const LoginMutation = gql`
             lastName
             hasAvatar
             avatarContentType
+            god
         }        
     }
 `;

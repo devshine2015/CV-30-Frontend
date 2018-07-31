@@ -155,8 +155,8 @@ const LoginHOC = compose(
                     setLoginError('Something went wrong.');
                     return false;
                 } else {
-                    const { id, email, firstName, lastName, hasAvatar, avatarContentType } = response.data.login;
-                    const currentUser = { id, email, firstName, lastName, hasAvatar, avatarContentType, __typename: 'Profile' };
+                    const { id, email, firstName, lastName, hasAvatar, avatarContentType, god } = response.data.login;
+                    const currentUser = { id, email, firstName, lastName, hasAvatar, avatarContentType, god, __typename: 'Profile' };
                     await authLocal({
                         variables: {
                             status: true,
