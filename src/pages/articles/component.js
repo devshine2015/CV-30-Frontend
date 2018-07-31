@@ -1,33 +1,28 @@
 import React from 'react';
-import { FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
+
 import Edit from './components/edit';
 import Show from './components/show';
 import Loader from '../../components/Loader';
+import EditToggle from '../../components/EditToggle';
 
 const Article = props => {
+    console.log(props);
     const {
-        editMode, switchEditMode,
-        getArticle: { loading, article: { author: { id: authorId } } },
-        currentUser: { auth: { currentUser: { id: userId } } }
+        getEditMode: { editMode: { status: editMode } },
+        getArticle: { loading, article },
+        currentUser: { loading: currentUserLoading, auth: { currentUser } }
     } = props;
 
-    if (loading)
+    if (loading || currentUserLoading)
         return <Loader />
+
+    const { author: { id: authorId } } = article || {};
+    const { id: userId } = currentUser || {};
 
     return (
         <div className='articleRoot'>
             {(authorId === userId) &&
-                <FormGroup row className='editToggle'>
-                    <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
-                    <ToggleSwitch checked={editMode} onChange={switchEditMode}
-                        classes={{
-                            switchBase: 'colorSwitchBase',
-                            checked: 'colorChecked',
-                            bar: 'colorBar',
-                        }}
-                        color="primary" />
-                    <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
-                </FormGroup>
+                <EditToggle />
             }
             {editMode ? <Edit {...props} /> : <Show {...props} />}
         </div>
