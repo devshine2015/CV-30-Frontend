@@ -1,90 +1,72 @@
 import gql from 'graphql-tag';
 
+const standardArticleResult = gql`
+    fragment standardArticleResult on Article {
+        id
+        author {
+            id
+            email
+            firstName
+            lastName
+            hasAvatar
+            avatarContentType
+        }
+        images {
+            id
+            path
+        }
+        videos {
+            id
+            path
+        }
+        i18n {
+            title
+            description
+        }
+        createdAt
+        updatedAt
+    }
+`;
+
 export const getArticles = gql`
     query articles($language: LanguageCodeType!) {
         articles(language: $language) {
-            id
-            author {
-                id
-                email
-                firstName
-                lastName
-                hasAvatar
-                avatarContentType
-            }
-            images {
-                id
-                path
-            }
-            videos {
-                id
-                path
-            }
-            i18n {
-                title
-                description
-            }
-            createdAt
-            updatedAt
+            ...standardArticleResult
         }
     }
+    ${standardArticleResult}
+`;
+
+export const getArticle = gql`
+    query article($id: String!, $language: LanguageCodeType!) {
+        article(id: $id, language: $language) {
+            ...standardArticleResult
+        }
+    }
+    ${standardArticleResult}
 `;
 
 export const getNewsFeedArticles = gql`
     query newsFeedArticles($language: LanguageCodeType!) {
         newsFeedArticles(language: $language) {
             following {
-                id
-                author {
-                    id
-                    email
-                    firstName
-                    lastName
-                    hasAvatar
-                    avatarContentType
-                }
-                images {
-                    id
-                    path
-                }
-                videos {
-                    id
-                    path
-                }
-                i18n {
-                    title
-                    description
-                }
-                createdAt
-                updatedAt
+                ...standardArticleResult
             }
             others {
-                id
-                author {
-                    id
-                    email
-                    firstName
-                    lastName
-                    hasAvatar
-                    avatarContentType
-                }
-                images {
-                    id
-                    path
-                }
-                videos {
-                    id
-                    path
-                }
-                i18n {
-                    title
-                    description
-                }
-                createdAt
-                updatedAt
+                ...standardArticleResult
             }
         }
     }
+    ${standardArticleResult}
+`;
+
+export const getFeedArticles = gql`
+    query feedArticles($language: LanguageCodeType!) {
+        feedArticles(language: $language) {
+            ...standardArticleResult
+        }
+    }
+    ${standardArticleResult}
 `;
 
 export const handleArticle = gql`
@@ -92,36 +74,6 @@ export const handleArticle = gql`
         handleArticle(language: $language, article: $article, options: $options) {
             status
             error
-        }
-    }
-`;
-
-export const getArticle = gql`
-    query article($id: String!, $language: LanguageCodeType!) {
-        article(id: $id, language: $language) {
-            id
-            author {
-                id
-                email
-                firstName
-                lastName
-                hasAvatar
-                avatarContentType
-            }
-            images {
-                id
-                path
-            }
-            videos {
-                id
-                path
-            }
-            i18n {
-                title
-                description
-            }
-            createdAt
-            updatedAt
         }
     }
 `;
