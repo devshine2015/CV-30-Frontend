@@ -10,7 +10,8 @@ const NewsFeed = props => {
         formData, handleFormChange, switchIsArticle, isArticle,
         currentUser: { loading, profile },
         newsFeedArticlesQuery,
-        match: { params: { lang } }
+        match: { params: { lang } },
+        addPost
     } = props;
 
     if (loading || newsFeedArticlesQuery.loading)
@@ -77,9 +78,9 @@ const NewsFeed = props => {
                                         color="primary" />
                                     <FormLabel className={isArticle ? 'active' : ''}>Article</FormLabel>
                                 </FormGroup>
-                                <Button className='postBtn'>
+                                <Button className='postBtn' onClick={addPost}>
                                     Post
-                            </Button>
+                                </Button>
                             </div>
                         </section>
                     }

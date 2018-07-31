@@ -2,8 +2,9 @@ import NewsFeed from './component';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
+import uuid from 'uuidv4';
 
-import { currentProfileQuery, getNewsFeedArticles } from '../../store/queries';
+import { currentProfileQuery, getNewsFeedArticles, handleArticle, setFeedbackMessage } from '../../store/queries';
 
 const NewsFeedHOC = compose(
     withRouter,
@@ -26,6 +27,8 @@ const NewsFeedHOC = compose(
             }
         }),
     }),
+    graphql(handleArticle, { name: 'handleArticle' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', {}),
     withState('isArticle', 'updateIsArticle', false),
     withHandlers({
@@ -40,7 +43,58 @@ const NewsFeedHOC = compose(
         },
         switchIsArticle: ({ isArticle, updateIsArticle }) => () => {
             updateIsArticle(!isArticle);
-        }
+        },
+        addPost: ({ handleArticle, match, formData, setPopupOpen, setFeedbackMessage }) => async () => {
+            const article = {
+                id: uuid(),
+                title: 'Post',
+                images: formData.images,
+                description: formData.postBody
+            };
+
+            if (formData.videoURL) {
+                article.videos = [
+                    {
+                        id: uuid(),
+                        title: formData.videoURL,
+                        sourceType: 'article',
+                        path: formData.videoURL
+                    }
+                ];
+            }
+
+            try {
+                await handleArticle({
+                    variables: {
+                        article,
+                        language: match.params.lang
+                    },
+                    refetchQueries: [{
+                        query: getNewsFeedArticles,
+                        fetchPolicy: 'network-only',
+                        name: 'newsFeedArticlesQuery',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    }]
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+                console.log(err);
+            }
+        },
     }),
     pure
 );
