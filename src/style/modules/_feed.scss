@@ -1,0 +1,102 @@
+.brandFeed,
+.profileFeed,
+.jobFeed {
+    justify-content: center;
+    background: #fff;
+}
+
+.articlesList {
+    .listItem {
+        .articleBody {
+            font-size: 1rem;
+            color: #565656;
+            font-weight: 100;
+            .articleTitle {
+                font-weight: bold;
+            }
+        }
+        .articleMedia {
+            min-height: 480px;
+            background: #d3dce2;
+            margin: 0 -15px;
+        }
+        .itemFooter {
+            margin: 0;
+            position: reltive;
+        }
+        .socialSection {
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            .comments {
+                position: absolute;
+                top: -29px;
+                background: #fff;
+                border-radius: 40px;
+                border: 1px solid #ebebeb;
+                padding: 5px 12px;
+                right: 0;
+                .counter {
+                    font-size: 1rem;
+                    color: #565656;
+                    font-weight: 100;
+                }
+                .commentBtn {
+                    margin-left: 30px;
+                    color: #277dba;
+                    &,
+                    &:hover,
+                    &:active {
+                        background: none;
+                    }
+                    &:hover {
+                        font-weight: bold;
+                    }
+                    &:active {
+                        color: #1b5e8e;
+                    }
+                    .fa-stack {
+                        margin-right: 10px;
+                    }
+                }
+            }
+            .likes {
+                color: #565656;
+                font-weight: 100;
+                font-size: .75rem;
+            }
+            .tags {
+                display: flex;
+                align-items: center;
+                .addTagBtn {
+                    width: 35px;
+                    height: 35px;
+                    background: #277dba;
+                    color: #fff;
+                    margin-right: 15px;
+                }
+                .tag {
+                    font-size: 1rem;
+                    color: #277dba;
+                    margin-right: 20px;
+                    display: inline-flex;
+                    align-items: center;
+                    .votes {
+                        font-weight: bold;
+                        margin-right: 5px;
+                    }
+                    .voteBtn {
+                        color: #277dba;
+                        width: 24px;
+                        height: 24px;
+                        margin-right: 5px;
+                        background: rgba(39, 125, 186, 0.3);
+                        &:hover {
+                            background: rgba(39, 125, 186, 0.6);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
