@@ -3,8 +3,8 @@ import { Grid, Avatar, Button, Icon } from '@material-ui/core';
 import ReactPlayer from 'react-player';
 import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
 
-import { s3BucketURL } from '../../../constants/s3';
-import Loader from '../../../components/Loader';
+import { s3BucketURL } from '../../../../constants/s3';
+import Loader from '../../../../components/Loader';
 import Comment from './comment';
 
 const ArticleShow = props => {

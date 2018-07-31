@@ -2,11 +2,10 @@ import React from 'react';
 
 import Edit from './components/edit';
 import Show from './components/show';
-import Loader from '../../components/Loader';
-import EditToggle from '../../components/EditToggle';
+import Loader from '../../../components/Loader';
+import EditToggle from '../../../components/EditToggle';
 
 const Article = props => {
-    console.log(props);
     const {
         getEditMode: { editMode: { status: editMode } },
         getArticle: { loading, article },

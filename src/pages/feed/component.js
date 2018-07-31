@@ -4,6 +4,7 @@ import { defaultUserAvatar } from '../../constants/utils';
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import Loader from '../../components/Loader';
 import ArticlesList from './components/articlesList';
+import { Redirect} from 'react-router-dom';
 
 const NewsFeed = props => {
     const {
@@ -16,6 +17,9 @@ const NewsFeed = props => {
 
     if (loading || newsFeedArticlesQuery.loading)
         return <Loader />
+    
+    if (isArticle)
+         return <Redirect to={`/${lang}/articles/new`} />;
 
     const { id, firstName, lastName, email, hasAvatar, avatarContentType } = profile || {};
     const { postBody } = formData;

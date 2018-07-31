@@ -13,7 +13,7 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import { handleArticle, setFeedbackMessage } from '../../../store/queries';
+import { handleArticle, setFeedbackMessage } from '../../../../store/queries';
 
 const ArticleEditHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),

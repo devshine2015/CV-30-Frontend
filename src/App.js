@@ -27,7 +27,8 @@ import UsersList from './pages/users/list';
 import CompaniesList from './pages/companies/list';
 import NewCompany from './pages/companies/new';
 import CompanySettings from './pages/companies/settings';
-import Article from './pages/articles';
+import Article from './pages/articles/view';
+import NewArticle from './pages/articles/new';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import Feedback from './components/Feedback';
@@ -76,6 +77,7 @@ const CVRouter = (props) => {
 
           <Route path='/:lang(en|ro)/profile/:profileId' component={UserProfile} />
           <Route path='/:lang(en|ro)/article/:articleId' component={Article} />
+          <Route path='/:lang(en|ro)/articles/new' component={NewArticle} />
 
           <ProtectedRoute exact path='/:lang(en|ro)/myProfile/settings' component={UserProfileSettings} />
           <Route path='/:lang(en|ro)/myProfile/' component={UserProfile} />

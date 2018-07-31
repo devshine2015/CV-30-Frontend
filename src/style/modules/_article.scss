@@ -186,7 +186,8 @@
     }
 }
 
-.articleRoot {
+.articleRoot,
+.newArticleRoot {
     background: #fff;
     margin-top: 65px;
     flex: 1;
@@ -406,5 +407,11 @@
                 }
             }
         }
+    }
+}
+
+.newArticleRoot {
+    .articleEdit {
+        min-height: calc(100vh - 65px);
     }
 }

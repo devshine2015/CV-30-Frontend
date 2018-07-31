@@ -3,7 +3,7 @@ import { compose, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { getArticle, getCurrentUser, getEditMode } from '../../store/queries';
+import { getArticle, getCurrentUser, getEditMode } from '../../../store/queries';
 
 const ArticleHOC = compose(
     withRouter,
