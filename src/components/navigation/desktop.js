@@ -73,7 +73,7 @@ const DesktopNav = props => {
                             <Button aria-owns={profileMenuOpen ? 'profileMenu' : null} aria-haspopup="true" onClick={toggleProfileMenu} className='profileButton' ref={node => {
                                 this.target1 = node;
                             }}>
-                                <Avatar alt="Gabriel" src={avatar} className='avatar' />
+                                <Avatar alt={currentUser.firstName || currentUser.email} src={avatar} className='avatar' />
                                 <span>{currentUser.firstName || currentUser.email}</span>
                             </Button>
                         </Target>

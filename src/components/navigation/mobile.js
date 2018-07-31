@@ -10,7 +10,7 @@ const MobileNav = (props) => {
 
     const {
         localUserData: { loading: localUserLoading, localUser: { timestamp } },
-        currentUser: { loading: currentUserLoading, auth },
+        currentUser: { loading: currentUserLoading, auth: { currentUser } },
         match: { params: { lang } }, doLogout,
         toggleMobileNav, mobileNavOpen, closeMobileNav,
         toggleMobileNotifications, mobileNotificationIsOpen, closeMobileNotifications, notifications,
@@ -20,10 +20,8 @@ const MobileNav = (props) => {
     if (localUserLoading || currentUserLoading)
         return <span>Loading...</span>
 
-    let { currentUser } = auth;
-
     let avatar =
-        (!localUserLoading && currentUser.hasAvatar) ?
+        (!localUserLoading && currentUser && currentUser.hasAvatar) ?
             `${s3BucketURL}/${profilesFolder}/${currentUser.id}/avatar.${currentUser.avatarContentType}?${timestamp}` :
             defaultUserAvatar;
 
@@ -38,8 +36,8 @@ const MobileNav = (props) => {
             <Grid item className='mobileNavContainer' id="mobileMainNav">
                 {/* Buttons */}
                 <Button onClick={toggleMobileProfile} className='profileButton'>
-                    <Avatar alt="Gabriel" src={avatar} className='avatar' />
-                    <span>Gabriel</span>
+                    <Avatar alt={currentUser.firstName || currentUser.email} src={avatar} className='avatar' />
+                    <span>{currentUser.firstName || currentUser.email}</span>
                 </Button>
 
                 <IconButton onClick={toggleMobileNotifications} className='notificationsButton'>
