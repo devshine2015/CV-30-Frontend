@@ -30,9 +30,9 @@ const Feed = props => {
     const articles = feedArticlesQuery.feedArticles ? feedArticlesQuery.feedArticles : [];
 
     return (
-        <Grid container className='mainBody brandShow'>
-            <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                <ArticlesList articles={articles}/>
+        <Grid container className='mainBody jobFeed'>
+            <Grid item md={8} xs={11} className='articlesContainer'>
+                <ArticlesList articles={articles} />
             </Grid>
         </Grid>
     );
