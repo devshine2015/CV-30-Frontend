@@ -116,7 +116,7 @@ const Show = props => {
                             <span className='company'>{companyName}</span>
                             <span className='availableJobs'>(2 jobs)</span>
                         </p>
-                        {isApplyAllowed ? <Button className={didApply ? "appliedButton" : "applyButton"} onClick={() => setApplyToJob(!didApply)}>
+                        {(isApplyAllowed && profile) ? <Button className={didApply ? "appliedButton" : "applyButton"} onClick={() => setApplyToJob(!didApply)}>
                             {didApply ? "Already applied" : "Apply Now"}
                         </Button> : null}
                     </Grid>
