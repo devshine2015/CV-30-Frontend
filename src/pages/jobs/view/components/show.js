@@ -11,11 +11,10 @@ import { handleApplyToJob, getJobQuery, currentProfileQuery } from '../../../../
 const ShowHOC = compose(
     graphql(handleApplyToJob, { name: 'handleApplyToJob' }),
     graphql(currentProfileQuery, {
-        name: 'currentUser',
+        name: 'currentProfile',
         options: (props) => ({
             variables: {
-                language: props.match.params.lang,
-                id: null
+                language: props.match.params.lang
             },
             fetchPolicy: 'network-only'
         }),
@@ -54,7 +53,7 @@ const ShowHOC = compose(
                     }, {
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfile',
                         variables: {
                             language: match.params.lang,
                         }
@@ -70,8 +69,9 @@ const ShowHOC = compose(
 );
 
 const Show = props => {
-    const { loading, job } = props.getJobQuery;
-    if (loading) {
+
+    const { getJobQuery: { loading: jobLoading, job }, currentProfile: { loading: currentProfileLoading, profile } } = props;
+    if (jobLoading || currentProfileLoading) {
         return <Loader />
     } else if (!job) {
         //TODO
@@ -98,11 +98,11 @@ const Show = props => {
         const { title, description, idealCandidate } = i18n[0];
         const { description: companyDescription } = companyText[0];
 
-        let isApplyAllowed = !props.currentUser.loading;
+        let isApplyAllowed = !currentProfileLoading;
         let didApply = false;
         if (isApplyAllowed) {
-            const { currentUser: { profile: { id: currentUserId } } } = props;
-            didApply = job.applicants.find(u=> u.id === currentUserId) !== undefined;
+            const { id: currentUserId } = profile || {};
+            didApply = job.applicants.find(u => u.id === currentUserId) !== undefined;
         }
 
         return (
@@ -116,7 +116,7 @@ const Show = props => {
                             <span className='company'>{companyName}</span>
                             <span className='availableJobs'>(2 jobs)</span>
                         </p>
-                        {isApplyAllowed ? <Button className={didApply ? "appliedButton": "applyButton"} onClick={() => setApplyToJob(!didApply)}>
+                        {isApplyAllowed ? <Button className={didApply ? "appliedButton" : "applyButton"} onClick={() => setApplyToJob(!didApply)}>
                             {didApply ? "Already applied" : "Apply Now"}
                         </Button> : null}
                     </Grid>
@@ -182,7 +182,7 @@ const Show = props => {
                         </section>
 
                         <section className='actions'>
-                            {isApplyAllowed ? <Button className={didApply ? "appliedButton": "applyButton"} onClick={() => setApplyToJob(!didApply)}>
+                            {isApplyAllowed ? <Button className={didApply ? "appliedButton" : "applyButton"} onClick={() => setApplyToJob(!didApply)}>
                                 {didApply ? "Already applied" : "Apply Now"}
                             </Button> : null}
                             <h2 className='sectionTitle'>Share <b>with a friend</b></h2>
