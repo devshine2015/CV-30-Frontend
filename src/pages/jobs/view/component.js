@@ -9,11 +9,13 @@ const Job = props => {
     const {
         getEditMode: { editMode: { status: editMode } },
         getJobQuery: { loading, job },
-        currentUser: { auth: { currentUser: { id: userId } } }
+        currentUser: { loading: currentUserLoading, auth: { currentUser } }
     } = props;
 
-    if (loading)
+    if (loading || currentUserLoading)
         return <Loader />
+
+    const { id: userId } = currentUser || {};
 
     return (
         <div className='jobRoot'>

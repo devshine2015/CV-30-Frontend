@@ -10,18 +10,22 @@ const MobileNav = (props) => {
 
     const {
         localUserData: { loading: localUserLoading, localUser: { timestamp } },
-        currentUser: { auth: { currentUser } },
+        currentUser: { loading: currentUserLoading, auth },
         match: { params: { lang } }, doLogout,
         toggleMobileNav, mobileNavOpen, closeMobileNav,
         toggleMobileNotifications, mobileNotificationIsOpen, closeMobileNotifications, notifications,
         toggleMobileProfile, mobileProfileIsOpen, closeMobileProfile
     } = props;
 
-    if (!currentUser)
-        return null;
+    if (localUserLoading || currentUserLoading)
+        return <span>Loading...</span>
+
+    let { currentUser } = auth;
 
     let avatar =
-        (!localUserLoading && currentUser.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.id}/avatar.${currentUser.avatarContentType}?${timestamp}` : defaultUserAvatar
+        (!localUserLoading && currentUser.hasAvatar) ?
+            `${s3BucketURL}/${profilesFolder}/${currentUser.id}/avatar.${currentUser.avatarContentType}?${timestamp}` :
+            defaultUserAvatar;
 
 
     return (

@@ -9,15 +9,16 @@ import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
 
 const DesktopNav = props => {
+    console.log(props);
     const {
         localUserData: { loading: localUserLoading, localUser: { timestamp } },
-        currentUser: { auth: { currentUser } },
+        currentUser: { loading: currentUserLoading, auth: { currentUser } },
         match: { params: { lang } },
         doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications
     } = props;
 
-    // if (!currentUser)
-    //     return null;
+    if (localUserLoading || currentUserLoading)
+        return <span>Loading...</span>
 
     let avatar =
         (!localUserLoading && currentUser && currentUser.hasAvatar) ?
@@ -72,7 +73,7 @@ const DesktopNav = props => {
                             <Button aria-owns={profileMenuOpen ? 'profileMenu' : null} aria-haspopup="true" onClick={toggleProfileMenu} className='profileButton' ref={node => {
                                 this.target1 = node;
                             }}>
-                                <Avatar alt="Gabriel" src={avatar} className='avatar' />                                    
+                                <Avatar alt="Gabriel" src={avatar} className='avatar' />
                                 <span>{currentUser.firstName || currentUser.email}</span>
                             </Button>
                         </Target>

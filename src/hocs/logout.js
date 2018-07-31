@@ -1,5 +1,6 @@
 import { compose, pure, withHandlers } from "recompose";
 import { graphql, withApollo } from "react-apollo";
+
 import { LogoutMutation } from "../store/queries";
 
 export default compose(

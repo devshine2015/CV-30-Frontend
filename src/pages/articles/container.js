@@ -1,9 +1,9 @@
 import Article from './component';
-import { compose, withState, withHandlers, pure } from 'recompose';
+import { compose, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { getArticle, getCurrentUser } from '../../store/queries';
+import { getArticle, getCurrentUser, getEditMode } from '../../store/queries';
 
 const ArticleHOC = compose(
     withRouter,
@@ -20,12 +20,7 @@ const ArticleHOC = compose(
     graphql(getCurrentUser, {
         name: 'currentUser'
     }),
-    withState('editMode', 'updateEditMode', false),
-    withHandlers({
-        switchEditMode: ({ editMode, updateEditMode }) => () => {
-            updateEditMode(!editMode);
-        }
-    }),
+    graphql(getEditMode, { name: 'getEditMode' }),
     pure
 );
 
