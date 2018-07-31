@@ -22,38 +22,42 @@ const FeedbackHOC = compose(
     pure
 );
 
-const Feedback = ({ handleClose, getFeedbackMessage: { feedbackMessage: { status, message } } }) => (
-    <Snackbar
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-        }}
-        open={!!message}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        ContentProps={{
-            className: `feedbackRoot ${status}`
-        }}
-        message={(
-            <span className={`messageRoot ${status}`}>
-                {(status === 'success') && <CheckCircle className='icon' />}
-                {(status === 'error') && <Error className='icon' />}
-                {(status === 'info') && <Info className='icon' />}
-                {(status === 'warning') && <Warning className='icon' />}
-                {message}
-            </span>
-        )}
-        action={
-            <IconButton
-                key="close"
-                aria-label="Close"
-                color="inherit"
-                className='feedbackCloseBtn'
-                onClick={handleClose}
-            >
-                <Close />
-            </IconButton>}
-    />
-);
+const Feedback = ({ handleClose, getFeedbackMessage: { feedbackMessage } }) => {
+    if (!feedbackMessage) return null;
+    const { status, message } = feedbackMessage;
+    return (
+        <Snackbar
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+            }}
+            open={!!message}
+            autoHideDuration={3000}
+            onClose={handleClose}
+            ContentProps={{
+                className: `feedbackRoot ${status}`
+            }}
+            message={(
+                <span className={`messageRoot ${status}`}>
+                    {(status === 'success') && <CheckCircle className='icon' />}
+                    {(status === 'error') && <Error className='icon' />}
+                    {(status === 'info') && <Info className='icon' />}
+                    {(status === 'warning') && <Warning className='icon' />}
+                    {message}
+                </span>
+            )}
+            action={
+                <IconButton
+                    key="close"
+                    aria-label="Close"
+                    color="inherit"
+                    className='feedbackCloseBtn'
+                    onClick={handleClose}
+                >
+                    <Close />
+                </IconButton>}
+        />
+    );
+};
 
 export default FeedbackHOC(Feedback);
