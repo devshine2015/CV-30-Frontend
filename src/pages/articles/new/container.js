@@ -17,6 +17,8 @@ const NewArticleHOC = compose(
             id: uuid()
         };
     }),
+    withState('isVideoUrl', 'changeMediaType', true),
+    withState('isSaving', 'setIsSaving', false),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.currentTarget;
@@ -34,13 +36,26 @@ const NewArticleHOC = compose(
             changeMediaType(!isVideoUrl);
         },
         saveArticle: props => async () => {
-            const { handleArticle, formData: { id, title, description }, setIsSaving, match, setFeedbackMessage, history } = props;
+            const { handleArticle, formData: { id, title, description, videoURL, images }, setIsSaving, match, setFeedbackMessage, history } = props;
 
             const article = {
                 id,
                 title,
-                description
+                description,
+                images
             };
+
+            if (videoURL) {
+                article.videos = [
+                    {
+                        id: uuid(),
+                        title: videoURL,
+                        sourceType: 'article',
+                        path: videoURL
+
+                    }
+                ];
+            }
 
             try {
                 await handleArticle({
@@ -67,6 +82,73 @@ const NewArticleHOC = compose(
                     }
                 });
             }
+        },
+        getSignedUrl: ({ formData, setFeedbackMessage }) => async (file, callback) => {
+            const params = {
+                fileName: file.name,
+                contentType: file.type,
+                id: formData.id,
+                type: 'article'
+            };
+
+            try {
+                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+                let responseJson = await response.json();
+                callback(responseJson);
+            } catch (error) {
+                console.error(error);
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
+            }
+        },
+        onUploadStart: ({ setIsSaving, formData, setFormData, match }) => (file, next) => {
+            let size = file.size;
+            if (size > 1024 * 1024) {
+                alert('File is too big!');
+            } else {
+                let newFormData = Object.assign({}, formData);
+
+                newFormData.images = [{
+                    id: uuid(),
+                    title: file.name,
+                    sourceType: 'article',
+                    source: formData.id,
+                    path: `/articles/${formData.id}/${file.name}`
+                }];
+                setFormData(newFormData);
+                setIsSaving(true);
+                next(file);
+            }
+        },
+        onError: ({ setFeedbackMessage }) => async error => {
+            console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
+        },
+        onFinishUpload: ({ setIsSaving, setFeedbackMessage }) => async data => {
+            setIsSaving(false);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'success',
+                    message: 'File uploaded successfully.'
+                }
+            });
         }
     }),
     pure
