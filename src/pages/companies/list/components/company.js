@@ -4,7 +4,7 @@ import { Avatar, Tabs, Tab } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import JobItem from './jobItem';
 import TeamMember from './teamMember';
-import { defaultCompanyLogo } from '../../../../constants/utils';
+import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
 import { s3BucketURL, companiesFolder } from '../../../../constants/s3';
 
 const CompanyHOC = compose(
@@ -22,12 +22,12 @@ const Company = props => {
     const { id, name, field, location, noOfEmployees, i18n, jobs, team, hasLogo, logoContentType } = company;
     let avatar =
         hasLogo ? `${s3BucketURL}/${companiesFolder}/${id}/logo.${logoContentType}` : defaultCompanyLogo;
-//style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }}
+    //style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }}
     return (
         <div className='listItem companyListItem'>
             <div className='leftOverlay'>
                 <Link to={`/${lang}/company/${id}`}>
-                    <Avatar alt="Gabriel" src={avatar} className='avatar'  />
+                    <Avatar alt="Gabriel" src={avatar} className='avatar' />
                 </Link>
                 <Link to={`/${lang}/company/${id}`} style={{ textDecoration: 'none' }}>
                     <div className='leftOverlayTexts'>
@@ -44,7 +44,7 @@ const Company = props => {
             </div>
             <div className='itemBody'>
                 <p className='companyDescription'>
-                    {i18n[0].description}
+                    {stripHtmlTags(i18n[0].description)}
                 </p>
                 <Tabs
                     value={activeTab}

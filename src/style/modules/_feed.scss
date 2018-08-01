@@ -14,11 +14,22 @@
             .articleTitle {
                 font-weight: bold;
             }
+            .readMoreLink {
+                font-weight: bold;
+                text-decoration: none;
+                padding-left: 5px;
+                color: #277dba;
+            }
         }
         .articleMedia {
-            min-height: 480px;
+            height: 480px;
             background: #d3dce2;
             margin: 0 -15px;
+            overflow: hidden;
+            img {
+                min-width: 100%;
+                min-height: 100%;
+            }
         }
         .itemFooter {
             margin: 0;

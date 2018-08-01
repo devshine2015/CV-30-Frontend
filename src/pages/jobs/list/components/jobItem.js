@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, CircularProgress, Chip } from '@material-ui/core';
-import { defaultCompanyLogo } from '../../../../constants/utils';
-import {compose}from 'recompose';
+import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
+import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 
 const JobItem = props => {
@@ -74,7 +74,7 @@ const JobItem = props => {
                         ))}
                     </div>
                     <p className='companyDescription'>
-                        {description}
+                        {stripHtmlTags(description)}
                     </p>
                 </div>
 
