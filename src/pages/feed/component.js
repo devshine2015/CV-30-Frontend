@@ -4,7 +4,7 @@ import { defaultUserAvatar } from '../../constants/utils';
 import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import Loader from '../../components/Loader';
 import ArticlesList from './components/articlesList';
-import { Redirect} from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 const NewsFeed = props => {
     const {
@@ -17,9 +17,9 @@ const NewsFeed = props => {
 
     if (loading || newsFeedArticlesQuery.loading)
         return <Loader />
-    
+
     if (isArticle)
-         return <Redirect to={`/${lang}/articles/new`} />;
+        return <Redirect to={`/${lang}/articles/new`} />;
 
     const { id, firstName, lastName, email, hasAvatar, avatarContentType } = profile || {};
     const { postBody } = formData;
@@ -88,48 +88,77 @@ const NewsFeed = props => {
                             </div>
                         </section>
                     }
-                    <section className='profileActions'>
-                        <div className='profileAction'>
-                            <h3>
-                                Conecteaza-ti compania cu urmatorul tau angajat
+                    {id &&
+                        <section className='profileActions'>
+                            <div className='profileAction'>
+                                <h3>
+                                    Conecteaza-ti compania cu urmatorul tau angajat
                             </h3>
-                            <p>
-                                Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
+                                <p>
+                                    Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
                             </p>
 
-                            <Button className='profileActionBtn'>
-                                Adauga o companie
+                                <Button className='profileActionBtn'>
+                                    Adauga o companie
                             </Button>
-                        </div>
-                        <div className='profileAction'>
-                            <h3>
-                                Conecteaza-ti compania cu urmatorul tau angajat
+                            </div>
+                            <div className='profileAction'>
+                                <h3>
+                                    Conecteaza-ti compania cu urmatorul tau angajat
                             </h3>
-                            <p>
-                                Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
+                                <p>
+                                    Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
                             </p>
-                            <Button className='profileActionBtn'>
-                                Adauga o companie
+                                <Button className='profileActionBtn'>
+                                    Adauga o companie
                             </Button>
-                        </div>
-                        <div className='profileAction'>
-                            <h3>
-                                Conecteaza-ti compania cu urmatorul tau angajat
+                            </div>
+                            <div className='profileAction'>
+                                <h3>
+                                    Conecteaza-ti compania cu urmatorul tau angajat
                             </h3>
-                            <p>
-                                Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
+                                <p>
+                                    Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
                             </p>
-                            <Button className='profileActionBtn'>
-                                Adauga o companie
+                                <Button className='profileActionBtn'>
+                                    Adauga o companie
                             </Button>
-                        </div>
-                    </section>
+                            </div>
+                        </section>
+                    }
                     <section className='articlesList'>
                         <ArticlesList articles={followingArticles} />
                     </section>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
+                        <section className='searchFields'>
+                            <TextField
+                                name='generalSearch'
+                                label='Keywords, people or companies'
+                                placeholder='Search for keywords, people or companies...'
+                                type="search"
+                                className='textField'
+                                fullWidth
+                            />
+                            <TextField
+                                name='hastags'
+                                label='#hashtags'
+                                placeholder='Search for hastags...'
+                                type="search"
+                                className='textField'
+                                fullWidth
+                            />
+                        </section>
+                        <section className='promo'>
+                            <span>Promo</span>
+                        </section>
+                        <section className='links'>
+                            <p className='copyright'>Copyright © 2018 CV30. All rights reserved </p>
+                            <Link to={``}>About Us</Link>
+                            <Link to={``}>Terms and Conditions</Link>
+                            <Link to={``}>Q&A</Link>
+                        </section>
                     </div>
                 </Grid>
             </Grid>

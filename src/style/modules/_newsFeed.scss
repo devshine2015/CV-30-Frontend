@@ -111,5 +111,54 @@
                 }
             }
         }
+        .columnRight {
+            .columnRightContent {
+                top: -50px;
+                margin-bottom: -50px;
+                border-top: 1px solid;
+                border-left: 1px solid;
+                border-color: #f0f0f0;
+                padding: 25px 20px;
+                height: calc(100% + 50px);
+                section {
+                    margin-top: 30px;
+                }
+                .promo {
+                    display: flex;
+                    width: 100%;
+                    height: 280px;
+                    background: #8c8c8c;
+                    color: #fff;
+                    align-items: center;
+                    justify-content: center;
+                    span {
+                        font-size: 1rem;
+                        color: #fff;
+                        text-transform: uppercase;
+                    }
+                }
+                .links {
+                    display: flex;
+                    flex-wrap: wrap;
+                    .copyright {
+                        min-width: 100%;
+                        color: #565656;
+                        font-size: 0.75rem;
+                        font-weight: 100;
+                    }
+                    a {
+                        color: #565656;
+                        font-size: 0.85rem;
+                        text-decoration: none;
+                        font-weight: 500;
+                        &:first-of-type:after,
+                        &:last-of-type:before {
+                            content: '|';
+                            margin: 0 15px;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
