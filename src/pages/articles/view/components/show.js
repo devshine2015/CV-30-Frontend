@@ -2,13 +2,15 @@ import React from 'react';
 import { Grid, Avatar, Button, Icon } from '@material-ui/core';
 import ReactPlayer from 'react-player';
 import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
+import { DiscussionEmbed } from 'disqus-react';
 
 import { s3BucketURL } from '../../../../constants/s3';
 import Loader from '../../../../components/Loader';
 import Comment from './comment';
+import { disqusShortname, disqusUrlPrefix} from '../../../../constants/disqus';
 
 const ArticleShow = props => {
-    const { getArticle: { loading, article: { id: articleId, author: { id: authorId, email, firstName, lastName }, images, videos, i18n, created_at } } } = props;
+    const { match, getArticle: { loading, article: { id: articleId, author: { id: authorId, email, firstName, lastName }, images, videos, i18n, created_at } } } = props;
 
     if (loading)
         return <Loader />
@@ -26,7 +28,14 @@ const ArticleShow = props => {
     let avatar /*= hasAvatar ? `${s3BucketURL}/${profilesFolder}/${authorId}/avatar.${avatarContentType}` : defaultUserAvatar*/;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
     let likes = 123;
-    let comments = [{}, {}, {}];
+    
+    const disqusConfig = {
+        url: disqusUrlPrefix + match.url,
+        identifier: articleId,
+        title: title,
+    };
+
+    const comments = [{},{}];
 
     return (
         <Grid container className='mainBody articleShow'>
@@ -55,6 +64,9 @@ const ArticleShow = props => {
                     }
                 </div>
                 <div className='articleBody' dangerouslySetInnerHTML={{ __html: articleBody }} />
+                <div className='disqusThread'>
+                    <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
+                </div>
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
