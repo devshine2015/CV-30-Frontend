@@ -146,7 +146,7 @@ const NewArticle = ({
 
                         <Button className='publishBtn' onClick={saveArticle}>
                             Publish article
-                    </Button>
+                        </Button>
                     </div>
                 </Grid>
             </Grid>
