@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button, FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
+import S3Uploader from 'react-s3-uploader';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -10,7 +11,12 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-const NewArticle = ({ handleFormChange, formData: { title, description, tags }, updateDescription, saveArticle }) => {
+const NewArticle = ({
+    handleFormChange, formData: { title, description, tags, videoURL },
+    updateDescription, saveArticle,
+    isVideoUrl, switchMediaType,
+    getSignedUrl, onUploadStart, onError, onFinishUpload, isSaving
+}) => {
     return (
         <div className='newArticleRoot'>
             <Grid container className='mainBody articleEdit'>
@@ -81,9 +87,66 @@ const NewArticle = ({ handleFormChange, formData: { title, description, tags }, 
                             />
                         </section>
                         <hr />
+
+                        <FormGroup row className='mediaToggle'>
+                            <span className='mediaToggleLabel'>Upload visuals</span>
+                            <FormLabel className={!isVideoUrl ? 'active' : ''}>Photo</FormLabel>
+                            <ToggleSwitch
+                                checked={isVideoUrl}
+                                onChange={switchMediaType}
+                                classes={{
+                                    switchBase: 'colorSwitchBase',
+                                    checked: 'colorChecked',
+                                    bar: 'colorBar',
+                                }}
+                                color="primary" />
+                            <FormLabel className={isVideoUrl ? 'active' : ''}>Video Url</FormLabel>
+                        </FormGroup>
+
+                        <section className='mediaUpload'>
+                            {isVideoUrl ?
+                                <TextField
+                                    name="videoURL"
+                                    label="Add video URL"
+                                    placeholder="Video URL..."
+                                    className='textField'
+                                    onChange={handleFormChange}
+                                    value={videoURL || ''}
+                                    fullWidth
+                                    InputProps={{
+                                        classes: {
+                                            input: 'textFieldInput',
+                                            underline: 'textFieldUnderline'
+                                        },
+                                    }}
+                                    InputLabelProps={{
+                                        className: 'textFieldLabel'
+                                    }}
+                                /> :
+                                <label htmlFor="uploadArticleImage">
+                                    <S3Uploader
+                                        id="uploadArticleImage"
+                                        name="uploadArticleImage"
+                                        className='hiddenInput'
+                                        getSignedUrl={getSignedUrl}
+                                        accept="image/*"
+                                        preprocess={onUploadStart}
+                                        onError={onError}
+                                        onFinish={onFinishUpload}
+                                        uploadRequestHeaders={{
+                                            'x-amz-acl': 'public-read'
+                                        }}
+                                    />
+                                    <Button component='span' className='imgUpload' disabled={isSaving}>
+                                        Upload
+                                    </Button>
+                                </label>
+                            }
+                        </section>
+
                         <Button className='publishBtn' onClick={saveArticle}>
                             Publish article
-                    </Button>
+                        </Button>
                     </div>
                 </Grid>
             </Grid>

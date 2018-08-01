@@ -1,8 +1,9 @@
 import React from 'react';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button, FormGroup, FormLabel, Switch as ToggleSwitch, } from '@material-ui/core';
 import { graphql } from 'react-apollo';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import S3Uploader from 'react-s3-uploader';
+import uuid from 'uuidv4';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -26,6 +27,7 @@ const ArticleEditHOC = compose(
             tags: ''
         };
     }),
+    withState('isVideoUrl', 'changeMediaType', true),
     withState('isSaving', 'setIsSaving', false),
     withHandlers({
         handleFormChange: props => event => {
@@ -40,14 +42,30 @@ const ArticleEditHOC = compose(
         updateDescription: props => text => {
             props.setFormData(state => ({ ...state, 'description': text }));
         },
+        switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
+            changeMediaType(!isVideoUrl);
+        },
         saveArticle: props => async () => {
-            const { handleArticle, formData: { title, description }, getArticle: { article: { id } }, setIsSaving, match, setFeedbackMessage } = props;
+            const { handleArticle, formData: { title, description, videoURL, images }, getArticle: { article: { id } }, setIsSaving, match, setFeedbackMessage } = props;
 
             const article = {
                 id,
                 title,
-                description
+                description,
+                images
             };
+
+            if (videoURL) {
+                article.videos = [
+                    {
+                        id: uuid(),
+                        title: videoURL,
+                        sourceType: 'article',
+                        path: videoURL
+
+                    }
+                ];
+            }
 
             try {
                 await handleArticle({
@@ -73,6 +91,73 @@ const ArticleEditHOC = compose(
                     }
                 });
             }
+        },
+        getSignedUrl: ({ formData, setFeedbackMessage }) => async (file, callback) => {
+            const params = {
+                fileName: file.name,
+                contentType: file.type,
+                id: formData.id,
+                type: 'article'
+            };
+
+            try {
+                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+                let responseJson = await response.json();
+                callback(responseJson);
+            } catch (error) {
+                console.error(error);
+                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: error || error.message
+                    }
+                });
+            }
+        },
+        onUploadStart: ({ setIsSaving, formData, setFormData, match }) => (file, next) => {
+            let size = file.size;
+            if (size > 1024 * 1024) {
+                alert('File is too big!');
+            } else {
+                let newFormData = Object.assign({}, formData);
+
+                newFormData.images = [{
+                    id: uuid(),
+                    title: file.name,
+                    sourceType: 'article',
+                    source: formData.id,
+                    path: `/articles/${formData.id}/${file.name}`
+                }];
+                setFormData(newFormData);
+                setIsSaving(true);
+                next(file);
+            }
+        },
+        onError: ({ setFeedbackMessage }) => async error => {
+            console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
+        },
+        onFinishUpload: ({ setIsSaving, setFeedbackMessage }) => async data => {
+            setIsSaving(false);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'success',
+                    message: 'File uploaded successfully.'
+                }
+            });
         }
     }),
     pure
@@ -81,7 +166,9 @@ const ArticleEditHOC = compose(
 const ArticleEdit = props => {
     const {
         getArticle: { article: { id: articleId, author: { id: authorId, email, firstName, lastName }, images, videos, i18n, created_at } },
-        handleFormChange, formData: { title, description, tags }, updateDescription, saveArticle
+        handleFormChange, formData: { title, description, tags, videoURL }, updateDescription, saveArticle,
+        isVideoUrl, switchMediaType,
+        getSignedUrl, onUploadStart, onError, onFinishUpload, isSaving
     } = props;
 
     return (
@@ -153,6 +240,63 @@ const ArticleEdit = props => {
                         />
                     </section>
                     <hr />
+
+                    <FormGroup row className='mediaToggle'>
+                        <span className='mediaToggleLabel'>Upload visuals</span>
+                        <FormLabel className={!isVideoUrl ? 'active' : ''}>Photo</FormLabel>
+                        <ToggleSwitch
+                            checked={isVideoUrl}
+                            onChange={switchMediaType}
+                            classes={{
+                                switchBase: 'colorSwitchBase',
+                                checked: 'colorChecked',
+                                bar: 'colorBar',
+                            }}
+                            color="primary" />
+                        <FormLabel className={isVideoUrl ? 'active' : ''}>Video Url</FormLabel>
+                    </FormGroup>
+
+                    <section className='mediaUpload'>
+                        {isVideoUrl ?
+                            <TextField
+                                name="videoURL"
+                                label="Add video URL"
+                                placeholder="Video URL..."
+                                className='textField'
+                                onChange={handleFormChange}
+                                value={videoURL || ''}
+                                fullWidth
+                                InputProps={{
+                                    classes: {
+                                        input: 'textFieldInput',
+                                        underline: 'textFieldUnderline'
+                                    },
+                                }}
+                                InputLabelProps={{
+                                    className: 'textFieldLabel'
+                                }}
+                            /> :
+                            <label htmlFor="uploadArticleImage">
+                                <S3Uploader
+                                    id="uploadArticleImage"
+                                    name="uploadArticleImage"
+                                    className='hiddenInput'
+                                    getSignedUrl={getSignedUrl}
+                                    accept="image/*"
+                                    preprocess={onUploadStart}
+                                    onError={onError}
+                                    onFinish={onFinishUpload}
+                                    uploadRequestHeaders={{
+                                        'x-amz-acl': 'public-read'
+                                    }}
+                                />
+                                <Button component='span' className='imgUpload' disabled={isSaving}>
+                                    Upload
+                                </Button>
+                            </label>
+                        }
+                    </section>
+
                     <Button className='publishBtn' onClick={saveArticle}>
                         Publish article
                     </Button>
