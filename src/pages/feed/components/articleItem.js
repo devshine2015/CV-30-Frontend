@@ -10,10 +10,36 @@ import AuthorAvatarHeader from './authorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../constants/disqus';
 import { stripHtmlTags } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
+import { getCurrentUser } from '../../../store/queries';
 import AddTag from './addTag';
+import Loader from '../../../components/Loader';
+
+const ArticleItemHOC = compose(
+    withRouter,
+    graphql(getCurrentUser, { name: 'getCurrentUser' }),
+    withState('tagAnchor', 'setTagAnchor', null),
+    withHandlers({
+        openTagEditor: ({ setTagAnchor }) => target => {
+            setTagAnchor(target);
+        },
+        closeTagEditor: ({ setTagAnchor }) => () => {
+            setTagAnchor(null);
+        }
+    }),
+    pure
+);
 
 const ArticleItem = props => {
-    const { match, article: { id, author, i18n, createdAt, images, videos, tags, isPost }, openTagEditor, closeTagEditor, tagAnchor } = props;
+    const {
+        match, getCurrentUser,
+        article: { id, author, isPost, i18n, createdAt, images, videos, tags, endorsers }, openTagEditor, closeTagEditor, tagAnchor
+    } = props;
+
+    if (getCurrentUser.loading)
+    return <Loader/>;
+
+    const { auth: { currentUser } } = getCurrentUser;
+    const isAddTagAllowed = !!currentUser;
     const { title, description } = i18n[0];
     const { lang } = match.params;
 
@@ -34,6 +60,8 @@ const ArticleItem = props => {
     if (videos && videos.length > 0) {
         video = videos[0].path;
     }
+
+    const appreciatedCount = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;
 
     return (
         <div className='listItem userListItem'>
@@ -89,14 +117,17 @@ const ArticleItem = props => {
                             </Button>
                         </Link>
                     </div>
-                    <p className='likes'>Appreciated 101 times.</p>
+                    <p className='likes'>Appreciated {appreciatedCount} time{appreciatedCount !== 1 && "s"}.</p>
                     <div className='tags'>
-                        <IconButton className='addTagBtn' onClick={event => openTagEditor(event.target)}>
-                            <Icon>add</Icon>
-                        </IconButton>
+                        {
+                            isAddTagAllowed && 
+                            <IconButton className='addTagBtn' onClick={event => openTagEditor(event.target)}>
+                                <Icon>add</Icon>
+                            </IconButton>
+                        }
                         {
                             (tags && tags.length > 0) && tags.map(tag => (
-                                <span className='tag'>
+                                <span className='tag' key={tag.id}>
                                     <span className='votes'>{tag.users.length}</span>
                                     <span className='title'>{tag.i18n[0].title}</span>
                                 </span>
@@ -114,17 +145,4 @@ const ArticleItem = props => {
     );
 }
 
-export default compose(
-    withRouter,
-    // graphql(),
-    withState('tagAnchor', 'setTagAnchor', null),
-    withHandlers({
-        openTagEditor: ({ setTagAnchor }) => target => {
-            setTagAnchor(target);
-        },
-        closeTagEditor: ({ setTagAnchor }) => () => {
-            setTagAnchor(null);
-        },
-    }),
-    pure
-)(ArticleItem);
+export default ArticleItemHOC(ArticleItem);

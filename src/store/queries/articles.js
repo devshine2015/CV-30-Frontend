@@ -2,39 +2,41 @@ import gql from 'graphql-tag';
 
 const standardArticleResult = gql`
     fragment standardArticleResult on Article {
-  id
-  author {
-    id
-    email
-    firstName
-    lastName
-    hasAvatar
-    avatarContentType
-  }
-  isPost
-  images {
-    id
-    path
-  }
-  videos {
-    id
-    path
-  }
-  i18n {
-    title
-    description
-  }
-  tags {
-    i18n {
-      title
+        id
+        author {
+            id
+            email
+            firstName
+            lastName
+            hasAvatar
+            avatarContentType
+        }
+        isPost
+        images {
+            id
+            path
+        }
+        videos {
+            id
+            path
+        }
+        i18n {
+            title
+            description
+        }
+        tags {
+            id
+            i18n {
+                title
+            }
+            users {
+                id
+                email
+            }
+        }
+        createdAt
+        updatedAt
     }
-    users {
-      id
-      email
-    }
-  }
-  isPost
-}
 `;
 
 export const getArticles = gql`

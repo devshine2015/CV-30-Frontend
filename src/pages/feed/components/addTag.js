@@ -4,7 +4,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { handleArticleTag, setFeedbackMessage } from '../../../store/queries';
+import { handleArticleTag, setFeedbackMessage, getNewsFeedArticles } from '../../../store/queries';
 
 const AddTagHOC = compose(
     withRouter,
@@ -27,7 +27,15 @@ const AddTagHOC = compose(
                             articleId,
                             isSet: true
                         }
-                    }
+                    },
+                    refetchQueries: [{
+                        query: getNewsFeedArticles,
+                        fetchPolicy: 'network-only',
+                        name: 'newsFeedArticlesQuery',
+                        variables: {
+                            language
+                        }
+                    }]
                 });
                 await setFeedbackMessage({
                     variables: {

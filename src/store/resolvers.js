@@ -1,5 +1,3 @@
-import gql from 'graphql-tag';
-
 export default {
     Query: {},
     Mutation: {
