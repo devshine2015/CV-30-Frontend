@@ -47,6 +47,7 @@ const NewsFeedHOC = compose(
         addPost: ({ handleArticle, match, formData, setPopupOpen, setFeedbackMessage }) => async () => {
             const article = {
                 id: uuid(),
+                isPost: true,
                 title: 'Post',
                 images: formData.images,
                 description: formData.postBody

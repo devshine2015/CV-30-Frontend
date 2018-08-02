@@ -11,11 +11,13 @@ import { stripHtmlTags } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
 
 const ArticleItem = props => {
-    const { match, article: { id, author, i18n, createdAt, images, videos } } = props;
+    const { match, article: { id, author, isPost, i18n, createdAt, images, videos } } = props;
     const { title, description } = i18n[0];
     const { lang } = match.params;
 
-    let desc = stripHtmlTags(description).substring(0, 200) + ' ...';
+    let desc = stripHtmlTags(description);
+    if (!isPost)
+        desc = desc.substring(0, 200) + ' ...';
 
     const disqusConfig = {
         url: `${disqusUrlPrefix}/${lang}/article/${id}`,///#disqus_thread`,
@@ -42,7 +44,7 @@ const ArticleItem = props => {
                 <p className='articleBody'>
                     <span className='articleTitle'>{title}</span> &nbsp;
                     {desc}
-                    <Link to={`/${lang}/article/${id}`} className='readMoreLink'>Read more</Link>
+                    {!isPost && <Link to={`/${lang}/article/${id}`} className='readMoreLink'>Read more</Link>}
                 </p>
                 {(image || video) &&
                     <div className='articleMedia'>
