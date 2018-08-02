@@ -11,6 +11,7 @@ const standardArticleResult = gql`
             hasAvatar
             avatarContentType
         }
+        isPost
         images {
             id
             path
