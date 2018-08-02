@@ -162,3 +162,41 @@
         }
     }
 }
+
+.mediaUploadPaper {
+    background-color: #277dba !important;
+    padding: 25px 15px;
+    width: 400px;
+    max-width: 90%;
+    margin-top: 10px;
+    .mediaUploadPopup {
+        .mediaToggle {
+            .mediaToggleLabel {
+                font-size: .75rem;
+                color: #fff;
+                font-style: italic;
+            }
+            label {
+                color: rgba(255, 255, 255, 0.75);
+                &.active {
+                    color: #fff;
+                }
+            }
+        }
+        .textFieldInput,
+        .textFieldLabel {
+            color: #fff !important;
+        }
+        .textFieldUnderline {
+            &:before,
+            &:after {
+                border-bottom-color: #fff !important;
+            }
+        }
+        .imgUpload {
+            background: #fff;
+            color: #397db9;
+            text-transform: capitalize;
+        }
+    }
+}

@@ -5,14 +5,17 @@ import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import Loader from '../../components/Loader';
 import ArticlesList from './components/articlesList';
 import { Redirect, Link } from 'react-router-dom';
+import MediaUploadPopUp from './components/mediaUpload';
 
 const NewsFeed = props => {
+    console.log(props);
     const {
         formData, handleFormChange, switchIsArticle, isArticle,
         currentUser: { loading, profile },
         newsFeedArticlesQuery,
         match: { params: { lang } },
-        addPost
+        addPost,
+        openMediaUpload, closeMediaUpload, mediaUploadAnchor
     } = props;
 
     if (loading || newsFeedArticlesQuery.loading)
@@ -22,7 +25,7 @@ const NewsFeed = props => {
         return <Redirect to={`/${lang}/articles/new`} />;
 
     const { id, firstName, lastName, email, hasAvatar, avatarContentType } = profile || {};
-    const { postBody } = formData;
+    const { id: postId, postBody } = formData;
     let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
     const followingArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.following : [];
@@ -46,12 +49,17 @@ const NewsFeed = props => {
                                         <span className='userName'>{fullName}</span>
                                     </span>
                                 </div>
-                                <Button className='mediaButton'>
+                                <Button className='mediaButton' onClick={event => openMediaUpload(event.target)}>
                                     <Icon className='icon'>
                                         camera_alt
-                                </Icon>
+                                    </Icon>
                                     + Photo / Video
-                            </Button>
+                                </Button>
+                                <MediaUploadPopUp
+                                    anchor={mediaUploadAnchor}
+                                    onClose={closeMediaUpload}
+                                    postId={postId}
+                                />
                             </div>
                             <div className='postBody'>
                                 <TextField
@@ -164,7 +172,6 @@ const NewsFeed = props => {
             </Grid>
         </div>
     );
-
 }
 
 export default NewsFeed;

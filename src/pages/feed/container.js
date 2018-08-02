@@ -29,8 +29,11 @@ const NewsFeedHOC = compose(
     }),
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', {}),
+    withState('formData', 'setFormData', {
+        id: uuid()
+    }),
     withState('isArticle', 'updateIsArticle', false),
+    withState('mediaUploadAnchor', 'setMediaUploadAnchor', null),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.currentTarget;
@@ -44,25 +47,15 @@ const NewsFeedHOC = compose(
         switchIsArticle: ({ isArticle, updateIsArticle }) => () => {
             updateIsArticle(!isArticle);
         },
-        addPost: ({ handleArticle, match, formData, setPopupOpen, setFeedbackMessage }) => async () => {
+        addPost: ({ handleArticle, match, formData, setPopupOpen, setFeedbackMessage, setFormData }) => async () => {
             const article = {
                 id: uuid(),
                 isPost: true,
                 title: 'Post',
                 images: formData.images,
+                videos: formData.videos,
                 description: formData.postBody
             };
-
-            if (formData.videoURL) {
-                article.videos = [
-                    {
-                        id: uuid(),
-                        title: formData.videoURL,
-                        sourceType: 'article',
-                        path: formData.videoURL
-                    }
-                ];
-            }
 
             try {
                 await handleArticle({
@@ -85,6 +78,7 @@ const NewsFeedHOC = compose(
                         message: 'Changes saved successfully.'
                     }
                 });
+                setFormData({ id: uuid() });
             }
             catch (err) {
                 await setFeedbackMessage({
@@ -95,6 +89,17 @@ const NewsFeedHOC = compose(
                 });
                 console.log(err);
             }
+        },
+        openMediaUpload: ({ setMediaUploadAnchor }) => target => setMediaUploadAnchor(target),
+        closeMediaUpload: ({ setMediaUploadAnchor, setFormData }) => (data) => {
+            let { imgParams, video } = data;
+
+            if (imgParams)
+                setFormData(state => ({ ...state, 'images': [imgParams] }));
+            if (video)
+                setFormData(state => ({ ...state, 'videos': [video] }));
+
+            setMediaUploadAnchor(null);
         },
     }),
     pure

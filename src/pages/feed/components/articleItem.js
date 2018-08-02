@@ -36,7 +36,7 @@ const ArticleItem = props => {
     } = props;
 
     if (getCurrentUser.loading)
-    return <Loader/>;
+        return <Loader />;
 
     const { auth: { currentUser } } = getCurrentUser;
     const isAddTagAllowed = !!currentUser;
@@ -120,7 +120,7 @@ const ArticleItem = props => {
                     <p className='likes'>Appreciated {appreciatedCount} time{appreciatedCount !== 1 && "s"}.</p>
                     <div className='tags'>
                         {
-                            isAddTagAllowed && 
+                            isAddTagAllowed &&
                             <IconButton className='addTagBtn' onClick={event => openTagEditor(event.target)}>
                                 <Icon>add</Icon>
                             </IconButton>
