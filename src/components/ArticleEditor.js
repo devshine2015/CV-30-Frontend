@@ -187,7 +187,6 @@ const ArticleEditorHOC = compose(
             console.log(error);
         },
         onFinishUpload: props => data => {
-            console.log(data);
             const { setIsSaving, } = props;
             setIsSaving(false);
         },

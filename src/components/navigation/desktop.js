@@ -9,7 +9,6 @@ import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
 
 const DesktopNav = props => {
-    console.log(props);
     const {
         localUserData: { loading: localUserLoading, localUser: { timestamp } },
         currentUser: { loading: currentUserLoading, auth: { currentUser } },

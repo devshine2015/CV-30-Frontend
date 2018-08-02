@@ -9,7 +9,6 @@ import Loader from '../../../components/Loader';
 import EditToggle from '../../../components/EditToggle';
 
 const Brand = props => {
-    console.log(props);
     const {       
         companyQuery: { loading, company },
         currentUser: { auth: { currentUser } }

@@ -119,7 +119,6 @@ const SkillsEditHOC = compose(
         },
         saveData: ({ setFeedbackMessage, displaySkills, skillsModalData, setSkills, setValues, closeSkillsModal, match }) => async () => {
             const { type } = skillsModalData;
-            console.log(displaySkills);
             let data = displaySkills.map(item => item.title);
 
             switch (type) {
