@@ -381,12 +381,12 @@
                         color: #fff;
                         .textFieldInput,
                         .textFieldLabel {
-                            color: #fff;
+                            color: #fff !important;
                         }
                         .textFieldUnderline {
                             &:before,
                             &:after {
-                                border-bottom-color: #fff;
+                                border-bottom-color: #fff !important;
                             }
                         }
                     }
@@ -438,4 +438,35 @@
 
 .disqusThread {
     margin-top: 50px;
+}
+
+.addTagsPaper {
+    background-color: #277dba !important;
+    padding: 15px;
+    width: 400px;
+    max-width: 90&;
+    .title {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #fff;
+    }
+    .textFieldInput,
+    .textFieldLabel {
+        color: #fff !important;
+    }
+    .textFieldUnderline {
+        &:before,
+        &:after {
+            border-bottom-color: #fff !important;
+        }
+    }
+    .helperText {
+        display: block;
+        position: relative;
+        margin: 10px 0;
+        color: #fff;
+        font-size: .75rem;
+        font-weight: 100;
+        font-style: italic;
+    }
 }

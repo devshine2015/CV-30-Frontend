@@ -2,40 +2,39 @@ import gql from 'graphql-tag';
 
 const standardArticleResult = gql`
     fragment standardArticleResult on Article {
-        id
-        author {
-            id
-            email
-            firstName
-            lastName
-            hasAvatar
-            avatarContentType
-        }
-        isPost
-        images {
-            id
-            path
-        }
-        videos {
-            id
-            path
-        }
-        i18n {
-            title
-            description
-        }
-        tags {
-            i18n {
-                title
-            }
-            users {
-                id
-                email
-            }
-        }
-        createdAt
-        updatedAt
+  id
+  author {
+    id
+    email
+    firstName
+    lastName
+    hasAvatar
+    avatarContentType
+  }
+  isPost
+  images {
+    id
+    path
+  }
+  videos {
+    id
+    path
+  }
+  i18n {
+    title
+    description
+  }
+  tags {
+    i18n {
+      title
     }
+    users {
+      id
+      email
+    }
+  }
+  isPost
+}
 `;
 
 export const getArticles = gql`
@@ -89,10 +88,10 @@ export const handleArticle = gql`
 `;
 
 export const handleArticleTag = gql`
-    mutation handleArticleTag($language: LanguageCodeType!, $title: String!, $articleId: String!, $isSet: Boolean) {
-        handleArticleTag(language: $language, title: $title, articleId: $articleId, isSet: $isSet) {
+    mutation handleArticleTag($language: LanguageCodeType!, $details: ArticleTagInput!) {
+        handleArticleTag(language: $language, details: $details) {
             status
             error
-        } 
+        }
     }
 `;

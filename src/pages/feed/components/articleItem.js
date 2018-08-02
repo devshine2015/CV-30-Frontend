@@ -1,17 +1,19 @@
 import React from 'react';
 import { Button, Icon, IconButton } from '@material-ui/core';
 import { withRouter, Link } from 'react-router-dom';
-import { compose } from 'recompose';
+import { compose, withState, withHandlers, pure } from 'recompose';
 import { CommentCount } from 'disqus-react';
 import ReactPlayer from 'react-player';
+import { graphql } from 'react-apollo';
 
 import AuthorAvatarHeader from './authorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../constants/disqus';
 import { stripHtmlTags } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
+import AddTag from './addTag';
 
 const ArticleItem = props => {
-    const { match, article: { id, author, isPost, i18n, createdAt, images, videos } } = props;
+    const { match, article: { id, author, i18n, createdAt, images, videos, tags, isPost }, openTagEditor, closeTagEditor, tagAnchor } = props;
     const { title, description } = i18n[0];
     const { lang } = match.params;
 
@@ -89,34 +91,40 @@ const ArticleItem = props => {
                     </div>
                     <p className='likes'>Appreciated 101 times.</p>
                     <div className='tags'>
-                        <IconButton className='addTagBtn'>
+                        <IconButton className='addTagBtn' onClick={event => openTagEditor(event.target)}>
                             <Icon>add</Icon>
                         </IconButton>
-                        <span className='tag'>
-                            <span className='votes'>125</span>
-                            <span className='title'>Marketing</span>
-                        </span>
-                        <span className='tag'>
-                            <span className='votes'>125</span>
-                            <span className='title'>Marketing</span>
-                        </span>
-                        <span className='tag'>
-                            <IconButton className='voteBtn'>
-                                <Icon>add</Icon>
-                            </IconButton>
-                            <span className='title'>Marketing</span>
-                        </span>
-                        <span className='tag'>
-                            <IconButton className='voteBtn'>
-                                <Icon>add</Icon>
-                            </IconButton>
-                            <span className='title'>Marketing</span>
-                        </span>
+                        {
+                            (tags && tags.length > 0) && tags.map(tag => (
+                                <span className='tag'>
+                                    <span className='votes'>{tag.users.length}</span>
+                                    <span className='title'>{tag.i18n[0].title}</span>
+                                </span>
+                            ))
+                        }
                     </div>
                 </div>
             </div>
+            <AddTag
+                tagAnchor={tagAnchor}
+                closeTagEditor={closeTagEditor}
+                articleId={id}
+            />
         </div>
     );
 }
 
-export default compose(withRouter)(ArticleItem);
+export default compose(
+    withRouter,
+    // graphql(),
+    withState('tagAnchor', 'setTagAnchor', null),
+    withHandlers({
+        openTagEditor: ({ setTagAnchor }) => target => {
+            setTagAnchor(target);
+        },
+        closeTagEditor: ({ setTagAnchor }) => () => {
+            setTagAnchor(null);
+        },
+    }),
+    pure
+)(ArticleItem);
