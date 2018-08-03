@@ -40,13 +40,12 @@
             position: relative;
             flex-direction: column;
             .comments {
-                position: absolute;
-                top: -29px;
+                position: relative;
                 background: #fff;
                 border-radius: 40px;
                 border: 1px solid #ebebeb;
                 padding: 5px 12px;
-                right: 0;
+                margin-left: auto;
                 .counter {
                     font-size: 1rem;
                     color: #565656;
@@ -79,6 +78,7 @@
             .tags {
                 display: flex;
                 align-items: center;
+                flex-wrap: wrap;
                 .addTagBtn {
                     width: 35px;
                     height: 35px;
@@ -92,6 +92,7 @@
                     margin-right: 20px;
                     display: inline-flex;
                     align-items: center;
+                    min-height: 35px;
                     .votes {
                         font-weight: bold;
                         margin-right: 5px;
@@ -107,6 +108,14 @@
                         }
                     }
                 }
+            }
+        }
+        .articleMedia+.socialSection {
+            .comments {
+                top: -29px;
+            }
+            .likes {
+                margin: -20px 0 20px;
             }
         }
     }

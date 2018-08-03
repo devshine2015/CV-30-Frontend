@@ -18,10 +18,12 @@
         }
         .jobDetails {
             color: #aaaaaa;
-            font-size: 1 rem;
+            font-size: 1rem;
             font-weight: normal;
             margin-bottom: 30px;
             width: 100%;
+            flex-wrap: wrap;
+            display: flex;
             .published,
             .expires {
                 &:after {
@@ -186,6 +188,10 @@
                     .media {
                         width: 600px;
                         height: 360px;
+                        @media (max-width: 600px) {
+                            width: auto;
+                            height: auto;
+                        }
                         img {
                             max-width: 100%;
                             max-height: 100%;
@@ -255,9 +261,12 @@
                     &:first-child {
                         border: none;
                     }
-                    .jobSelect {
+                    .jobSelect,
+                    .formControl {
                         width: 380px;
-                        max-width: 90%;
+                        @media (max-width: 600px) {
+                            width: 100%;
+                        }
                     }
                 }
                 .mediaBtn {
@@ -293,6 +302,10 @@
                 .contact {
                     padding: 15px 25px;
                     background: #397db9;
+                }
+                @media (max-width: 960px) {
+                    top: auto;
+                    border: none;
                 }
             }
         }
@@ -365,33 +378,6 @@
                 font-size: 1.25rem;
                 font-weight: 500;
                 margin: 40px 20px 20px;
-            }
-        }
-    }
-}
-
-.jobsListRoot {
-    .columnRight {
-        .columnRightContent {
-            top: -80px;
-            margin-bottom: -80px;
-            border-top: 1px solid;
-            border-left: 1px solid;
-            border-color: #f0f0f0;
-            padding: 25px 20px;
-            display: flex;
-            flex-direction: column;
-            height: calc(100% + 80px);
-            .columnTitle {
-                color: #397db9;
-                font-weight: 100;
-                font-size: 2rem;
-                padding: 0;
-            }
-            @media (max-width: 960px) {
-                top: auto;
-                margin-bottom: 75px;
-                border: none;
             }
         }
     }

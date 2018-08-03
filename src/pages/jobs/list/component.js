@@ -84,7 +84,7 @@ const JobsList = props => {
                                         />
                                         <Button component='span' className={isPartTime ? 'checkboxBtn active' : 'checkboxBtn'}>
                                             Part time
-                                </Button>
+                                        </Button>
                                     </label>
                                     <label htmlFor="isFullTime">
                                         <Checkbox
@@ -96,7 +96,7 @@ const JobsList = props => {
                                         />
                                         <Button component='span' className={isFullTime ? 'checkboxBtn active' : 'checkboxBtn'}>
                                             Full time
-                                </Button>
+                                        </Button>
                                     </label>
                                     <label htmlFor="isProjectBased">
                                         <Checkbox
@@ -108,7 +108,7 @@ const JobsList = props => {
                                         />
                                         <Button component='span' className={isProjectBased ? 'checkboxBtn active' : 'checkboxBtn'}>
                                             Project based
-                                </Button>
+                                        </Button>
                                     </label>
                                     <label htmlFor="isRemote">
                                         <Checkbox
@@ -120,7 +120,7 @@ const JobsList = props => {
                                         />
                                         <Button component='span' className={isRemote ? 'checkboxBtn active' : 'checkboxBtn'}>
                                             Remote
-                                </Button>
+                                        </Button>
                                     </label>
                                 </section>
                                 <section className='compensation'>

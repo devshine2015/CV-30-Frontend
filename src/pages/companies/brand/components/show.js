@@ -19,7 +19,7 @@ import Story from './story';
 import ArticleSlider from '../../../../components/articleSlider';
 import { companyQuery, handleCompany, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
-import Feedback from '../../../../components/Feedback';
+import { stripHtmlTags } from '../../../../constants/utils';
 
 const ShowHOC = compose(
     graphql(handleCompany, { name: 'handleCompany' }),
@@ -38,7 +38,7 @@ const ShowHOC = compose(
         updateDescription: ({ setDescription }) => text => setDescription(text),
         submitDescription: ({ companyQuery: { company }, handleCompany, description, match, setFeedbackMessage }) => async () => {
             try {
-                let result = await handleCompany({
+                await handleCompany({
                     variables: {
                         language: match.params.lang,
                         details: {
@@ -105,8 +105,7 @@ const Show = (props) => {
         companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } },
         edited, editPanel, addQA, newQA,
         match: { params: { lang, companyId } },
-        description, updateDescription, submitDescription,
-        feedbackMessage, closeFeedback
+        description, updateDescription, submitDescription
     } = props;
 
     return (
@@ -206,7 +205,6 @@ const Show = (props) => {
                     </h2>
 
                     <div className='jobs'>
-
                         {
                             jobs.map(job => {
                                 return (
@@ -220,8 +218,10 @@ const Show = (props) => {
                                             }
                                         </div>
                                         <div className='info'>
-                                            <h5>{job.i18n[0].title}</h5>
-                                            <span>{job.i18n[0].description}</span>
+                                            <Link to={`/${lang}/job/${job.id}`}>
+                                                <h5>{job.i18n[0].title}</h5>
+                                                <span>{stripHtmlTags(job.i18n[0].description)}</span>
+                                            </Link>
                                         </div>
 
                                     </div>

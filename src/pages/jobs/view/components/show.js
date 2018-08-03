@@ -3,6 +3,7 @@ import { Grid, Button, IconButton, Icon, ExpansionPanel, ExpansionPanelSummary, 
 import { compose, withState, withHandlers, pure } from 'recompose';
 // import uuid from 'uuidv4';
 import { graphql } from 'react-apollo';
+import { FormattedDate } from 'react-intl';
 
 import ArticleSlider from '../../../../components/articleSlider';
 import Loader from '../../../../components/Loader';
@@ -78,7 +79,7 @@ const Show = props => {
         return <div>Job not found...</div>;
     } else {
         const { expanded, expandPanel, setApplyToJob } = props;
-        const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles }, expireDate/*, videos, images*/ } = job;
+        const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles, jobs }, expireDate, createdAt/*, videos, images*/ } = job;
         // TODO: appliedDate, jobLevel, benefits from props
         // const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
         // const jobLevels = ['entry', 'mid', 'senior'];
@@ -110,12 +111,18 @@ const Show = props => {
                 <div className='header'>
                     <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                         <h1 className='jobTitle'>{title}</h1>
-                        <p className='jobDetails'>
-                            <span className='published'>Published 08 February 2018</span>
-                            <span className='expires'>Expires {expireDate}</span>
+                        <div className='jobDetails'>
+                            <FormattedDate value={new Date(createdAt)}>
+                                {(text) => (<span className='published'>Published&nbsp;{text}</span>)}
+                            </FormattedDate>
+                            <FormattedDate value={new Date(expireDate)}>
+                                {(text) => (<span className='expires'>Expires&nbsp;{text}</span>)}
+                            </FormattedDate>
                             <span className='company'>{companyName}</span>
-                            <span className='availableJobs'>(2 jobs)</span>
-                        </p>
+                            {(jobs && jobs.length > 0) &&
+                                <span className='availableJobs'>({jobs.length}&nbsp;jobs)</span>
+                            }
+                        </div>
                         {(isApplyAllowed && profile) ? <Button className={didApply ? "appliedButton" : "applyButton"} onClick={() => setApplyToJob(!didApply)}>
                             {didApply ? "Already applied" : "Apply Now"}
                         </Button> : null}

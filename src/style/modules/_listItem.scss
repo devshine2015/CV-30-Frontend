@@ -16,10 +16,21 @@
     }
     .leftOverlay {
         left: 10px;
+        @media(max-width: 600px) {
+            position: relative;
+            left: auto;
+            margin-right: auto;
+        }
     }
     .rightOverlay {
         right: 10px;
         top: -17px;
+        @media(max-width: 600px) {
+            position: relative;
+            right: auto;
+            top: auto;
+            margin-left: auto;
+        }
     }
     .itemBody {
         display: flex;
@@ -58,6 +69,10 @@
             justify-content: space-between;
             top: -33px;
             border-radius: 35px;
+            @media(max-width: 600px) {
+                top: auto;
+                margin: -10px 0 10px;
+            }
             .avatar {
                 width: 60px;
                 height: 60px;
@@ -114,6 +129,9 @@
             background: #fff;
             font-size: .75rem;
             padding: 0 15px;
+            @media(max-width: 600px) {
+                right: 10px;
+            }
         }
         .itemBody {
             flex-wrap: wrap;
@@ -331,7 +349,8 @@
     }
 }
 
-.jobsListRoot {
+.jobsListRoot,
+.userListRoot {
     .header {
         padding: 40px 0;
         background: #f4f4f4;
@@ -356,12 +375,56 @@
                 flex: 1;
                 margin-right: 15px;
             }
+            @media (max-width: 600px) {
+                flex-wrap: wrap;
+                align-items: center;
+                flex-direction: column;
+                .textField {
+                    width: 90%;
+                    margin-bottom: 10px;
+                }
+            }
         }
         .searchBtn {
             background: #277dba;
             color: #fff;
             text-transform: none;
+            @media (max-width: 600px) {
+                margin-left: auto;
+                margin-right: 5%;
+            }
         }
+    }
+    .columnRight {
+        .columnRightContent {
+            top: -80px;
+            margin-bottom: -80px;
+            border-top: 1px solid;
+            border-left: 1px solid;
+            border-color: #f0f0f0;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% + 80px);
+            .columnTitle {
+                color: #397db9;
+                font-weight: 100;
+                font-size: 2rem;
+                padding: 0;
+            }
+            @media (max-width: 960px) {
+                top: auto;
+                margin-bottom: 75px;
+                border: none;
+                height: auto;
+            }
+        }
+    }
+}
+
+.userListRoot {
+    @media (max-width: 600px) {
+        margin-top: 10px;
     }
 }
 
@@ -472,6 +535,14 @@
                     font-size: 0.75rem;
                 }
             }
+        }
+    }
+}
+
+.jobsListRoot {
+    .jobsList {
+        @media (max-width: 600px) {
+            padding: 0;
         }
     }
 }

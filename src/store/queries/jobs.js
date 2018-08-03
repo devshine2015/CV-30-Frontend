@@ -33,6 +33,9 @@ query job($id: String!, $language: LanguageCodeType!) {
     company {
       id
       name
+      jobs {
+        id
+      }
       i18n {
         description
       }
