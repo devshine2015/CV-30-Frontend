@@ -36,6 +36,9 @@
     "userProfile.addValues": "Add values",
     "userProfile.addSkills": "Add skills",
     "userProfile.remainingSkills": "*You can add {count} more skills.",
-    "userProfile.remainingValues": "*You can add {count} more values."
+    "userProfile.remainingValues": "*You can add {count} more values.",
+    "userProfile.desiredSalaryMessage": "Even when set to private, it can help with job matching.",
+    "userProfile.salaryPrivate": "Private",
+    "userProfile.salaryPublic": "Public"
 
 }

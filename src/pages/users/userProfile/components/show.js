@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Icon, IconButton, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
-// import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { setStory, setSalary, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { withRouter } from 'react-router-dom';
 
@@ -304,9 +304,13 @@ const Show = props => {
                             {
                                 editMode &&
                                 <React.Fragment>
-                                    <p>Chiar daca e privat, va ajuta la matching de joburi.</p>
+                                    <FormattedMessage id="userProfile.desiredSalaryMessage" defaultMessage="Even when set to private, it can help with job matching.">
+                                        {text => <p>{text}</p>}
+                                    </FormattedMessage>
                                     <FormGroup row className='salaryToggle'>
-                                        <FormLabel className={!isSalaryPublic ? 'active' : ''}>Private</FormLabel>
+                                        <FormattedMessage id="userProfile.salaryPrivate" defaultMessage="Private">
+                                            {text => <FormLabel className={!isSalaryPublic ? 'active' : ''}>{text}</FormLabel>}
+                                        </FormattedMessage>
                                         <ToggleSwitch checked={isSalaryPublic} onChange={toggleSalaryPrivate}
                                             classes={{
                                                 switchBase: 'colorSwitchBase',
@@ -314,7 +318,9 @@ const Show = props => {
                                                 bar: 'colorBar',
                                             }}
                                             color="primary" />
-                                        <FormLabel className={isSalaryPublic ? 'active' : ''}>Public</FormLabel>
+                                        <FormattedMessage id="userProfile.salaryPublic" defaultMessage="Public">
+                                            {text => <FormLabel className={isSalaryPublic ? 'active' : ''}>{text}</FormLabel>}
+                                        </FormattedMessage>
                                     </FormGroup>
                                     <FormControl>
                                         <InputLabel htmlFor="desiredSalary">Amount</InputLabel>
