@@ -72,7 +72,11 @@ const ArticleItem = props => {
             </div>
             <div className='itemBody'>
                 <p className='articleBody'>
-                    <span className='articleTitle'>{title}</span> &nbsp;
+                    {!isPost &&
+                        <React.Fragment>
+                            <span className='articleTitle'>{title}</span> &nbsp;
+                        </React.Fragment>
+                    }
                     {desc}
                     {!isPost && <Link to={`/${lang}/article/${id}`} className='readMoreLink'>Read more</Link>}
                 </p>
