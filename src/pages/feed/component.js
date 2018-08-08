@@ -98,39 +98,38 @@ const NewsFeed = props => {
                     }
                     {id &&
                         <section className='profileActions'>
-                            <div className='profileAction'>
+                            <div className='profileAction company'>
                                 <h3>
                                     Conecteaza-ti compania cu urmatorul tau angajat
                             </h3>
                                 <p>
                                     Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
-                            </p>
-
-                                <Button className='profileActionBtn'>
+                                </p>
+                                <Link to={`/${lang}/companies/new`} className='profileActionLink'>
                                     Adauga o companie
-                            </Button>
+                                </Link>
                             </div>
-                            <div className='profileAction'>
+                            <div className='profileAction networking'>
                                 <h3>
-                                    Conecteaza-ti compania cu urmatorul tau angajat
-                            </h3>
+                                    Completeaza-ti proﬁlul pentru Networking!
+                                </h3>
                                 <p>
                                     Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
-                            </p>
-                                <Button className='profileActionBtn'>
-                                    Adauga o companie
-                            </Button>
+                                </p>
+                                <Link to={`/${lang}/myProfile/settings`} className='profileActionLink'>
+                                    Completeaza-ti proﬁlul
+                                </Link>
                             </div>
-                            <div className='profileAction'>
+                            <div className='profileAction jobs'>
                                 <h3>
-                                    Conecteaza-ti compania cu urmatorul tau angajat
-                            </h3>
+                                    Urmatorul tau job te asteapta.
+                                </h3>
                                 <p>
                                     Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
-                            </p>
-                                <Button className='profileActionBtn'>
-                                    Adauga o companie
-                            </Button>
+                                </p>
+                                <Link to={`/${lang}/jobs`} className='profileActionLink'>
+                                    Mergi la Joburi
+                                </Link>
                             </div>
                         </section>
                     }

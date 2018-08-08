@@ -367,6 +367,9 @@
             color: #277dba;
             font-weight: 100;
             font-size: 2rem;
+            @media (max-width: 600px) {
+                text-align: center;
+            }
         }
         .searchFields {
             display: flex;
@@ -381,7 +384,7 @@
                 flex-direction: column;
                 .textField {
                     width: 90%;
-                    margin-bottom: 10px;
+                    margin: 0 auto 10px;
                 }
             }
         }

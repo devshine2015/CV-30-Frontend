@@ -111,19 +111,32 @@
                     padding: 20px 15px;
                     box-sizing: border-box;
                     height: 345px;
+                    &.company {
+                        color: #55b5cc;
+                    }
+                    &.networking {
+                        color: #58cca6;
+                    }
+                    &.jobs {
+                        color: #5683cc;
+                    }
                     h3 {
                         font-size: 1.25rem;
                         margin: 0;
                         margin-bottom: 10px;
-                        color: #55b5cc;
+                        color: inherit;
                     }
                     p {
                         font-size: 1rem;
                         font-weight: 100;
                         color: #565656;
                     }
-                    .profileActionBtn {
+                    .profileActionLink {
                         margin-top: auto;
+                        font-size: 1rem;
+                        font-weight: 500;
+                        text-decoration: none;
+                        text-align: center; // color: #fff;
                     }
                     @media(max-width: 600px) {
                         width: auto;
