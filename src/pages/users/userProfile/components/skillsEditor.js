@@ -4,6 +4,7 @@ import { compose, pure, withState, withHandlers } from 'recompose';
 import { setSkills, setValues, removeSkill, removeValue, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 const SkillsEditHOC = compose(
     withRouter,
@@ -28,17 +29,35 @@ const SkillsEditHOC = compose(
         updateNewSkill: ({ setSkillText }) => (skill) => {
             setSkillText(skill);
         },
-        addSkill: ({ newSkill, displaySkills, setSkillText }) => () => {
-            let found = displaySkills.find(item => item.title.toLowerCase() === newSkill.toLowerCase());
-            if (!found) {
-                displaySkills.push({
-                    id: null,
-                    title: newSkill
-                });
-                setSkillText('');
-            } else {
-                alert('duplicate!');
-            }
+        addSkill: ({ newSkill, displaySkills, setSkillText, setFeedbackMessage }) => () => {
+            let arr = newSkill.split(',');
+            arr.forEach(skill => {
+                if (displaySkills.length >= 25) {
+                    setFeedbackMessage({
+                        variables: {
+                            status: 'error',
+                            message: `Reached limit.`
+                        }
+                    });
+                    return;
+                }
+                let found = displaySkills.find(item => item.title.toLowerCase() === skill.trim().toLowerCase());
+
+                if (found) {
+                    setFeedbackMessage({
+                        variables: {
+                            status: 'error',
+                            message: `Duplicate found: ${skill}`
+                        }
+                    });
+                } else {
+                    displaySkills.push({
+                        id: null,
+                        title: skill
+                    });
+                }
+            })
+            setSkillText('');
         },
         removeChip: ({ setFeedbackMessage, displaySkills, setDisplaySkills, skillsModalData, removeSkill, removeValue, match }) => async chipIndex => {
             const { type } = skillsModalData;
@@ -198,8 +217,9 @@ const SkillsEditHOC = compose(
 );
 
 
-const SkillsEdit = (props) => {
-    const { displaySkills, skillsAnchor, closeSkillsModal, newSkill, updateNewSkill, addSkill, removeChip, saveData } = props;
+const SkillsEdit = props => {
+    const { displaySkills, skillsAnchor, closeSkillsModal, newSkill, updateNewSkill, addSkill, removeChip, saveData, skillsModalData } = props;
+    const { type } = skillsModalData || {};
     return (
         <Popover
             anchorOrigin={{
@@ -219,7 +239,15 @@ const SkillsEdit = (props) => {
         >
             <div className='popupHeader'>
                 <FormControl className='skillsInput' fullWidth={true}>
-                    <InputLabel >Add values</InputLabel>
+                    {(type === 'values') ?
+                        <FormattedMessage id="userProfile.addValues" defaultMessage="Add values" description="User header add values">
+                            {(text) => <InputLabel>{text}</InputLabel>}
+                        </FormattedMessage> :
+                        <FormattedMessage id="userProfile.addSkills" defaultMessage="Add skills" description="User header add skills">
+                            {(text) => <InputLabel>{text}</InputLabel>}
+                        </FormattedMessage>
+                    }
+
                     <Input
                         id="newSkill"
                         type='text'
@@ -232,7 +260,15 @@ const SkillsEdit = (props) => {
                         }
                         fullWidth={true}
                     />
-                    <small className='helperText'>*You can add 23 more skills.</small>
+
+                    {(type === 'values') ?
+                        <FormattedMessage id="userProfile.remainingValues" values={{ count: 25 - displaySkills.length }}>
+                            {(text) => <small className='helperText'>{text}</small>}
+                        </FormattedMessage> :
+                        <FormattedMessage id="userProfile.remainingSkills" values={{ count: 25 - displaySkills.length }}>
+                            {(text) => <small className='helperText'>{text}</small>}
+                        </FormattedMessage>
+                    }
                 </FormControl>
             </div>
             <div className='popupBody'>

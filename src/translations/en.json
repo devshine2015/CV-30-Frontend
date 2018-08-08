@@ -31,5 +31,11 @@
     "appreciations.singular": "appreciations",
     "appreciations.plural": "appreciations",
     "comments.singular": "comment",
-    "comments.plural": "comments"
+    "comments.plural": "comments",
+
+    "userProfile.addValues": "Add values",
+    "userProfile.addSkills": "Add skills",
+    "userProfile.remainingSkills": "*You can add {count} more skills.",
+    "userProfile.remainingValues": "*You can add {count} more values."
+
 }
