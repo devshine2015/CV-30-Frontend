@@ -13,7 +13,7 @@ const AddTagHOC = compose(
     withState('newTag', 'setNewTag', ''),
     withHandlers({
         updateNewTag: ({ setNewTag }) => text => setNewTag(text),
-        handleKeyPress: ({ handleArticleTag, articleId, newTag, match: { params: { lang: language } }, setFeedbackMessage, closeTagEditor }) => async event => {
+        handleKeyPress: ({ handleArticleTag, articleId, newTag, setNewTag, match: { params: { lang: language } }, setFeedbackMessage, closeTagEditor }) => async event => {
             if (event.key !== 'Enter')
                 return;
 
@@ -43,6 +43,7 @@ const AddTagHOC = compose(
                         message: 'Changes saved successfully.'
                     }
                 });
+                setNewTag('');
                 closeTagEditor();
             }
             catch (err) {
