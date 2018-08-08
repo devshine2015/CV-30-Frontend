@@ -102,7 +102,7 @@ const Show = (props) => {
     const {
         expanded, expandPanel,
         getEditMode: { editMode: { status: editMode } },
-        companyQuery: { company: { faqs, officeArticles, storiesArticles, jobs } },
+        companyQuery: { company: { name, faqs, officeArticles, storiesArticles, jobs } },
         edited, editPanel, addQA, newQA,
         match: { params: { lang, companyId } },
         description, updateDescription, submitDescription
@@ -112,7 +112,7 @@ const Show = (props) => {
         <Grid container className='mainBody brandShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <section className='aboutSection'>
-                    <h2 className='titleHeading'>Despre <b>Ursus Romania</b></h2>
+                    <h2 className='titleHeading'>Despre <b>{name}</b></h2>
                     {
                         editMode ?
                             <div className='editorWrapper'>
