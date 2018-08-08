@@ -8,7 +8,6 @@ import { Redirect, Link } from 'react-router-dom';
 import MediaUploadPopUp from './components/mediaUpload';
 
 const NewsFeed = props => {
-    console.log(props);
     const {
         formData, handleFormChange, switchIsArticle, isArticle,
         currentUser: { loading, profile },

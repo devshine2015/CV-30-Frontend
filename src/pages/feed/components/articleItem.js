@@ -10,13 +10,14 @@ import AuthorAvatarHeader from './authorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../constants/disqus';
 import { stripHtmlTags } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
-import { getCurrentUser } from '../../../store/queries';
+import { getCurrentUser, handleArticleTag, getNewsFeedArticles } from '../../../store/queries';
 import AddTag from './addTag';
 import Loader from '../../../components/Loader';
 
 const ArticleItemHOC = compose(
     withRouter,
     graphql(getCurrentUser, { name: 'getCurrentUser' }),
+    graphql(handleArticleTag, { name: 'handleArticleTag' }),
     withState('tagAnchor', 'setTagAnchor', null),
     withHandlers({
         openTagEditor: ({ setTagAnchor }) => target => {
@@ -24,6 +25,32 @@ const ArticleItemHOC = compose(
         },
         closeTagEditor: ({ setTagAnchor }) => () => {
             setTagAnchor(null);
+        },
+        addVote: ({ handleArticleTag, match: { params: { lang: language } }, article }) => async tag => {
+            console.log(article);
+            try {
+                await handleArticleTag({
+                    variables: {
+                        language,
+                        details: {
+                            title: tag.i18n[0].title,
+                            articleId: article.id,
+                            isSet: true
+                        }
+                    },
+                    refetchQueries: [{
+                        query: getNewsFeedArticles,
+                        fetchPolicy: 'network-only',
+                        name: 'newsFeedArticlesQuery',
+                        variables: {
+                            language
+                        }
+                    }]
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
         }
     }),
     pure
@@ -32,7 +59,8 @@ const ArticleItemHOC = compose(
 const ArticleItem = props => {
     const {
         match, getCurrentUser,
-        article: { id, author, isPost, i18n, createdAt, images, videos, tags, endorsers }, openTagEditor, closeTagEditor, tagAnchor
+        article: { id, author, isPost, i18n, createdAt, images, videos, tags, endorsers },
+        openTagEditor, closeTagEditor, tagAnchor, addVote
     } = props;
 
     if (getCurrentUser.loading)
@@ -121,7 +149,9 @@ const ArticleItem = props => {
                             </Button>
                         </Link>
                     </div>
+
                     <p className='likes'>Appreciated {appreciatedCount} time{appreciatedCount !== 1 && "s"}.</p>
+
                     <div className='tags'>
                         {
                             isAddTagAllowed &&
@@ -130,12 +160,24 @@ const ArticleItem = props => {
                             </IconButton>
                         }
                         {
-                            (tags && tags.length > 0) && tags.map(tag => (
-                                <span className='tag' key={tag.id}>
-                                    <span className='votes'>{tag.users.length}</span>
-                                    <span className='title'>{tag.i18n[0].title}</span>
-                                </span>
-                            ))
+                            (tags && tags.length > 0) && tags.map(tag => {
+                                const { id, i18n, users } = tag;
+                                const result = users.find(user => user.id === currentUser.id);
+                                let userHasVoted = !!result;
+                                console.log(result);
+                                return (
+                                    <span className='tag' key={id}>
+                                        {
+                                            userHasVoted ?
+                                                <span className='votes'>{tag.users.length}</span>
+                                                : <IconButton className='voteBtn' onClick={() => addVote(tag)}>
+                                                    <Icon>add</Icon>
+                                                </IconButton>
+                                        }
+                                        <span className='title'>{i18n[0].title}</span>
+                                    </span>
+                                )
+                            })
                         }
                     </div>
                 </div>
