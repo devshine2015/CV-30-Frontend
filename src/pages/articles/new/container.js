@@ -4,13 +4,14 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuidv4';
 
-import { handleArticle, setFeedbackMessage } from '../../../store/queries';
+import { handleArticle, setFeedbackMessage, setEditMode } from '../../../store/queries';
 
 const NewArticleHOC = compose(
     withRouter,
     graphql(handleArticle, {
         name: 'handleArticle'
     }),
+    graphql(setEditMode, { name: 'setEditMode' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', props => {
         return {
@@ -36,7 +37,7 @@ const NewArticleHOC = compose(
             changeMediaType(!isVideoUrl);
         },
         saveArticle: props => async () => {
-            const { handleArticle, formData: { id, title, description, videoURL, images }, setIsSaving, match, setFeedbackMessage, history } = props;
+            const { handleArticle, formData: { id, title, description, videoURL, images }, setIsSaving, match, setFeedbackMessage, setEditMode, history } = props;
 
             const article = {
                 id,
@@ -64,12 +65,20 @@ const NewArticleHOC = compose(
                         article
                     }
                 });
+
                 await setFeedbackMessage({
                     variables: {
                         status: 'success',
                         message: 'Changes saved successfully.'
                     }
                 });
+
+                await setEditMode({
+                    variables: {
+                        status: false
+                    }
+                });
+
                 history.push(`/${match.params.lang}/article/${id}`);
             }
             catch (err) {
