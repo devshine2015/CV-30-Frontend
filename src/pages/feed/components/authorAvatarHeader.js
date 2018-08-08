@@ -8,9 +8,9 @@ import { s3BucketURL, profilesFolder } from '../../../constants/s3';
 const authorAvatarHeader = props => {
     const { hasAvatar, avatarContentType, id, firstName, lastName, email } = props.profile;
     const avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : defaultUserAvatar;
-    const fullName = (firstName && lastName) ? `${firstName.charAt(0)}${lastName.charAt(0)}` : email;
+    const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
 
-    return  (
+    return (
         <div className='leftOverlay'>
             <Link to={`/${props.lang}/profile/${id}`}>
                 <Avatar
