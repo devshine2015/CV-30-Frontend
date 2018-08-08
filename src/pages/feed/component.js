@@ -53,7 +53,7 @@ const NewsFeed = props => {
                                     <Icon className='icon'>
                                         camera_alt
                                     </Icon>
-                                    + Photo / Video
+                                    <span>+ Photo / Video</span>
                                 </Button>
                                 <MediaUploadPopUp
                                     anchor={mediaUploadAnchor}
