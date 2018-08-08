@@ -164,7 +164,6 @@ const ArticleItem = props => {
                                 const { id, i18n, users } = tag;
                                 const result = users.find(user => user.id === currentUser.id);
                                 let userHasVoted = !!result;
-                                console.log(result);
                                 return (
                                     <span className='tag' key={id}>
                                         {
