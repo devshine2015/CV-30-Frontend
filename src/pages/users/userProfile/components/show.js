@@ -291,47 +291,49 @@ const Show = props => {
                             </p>
                         }
                     </div>
-                    <div className='desiredSalaryContainer'>
-                        <h4>Desired&nbsp;<b>salary</b></h4>
-                        {
-                            (!editMode && isSalaryPublic) &&
-                            <p className='salaryDisplay'>
-                                {salary.amount}&nbsp;
+                    {(editMode || (!editMode && isSalaryPublic)) &&
+                        <div className='desiredSalaryContainer'>
+                            <h4>Desired&nbsp;<b>salary</b></h4>
+                            {
+                                (!editMode && isSalaryPublic) &&
+                                <p className='salaryDisplay'>
+                                    {salary.amount}&nbsp;
                                 <span className='currency'>{salary.currency}</span>
-                            </p>
-                        }
-                        {
-                            editMode &&
-                            <React.Fragment>
-                                <p>Chiar daca e privat, va ajuta la matching de joburi.</p>
-                                <FormGroup row className='salaryToggle'>
-                                    <FormLabel className={!isSalaryPublic ? 'active' : ''}>Private</FormLabel>
-                                    <ToggleSwitch checked={isSalaryPublic} onChange={toggleSalaryPrivate}
-                                        classes={{
-                                            switchBase: 'colorSwitchBase',
-                                            checked: 'colorChecked',
-                                            bar: 'colorBar',
-                                        }}
-                                        color="primary" />
-                                    <FormLabel className={isSalaryPublic ? 'active' : ''}>Public</FormLabel>
-                                </FormGroup>
-                                <FormControl>
-                                    <InputLabel htmlFor="desiredSalary">Amount</InputLabel>
-                                    <Input
-                                        id="desiredSalary"
-                                        name='desiredSalary'
-                                        placeholder='Adauga suma...'
-                                        type='number'
-                                        value={desiredSalary}
-                                        onChange={event => updateDesiredSalary(event.target.value)}
-                                    />
-                                </FormControl>
-                                <IconButton className='submitBtn' onClick={saveDesiredSalary}>
-                                    <Icon>done</Icon>
-                                </IconButton>
-                            </React.Fragment>
-                        }
-                    </div>
+                                </p>
+                            }
+                            {
+                                editMode &&
+                                <React.Fragment>
+                                    <p>Chiar daca e privat, va ajuta la matching de joburi.</p>
+                                    <FormGroup row className='salaryToggle'>
+                                        <FormLabel className={!isSalaryPublic ? 'active' : ''}>Private</FormLabel>
+                                        <ToggleSwitch checked={isSalaryPublic} onChange={toggleSalaryPrivate}
+                                            classes={{
+                                                switchBase: 'colorSwitchBase',
+                                                checked: 'colorChecked',
+                                                bar: 'colorBar',
+                                            }}
+                                            color="primary" />
+                                        <FormLabel className={isSalaryPublic ? 'active' : ''}>Public</FormLabel>
+                                    </FormGroup>
+                                    <FormControl>
+                                        <InputLabel htmlFor="desiredSalary">Amount</InputLabel>
+                                        <Input
+                                            id="desiredSalary"
+                                            name='desiredSalary'
+                                            placeholder='Adauga suma...'
+                                            type='number'
+                                            value={desiredSalary}
+                                            onChange={event => updateDesiredSalary(event.target.value)}
+                                        />
+                                    </FormControl>
+                                    <IconButton className='submitBtn' onClick={saveDesiredSalary}>
+                                        <Icon>done</Icon>
+                                    </IconButton>
+                                </React.Fragment>
+                            }
+                        </div>
+                    }
                 </div>
             </Grid>
         </Grid>
