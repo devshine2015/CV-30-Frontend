@@ -40,6 +40,9 @@
         .centralColumn {
             position: relative;
             margin-left: auto;
+            @media (max-width: 600px) {
+                margin: auto;
+            }
         }
         .columnRight {
             position: relative;
@@ -262,7 +265,8 @@
                         border: none;
                     }
                     .jobSelect,
-                    .formControl {
+                    .formControl,
+                    .rc-slider {
                         width: 380px;
                         @media (max-width: 600px) {
                             width: 100%;

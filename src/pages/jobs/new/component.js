@@ -13,21 +13,26 @@ import FroalaEditor from 'react-froala-wysiwyg';
 
 import fields from '../../../constants/contact';
 import BenefitsList from '../../../constants/benefits';
+import JobTypes from '../../../constants/jobTypes';
+import Loader from '../../../components/Loader';
+
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+
+const createSliderWithTooltip = Slider.createSliderWithTooltip;
+const Range = createSliderWithTooltip(Slider.Range);
 
 const NewJob = props => {
     const {
-        formData: { title, expireDate, teamId, benefits, description, idealCandidate },
-        handleFormChange,
-        updateDescription,
-        updateIdealCandidate,
-        publishJob,
+        formData: { title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills, jobTypes },
+        handleFormChange, updateDescription, updateIdealCandidate, handleSliderChange, publishJob,
         getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
         teamsQuery: { loading, teams },
         anchorEl, handleClick, handleClose, addField, formData, removeTextField
     } = props;
 
     if (loading)
-        return <div>Loading...</div>
+        return <Loader />
 
     return (
         <div className='newJobRoot'>
@@ -164,6 +169,55 @@ const NewJob = props => {
                                 model={idealCandidate}
                                 onModelChange={updateIdealCandidate}
                             />
+                        </section>
+                        <section className='activityType'>
+                            <h2 className='sectionTitle'>Activity <b>field</b></h2>
+                            <TextField
+                                name="activityField"
+                                label="Activity field"
+                                placeholder="Activity field..."
+                                className='textField jobSelect'
+                                onChange={handleFormChange}
+                                value={activityField || ''}
+                            />
+                        </section>
+                        <section className='skills'>
+                            <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
+                            <TextField
+                                name="skills"
+                                label="Skills"
+                                placeholder="Skills..."
+                                className='textField jobSelect'
+                                onChange={handleFormChange}
+                                value={skills || ''}
+                            />
+                        </section>
+                        <section className='jobType'>
+                            <h2 className='sectionTitle'>Job <b>type</b></h2>
+                            <p className='helperText'>
+                                Select job type(s).
+                            </p>
+                            <FormControl className='formControl'>
+                                <Select
+                                    multiple
+                                    value={jobTypes}
+                                    onChange={handleFormChange}
+                                    input={<Input name="jobTypes" />}
+                                    renderValue={selected => selected.join(', ')}
+                                    className='jobSelect'
+                                >
+                                    {JobTypes.map(jobType => (
+                                        <MenuItem key={jobType.id} value={jobType.id}>
+                                            <Checkbox checked={jobTypes.indexOf(jobType.id) > -1} />
+                                            <ListItemText primary={jobType.label} />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </section>
+                        <section className='salary'>
+                            <h2 className='sectionTitle'>Salary <b>range</b></h2>
+                            <Range min={0} max={5000} defaultValue={[0, 1000]} tipFormatter={value => `${value}E`} step={50} onChange={handleSliderChange} />
                         </section>
                     </div>
                 </Grid>

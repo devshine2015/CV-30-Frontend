@@ -24,7 +24,8 @@ const NewJobHOC = compose(
             id: uuid(),
             companyId,
             teamId,
-            benefits: []
+            benefits: [],
+            jobTypes: []
         };
     }),
     withState('isUploading', 'setIsUploading', false),
@@ -152,7 +153,10 @@ const NewJobHOC = compose(
             setFormData(contact);
         },
         updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
-        updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text }))
+        updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
+        handleSliderChange: () => (value) => {
+            console.log(value);
+        },
     }),
     pure
 );
