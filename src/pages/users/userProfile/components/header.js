@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Avatar, Button, Icon, Hidden, Chip, CircularProgress } from '@material-ui/core';
+import { Grid, Avatar, Button, Icon, Hidden, Chip, CircularProgress, IconButton } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from "recompose";
 import { FormattedMessage } from 'react-intl';
 import { NavLink, withRouter, Link } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { Redirect } from 'react-router-dom';
 
 import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
+import NamePopUp from './namePopUp';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { setFeedbackMessage, updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle, handleFollow } from '../../../../store/queries';
 
@@ -38,6 +39,7 @@ const HeaderHOC = compose(
     withState('count', 'setCount', ({ currentProfile: { profile } }) => profile.featuredArticles ? profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
+    withState('nameAnchor', 'setNameAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withState('isUploading', 'setIsUploading', false),
@@ -69,6 +71,8 @@ const HeaderHOC = compose(
             setSkillsModalData(null);
             setSkillsAnchor(null);
         },
+        toggleNameEditor: ({ setNameAnchor }) => event => setNameAnchor(event.target),
+        closeNameEditor: ({ setNameAnchor }) => () => setNameAnchor(null),
         removeStory: ({ setFeedbackMessage, handleArticle, match: { params: { profileId } } }) => async article => {
             try {
                 await handleArticle({
@@ -270,7 +274,8 @@ const Header = props => {
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress,
         localUserData, refetchBgImage, forceCoverRender,
         isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor,
-        toggleFollow, currentUser
+        toggleFollow, currentUser,
+        toggleNameEditor, closeNameEditor, nameAnchor
     } = props;
 
     const {
@@ -308,14 +313,6 @@ const Header = props => {
     if (hasProfileCover) {
         let newCover = `${s3BucketURL}/${profilesFolder}/${profile.id}/cover.${profile.profileCoverContentType}?${forceCoverRender}`;
         headerStyle.background += `, url(${newCover})`;
-    }
-
-    const avatarText = () => {
-        if (firstName && lastName)
-            return `${firstName.slice(0, 1).toUpperCase()}${lastName.slice(0, 1).toUpperCase()}`
-        else if (email)
-            return email.slice(0, 1).toUpperCase();
-        else return '';
     }
 
     let avatar =
@@ -378,16 +375,26 @@ const Header = props => {
                                 refetchBgImage={refetchBgImage}
                                 type='profile'
                             />
+                            <NamePopUp
+                                anchor={nameAnchor}
+                                onClose={closeNameEditor}
+                                profile={profile}
+                            />
                         </React.Fragment>
                     }
                     <div className='avatarTexts'>
                         <h3>{firstName || email}</h3>
                         <h4>Manager</h4>
                         {editMode &&
-                            <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
-                                <span className='text'>Change Background</span>
-                                <Icon className='icon'>brush</Icon>
-                            </Button>
+                            <React.Fragment>
+                                <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
+                                    <span className='text'>Change Background</span>
+                                    <Icon className='icon'>brush</Icon>
+                                </Button>
+                                <IconButton className='nameEditToggle' onClick={toggleNameEditor}>
+                                    <Icon>edit</Icon>
+                                </IconButton>
+                            </React.Fragment>
                         }
                     </div>
                 </Grid>

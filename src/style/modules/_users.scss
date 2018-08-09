@@ -31,6 +31,7 @@
         }
         .avatarTexts {
             color: #fff;
+            position: relative;
             h3 {
                 font-size: 1.85rem;
                 margin: 0;
@@ -80,6 +81,15 @@
                     background: #397db9;
                 }
             }
+        }
+        .nameEditToggle {
+            background: #4893cc;
+            color: #fff;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
         }
         .avatarLoadCircle {
             color: #fff;
@@ -737,7 +747,8 @@
     }
 }
 
-.skillsEditPaper {
+.skillsEditPaper,
+.nameEditPaper {
     background: #fff;
     border: 1px solid #707881;
     border-radius: 5px !important;
@@ -745,18 +756,17 @@
     position: relative;
     overflow: visible !important;
     margin-top: 20px;
-    margin-left: 50px;
-    &:after {
-        content: "";
-        display: block;
-        position: absolute;
-        top: -5px;
-        right: 45px;
-        width: 10px;
-        height: 10px;
-        background: #fff;
-        transform: rotate(-45deg);
-    }
+    margin-left: 50px; // &:after {
+    //     content: "";
+    //     display: block;
+    //     position: absolute;
+    //     top: -5px;
+    //     right: 45px;
+    //     width: 10px;
+    //     height: 10px;
+    //     background: #fff;
+    //     transform: rotate(-45deg);
+    // }
     .popupHeader {
         border-bottom: 2px solid #ececec;
         display: flex;
@@ -810,6 +820,23 @@
             border-radius: 50%;
             bottom: -24px;
             right: 20px;
+        }
+    }
+}
+
+.nameEditPaper {
+    .popupBody {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .textField {
+        margin-top: 15px;
+        &:not(:last-child) {
+            flex: 1;
+            min-width: 49%;
+        }
+        &:first-of-type {
+            margin-right: 2%;
         }
     }
 }
