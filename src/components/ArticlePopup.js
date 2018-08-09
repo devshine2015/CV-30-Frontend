@@ -20,7 +20,7 @@ const ArticlePopUp = (props) => {
         >
             <div className='storyEditPaper'>
                 <div className='popupHeader'>
-                    <h4>Add a story</h4>
+                    <h4>Add an article</h4>
                     <p>
                         Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro.
                     </p>

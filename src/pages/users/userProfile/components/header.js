@@ -493,7 +493,7 @@ const Header = props => {
                         editMode &&
                         <Grid item className='storyContainer add' onClick={(event) => toggleStoryEditor(event.target)}>
                             <span className='bigPlus'>+</span>
-                            <span className='storyTitle'>+ Add story</span>
+                            <span className='storyTitle'>+ Add article</span>
                         </Grid>
                     }
                     {
