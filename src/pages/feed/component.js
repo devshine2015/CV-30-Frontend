@@ -17,6 +17,8 @@ const NewsFeed = props => {
         openMediaUpload, closeMediaUpload, mediaUploadAnchor
     } = props;
 
+    console.log(profile);
+
     if (loading || newsFeedArticlesQuery.loading)
         return <Loader />
 

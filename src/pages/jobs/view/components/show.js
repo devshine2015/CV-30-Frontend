@@ -1,15 +1,16 @@
 import React from 'react';
 import { Grid, Button, IconButton, Icon, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-// import uuid from 'uuidv4';
 import { graphql } from 'react-apollo';
 import { FormattedDate } from 'react-intl';
+import { FacebookShareButton, GooglePlusShareButton, TwitterShareButton, LinkedinShareButton } from 'react-share';
 
 import ArticleSlider from '../../../../components/articleSlider';
 import Loader from '../../../../components/Loader';
 import { handleApplyToJob, getJobQuery, currentProfileQuery } from '../../../../store/queries';
 
 const ShowHOC = compose(
+
     graphql(handleApplyToJob, { name: 'handleApplyToJob' }),
     graphql(currentProfileQuery, {
         name: 'currentProfile',
@@ -70,8 +71,11 @@ const ShowHOC = compose(
 );
 
 const Show = props => {
+    const {
+        getJobQuery: { loading: jobLoading, job },
+        currentProfile: { loading: currentProfileLoading, profile }
+    } = props;
 
-    const { getJobQuery: { loading: jobLoading, job }, currentProfile: { loading: currentProfileLoading, profile } } = props;
     if (jobLoading || currentProfileLoading) {
         return <Loader />
     } else if (!job) {
@@ -194,18 +198,23 @@ const Show = props => {
                             </Button> : null}
                             <h2 className='sectionTitle'>Share <b>with a friend</b></h2>
                             <div className='socialLinks'>
-                                <IconButton className='socialLink'>
+
+                                <FacebookShareButton url={window.location.href} quote={title} className='socialLink'>
                                     <i className='fab fa-facebook-f' />
-                                </IconButton>
-                                <IconButton className='socialLink'>
+                                </FacebookShareButton>
+
+                                <GooglePlusShareButton url={window.location.href} className='socialLink'>
                                     <i className='fab fa-google-plus-g' />
-                                </IconButton>
-                                <IconButton className='socialLink'>
+                                </GooglePlusShareButton>
+
+                                <TwitterShareButton url={window.location.href} title={title} className='socialLink'>
                                     <i className='fab fa-twitter' />
-                                </IconButton>
-                                <IconButton className='socialLink'>
+                                </TwitterShareButton>
+
+                                <LinkedinShareButton url={window.location.href} title={title} className='socialLink'>
                                     <i className='fab fa-linkedin-in' />
-                                </IconButton>
+                                </LinkedinShareButton>
+
                                 <IconButton className='socialLink'>
                                     <i className='fas fa-envelope' />
                                 </IconButton>
