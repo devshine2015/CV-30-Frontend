@@ -9,12 +9,13 @@ import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import ArticleSlider from '../../../../components/articleSlider';
 import ArticlePopUp from '../../../../components/ArticlePopup';
 import MembersPopup from './memberPopup';
-import { removeMemberFromTeam, queryTeam, setFeedbackMessage } from '../../../../store/queries';
+import { removeMemberFromTeam, queryTeam, setFeedbackMessage, handleShallowUser } from '../../../../store/queries';
 import { graphql } from '../../../../../node_modules/react-apollo';
 
 const ShowHOC = compose(
     graphql(removeMemberFromTeam, { name: 'removeMemberFromTeam' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+    graphql(handleShallowUser, { name: 'handleShallowUserMutation' }),
     withState('isArticlePopupOpen', 'setIsArticlePopupOpen', false),
     withState('isMembersPopupOpen', 'setIsMembersPopupOpen', false),
     withHandlers({
@@ -63,17 +64,75 @@ const ShowHOC = compose(
                     }
                 });
             }
+        },
+        removeShallowMember: ({ handleShallowUserMutation, setFeedbackMessage, match: { params: { lang, teamId } } }) => async memberId => {
+            try {
+                await handleShallowUserMutation({
+                    variables: {
+                        options: {
+                            shallowUserId: memberId,
+                            teamId,
+                            isMember: false
+                        }
+                    },
+                    refetchQueries: [{
+                        query: queryTeam,
+                        fetchPolicy: 'network-only',
+                        name: 'queryTeam',
+                        variables: {
+                            language: lang,
+                            id: teamId
+                        }
+                    }]
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
         }
     })
 );
+
+const ShowMember = props => {
+    const { id, hasAvatar, avatarContentType, firstName, lastName, email } = props.profile;
+    let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
+    let initials = (firstName && lastName) ? `${firstName.charAt(0)}${lastName.charAt(0)}` : email;
+    const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
+    return (
+        <div className='teamMember'>
+            <Avatar src={avatar} className='avatar'>
+                {
+                    !hasAvatar ?
+                        initials
+                        : null
+                }
+            </Avatar>
+            <span className='teamMemberName'>{fullName}</span>
+            <i className='fas fa-check-circle' onClick={() => props.removeMember(id)} />
+        </div>
+    )
+}
+
 const Show = props => {
     const {
         getEditMode: { editMode: { status: editMode } },
         isArticlePopupOpen, openArticlePopUp, closeArticlePopUp,
         isMembersPopupOpen, openMembersPopup, closeMembersPopup,
         match: { params: { lang, teamId } },
-        queryTeam: { team: { company, members, officeArticles, jobs } },
-        removeMember
+        queryTeam: { team: { company, members, shallowMembers, officeArticles, jobs } },
+        removeMember, removeShallowMember
     } = props;
 
     return (
@@ -82,25 +141,8 @@ const Show = props => {
                 <section className='teamMembers'>
                     <h2 className='titleHeading'>Team<b>members</b></h2>
                     <div className='teamMembersContainer'>
-                        {members && members.map(profile => {
-                            const { id, hasAvatar, avatarContentType, firstName, lastName, email } = profile;
-                            let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
-                            let initials = (firstName && lastName) ? `${firstName.charAt(0)}${lastName.charAt(0)}` : email;
-                            const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
-                            return (
-                                <div className='teamMember' key={id}>
-                                    <Avatar src={avatar} className='avatar'>
-                                        {
-                                            !hasAvatar ?
-                                                initials
-                                                : null
-                                        }
-                                    </Avatar>
-                                    <span className='teamMemberName'>{fullName}</span>
-                                    <i className='fas fa-check-circle' onClick={() => removeMember(id)} />
-                                </div>
-                            )
-                        })}
+                        {members && members.map(profile => <ShowMember key={profile.id} profile={profile} removeMember={removeMember}/>)}
+                        {shallowMembers && shallowMembers.map(profile => <ShowMember key={profile.id} profile={profile} removeMember={removeShallowMember}/>)}
                     </div>
                     {editMode &&
                         <React.Fragment>
