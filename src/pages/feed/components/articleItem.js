@@ -13,11 +13,13 @@ import { s3BucketURL } from '../../../constants/s3';
 import { getCurrentUser, handleArticleTag, getNewsFeedArticles } from '../../../store/queries';
 import AddTag from './addTag';
 import Loader from '../../../components/Loader';
+import EditPost from './editPost';
 
 const ArticleItemHOC = compose(
     withRouter,
     graphql(getCurrentUser, { name: 'getCurrentUser' }),
     graphql(handleArticleTag, { name: 'handleArticleTag' }),
+    withState('editPost', 'setEditPost', false),
     withState('tagAnchor', 'setTagAnchor', null),
     withHandlers({
         openTagEditor: ({ setTagAnchor }) => target => {
@@ -51,7 +53,9 @@ const ArticleItemHOC = compose(
             catch (err) {
                 console.log(err);
             }
-        }
+        },
+        openEditPost: ({ setEditPost }) => () => setEditPost(true),
+        closeEditPost: ({ setEditPost }) => () => setEditPost(false)
     }),
     pure
 );
@@ -60,7 +64,8 @@ const ArticleItem = props => {
     const {
         match, getCurrentUser,
         article: { id, author, isPost, i18n, createdAt, images, videos, tags, endorsers },
-        openTagEditor, closeTagEditor, tagAnchor, addVote
+        openTagEditor, closeTagEditor, tagAnchor, addVote,
+        editPost, openEditPost, closeEditPost
     } = props;
 
     if (getCurrentUser.loading)
@@ -91,6 +96,8 @@ const ArticleItem = props => {
 
     const appreciatedCount = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;
 
+    const canEditPost = isPost && currentUser.id === author.id;
+
     return (
         <div className='listItem userListItem'>
             <AuthorAvatarHeader profile={author} lang={lang} />
@@ -98,6 +105,7 @@ const ArticleItem = props => {
             <div className='rightOverlay'>
                 Works at&nbsp;<span className='highlight'>CV30</span>&nbsp;-&nbsp;<span className='highlight'>Marketing team</span>
             </div>
+
             <div className='itemBody'>
                 <p className='articleBody'>
                     {!isPost &&
@@ -105,9 +113,20 @@ const ArticleItem = props => {
                             <span className='articleTitle'>{title}</span> &nbsp;
                         </React.Fragment>
                     }
-                    {desc}
+                    {!editPost && desc}
                     {!isPost && <Link to={`/${lang}/article/${id}`} className='readMoreLink'>Read more</Link>}
+                    {(canEditPost && !editPost) &&
+                        <IconButton className='floatingEditBtn' onClick={openEditPost}>
+                            <Icon>edit</Icon>
+                        </IconButton>
+                    }
                 </p>
+                {editPost &&
+                    <EditPost
+                        article={props.article}
+                        closeEditor={closeEditPost}
+                    />
+                }
                 {(image || video) &&
                     <div className='articleMedia'>
                         {image &&

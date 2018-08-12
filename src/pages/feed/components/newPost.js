@@ -191,6 +191,7 @@ const NewPost = props => {
                                     className={`postAsItem ${item.type}`}
                                     onClick={() => handlePostAsMenu(index)}
                                     selected={index === selectedPostOption}
+                                    key={item.id}
                                 >
                                     <Avatar src={item.avatar} className='postAsAvatar' />
                                     <div className='optionBody'>

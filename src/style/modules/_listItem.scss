@@ -121,6 +121,17 @@
                 font-weight: bold;
             }
         }
+        .floatingEditBtn {
+            width: 25px;
+            height: 25px;
+            background: #397db9;
+            color: #fff;
+            box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+            margin-left: 20px;
+            .material-icons {
+                font-size: 1rem;
+            }
+        }
         .articleDate {
             position: absolute;
             top: -8px;
@@ -209,6 +220,20 @@
             }
             .tabsIndicator {
                 background: #414141;
+            }
+            .editPost {
+                display: flex;
+                margin-bottom: 20px;
+                .textField {
+                    flex: 1;
+                }
+                .updatePostBtn {
+                    background: #4484bd;
+                    color: #fff;
+                    width: 30px;
+                    height: 30px;
+                    margin-left: 10px;
+                }
             }
         }
         .itemFooter {
