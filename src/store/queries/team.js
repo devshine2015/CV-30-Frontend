@@ -10,51 +10,58 @@ export const handleTeam = gql`
 `;
 
 export const queryTeam = gql`
-    query team($id: String!, $language: LanguageCodeType!) {
-  team(id: $id, language: $language) {
-    id
-    name
-    company {
-      id
-      name
-      owner {
+query team($id: String!, $language: LanguageCodeType!) {
+    team(id: $id, language: $language) {
         id
-      }
+        name
+        company {
+            id
+            name
+            owner {
+                id
+            }
+        }
+        members {
+            id
+            firstName
+            lastName
+            email
+        }
+        shallowMembers {
+            id
+            firstName
+            lastName
+            email
+            position
+        }
+        officeArticles {
+            id
+            images {
+                id
+                path
+            }
+            videos {
+                id
+                path
+            }
+            i18n {
+                title
+                description
+            }
+        }
+        jobs {
+            id
+            name
+            expireDate
+            i18n {
+                title
+                description
+            }
+        }
+        hasProfileCover
+        coverBackground
+        coverContentType
     }
-    members {
-      id
-      firstName
-      lastName
-      email
-    }
-    officeArticles {
-      id
-      images {
-        id
-        path
-      }
-      videos {
-        id
-        path
-      }
-      i18n {
-        title
-        description
-      }
-    }
-    jobs {
-      id
-      name
-      expireDate
-      i18n {
-        title
-        description
-      }
-    }
-    hasProfileCover
-    coverBackground
-    coverContentType
-  }
 }
 `;
 
