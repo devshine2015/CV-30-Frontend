@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const currentProfileQuery = gql`
-  query currentUser($id: String, $language: LanguageCodeType!) {
+query currentUser($id: String, $language: LanguageCodeType!) {
   profile(id: $id, language: $language) {
     id
     email
@@ -131,22 +131,35 @@ export const currentProfileQuery = gql`
       statusCode
     }
     followers {
-        id
+      id
     }
     followees {
-        id
+      id
     }
     followingCompanies {
-        id
+      id
     }
     followingJobs {
-        id
+      id
     }
     followingTeams {
-        id
+      id
     }
     appliedJobs {
+      id
+    }
+    ownedCompanies {
+      id
+      name
+      hasLogo
+      logoContentType
+      teams {
         id
+        name
+        hasProfileCover
+        coverContentType
+        coverBackground
+      }
     }
   }
 }
