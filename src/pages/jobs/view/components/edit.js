@@ -340,14 +340,14 @@ const Edit = props => {
                             </p>
                             <div>
                                 <Button className='addContactFieldBtn'
-                                    aria-owns={anchorEl ? 'simple-menu' : null}
+                                    aria-owns={anchorEl ? 'teamSelect' : null}
                                     aria-haspopup="true"
                                     onClick={handleClick}
                                 >
                                     Select field
                                 </Button>
                                 <Menu
-                                    id="simple-menu"
+                                    id="teamSelect"
                                     anchorEl={anchorEl}
                                     open={Boolean(anchorEl)}
                                     onClose={handleClose}
