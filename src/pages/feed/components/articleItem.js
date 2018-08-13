@@ -63,7 +63,7 @@ const ArticleItemHOC = compose(
 const ArticleItem = props => {
     const {
         match, getCurrentUser,
-        article: { id, author, isPost, i18n, createdAt, images, videos, tags, endorsers },
+        article: { id, author, isPost, i18n, createdAt, images, videos, tags },
         openTagEditor, closeTagEditor, tagAnchor, addVote,
         editPost, openEditPost, closeEditPost
     } = props;

@@ -12,6 +12,15 @@ const standardArticleResult = gql`
             avatarContentType
         }
         isPost
+        postAs
+        postingCompany {
+            id
+            name
+        }
+        postingTeam {
+            id
+            name
+        }
         images {
             id
             path
