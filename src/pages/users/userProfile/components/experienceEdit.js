@@ -96,12 +96,16 @@ const ExperienceEditHOC = compose(
                         });
                     }
 
-                    catch (err) {
-                        console.log(err);
+                    catch ({ graphQLErrors }) {
+                        console.log(JSON.stringify(graphQLErrors, null, 2));
+                        let formattedError = graphQLErrors && graphQLErrors[0].reduce((result, current) => {
+                            result += "\n" + current.message;
+                            return result;
+                        }, '')
                         await setFeedbackMessage({
                             variables: {
                                 status: 'error',
-                                message: err.message
+                                message: formattedError
                             }
                         });
                     }
@@ -129,12 +133,15 @@ const ExperienceEditHOC = compose(
                             }
                         });
                     }
-                    catch (err) {
-                        console.log(err);
+                    catch ({ graphQLErrors }) {
+                        let formattedError = graphQLErrors && graphQLErrors[0].reduce((result, current) => {
+                            result += "\n" + current.message;
+                            return result;
+                        }, '')
                         await setFeedbackMessage({
                             variables: {
                                 status: 'error',
-                                message: err.message
+                                message: formattedError
                             }
                         });
                     }
@@ -242,7 +249,7 @@ const ExperienceEditHOC = compose(
     pure
 );
 
-const ExperienceEdit = (props) => {
+const ExperienceEdit = props => {
     const {
         formData,
         isVideoUrl, switchMediaType,
