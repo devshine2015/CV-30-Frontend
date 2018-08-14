@@ -6,7 +6,6 @@ import ArticlesList from './components/articlesList';
 import { Link } from 'react-router-dom';
 import NewPost from './components/newPost';
 
-
 const NewsFeed = props => {
     const {
         currentUser: { loading, profile },
