@@ -23,7 +23,6 @@ const RegisterHOC = compose(
         }),
         validationSchema: registerValidations,
         handleSubmit: async (values, { props: { registerMutation, match, history, setRegisterError }, setSubmitting }) => {
-            debugger;
             setSubmitting(true);
             const { email, password } = values;
 
