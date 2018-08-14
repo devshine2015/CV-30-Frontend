@@ -320,3 +320,12 @@ export const setSalary = gql`
         }
     }
 `;
+
+export const setPosition = gql`
+mutation setPosition($position: String) {
+    setPosition(position: $position) {
+        status
+        error
+    }
+}
+`;

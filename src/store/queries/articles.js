@@ -98,9 +98,9 @@ export const handleArticle = gql`
     }
 `;
 
-export const handleArticleTag = gql`
-    mutation handleArticleTag($language: LanguageCodeType!, $details: ArticleTagInput!) {
-        handleArticleTag(language: $language, details: $details) {
+export const handleArticleTags = gql`
+    mutation handleArticleTags($language: LanguageCodeType!, $details: ArticleTagInput!) {
+        handleArticleTags(language: $language, details: $details) {
             status
             error
         }
