@@ -4,22 +4,22 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { handleArticleTag, setFeedbackMessage, getNewsFeedArticles } from '../../../store/queries';
+import { handleArticleTags, setFeedbackMessage, getNewsFeedArticles } from '../../../store/queries';
 
 const AddTagHOC = compose(
     withRouter,
-    graphql(handleArticleTag, { name: 'handleArticleTag' }),
+    graphql(handleArticleTags, { name: 'handleArticleTags' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('newTag', 'setNewTag', ''),
     withHandlers({
         updateNewTag: ({ setNewTag }) => text => setNewTag(text),
-        handleKeyPress: ({ handleArticleTag, articleId, newTag, setNewTag, match: { params: { lang: language } }, setFeedbackMessage, closeTagEditor }) => async event => {
+        handleKeyPress: ({ handleArticleTags, articleId, newTag, setNewTag, match: { params: { lang: language } }, setFeedbackMessage, closeTagEditor }) => async event => {
             if (event.key !== 'Enter')
                 return;
 
             event.preventDefault();
             try {
-                await handleArticleTag({
+                await handleArticleTags({
                     variables: {
                         language,
                         details: {
