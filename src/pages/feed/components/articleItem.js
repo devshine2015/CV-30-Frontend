@@ -10,7 +10,7 @@ import AuthorAvatarHeader from './authorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../constants/disqus';
 import { stripHtmlTags } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
-import { getCurrentUser, handleArticleTag, getNewsFeedArticles } from '../../../store/queries';
+import { getCurrentUser, handleArticleTags, getNewsFeedArticles, setEditMode } from '../../../store/queries';
 import AddTag from './addTag';
 import Loader from '../../../components/Loader';
 import EditPost from './editPost';
@@ -18,7 +18,8 @@ import EditPost from './editPost';
 const ArticleItemHOC = compose(
     withRouter,
     graphql(getCurrentUser, { name: 'getCurrentUser' }),
-    graphql(handleArticleTag, { name: 'handleArticleTag' }),
+    graphql(handleArticleTags, { name: 'handleArticleTags' }),
+    graphql(setEditMode, { name: 'setEditMode' }),
     withState('editPost', 'setEditPost', false),
     withState('tagAnchor', 'setTagAnchor', null),
     withHandlers({
@@ -28,10 +29,10 @@ const ArticleItemHOC = compose(
         closeTagEditor: ({ setTagAnchor }) => () => {
             setTagAnchor(null);
         },
-        addVote: ({ handleArticleTag, match: { params: { lang: language } }, article }) => async tag => {
+        addVote: ({ handleArticleTags, match: { params: { lang: language } }, article }) => async tag => {
             console.log(article);
             try {
-                await handleArticleTag({
+                await handleArticleTags({
                     variables: {
                         language,
                         details: {
@@ -54,7 +55,20 @@ const ArticleItemHOC = compose(
                 console.log(err);
             }
         },
-        openEditPost: ({ setEditPost }) => () => setEditPost(true),
+        handleEditBtnClick: props => async () => {
+            debugger;
+            const { setEditPost, article: { id, isPost }, history, setEditMode, match: { params: { lang } } } = props;
+            if (isPost)
+                setEditPost(true);
+            else {
+                await setEditMode({
+                    variables: {
+                        status: true
+                    }
+                });
+                return history.push(`/${lang}/article/${id}`);
+            }
+        },
         closeEditPost: ({ setEditPost }) => () => setEditPost(false)
     }),
     pure
@@ -65,7 +79,7 @@ const ArticleItem = props => {
         match, getCurrentUser,
         article: { id, author, isPost, i18n, createdAt, images, videos, tags },
         openTagEditor, closeTagEditor, tagAnchor, addVote,
-        editPost, openEditPost, closeEditPost
+        editPost, handleEditBtnClick, closeEditPost
     } = props;
 
     if (getCurrentUser.loading)
@@ -96,16 +110,20 @@ const ArticleItem = props => {
 
     const appreciatedCount = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;
 
-    const canEditPost = isPost && currentUser.id === author.id;
+    const canEdit = currentUser.id === author.id;
 
     return (
         <div className='listItem userListItem'>
             <AuthorAvatarHeader profile={author} lang={lang} />
-            <span className='articleDate'>{new Date(createdAt).toLocaleDateString()}</span>
-            <div className='rightOverlay'>
+            <span className={canEdit ? 'articleDate editable' : 'articleDate'}>{new Date(createdAt).toLocaleDateString()}</span>
+            <div className={canEdit ? 'rightOverlay editable' : 'rightOverlay'}>
                 Works at&nbsp;<span className='highlight'>CV30</span>&nbsp;-&nbsp;<span className='highlight'>Marketing team</span>
             </div>
-
+            {(canEdit && !editPost) &&
+                <IconButton className='floatingEditBtn' onClick={handleEditBtnClick}>
+                    <Icon>edit</Icon>
+                </IconButton>
+            }
             <div className='itemBody'>
                 <p className='articleBody'>
                     {!isPost &&
@@ -115,11 +133,7 @@ const ArticleItem = props => {
                     }
                     {!editPost && desc}
                     {!isPost && <Link to={`/${lang}/article/${id}`} className='readMoreLink'>Read more</Link>}
-                    {(canEditPost && !editPost) &&
-                        <IconButton className='floatingEditBtn' onClick={openEditPost}>
-                            <Icon>edit</Icon>
-                        </IconButton>
-                    }
+
                 </p>
                 {editPost &&
                     <EditPost
