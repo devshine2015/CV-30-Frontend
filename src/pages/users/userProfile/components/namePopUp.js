@@ -37,9 +37,9 @@ const NamePopUpHOC = compose(
                     variables: {
                         userSettings: {
                             firstName,
-                            lastName,
-                            //position
-                        }
+                            lastName
+                        },
+                        position
                     },
                     refetchQueries: [{
                         query: currentProfileQuery,
@@ -116,9 +116,8 @@ const NamePopUp = ({ anchor, onClose, handleFormChange, formData: { firstName, l
                     placeholder="Position..."
                     className='textField'
                     fullWidth
-                    disabled
                     onChange={handleFormChange}
-                    value={position || 'Manager'}
+                    value={position || ''}
                 />
             </div>
             <div className='popupFooter'>

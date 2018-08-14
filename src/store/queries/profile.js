@@ -7,6 +7,7 @@ query currentUser($id: String, $language: LanguageCodeType!) {
     email
     firstName
     lastName
+    position
     featuredArticles {
       id
       author {
@@ -166,9 +167,14 @@ query currentUser($id: String, $language: LanguageCodeType!) {
 `;
 
 export const updateUserSettingsMutation = gql`
-    mutation updateUserSettings($userSettings: UserSettingsInput) {
-        updateUserSettings(userSettings: $userSettings) {  
+    mutation updateUserSettings($userSettings: UserSettingsInput, $position: String) {
+        updateUserSettings(userSettings: $userSettings) {
             status
+            error
+        }
+        setPosition(position: $position) {
+            status
+            error
         }
     }
 `;

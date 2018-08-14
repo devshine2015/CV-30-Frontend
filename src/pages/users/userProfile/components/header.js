@@ -282,6 +282,7 @@ const Header = props => {
         firstName,
         lastName,
         email,
+        position,
         featuredArticles,
         // skills,
         // values,
@@ -384,7 +385,7 @@ const Header = props => {
                     }
                     <div className='avatarTexts'>
                         <h3>{firstName || email}</h3>
-                        <h4>Manager</h4>
+                        <h4>{position}</h4>
                         {editMode &&
                             <React.Fragment>
                                 <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
