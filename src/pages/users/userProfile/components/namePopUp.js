@@ -31,7 +31,7 @@ const NamePopUpHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
-        saveData: ({ formData: { firstName, lastName, position }, updateUserSettings, match: { params: { lang: language } }, setFeedbackMessage }) => async () => {
+        saveData: ({ formData: { firstName, lastName, position }, updateUserSettings, match: { params: { lang: language } }, setFeedbackMessage, onClose }) => async () => {
             try {
                 const { data: { updateUserSettings: { status } } } = await updateUserSettings({
                     variables: {
@@ -50,12 +50,15 @@ const NamePopUpHOC = compose(
                         }
                     }]
                 });
-                if (status) await setFeedbackMessage({
-                    variables: {
-                        status: 'success',
-                        message: 'Changes saved successfully.'
-                    }
-                });
+                if (status) {
+                    await setFeedbackMessage({
+                        variables: {
+                            status: 'success',
+                            message: 'Changes saved successfully.'
+                        }
+                    });
+                    onClose();
+                }
             }
 
             catch (err) {
