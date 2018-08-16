@@ -85,7 +85,7 @@ const SkillsEditHOC = compose(
                     try {
                         await setValues({
                             variables: {
-                                language: 'en',
+                                language: match.params.lang,
                                 addValues: toAdd,
                                 removeValues: toRemove
                             },
