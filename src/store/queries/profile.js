@@ -203,17 +203,8 @@ export const updateCoverMutation = gql`
 `;
 
 export const setSkills = gql`
-    mutation setSkills($skills: [String!]!, $language: LanguageCodeType!) {
-        setSkills(skills: $skills, language: $language) {
-            status
-            error
-        }
-    }
-`;
-
-export const removeSkill = gql`
-    mutation removeSkill($id: Int) {
-        removeSkill(id: $id){
+    mutation setSkills($addSkills: [String!]!, $removeSkills: [String!]!, $language: LanguageCodeType!) {
+        setSkills(addSkills: $addSkills, removeSkills: $removeSkills, language: $language) {
             status
             error
         }
@@ -221,17 +212,8 @@ export const removeSkill = gql`
 `;
 
 export const setValues = gql`
-    mutation setValues($values: [String!]!, $language: LanguageCodeType!) {
-        setValues(values: $values, language: $language) {
-            status
-            error
-        }
-    }
-`;
-
-export const removeValue = gql`
-    mutation removeValue($id: Int) {
-        removeValue(id: $id){
+    mutation setValues($addValues: [String!]!, $removeValues: [String!]!, $language: LanguageCodeType!) {
+        setValues(addValues: $addValues, removeValues: $removeValues, language: $language) {
             status
             error
         }

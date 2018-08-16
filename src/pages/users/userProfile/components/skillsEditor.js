@@ -1,152 +1,59 @@
 import React from 'react';
-import { Popover, Button, FormControl, InputLabel, Input, InputAdornment, IconButton, Icon, Chip } from '@material-ui/core';
+import { Popover, FormControl, IconButton, Icon } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
-import { setSkills, setValues, removeSkill, removeValue, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setSkills, setValues, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+
+import TagsInput from '../../../../components/TagsInput';
 
 const SkillsEditHOC = compose(
     withRouter,
     graphql(setSkills, { name: 'setSkills' }),
     graphql(setValues, { name: 'setValues' }),
-    graphql(removeSkill, { name: 'removeSkill' }),
-    graphql(removeValue, { name: 'removeValue' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('displaySkills', 'setDisplaySkills', ({ skillsModalData }) => {
+    withState('initialSkills', '', ({ skillsModalData }) => {
         if (skillsModalData && skillsModalData.data) {
-            let newArr = skillsModalData.data.map(item => ({
-                id: item.id,
-                title: item.i18n[0].title
-            }));
-            return newArr;
+            return skillsModalData.data.map(item => item.i18n[0].title);
         }
-        else return [];
-
+        return [];
     }),
-    withState('newSkill', 'setSkillText', ''),
+    withState('tagsInputSkills', 'setTagsInputSkills', ({ skillsModalData }) => {
+        if (skillsModalData && skillsModalData.data) {
+            return skillsModalData.data.map(item => item.i18n[0].title);
+        }
+        return [];
+    }),
+    withState('maxSkillCount', '', 25),
     withHandlers({
-        updateNewSkill: ({ setSkillText }) => (skill) => {
-            setSkillText(skill);
-        },
-        addSkill: ({ newSkill, displaySkills, setSkillText, setFeedbackMessage }) => () => {
-            let arr = newSkill.split(',');
-            arr.forEach(skill => {
-                if (displaySkills.length >= 25) {
-                    setFeedbackMessage({
-                        variables: {
-                            status: 'error',
-                            message: `Reached limit.`
-                        }
-                    });
-                    return;
-                }
-                let found = displaySkills.find(item => item.title.toLowerCase() === skill.trim().toLowerCase());
-
-                if (found) {
-                    setFeedbackMessage({
-                        variables: {
-                            status: 'error',
-                            message: `Duplicate found: ${skill}`
-                        }
-                    });
-                } else {
-                    displaySkills.push({
-                        id: null,
-                        title: skill
-                    });
-                }
-            })
-            setSkillText('');
-        },
-        removeChip: ({ setFeedbackMessage, displaySkills, setDisplaySkills, skillsModalData, removeSkill, removeValue, match }) => async chipIndex => {
-            const { type } = skillsModalData;
-            let id = displaySkills[chipIndex].id;
-
-            switch (type) {
-                case 'skills':
-                    try {
-                        await removeSkill({
-                            variables: {
-                                id
-                            },
-                            refetchQueries: [{
-                                query: currentProfileQuery,
-                                fetchPolicy: 'network-only',
-                                name: 'currentUser',
-                                variables: {
-                                    language: match.params.lang
-                                }
-                            }]
-                        });
-                        await setFeedbackMessage({
-                            variables: {
-                                status: 'success',
-                                message: 'Changes saved successfully.'
-                            }
-                        });
+        updateTagsInputSkills: ({ setTagsInputSkills, setFeedbackMessage, maxSkillCount }) => (skills) => {
+            if (skills.length > maxSkillCount) {
+                setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: `Reached limit.`
                     }
-                    catch (err) {
-                        console.log(err);
-                        await setFeedbackMessage({
-                            variables: {
-                                status: 'error',
-                                message: err.message
-                            }
-                        });
-                    }
-                    break;
-                case 'values':
-                    try {
-                        await removeValue({
-                            variables: {
-                                id
-                            },
-                            refetchQueries: [{
-                                query: currentProfileQuery,
-                                fetchPolicy: 'network-only',
-                                name: 'currentUser',
-                                variables: {
-                                    language: match.params.lang
-                                }
-                            }]
-                        });
-                        await setFeedbackMessage({
-                            variables: {
-                                status: 'success',
-                                message: 'Changes saved successfully.'
-                            }
-                        });
-                    }
-                    catch (err) {
-                        console.log(err);
-                        await setFeedbackMessage({
-                            variables: {
-                                status: 'error',
-                                message: err.message
-                            }
-                        });
-                    }
-                    break;
-                default:
-                    return false;
+                });
+                return;
             }
-
-            let chipData = [...displaySkills];
-            chipData.splice(chipIndex, 1);
-            setDisplaySkills(chipData);
+            setTagsInputSkills(skills);
         },
-        saveData: ({ setFeedbackMessage, displaySkills, skillsModalData, setSkills, setValues, closeSkillsModal, match }) => async () => {
+        saveData: ({ setFeedbackMessage, skillsModalData, initialSkills, tagsInputSkills, setSkills, setValues, closeSkillsModal, match }) => async () => {
             const { type } = skillsModalData;
-            let data = displaySkills.map(item => item.title);
+
+            // Diff current with initial
+            const toAdd = tagsInputSkills.filter(item => initialSkills.findIndex(el => el === item) === -1);
+            const toRemove = initialSkills.filter(item => tagsInputSkills.findIndex(el => el === item) === -1);
 
             switch (type) {
                 case 'skills':
                     try {
                         await setSkills({
                             variables: {
-                                language: 'en',
-                                skills: data
+                                language: match.params.lang,
+                                addSkills: toAdd,
+                                removeSkills: toRemove
                             },
                             refetchQueries: [{
                                 query: currentProfileQuery,
@@ -179,7 +86,8 @@ const SkillsEditHOC = compose(
                         await setValues({
                             variables: {
                                 language: 'en',
-                                values: data
+                                addValues: toAdd,
+                                removeValues: toRemove
                             },
                             refetchQueries: [{
                                 query: currentProfileQuery,
@@ -211,15 +119,18 @@ const SkillsEditHOC = compose(
                     return false;
             }
             closeSkillsModal();
-        }
+        },
     }),
     pure
 );
 
 
 const SkillsEdit = props => {
-    const { displaySkills, skillsAnchor, closeSkillsModal, newSkill, updateNewSkill, addSkill, removeChip, saveData, skillsModalData } = props;
+    const { maxSkillCount, skillsAnchor, closeSkillsModal, tagsInputSkills, updateTagsInputSkills, saveData, skillsModalData } = props;
     const { type } = skillsModalData || {};
+    const typeText = type;
+    const capitalTypeText = (type === 'values') ? "Values" : "Skills";
+
     return (
         <Popover
             anchorOrigin={{
@@ -239,54 +150,16 @@ const SkillsEdit = props => {
         >
             <div className='popupHeader'>
                 <FormControl className='skillsInput' fullWidth={true}>
-                    {(type === 'values') ?
-                        <FormattedMessage id="userProfile.addValues" defaultMessage="Add values" description="User header add values">
-                            {(text) => <InputLabel>{text}</InputLabel>}
-                        </FormattedMessage> :
-                        <FormattedMessage id="userProfile.addSkills" defaultMessage="Add skills" description="User header add skills">
-                            {(text) => <InputLabel>{text}</InputLabel>}
-                        </FormattedMessage>
-                    }
+                    <FormattedMessage id={`userProfile.add${capitalTypeText}`} defaultMessage={`Add ${typeText}`} description={`User header add ${typeText}`}>
+                        {(text) => <span>{text}</span>}
+                    </FormattedMessage>
 
-                    <Input
-                        id="newSkill"
-                        type='text'
-                        value={newSkill}
-                        onChange={event => updateNewSkill(event.target.value)}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <Button color='primary' size='small' variant='raised' className='addSkillButton' onClick={addSkill} disabled={!newSkill}>Add</Button>
-                            </InputAdornment>
-                        }
-                        fullWidth={true}
-                    />
+                    <TagsInput value={tagsInputSkills} onChange={updateTagsInputSkills} helpTagName={type} />
 
-                    {(type === 'values') ?
-                        <FormattedMessage id="userProfile.remainingValues" values={{ count: 25 - displaySkills.length }}>
-                            {(text) => <small className='helperText'>{text}</small>}
-                        </FormattedMessage> :
-                        <FormattedMessage id="userProfile.remainingSkills" values={{ count: 25 - displaySkills.length }}>
-                            {(text) => <small className='helperText'>{text}</small>}
-                        </FormattedMessage>
-                    }
+                    <FormattedMessage id={`userProfile.remaining${(type === 'values') ? "Values" : "Skills" }`} values={{ count: maxSkillCount - tagsInputSkills.length }}>
+                        {(text) => <small className='helperText'>{text}</small>}
+                    </FormattedMessage>
                 </FormControl>
-            </div>
-            <div className='popupBody'>
-                {
-                    (displaySkills && displaySkills.length) ?
-                        displaySkills.map((item, index) =>
-                            <Chip
-                                label={item.title}
-                                className='chip'
-                                key={`value-${index}`}
-                                onDelete={() => removeChip(index)}
-                                classes={{ deleteIcon: 'deleteIcon' }}
-                            />
-                        )
-                        :
-                        <span className='noChips'>Nothing to show.</span>
-                }
-
             </div>
             <div className='popupFooter'>
                 <IconButton className='footerCheck' onClick={saveData}>
