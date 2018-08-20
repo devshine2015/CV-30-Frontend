@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { TextField, Grid, Button, Select, MenuItem, FormControl, Input, Checkbox, ListItemText, IconButton, Icon, Menu } from '@material-ui/core';
+import { TextField, Grid, Button, Select, MenuItem, FormControl, Input, Checkbox, ListItemText, IconButton, Icon, Menu, FormControlLabel } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 
@@ -14,9 +14,16 @@ import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
 import fields from '../../../../constants/contact';
+import { formatCurrency } from '../../../../constants/utils';
 import BenefitsList from '../../../../constants/benefits';
-import { teamsQuery, handleJob, setFeedbackMessage } from '../../../../store/queries';
+import { teamsQuery, handleJob, setFeedbackMessage, jobTypesQuery, getJobQuery } from '../../../../store/queries';
 import Loader from '../../../../components/Loader';
+import TagsInput from '../../../../components/TagsInput';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+
+const createSliderWithTooltip = Slider.createSliderWithTooltip;
+const Range = createSliderWithTooltip(Slider.Range);
 
 const EditHOC = compose(
     graphql(teamsQuery, {
@@ -30,8 +37,17 @@ const EditHOC = compose(
     }),
     graphql(handleJob, { name: 'handleJob' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+    graphql(jobTypesQuery, {
+        name: 'jobTypesQuery',
+        options: props => ({
+            fetchPolicy: 'network-only',
+            variables: {
+                language: props.match.params.lang
+            }
+        })
+    }),
     withState('formData', 'setFormData', props => {
-        const { getJobQuery: { job: { id, team, i18n, expireDate, company } } } = props;
+        const { getJobQuery: { job: { id, team, i18n, expireDate, company, activityField, skills, jobTypes, salary } } } = props;
 
         let jobEdit = {
             id,
@@ -41,7 +57,18 @@ const EditHOC = compose(
             title: (i18n && i18n[0]) ? i18n[0].title : '',
             description: (i18n && i18n[0]) ? i18n[0].description : '',
             idealCandidate: (i18n && i18n[0]) ? i18n[0].idealCandidate : '',
-            benefits: []
+            benefits: [],
+            activityField: activityField ? activityField.i18n[0].title : '',
+            skills: skills.map(skill => skill.i18n[0].title),
+            selectedJobTypes: jobTypes.map(jt => jt.id),
+            salary: {
+                amountMin: salary.amountMin,
+                amountMax: salary.amountMax,
+                currency: salary.currency
+            },
+            salaryRangeStart: 0,
+            salaryRangeEnd: 5000,
+            salaryPublic: salary.isPublic
         };
 
         return jobEdit;
@@ -125,15 +152,37 @@ const EditHOC = compose(
         updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
 
         publishJob: ({ handleJob, formData, match, setFeedbackMessage }) => async () => {
-            const { id, companyId, teamId, title, description, expireDate, idealCandidate } = formData;
+            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField } = formData;
             try {
                 await handleJob({
                     variables: {
                         language: match.params.lang,
                         jobDetails: {
-                            id, companyId, teamId, title, description, expireDate, idealCandidate
+                            id,
+                            companyId,
+                            teamId,
+                            title, 
+                            description,
+                            expireDate,
+                            idealCandidate,
+                            jobTypes,
+                            salary: {
+                                ...salary,
+                                isPublic: salaryPublic
+                            },
+                            skills,
+                            activityField
                         }
-                    }
+                    },
+                    refetchQueries: [{
+                        query: getJobQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'getJobQuery',
+                        variables: {
+                            id: match.params.jobId,
+                            language: match.params.lang
+                        },
+                    }]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -173,22 +222,38 @@ const EditHOC = compose(
             await delete contact[key];
             setFormData(contact);
         },
+        handleSliderChange: ({ setFormData, formData }) => value => {
+            setFormData({ 
+                ...formData, 
+                salary: {
+                    ...formData.salary,
+                    amountMin: value[0],
+                    amountMax: value[1]
+                }
+            });
+        },
+        onSkillsChange: ({ setFormData, formData }) => skills => {
+            setFormData({ ...formData, skills });
+        }
     }),
     pure
 );
 const Edit = props => {
     const {
-        formData: { title, expireDate, benefits, teamId, description, idealCandidate }, handleFormChange,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
-        updateDescription, updateIdealCandidate,
-        teamsQuery: { loading, teams },
-        anchorEl, handleClick, handleClose, addField, formData, removeTextField,
-        publishJob,
-        feedbackMessage, closeFeedback
+        teamsQuery, jobTypesQuery,
     } = props;
 
-    if (loading)
+    if (teamsQuery.loading || jobTypesQuery.loading)
         return <Loader />
+
+    const {
+        formData: { title, expireDate, benefits, teamId, description, idealCandidate, activityField, selectedJobTypes, skills, salary, salaryPublic, salaryRangeStart, salaryRangeEnd }, handleFormChange,
+        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
+        updateDescription, updateIdealCandidate,
+        anchorEl, handleClick, handleClose, addField, formData, removeTextField,
+        publishJob, onSkillsChange, handleSliderChange,
+        feedbackMessage, closeFeedback
+    } = props;
 
     return (
         <React.Fragment>
@@ -307,7 +372,7 @@ const Edit = props => {
                                     <em>Select a team</em>
                                 </MenuItem>
                                 {
-                                    teams && teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
+                                    teamsQuery.teams && teamsQuery.teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
                                 }
 
                             </Select>
@@ -325,6 +390,53 @@ const Edit = props => {
                                 model={idealCandidate}
                                 onModelChange={updateIdealCandidate}
                             />
+                        </section>
+                        <section className='activityType'>
+                            <h2 className='sectionTitle'>Activity <b>field</b></h2>
+                            <TextField
+                                name="activityField"
+                                label="Activity field"
+                                placeholder="Activity field..."
+                                className='textField jobSelect'
+                                onChange={handleFormChange}
+                                value={activityField || ''}
+                            />
+                        </section>
+                        <section className='skills'>
+                            <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
+                            <TagsInput value={skills} onChange={onSkillsChange} helpTagName='skill' className='textField jobSelect' />
+                        </section>
+                        <section className='jobType'>
+                            <h2 className='sectionTitle'>Job <b>type</b></h2>
+                            <p className='helperText'>
+                                Select job type(s).
+                            </p>
+                            <FormControl className='formControl'>
+                                <Select
+                                    multiple
+                                    value={selectedJobTypes}
+                                    onChange={handleFormChange}
+                                    input={<Input name="selectedJobTypes" />}
+                                    renderValue={selected => selected.map(item => jobTypesQuery.jobTypes.find(jt => jt.id === item).i18n[0].title).join(', ')}
+                                    className='jobSelect'
+                                >
+                                    {jobTypesQuery.jobTypes.map(jobType => (
+                                        <MenuItem key={jobType.id} value={jobType.id}>
+                                            <Checkbox checked={selectedJobTypes.indexOf(jobType.id) > -1} />
+                                            <ListItemText primary={jobType.i18n[0].title} />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </section>
+                        <section className='salary'>
+                            <h2 className='sectionTitle'>Salary <b>range</b></h2>
+                            <Range min={salaryRangeStart} max={salaryRangeEnd} defaultValue={[salary.amountMin, salary.amountMax]} tipFormatter={value => `${value}${formatCurrency(salary.currency)}`} step={50} onChange={handleSliderChange} />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox name="salaryPublic" checked={salaryPublic} onChange={handleFormChange} />
+                                }
+                                label="Public" />
                         </section>
                     </form>
                 </Grid>

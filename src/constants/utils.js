@@ -14,3 +14,10 @@ export const stripHtmlTags = html => {
 
     return result;
 }
+
+export const formatCurrency = currency => {
+    switch(currency) {
+        case 'eur': return '€';
+        default: return '';
+    }
+}

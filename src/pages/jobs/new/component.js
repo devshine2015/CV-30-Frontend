@@ -18,16 +18,10 @@ import Loader from '../../../components/Loader';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import TagsInput from '../../../components/TagsInput';
+import { formatCurrency } from '../../../constants/utils';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
-
-const formatCurrency = currency => {
-    switch(currency) {
-        case 'eur': return '€';
-        default: return '';
-    }
-}
 
 const NewJob = props => {
     const {
@@ -118,7 +112,7 @@ const NewJob = props => {
                             <TextField
                                 name="expireDate"
                                 type="date"
-                                value={expireDate ? (new Date(expireDate)).toISOString().split("T")[0] : (new Date()).toISOString().split("T")[0]}
+                                value={new Date(expireDate).toISOString().split("T")[0]}
                                 onChange={handleFormChange}
                                 className='jobSelect'
                             />
