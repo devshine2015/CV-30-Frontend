@@ -56,7 +56,6 @@ const ArticleItemHOC = compose(
             }
         },
         handleEditBtnClick: props => async () => {
-            debugger;
             const { setEditPost, article: { id, isPost }, history, setEditMode, match: { params: { lang } } } = props;
             if (isPost)
                 setEditPost(true);

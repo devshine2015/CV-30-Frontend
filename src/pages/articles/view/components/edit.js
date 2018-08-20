@@ -15,21 +15,24 @@ import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
 import { handleArticle, setFeedbackMessage } from '../../../../store/queries';
+import TagsInput from '../../../../components/TagsInput';
 
 const ArticleEditHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', props => {
-        const { getArticle: { article: { images, videos, i18n } } } = props;
+        const { getArticle: { article: { images, videos, i18n, tags } } } = props;
+
         return {
             title: (i18n && i18n[0] && i18n[0].title) ? i18n[0].title : '',
             description: (i18n && i18n[0] && i18n[0].description) ? i18n[0].description : '',
-            tags: ''
+            tags: tags.map(({ i18n }) => (i18n && i18n[0]) ? i18n[0].title : null)
         };
     }),
     withState('isVideoUrl', 'changeMediaType', true),
     withState('isSaving', 'setIsSaving', false),
     withHandlers({
+        setTags: ({ setFormData }) => tags => setFormData(state => ({ ...state, tags })),
         handleFormChange: props => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -46,13 +49,14 @@ const ArticleEditHOC = compose(
             changeMediaType(!isVideoUrl);
         },
         saveArticle: props => async () => {
-            const { handleArticle, formData: { title, description, videoURL, images }, getArticle: { article: { id } }, setIsSaving, match, setFeedbackMessage } = props;
+            const { handleArticle, formData: { title, description, videoURL, images, tags }, getArticle: { article: { id } }, setIsSaving, match, setFeedbackMessage } = props;
 
             const article = {
                 id,
                 title,
                 description,
-                images
+                images,
+                tags
             };
 
             if (videoURL) {
@@ -168,7 +172,8 @@ const ArticleEdit = props => {
         getArticle: { article: { id: articleId, author: { id: authorId, email, firstName, lastName }, images, videos, i18n, created_at } },
         handleFormChange, formData: { title, description, tags, videoURL }, updateDescription, saveArticle,
         isVideoUrl, switchMediaType,
-        getSignedUrl, onUploadStart, onError, onFinishUpload, isSaving
+        getSignedUrl, onUploadStart, onError, onFinishUpload, isSaving,
+        setTags
     } = props;
 
     return (
@@ -214,30 +219,7 @@ const ArticleEdit = props => {
                 <div className='columnRightContent'>
                     <section className='tags'>
                         <p className='helperText'>Tag your article</p>
-                        <TextField
-                            // error={touched.name && errors.name}
-                            // helperText={errors.name}
-                            name="tags"
-                            label="Tags"
-                            placeholder="Add tags..."
-                            className='textField'
-                            fullWidth
-                            onChange={handleFormChange}
-                            value={tags}
-                            helperText="Add tags that best represents your article as it will be appreciated by people based on the tags you selected."
-                            FormHelperTextProps={{
-                                classes: { root: 'inputHelperText' }
-                            }}
-                            InputProps={{
-                                classes: {
-                                    input: 'textFieldInput',
-                                    underline: 'textFieldUnderline'
-                                },
-                            }}
-                            InputLabelProps={{
-                                className: 'textFieldLabel'
-                            }}
-                        />
+                        <TagsInput value={tags} onChange={setTags} helpTagName='tag' />
                     </section>
                     <hr />
 

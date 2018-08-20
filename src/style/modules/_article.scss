@@ -379,7 +379,7 @@
                     }
                     .textField {
                         color: #fff;
-                        .textFieldInput,
+                        .tagInput,
                         .textFieldLabel {
                             color: #fff !important;
                         }
@@ -389,6 +389,17 @@
                                 border-bottom-color: #fff !important;
                             }
                         }
+                        .inputRoot {
+                            flex-wrap: wrap;
+                            padding: 5px 0;
+                            .chip {
+                                margin: 2px;
+                            }
+                            .tagInput {
+                                width: auto;
+                                padding: 0 3px;
+                            }
+                        }
                     }
                     .inputHelperText {
                         font-size: .75rem;
@@ -396,6 +407,7 @@
                         font-style: italic;
                     }
                 }
+                .tags {}
                 hr {
                     border-color: rgba(255, 255, 255, .5);
                     margin: 30px 0;

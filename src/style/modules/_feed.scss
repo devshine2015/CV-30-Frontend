@@ -89,10 +89,14 @@
                 .tag {
                     font-size: 1rem;
                     color: #277dba;
+                    margin: 0;
                     margin-right: 20px;
                     display: inline-flex;
                     align-items: center;
                     min-height: 35px;
+                    padding: inherit;
+                    background-color: inherit;
+                    border-radius: inherit;
                     .votes {
                         font-weight: bold;
                         margin-right: 5px;
