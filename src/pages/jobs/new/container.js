@@ -121,9 +121,8 @@ const NewJobHOC = compose(
             });
         },
         publishJob: ({ handleJob, formData, match, history, setFeedbackMessage }) => async () => {
-            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills } = formData;
-            //console.log(formData);
-            return;
+            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField } = formData;
+
             try {
                 await handleJob({
                     variables: {
@@ -141,7 +140,8 @@ const NewJobHOC = compose(
                                 ...salary,
                                 isPublic: salaryPublic
                             },
-                            skills
+                            skills,
+                            activityField
                         }
                     }
                 });
@@ -195,6 +195,9 @@ const NewJobHOC = compose(
                     amountMax: value[1]
                 }
             });
+        },
+        onSkillsChange: ({ setFormData, formData }) => skills => {
+            setFormData({ ...formData, skills });
         }
     }),
     pure

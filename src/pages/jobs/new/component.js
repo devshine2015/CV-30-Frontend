@@ -17,6 +17,7 @@ import Loader from '../../../components/Loader';
 
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import TagsInput from '../../../components/TagsInput';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
@@ -38,8 +39,8 @@ const NewJob = props => {
         return <Loader />
 
     const {
-        formData: { title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills, selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary },
-        handleFormChange, updateDescription, updateIdealCandidate, handleSliderChange, publishJob, salaryPublicChange,
+        formData: { title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills, selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary, salaryPublic },
+        handleFormChange, updateDescription, updateIdealCandidate, handleSliderChange, publishJob, onSkillsChange,
         getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
         anchorEl, handleClick, handleClose, addField, formData, removeTextField
     } = props;
@@ -193,14 +194,7 @@ const NewJob = props => {
                         </section>
                         <section className='skills'>
                             <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
-                            <TextField
-                                name="skills"
-                                label="Skills"
-                                placeholder="Skills..."
-                                className='textField jobSelect'
-                                onChange={handleFormChange}
-                                value={skills || ''}
-                            />
+                            <TagsInput value={skills} onChange={onSkillsChange} helpTagName='skill' className='textField jobSelect' />
                         </section>
                         <section className='jobType'>
                             <h2 className='sectionTitle'>Job <b>type</b></h2>
@@ -230,7 +224,7 @@ const NewJob = props => {
                             <Range min={salaryRangeStart} max={salaryRangeEnd} defaultValue={[salary.amountMin, salary.amountMax]} tipFormatter={value => `${value}${formatCurrency(salary.currency)}`} step={50} onChange={handleSliderChange} />
                             <FormControlLabel
                                 control={
-                                    <Checkbox name="salaryPublic" value={salary.isPublic} onChange={handleFormChange} />
+                                    <Checkbox name="salaryPublic" checked={salaryPublic} onChange={handleFormChange} />
                                 }
                                 label="Public" />
                         </section>
