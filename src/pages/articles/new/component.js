@@ -15,12 +15,12 @@ import TagsInput from '../../../components/TagsInput';
 
 
 const NewArticle = ({
-    handleFormChange, formData: { id, title, description, videoURL },
+    handleFormChange, formData: { id, title, description, videoURL, tags },
     updateDescription, saveArticle,
     isVideoUrl, switchMediaType,
     openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess, isSaving,
     getSignedURL, handleFroalaSuccess, handleFroalaError,
-    tags, setTags
+    setTags
 }) => {
     return (
         <div className='newArticleRoot'>

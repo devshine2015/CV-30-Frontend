@@ -16,16 +16,16 @@ const NewArticleHOC = compose(
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', props => {
         return {
-            id: uuid()
+            id: uuid(),
+            tags: []
         };
     }),
     withState('isVideoUrl', 'changeMediaType', true),
     withState('isSaving', 'setIsSaving', false),
     withState('editor', 'setEditor', null),
     withState('imageUploadOpen', 'setImageUploadOpen', false),
-    withState('tags', 'setTags', []),
     withHandlers({
-        setTags: ({ setTags }) => tags => setTags(tags),
+        setTags: ({ setFormData }) => tags => setFormData(state => ({ ...state, tags })),
         openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
         closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
         handleError: () => error => { console.log(error) },
@@ -46,8 +46,8 @@ const NewArticleHOC = compose(
         updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
         switchMediaType: ({ isVideoUrl, changeMediaType, editor }) => () => changeMediaType(!isVideoUrl),
         saveArticle: props => async () => {
-            const { handleArticle, formData: { id, title, description, videoURL, images }, tags, setIsSaving, match, setFeedbackMessage, setEditMode, history } = props;
-            debugger;
+            const { handleArticle, formData: { id, title, description, videoURL, images, tags }, setIsSaving, match, setFeedbackMessage, setEditMode, history } = props;
+
             const article = {
                 id,
                 title,
