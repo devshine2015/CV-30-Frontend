@@ -88,14 +88,27 @@ const ArticleEditorHOC = compose(
                 default:
                     return false;
             }
+            let postAs;
+
+            if (type === 'profile_isFeatured' || type === 'profile_isAboutMe')
+                postAs = 'profile';
+            if (type === 'company_featured')
+                postAs = 'company';
+            if (type === 'job_officeLife')
+                postAs = 'team'
+
             let article = {
                 id: formData.id,
                 title: formData.title,
                 images: formData.images,
                 description: formData.description,
                 isFeatured: type === 'profile_isFeatured',
-                isAboutMe: type === 'profile_isAboutMe'
+                isAboutMe: type === 'profile_isAboutMe',
+                postAs
             };
+
+            console.log(article);
+
             if (formData.videoURL) {
                 article.videos = [
                     {
@@ -114,10 +127,15 @@ const ArticleEditorHOC = compose(
                 isAtOffice: type === 'job_officeLife'
             };
 
-            if (match.params.companyId)
+            if (match.params.companyId) {
                 options.companyId = match.params.companyId;
-            if (type === 'job_officeLife')
+                article.postingCompanyId = match.params.companyId;
+            }
+
+            if (type === 'job_officeLife') {
                 options.teamId = match.params.teamId;
+                article.postingTeamId = match.params.teamId;
+            }
 
             try {
                 await handleArticle({
