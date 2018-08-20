@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Input } from '@material-ui/core';
+import { Input, Chip, TextField } from '@material-ui/core';
 
-const Tag = props => <span className="tag" {...props} />
-const Delete = props => <button className="delete" {...props} />
-const Help = props => <span className="help" {...props} />
+const Help = props => <small className='helperText' {...props} />
 
 class TagsInput extends Component {
     state = {
@@ -27,7 +25,7 @@ class TagsInput extends Component {
             //e.target.value = ''
         }
 
-        if (e.keyCode === 8 && this.props.value.length && !e.target.value.length ) {
+        if (e.keyCode === 8 && this.props.value.length && !e.target.value.length) {
             this.setState({ newTag: '' });
             this.props.onChange(this.props.value.slice(0, this.props.value.length - 1));
         }
@@ -41,22 +39,30 @@ class TagsInput extends Component {
 
     render() {
         return (
-            <div>
-                <div className="tags-input">
-                    {this.props.value.map((tag) => (
-                        <Tag key={tag}>
-                            {tag}
-                            <Delete onClick={this.handleRemoveTag} />
-                        </Tag>
-                    ))}
-                    <Input
-                        id="tagsInput"
-                        value={this.state.newTag}
-                        onChange={this.handleChange}
-                        onKeyDown={this.handleKeyDown} />
-                </div>
-                <Help>hit 'Enter, Tab or ,' to add new {this.props.helpTagName}</Help>
-            </div>
+            <React.Fragment>
+                <TextField
+                    id="newSkill"
+                    value={this.state.newTag}
+                    onChange={this.handleChange}
+                    onKeyDown={this.handleKeyDown}
+                    InputProps={{
+                        startAdornment: this.props.value.map(item => (
+                            <Chip
+                                key={item}
+                                label={item}
+                                onDelete={this.handleRemoveTag}
+                                className='chip'
+                            />
+                        )),
+                        classes: {
+                            root: 'inputRoot',
+                            input: 'tagInput'
+                        }
+                    }}
+
+                />
+                <Help>Hit 'Enter, Tab or ,' to add new {this.props.helpTagName}</Help>
+            </React.Fragment>
         )
     }
 }

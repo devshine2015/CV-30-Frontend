@@ -151,12 +151,12 @@ const SkillsEdit = props => {
             <div className='popupHeader'>
                 <FormControl className='skillsInput' fullWidth={true}>
                     <FormattedMessage id={`userProfile.add${capitalTypeText}`} defaultMessage={`Add ${typeText}`} description={`User header add ${typeText}`}>
-                        {(text) => <span>{text}</span>}
+                        {(text) => <span className='title'>{text}</span>}
                     </FormattedMessage>
 
                     <TagsInput value={tagsInputSkills} onChange={updateTagsInputSkills} helpTagName={type} />
 
-                    <FormattedMessage id={`userProfile.remaining${(type === 'values') ? "Values" : "Skills" }`} values={{ count: maxSkillCount - tagsInputSkills.length }}>
+                    <FormattedMessage id={`userProfile.remaining${(type === 'values') ? "Values" : "Skills"}`} values={{ count: maxSkillCount - tagsInputSkills.length }}>
                         {(text) => <small className='helperText'>{text}</small>}
                     </FormattedMessage>
                 </FormControl>

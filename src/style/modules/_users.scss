@@ -756,17 +756,7 @@
     position: relative;
     overflow: visible !important;
     margin-top: 20px;
-    margin-left: 50px; // &:after {
-    //     content: "";
-    //     display: block;
-    //     position: absolute;
-    //     top: -5px;
-    //     right: 45px;
-    //     width: 10px;
-    //     height: 10px;
-    //     background: #fff;
-    //     transform: rotate(-45deg);
-    // }
+    margin-left: 50px;
     .popupHeader {
         border-bottom: 2px solid #ececec;
         display: flex;
@@ -784,6 +774,20 @@
             min-width: 50px;
             min-height: 25px;
             padding: 0;
+        }
+        .title {
+            margin-bottom: 5px;
+        }
+        .inputRoot {
+            flex-wrap: wrap;
+            padding: 5px 0;
+            .chip {
+                margin: 2px;
+            }
+            .tagInput {
+                width: auto;
+                padding: 0 3px;
+            }
         }
     }
     .popupBody {
