@@ -4,12 +4,21 @@ import { graphql } from 'react-apollo';
 import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
 
-import { teamsQuery, handleJob, setFeedbackMessage } from '../../../store/queries';
+import { teamsQuery, handleJob, setFeedbackMessage, jobTypesQuery } from '../../../store/queries';
 
 const NewJobHOC = compose(
     withRouter,
     graphql(teamsQuery, {
         name: 'teamsQuery',
+        options: props => ({
+            fetchPolicy: 'network-only',
+            variables: {
+                language: props.match.params.lang
+            }
+        })
+    }),
+    graphql(jobTypesQuery, {
+        name: 'jobTypesQuery',
         options: props => ({
             fetchPolicy: 'network-only',
             variables: {
@@ -25,7 +34,16 @@ const NewJobHOC = compose(
             companyId,
             teamId,
             benefits: [],
-            jobTypes: []
+            selectedJobTypes: [],
+            salary: {
+                amountMin: 0,
+                amountMax: 1000,
+                currency: 'eur'
+            },
+            salaryRangeStart: 0,
+            salaryRangeEnd: 5000,
+            salaryPublic: true,
+            skills: []
         };
     }),
     withState('isUploading', 'setIsUploading', false),
@@ -103,13 +121,27 @@ const NewJobHOC = compose(
             });
         },
         publishJob: ({ handleJob, formData, match, history, setFeedbackMessage }) => async () => {
-            const { id, companyId, teamId, title, description, expireDate, idealCandidate } = formData;
+            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills } = formData;
+            //console.log(formData);
+            return;
             try {
                 await handleJob({
                     variables: {
                         language: match.params.lang,
                         jobDetails: {
-                            id, companyId, teamId, title, description, expireDate, idealCandidate
+                            id,
+                            companyId,
+                            teamId,
+                            title, 
+                            description,
+                            expireDate,
+                            idealCandidate,
+                            jobTypes,
+                            salary: {
+                                ...salary,
+                                isPublic: salaryPublic
+                            },
+                            skills
                         }
                     }
                 });
@@ -154,9 +186,16 @@ const NewJobHOC = compose(
         },
         updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
         updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
-        handleSliderChange: () => (value) => {
-            console.log(value);
-        },
+        handleSliderChange: ({ setFormData, formData }) => value => {
+            setFormData({ 
+                ...formData, 
+                salary: {
+                    ...formData.salary,
+                    amountMin: value[0],
+                    amountMax: value[1]
+                }
+            });
+        }
     }),
     pure
 );
