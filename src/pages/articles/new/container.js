@@ -1,10 +1,11 @@
 import NewArticle from './component';
-import { compose, withState, pure, withHandlers } from 'recompose';
+import { compose, withState, pure, withHandlers, lifecycle } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuidv4';
 
 import { handleArticle, setFeedbackMessage, setEditMode } from '../../../store/queries';
+import { s3BucketURL, articlesFolder } from '../../../constants/s3';
 
 const NewArticleHOC = compose(
     withRouter,
@@ -20,7 +21,19 @@ const NewArticleHOC = compose(
     }),
     withState('isVideoUrl', 'changeMediaType', true),
     withState('isSaving', 'setIsSaving', false),
+    withState('editor', 'setEditor', null),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('tags', 'setTags', []),
     withHandlers({
+        setTags: ({ setTags }) => tags => setTags(tags),
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: () => error => { console.log(error) },
+        handleSuccess: ({ editor, formData: { id } }) => file => {
+            let imageURL = `${s3BucketURL}/${articlesFolder}/${id}/${file.filename}`;
+            console.log(file);
+            editor.image.insert(imageURL);
+        },
         handleFormChange: props => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -30,20 +43,17 @@ const NewArticleHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
-        updateDescription: props => text => {
-            props.setFormData(state => ({ ...state, 'description': text }));
-        },
-        switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
-            changeMediaType(!isVideoUrl);
-        },
+        updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
+        switchMediaType: ({ isVideoUrl, changeMediaType, editor }) => () => changeMediaType(!isVideoUrl),
         saveArticle: props => async () => {
-            const { handleArticle, formData: { id, title, description, videoURL, images }, setIsSaving, match, setFeedbackMessage, setEditMode, history } = props;
-
+            const { handleArticle, formData: { id, title, description, videoURL, images }, tags, setIsSaving, match, setFeedbackMessage, setEditMode, history } = props;
+            debugger;
             const article = {
                 id,
                 title,
                 description,
-                images
+                images,
+                tags
             };
 
             if (videoURL) {
@@ -92,11 +102,12 @@ const NewArticleHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ formData, setFeedbackMessage }) => async (file, callback) => {
+        getSignedURL: ({ formData: { id }, setFeedbackMessage }) => async (e, editor, images) => {
+            let file = images[0];
             const params = {
                 fileName: file.name,
                 contentType: file.type,
-                id: formData.id,
+                id,
                 type: 'article'
             };
 
@@ -110,55 +121,25 @@ const NewArticleHOC = compose(
                     body: JSON.stringify(params)
                 });
                 let responseJson = await response.json();
-                callback(responseJson);
+
+                editor.opts.imageUploadMethod = 'PUT';
+                editor.opts.imageUploadURL = responseJson.signedURL;
+                editor.image.upload();
+                return true;
             } catch (error) {
                 console.error(error);
-                callback(error);
                 await setFeedbackMessage({
                     variables: {
                         status: 'error',
-                        message: error || error.message
+                        message: error.message
                     }
                 });
+                return false;
             }
-        },
-        onUploadStart: ({ setIsSaving, formData, setFormData, match }) => (file, next) => {
-            let size = file.size;
-            if (size > 1024 * 1024) {
-                alert('File is too big!');
-            } else {
-                let newFormData = Object.assign({}, formData);
 
-                newFormData.images = [{
-                    id: uuid(),
-                    title: file.name,
-                    sourceType: 'article',
-                    source: formData.id,
-                    path: `/articles/${formData.id}/${file.name}`
-                }];
-                setFormData(newFormData);
-                setIsSaving(true);
-                next(file);
-            }
         },
-        onError: ({ setFeedbackMessage }) => async error => {
-            console.log(error);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'error',
-                    message: error || error.message
-                }
-            });
-        },
-        onFinishUpload: ({ setIsSaving, setFeedbackMessage }) => async data => {
-            setIsSaving(false);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'success',
-                    message: 'File uploaded successfully.'
-                }
-            });
-        }
+        handleFroalaSuccess: () => () => console.log('success'),
+        handleFroalaError: () => () => console.log('error'),
     }),
     pure
 );

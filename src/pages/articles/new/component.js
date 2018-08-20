@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, TextField, Button, FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
+import { Grid, TextField, Button, FormGroup, FormLabel, Switch as ToggleSwitch, Chip } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 
 // Require Editor JS files.
@@ -10,12 +10,17 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 // Require Font Awesome.
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
+import ImageUploader from '../../../components/imageUploader';
+import TagsInput from '../../../components/TagsInput';
+
 
 const NewArticle = ({
-    handleFormChange, formData: { title, description, tags, videoURL },
+    handleFormChange, formData: { id, title, description, videoURL },
     updateDescription, saveArticle,
     isVideoUrl, switchMediaType,
-    getSignedUrl, onUploadStart, onError, onFinishUpload, isSaving
+    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess, isSaving,
+    getSignedURL, handleFroalaSuccess, handleFroalaError,
+    tags, setTags
 }) => {
     return (
         <div className='newArticleRoot'>
@@ -47,7 +52,14 @@ const NewArticle = ({
                                 iconsTemplate: 'font_awesome_5',
                                 toolbarInline: true,
                                 charCounterCount: false,
-                                toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                imageUploadRemoteUrls: false,
+                                // quickInsertTags: null,
+                                toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo'],
+                                events: {
+                                    'froalaEditor.image.beforeUpload': (e, editor, images) => getSignedURL(e, editor, images),
+                                    'froalaEditor.image.uploaded': (e, editor, response) => handleFroalaSuccess(e, editor, response),
+                                    'froalaEditor.image.error': (e, editor, error, response) => handleFroalaError(e, editor, error, response)
+                                }
                             }}
                             model={description}
                             onModelChange={updateDescription}
@@ -61,32 +73,8 @@ const NewArticle = ({
                     <div className='columnRightContent'>
                         <section className='tags'>
                             <p className='helperText'>Tag your article</p>
-                            <TextField
-                                // error={touched.name && errors.name}
-                                // helperText={errors.name}
-                                name="tags"
-                                label="Tags"
-                                placeholder="Add tags..."
-                                className='textField'
-                                fullWidth
-                                onChange={handleFormChange}
-                                value={tags}
-                                helperText="Add tags that best represents your article as it will be appreciated by people based on the tags you selected."
-                                FormHelperTextProps={{
-                                    classes: { root: 'inputHelperText' }
-                                }}
-                                InputProps={{
-                                    classes: {
-                                        input: 'textFieldInput',
-                                        underline: 'textFieldUnderline'
-                                    },
-                                }}
-                                InputLabelProps={{
-                                    className: 'textFieldLabel'
-                                }}
-                            />
+                            <TagsInput value={tags} onChange={setTags} helpTagName='tag' />
                         </section>
-                        <hr />
 
                         <FormGroup row className='mediaToggle'>
                             <span className='mediaToggleLabel'>Upload visuals</span>
@@ -123,24 +111,20 @@ const NewArticle = ({
                                         className: 'textFieldLabel'
                                     }}
                                 /> :
-                                <label htmlFor="uploadArticleImage">
-                                    <S3Uploader
-                                        id="uploadArticleImage"
-                                        name="uploadArticleImage"
-                                        className='hiddenInput'
-                                        getSignedUrl={getSignedUrl}
-                                        accept="image/*"
-                                        preprocess={onUploadStart}
-                                        onError={onError}
-                                        onFinish={onFinishUpload}
-                                        uploadRequestHeaders={{
-                                            'x-amz-acl': 'public-read'
-                                        }}
-                                    />
-                                    <Button component='span' className='imgUpload' disabled={isSaving}>
+
+                                <React.Fragment>
+                                    <Button className='imgUpload' onClick={openImageUpload}>
                                         Upload
-                                    </Button>
-                                </label>
+                                </Button>
+                                    <ImageUploader
+                                        type
+                                        articleId={id}
+                                        open={imageUploadOpen}
+                                        onClose={closeImageUpload}
+                                        onError={handleError}
+                                        onSuccess={handleSuccess}
+                                    />
+                                </React.Fragment>
                             }
                         </section>
 

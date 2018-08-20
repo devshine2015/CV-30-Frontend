@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Chip, TextField } from '@material-ui/core';
+import { Chip, TextField } from '@material-ui/core';
 
 const Help = props => <small className='helperText' {...props} />
 
@@ -39,30 +39,37 @@ class TagsInput extends Component {
 
     render() {
         return (
-            <React.Fragment>
-                <TextField
-                    id="newSkill"
-                    value={this.state.newTag}
-                    onChange={this.handleChange}
-                    onKeyDown={this.handleKeyDown}
-                    InputProps={{
-                        startAdornment: this.props.value.map(item => (
-                            <Chip
-                                key={item}
-                                label={item}
-                                onDelete={this.handleRemoveTag}
-                                className='chip'
-                            />
-                        )),
-                        classes: {
-                            root: 'inputRoot',
-                            input: 'tagInput'
-                        }
-                    }}
-
-                />
-                <Help>Hit 'Enter, Tab or ,' to add new {this.props.helpTagName}</Help>
-            </React.Fragment>
+            <TextField
+                id="newSkill"
+                value={this.state.newTag}
+                onChange={this.handleChange}
+                onKeyDown={this.handleKeyDown}
+                className='textField'
+                fullWidth
+                FormHelperTextProps={{
+                    classes: { root: 'inputHelperText' }
+                }}
+                InputProps={{
+                    startAdornment: this.props.value.map(item => (
+                        <Chip
+                            key={item}
+                            label={item}
+                            onDelete={this.handleRemoveTag}
+                            className='chip'
+                            clickable={false}
+                        />
+                    )),
+                    classes: {
+                        root: 'inputRoot',
+                        input: 'tagInput',
+                        underline: 'textFieldUnderline'
+                    }
+                }}
+                InputLabelProps={{
+                    className: 'textFieldLabel'
+                }}
+                helperText={`Hit 'Enter, Tab or ,' to add new ${this.props.helpTagName}`}
+            />
         )
     }
 }
