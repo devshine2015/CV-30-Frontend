@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon, FormControl, Input, Checkbox, ListItemText } from '@material-ui/core';
+import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon, FormControl, Input, Checkbox, ListItemText, FormControlLabel } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 
 // Require Editor JS files.
@@ -13,7 +13,6 @@ import FroalaEditor from 'react-froala-wysiwyg';
 
 import fields from '../../../constants/contact';
 import BenefitsList from '../../../constants/benefits';
-import JobTypes from '../../../constants/jobTypes';
 import Loader from '../../../components/Loader';
 
 import Slider from 'rc-slider';
@@ -22,17 +21,28 @@ import 'rc-slider/assets/index.css';
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
+const formatCurrency = currency => {
+    switch(currency) {
+        case 'eur': return '€';
+        default: return '';
+    }
+}
+
 const NewJob = props => {
     const {
-        formData: { title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills, jobTypes },
-        handleFormChange, updateDescription, updateIdealCandidate, handleSliderChange, publishJob,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
-        teamsQuery: { loading, teams },
-        anchorEl, handleClick, handleClose, addField, formData, removeTextField
+        teamsQuery,
+        jobTypesQuery
     } = props;
 
-    if (loading)
+    if (teamsQuery.loading || jobTypesQuery.loading)
         return <Loader />
+
+    const {
+        formData: { title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills, selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary },
+        handleFormChange, updateDescription, updateIdealCandidate, handleSliderChange, publishJob, salaryPublicChange,
+        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
+        anchorEl, handleClick, handleClose, addField, formData, removeTextField
+    } = props;
 
     return (
         <div className='newJobRoot'>
@@ -151,7 +161,7 @@ const NewJob = props => {
                                     <em>Select a team</em>
                                 </MenuItem>
                                 {
-                                    teams && teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
+                                    teamsQuery.teams && teamsQuery.teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
                                 }
 
                             </Select>
@@ -200,16 +210,16 @@ const NewJob = props => {
                             <FormControl className='formControl'>
                                 <Select
                                     multiple
-                                    value={jobTypes}
+                                    value={selectedJobTypes}
                                     onChange={handleFormChange}
-                                    input={<Input name="jobTypes" />}
-                                    renderValue={selected => selected.join(', ')}
+                                    input={<Input name="selectedJobTypes" />}
+                                    renderValue={selected => selected.map(item => jobTypesQuery.jobTypes.find(jt => jt.id === item).i18n[0].title).join(', ')}
                                     className='jobSelect'
                                 >
-                                    {JobTypes.map(jobType => (
+                                    {jobTypesQuery.jobTypes.map(jobType => (
                                         <MenuItem key={jobType.id} value={jobType.id}>
-                                            <Checkbox checked={jobTypes.indexOf(jobType.id) > -1} />
-                                            <ListItemText primary={jobType.label} />
+                                            <Checkbox checked={selectedJobTypes.indexOf(jobType.id) > -1} />
+                                            <ListItemText primary={jobType.i18n[0].title} />
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -217,7 +227,12 @@ const NewJob = props => {
                         </section>
                         <section className='salary'>
                             <h2 className='sectionTitle'>Salary <b>range</b></h2>
-                            <Range min={0} max={5000} defaultValue={[0, 1000]} tipFormatter={value => `${value}E`} step={50} onChange={handleSliderChange} />
+                            <Range min={salaryRangeStart} max={salaryRangeEnd} defaultValue={[salary.amountMin, salary.amountMax]} tipFormatter={value => `${value}${formatCurrency(salary.currency)}`} step={50} onChange={handleSliderChange} />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox name="salaryPublic" value={salary.isPublic} onChange={handleFormChange} />
+                                }
+                                label="Public" />
                         </section>
                     </div>
                 </Grid>

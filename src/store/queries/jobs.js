@@ -81,6 +81,17 @@ query job($id: String!, $language: LanguageCodeType!) {
 }
 `;
 
+export const jobTypesQuery = gql`
+	query jobTypes($language: LanguageCodeType!) {
+		jobTypes(language: $language) {
+			id
+			i18n {
+				title
+			}
+		}
+	}
+`;
+
 export const handleJob = gql`
     mutation handleJob($language: LanguageCodeType!, $jobDetails: JobInput!) {
         handleJob(language: $language, jobDetails: $jobDetails) {
