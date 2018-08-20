@@ -76,7 +76,7 @@ const ArticleItemHOC = compose(
 const ArticleItem = props => {
     const {
         match, getCurrentUser,
-        article: { id, author, isPost, i18n, createdAt, images, videos, tags },
+        article,
         openTagEditor, closeTagEditor, tagAnchor, addVote,
         editPost, handleEditBtnClick, closeEditPost
     } = props;
@@ -86,8 +86,9 @@ const ArticleItem = props => {
 
     const { auth: { currentUser } } = getCurrentUser;
     const isAddTagAllowed = !!currentUser;
-    const { title, description } = i18n[0];
     const { lang } = match.params;
+    const { id, author, isPost, i18n, createdAt, images, videos, tags } = article;
+    const { title, description } = i18n[0];
 
     let desc = stripHtmlTags(description);
     if (!isPost)
@@ -113,7 +114,7 @@ const ArticleItem = props => {
 
     return (
         <div className='listItem userListItem'>
-            <AuthorAvatarHeader profile={author} lang={lang} />
+            <AuthorAvatarHeader article={article} lang={lang} />
             <span className={canEdit ? 'articleDate editable' : 'articleDate'}>{new Date(createdAt).toLocaleDateString()}</span>
             <div className={canEdit ? 'rightOverlay editable' : 'rightOverlay'}>
                 Works at&nbsp;<span className='highlight'>CV30</span>&nbsp;-&nbsp;<span className='highlight'>Marketing team</span>

@@ -71,35 +71,28 @@ const NewPostHOC = compose(
             updateIsArticle(!isArticle);
         },
         addPost: ({ handleArticle, match: { params: { lang: language } }, formData, setFeedbackMessage, setFormData, postOptions, selectedPostOption }) => async () => {
+            let selectedPostAs = postOptions[selectedPostOption];
+
             const article = {
                 id: uuid(),
                 isPost: true,
                 title: 'Post',
                 images: formData.images,
                 videos: formData.videos,
-                description: formData.postBody
+                description: formData.postBody,
+                postAs: selectedPostAs.type
             };
-            let selectedPostAs = postOptions[selectedPostOption];
 
-            let options = {};
+            if (selectedPostAs.type === 'company')
+                article.postingCompanyId = selectedPostAs.id;
 
-            if (selectedPostAs.type === 'company') {
-                options = {
-                    companyId: selectedPostAs.id
-                };
-            }
-
-            if (selectedPostAs.type === 'team') {
-                options = {
-                    teamId: selectedPostAs.id
-                }
-            }
+            if (selectedPostAs.type === 'team')
+                article.postingTeamId = selectedPostAs.id;
 
             try {
                 await handleArticle({
                     variables: {
                         article,
-                        options,
                         language
                     },
                     refetchQueries: [{

@@ -10,16 +10,21 @@ const standardArticleResult = gql`
             lastName
             hasAvatar
             avatarContentType
+            position
         }
         isPost
         postAs
         postingCompany {
             id
             name
+            hasLogo
+            logoContentType
         }
         postingTeam {
             id
             name
+            hasProfileCover
+            coverContentType
         }
         images {
             id
