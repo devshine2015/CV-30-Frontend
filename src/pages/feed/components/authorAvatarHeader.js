@@ -24,13 +24,13 @@ const AuthorAvatarHeader = ({ article, lang }) => {
         avatar = hasLogo ? `${s3BucketURL}/${companiesFolder}/${id}/logo.${logoContentType}` : defaultCompanyLogo;
         displayName = name;
         linkTo = `/${lang}/company/${id}`;
-        title = 'comppany';
+        title = 'Comppany';
     } else if (postAs === 'team') {
         const { id, name, hasProfileCover, coverContentType } = postingTeam;
         avatar = hasProfileCover ? `${s3BucketURL}/${teamsFolder}/${id}/cover.${coverContentType}` : defaultCompanyLogo;
         displayName = name;
         linkTo = `/${lang}/team/${id}`;
-        title = 'team';
+        title = 'Team';
     }
 
     return (

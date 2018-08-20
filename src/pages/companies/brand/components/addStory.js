@@ -51,12 +51,14 @@ const AddStoryHOC = compose(
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        saveChanges: ({ handleArticle, match, formData, type, setPopupOpen, setFeedbackMessage }) => async () => {
+        saveChanges: ({ handleArticle, match: { params: { companyId, lang: language } }, formData, type, setPopupOpen, setFeedbackMessage }) => async () => {
             let article = {
                 id: formData.id,
                 title: formData.title,
                 images: formData.images,
-                description: formData.description
+                description: formData.description,
+                postAs: 'company',
+                postingCompanyId: companyId
             };
 
             if (formData.videoURL) {
@@ -73,7 +75,7 @@ const AddStoryHOC = compose(
 
             let options = {
                 articleId: formData.id,
-                companyId: match.params.companyId,
+                companyId,
                 isAtOffice: type === 'company_officeLife',
                 isMoreStories: type === 'company_moreStories'
             };
@@ -83,7 +85,7 @@ const AddStoryHOC = compose(
                     variables: {
                         article,
                         options,
-                        language: match.params.lang,
+                        language
 
                     },
                     refetchQueries: [{
@@ -91,8 +93,8 @@ const AddStoryHOC = compose(
                         fetchPolicy: 'network-only',
                         name: 'companyQuery',
                         variables: {
-                            language: match.params.lang,
-                            id: match.params.companyId
+                            language,
+                            id: companyId
                         }
                     }]
                 });
