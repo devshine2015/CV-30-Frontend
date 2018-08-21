@@ -67,33 +67,35 @@ const NewsFeed = props => {
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
-                        <section className='searchFields'>
-                            <TextField
-                                name='generalSearch'
-                                label='Keywords, people or companies'
-                                placeholder='Search for keywords, people or companies...'
-                                type="search"
-                                className='textField'
-                                fullWidth
-                            />
-                            <TextField
-                                name='hastags'
-                                label='#hashtags'
-                                placeholder='Search for hastags...'
-                                type="search"
-                                className='textField'
-                                fullWidth
-                            />
-                        </section>
-                        <section className='promo'>
-                            <span>Promo</span>
-                        </section>
-                        <section className='links'>
-                            <p className='copyright'>Copyright © 2018 CV30. All rights reserved </p>
-                            <Link to={``}>About Us</Link>
-                            <Link to={``}>Terms and Conditions</Link>
-                            <Link to={``}>Q&A</Link>
-                        </section>
+                        <div className='fixed'>
+                            <section className='searchFields'>
+                                <TextField
+                                    name='generalSearch'
+                                    label='Keywords, people or companies'
+                                    placeholder='Search for keywords, people or companies...'
+                                    type="search"
+                                    className='textField'
+                                    fullWidth
+                                />
+                                <TextField
+                                    name='hastags'
+                                    label='#hashtags'
+                                    placeholder='Search for hastags...'
+                                    type="search"
+                                    className='textField'
+                                    fullWidth
+                                />
+                            </section>
+                            <section className='promo'>
+                                <span>Promo</span>
+                            </section>
+                            <section className='links'>
+                                <p className='copyright'>Copyright © 2018 CV30. All rights reserved </p>
+                                <Link to={``}>About Us</Link>
+                                <Link to={``}>Terms and Conditions</Link>
+                                <Link to={``}>Q&A</Link>
+                            </section>
+                        </div>
                     </div>
                 </Grid>
             </Grid>

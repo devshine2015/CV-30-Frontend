@@ -171,6 +171,9 @@
                 height: calc(100% + 50px);
                 section {
                     margin-top: 30px;
+                    &:first-of-type {
+                        margin-top: 0;
+                    }
                 }
                 .promo {
                     display: flex;
@@ -210,6 +213,17 @@
                 @media(max-width: 600px) {
                     border: none;
                     height: auto;
+                }
+                .fixed {
+                    position: sticky;
+                    top: 115px;
+                    @media(max-width: 600px) {
+                        position: relative;
+                        top: auto;
+                    }
+                }
+                .textField {
+                    margin-bottom: 15px;
                 }
             }
         }
