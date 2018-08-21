@@ -112,8 +112,10 @@ query currentUser($id: String, $language: LanguageCodeType!) {
     }
     hasAvatar
     avatarContentType
+    avatarPath
     hasProfileCover
     profileCoverContentType
+    coverPath
     coverBackground
     story {
       i18n {
@@ -282,6 +284,7 @@ export const profilesQuery = gql`
             }
             hasAvatar
             avatarContentType
+            avatarPath
             errors {
                 name
                 value

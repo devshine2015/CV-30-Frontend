@@ -85,8 +85,10 @@ query company($id: String!, $language: LanguageCodeType!) {
     }
     hasLogo
     logoContentType
+    logoPath
     hasCover
     coverContentType
+    coverPath
     coverBackground
   }
 }
@@ -116,6 +118,7 @@ export const companiesQuery = gql`
       }
       hasLogo
       logoContentType
+      logoPath
     }
   }
 `;

@@ -15,8 +15,10 @@ export const landingPage = gql`
             hasCover
             coverContentType
             coverBackground
+            coverPath
             hasFooterCover
             footerCoverContentType
+            footerCoverPath
             footerCoverBackground
             i18n {
                 headline

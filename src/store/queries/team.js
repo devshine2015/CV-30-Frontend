@@ -61,6 +61,7 @@ query team($id: String!, $language: LanguageCodeType!) {
         hasProfileCover
         coverBackground
         coverContentType
+        coverPath
     }
 }
 `;
