@@ -14,7 +14,7 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import { handleArticle, setFeedbackMessage } from '../../../../store/queries';
+import { handleArticle, setFeedbackMessage, getArticle } from '../../../../store/queries';
 import TagsInput from '../../../../components/TagsInput';
 
 const ArticleEditHOC = compose(
@@ -49,10 +49,10 @@ const ArticleEditHOC = compose(
             changeMediaType(!isVideoUrl);
         },
         saveArticle: props => async () => {
-            const { handleArticle, formData: { title, description, videoURL, images, tags }, getArticle: { article: { id } }, setIsSaving, match, setFeedbackMessage } = props;
+            const { handleArticle, formData: { title, description, videoURL, images, tags }, setIsSaving, match, setFeedbackMessage } = props;
 
             const article = {
-                id,
+                id: match.params.articleId,
                 title,
                 description,
                 images,
@@ -66,7 +66,6 @@ const ArticleEditHOC = compose(
                         title: videoURL,
                         sourceType: 'article',
                         path: videoURL
-
                     }
                 ];
             }
@@ -76,7 +75,16 @@ const ArticleEditHOC = compose(
                     variables: {
                         language: match.params.lang,
                         article
-                    }
+                    },
+                    refetchQueries: [{
+                        query: getArticle,
+                        fetchPolicy: 'network-only',
+                        name: 'getArticle',
+                        variables: {
+                            id: match.params.articleId,
+                            language: match.params.lang
+                        },
+                    }]
                 });
                 await setFeedbackMessage({
                     variables: {
