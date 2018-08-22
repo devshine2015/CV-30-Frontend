@@ -156,7 +156,6 @@ const NewPost = props => {
         postOptions, handlePostAsMenu, selectedPostOption,
         removeImage, removeVideo
     } = props;
-    debugger;
 
     if (isArticle)
         return <Redirect to={`/${lang}/articles/new`} />;
