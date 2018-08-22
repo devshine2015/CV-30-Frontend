@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Icon, Avatar, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, Menu, MenuItem } from '@material-ui/core';
+import { Button, Icon, Avatar, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, Menu, MenuItem, IconButton } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuidv4';
+import ReactPlayer from 'react-player';
 
 import MediaUploadPopUp from './mediaUpload';
 import { defaultUserAvatar, defaultCompanyLogo } from '../../../constants/utils';
@@ -110,7 +111,7 @@ const NewPostHOC = compose(
                         message: 'Changes saved successfully.'
                     }
                 });
-                setFormData({ id: uuid() });
+                setFormData({ id: uuid(), postBody: '' });
             }
             catch (err) {
                 await setFeedbackMessage({
@@ -138,23 +139,35 @@ const NewPostHOC = compose(
         handlePostAsMenu: ({ setSelectedPostOption, setPostAsAnchor }) => index => {
             setSelectedPostOption(index);
             setPostAsAnchor(null);
-        }
+        },
+        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, 'images': [] })),
+        removeVideo: ({ setFormData }) => () => setFormData(state => ({ ...state, 'videos': [] }))
     }),
     pure
 );
 
 const NewPost = props => {
     const {
-        formData: { id: postId, postBody }, handleFormChange, switchIsArticle, isArticle,
+        formData: { id: postId, postBody, images, videos }, handleFormChange, switchIsArticle, isArticle,
         openMediaUpload, closeMediaUpload, mediaUploadAnchor,
         openPostAs, closePostAs, postAsAnchor,
         addPost,
         match: { params: { lang } },
-        postOptions, handlePostAsMenu, selectedPostOption
+        postOptions, handlePostAsMenu, selectedPostOption,
+        removeImage, removeVideo
     } = props;
+    debugger;
 
     if (isArticle)
         return <Redirect to={`/${lang}/articles/new`} />;
+
+    let image, video;
+    if (images && images.length > 0) {
+        image = `${s3BucketURL}${images[0].path}`;
+    }
+    if (videos && videos.length > 0) {
+        video = videos[0].path;
+    }
 
     return (
         <section className='newPost'>
@@ -209,6 +222,36 @@ const NewPost = props => {
                 />
             </div>
             <div className='postBody'>
+                {image &&
+                    <div className="imagePreview">
+                        <img src={image} className='previewImg' />
+                        <IconButton className='removeBtn' onClick={removeImage}>
+                            <Icon>cancel</Icon>
+                        </IconButton>
+                    </div>
+                }
+                {(video && !image) &&
+                    <div className="imagePreview">
+                        <ReactPlayer
+                            url={video}
+                            width='150px'
+                            height='150px'
+                            config={{
+                                youtube: {
+                                    playerVars: {
+                                        showinfo: 0,
+                                        controls: 0,
+                                        modestbranding: 1,
+                                        loop: 1
+                                    }
+                                }
+                            }}
+                            playing={false} />
+                        <IconButton className='removeBtn' onClick={removeVideo}>
+                            <Icon>cancel</Icon>
+                        </IconButton>
+                    </div>
+                }
                 <TextField
                     name="postBody"
                     placeholder="Say something..."

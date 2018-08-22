@@ -256,6 +256,7 @@ export const profilesQuery = gql`
             email
             firstName
             lastName
+            position
             skills {
                 id
                 i18n {

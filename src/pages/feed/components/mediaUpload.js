@@ -2,10 +2,11 @@ import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { Popover, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, Button } from '@material-ui/core';
-import S3Uploader from 'react-s3-uploader';
 import uuid from 'uuidv4';
 
 import { setFeedbackMessage } from '../../../store/queries';
+import ImageUploader from '../../../components/imageUploader';
+import { articlesFolder } from '../../../constants/s3';
 
 const MediaUploadPopUpHOC = compose(
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
@@ -13,12 +14,13 @@ const MediaUploadPopUpHOC = compose(
     withState('videoURL', 'setVideoURL', ''),
     withState('isSaving', 'setIsSaving', false),
     withState('imgParams', 'setImgParams', null),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
         handleFormChange: ({ setVideoURL }) => url => setVideoURL(url),
-        handleKeyPress: ({ onClose, videoURL }) => event => {
+        handleKeyPress: ({ onClose, videoURL, setVideoURL }) => event => {
             if (event.key !== 'Enter')
                 return;
 
@@ -28,83 +30,43 @@ const MediaUploadPopUpHOC = compose(
                     title: videoURL,
                     sourceType: 'article',
                     path: videoURL
-
                 }
             });
+            setVideoURL('');
         },
-        getSignedUrl: ({ postId, setFeedbackMessage }) => async (file, callback) => {
-            const params = {
-                fileName: file.name,
-                contentType: file.type,
-                id: postId,
-                type: 'article'
-            };
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
 
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-            }
-        },
-        onUploadStart: ({ setIsSaving, setImgParams, postId }) => (file, next) => {
-            let size = file.size;
-            if (size > 1024 * 1024) {
-                alert('File is too big!');
-            } else {
-                setImgParams({
-                    id: uuid(),
-                    title: file.name,
-                    sourceType: 'article',
-                    source: postId,
-                    path: `/articles/${postId}/${file.name}`
-                });
-                setIsSaving(true);
-                next(file);
-            }
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
-            console.log(error);
             await setFeedbackMessage({
                 variables: {
                     status: 'error',
-                    message: error || error.message
+                    message: JSON.stringify(error, null, 2)
                 }
             });
         },
-        onFinishUpload: ({ setIsSaving, onClose, setFeedbackMessage, imgParams, videoURL }) => async data => {
-            await setFeedbackMessage({
-                variables: {
-                    status: 'success',
-                    message: 'Changes saved successfully.'
+        handleSuccess: ({ postId, onClose }) => file => {
+            let { path, filename } = file;
+            if (!path) {
+                path = `/${articlesFolder}/${postId}/${filename}`
+            }
+
+            onClose({
+                imgParams: {
+                    id: uuid(),
+                    sourceType: 'article',
+                    path
                 }
             });
-            setIsSaving(false);
-            onClose({ imgParams });
         },
     }),
     pure
 );
 
 const MediaUploadPopUp = ({
-    anchor, onClose,
+    anchor, onClose, postId,
     isVideoUrl, switchMediaType,
-    getSignedUrl, onUploadStart, onError, onFinishUpload,
+    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
     videoURL, handleFormChange, handleKeyPress, isSaving
 }) => (
         <Popover
@@ -159,27 +121,21 @@ const MediaUploadPopUp = ({
                                 className: 'textFieldLabel'
                             }}
                         /> :
-                        <label htmlFor="uploadArticleImage">
-                            <S3Uploader
-                                id="uploadArticleImage"
-                                name="uploadArticleImage"
-                                className='hiddenInput'
-                                getSignedUrl={getSignedUrl}
-                                accept="image/*"
-                                preprocess={onUploadStart}
-                                onError={onError}
-                                onFinish={onFinishUpload}
-                                uploadRequestHeaders={{
-                                    'x-amz-acl': 'public-read'
-                                }}
-                            />
-                            <Button component='span' className='imgUpload' disabled={isSaving}>
-                                Upload
-                            </Button>
-                        </label>
+                        <Button className='imgUpload' disabled={isSaving} onClick={openImageUpload}>
+                            Upload
+                        </Button>
+
                     }
                 </section>
             </div>
+            <ImageUploader
+                type='article'
+                open={imageUploadOpen}
+                onClose={closeImageUpload}
+                onError={handleError}
+                onSuccess={handleSuccess}
+                articleId={postId}
+            />
         </Popover>
     );
 
