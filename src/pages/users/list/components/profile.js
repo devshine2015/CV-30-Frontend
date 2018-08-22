@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { Avatar, Chip, Tabs, Tab } from '@material-ui/core';
-import { Link ,withRouter} from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { defaultUserAvatar } from '../../../../constants/utils';
@@ -31,7 +31,7 @@ const Article = props => {
 const Profile = props => {
     const { activeTab, handleTabChange, user } = props;
 
-    let { id, firstName, lastName, email, hasAvatar, avatarContentType, skills, values, aboutMeArticles } = user;
+    let { id, firstName, lastName, email, position, hasAvatar, avatarContentType, skills, values, aboutMeArticles } = user;
     let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : defaultUserAvatar;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
 
@@ -47,7 +47,7 @@ const Profile = props => {
                             <span>{fullName}</span>
                             <i className='fas fa-caret-down' />
                         </h6>
-                        <p className='userTitle'>Manager</p>
+                        <p className='userTitle'>{position}</p>
                     </div>
                 </Link>
             </div>

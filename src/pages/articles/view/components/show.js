@@ -7,10 +7,10 @@ import { DiscussionEmbed } from 'disqus-react';
 import { s3BucketURL } from '../../../../constants/s3';
 import Loader from '../../../../components/Loader';
 import Comment from './comment';
-import { disqusShortname, disqusUrlPrefix} from '../../../../constants/disqus';
+import { disqusShortname, disqusUrlPrefix } from '../../../../constants/disqus';
 
 const ArticleShow = props => {
-    const { match, getArticle: { loading, article: { id: articleId, author: { id: authorId, email, firstName, lastName }, images, videos, i18n, created_at } } } = props;
+    const { match, getArticle: { loading, article: { id: articleId, author: { id: authorId, email, firstName, lastName, position }, images, videos, i18n, created_at } } } = props;
 
     if (loading)
         return <Loader />
@@ -28,14 +28,14 @@ const ArticleShow = props => {
     let avatar /*= hasAvatar ? `${s3BucketURL}/${profilesFolder}/${authorId}/avatar.${avatarContentType}` : defaultUserAvatar*/;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
     let likes = 123;
-    
+
     const disqusConfig = {
         url: disqusUrlPrefix + match.url,
         identifier: articleId,
         title: title,
     };
 
-    const comments = [{},{}];
+    const comments = [{}, {}];
 
     return (
         <Grid container className='mainBody articleShow'>
@@ -77,7 +77,7 @@ const ArticleShow = props => {
                                 <span>{fullName}</span>
                                 <i className='fas fa-caret-down' />
                             </h6>
-                            <p className='userTitle'>Manager</p>
+                            <p className='userTitle'>{position}</p>
                         </div>
                     </div>
                     <FormattedDate value={created_at}>

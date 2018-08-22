@@ -73,7 +73,7 @@ const ProfilesList = props => {
     return (
         <div className='membersContainer'>
             {profiles.map(profile => {
-                const { id, hasAvatar, avatarContentType, firstName, lastName, email } = profile;
+                const { id, hasAvatar, avatarContentType, firstName, lastName, email, position } = profile;
                 let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : defaultUserAvatar;
                 let fullName = (firstName && lastName) ? `${firstName.charAt(0)}${lastName.charAt(0)}` : email;
                 return (
@@ -81,7 +81,7 @@ const ProfilesList = props => {
                         <Avatar src={avatar} className='avatar' />
                         <div className='memberInfo'>
                             <h6 className='userName'>{fullName || email}</h6>
-                            <p className='userTitle'>Manager</p>
+                            <p className='userTitle'>{position}</p>
                         </div>
                     </div>
                 )
