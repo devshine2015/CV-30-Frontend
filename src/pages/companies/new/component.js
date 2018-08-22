@@ -5,18 +5,17 @@ import {
 } from '@material-ui/core';
 // import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
-import { compose, pure, lifecycle, withHandlers, withState } from 'recompose';
+import { compose, pure } from 'recompose';
 import { withFormik } from 'formik';
 import { withRouter } from 'react-router-dom';
 
-import { googleMapsQuery, companiesQuery, setFeedbackMessage } from '../../../store/queries';
+import { companiesQuery, setFeedbackMessage } from '../../../store/queries';
 import schema from './validation';
 
 const NewCompany = props => {
     const {
         // getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, uploadProgress,
-        cancel, autocompleteHandle,
-        googleMapsData: { googleMaps },
+        cancel,
         values, touched, errors, isSubmitting, handleChange, handleSubmit, isValid
     } = props;
     return (
@@ -30,10 +29,9 @@ const NewCompany = props => {
             <Grid container className='mainBody newCompany'>
                 <Grid item lg={6} sm={11}>
                     <section className='locationSection'>
-                        {googleMaps.isLoaded && typeof window.google !== "undefined" && <TextField
+                        <TextField
                             error={touched.location && errors.location}
                             helperText={errors.location}
-                            inputRef={autocompleteHandle}
                             name="location"
                             label="Location"
                             placeholder="Enter location..."
@@ -41,7 +39,7 @@ const NewCompany = props => {
                             fullWidth
                             onChange={handleChange}
                             value={values.location}
-                        />}
+                        />
                     </section>
                     <section className='titleSection'>
                         <TextField
@@ -136,32 +134,13 @@ const NewCompany = props => {
 
 const NewCompanyHOC = compose(
     withRouter,
-    graphql(googleMapsQuery, { name: 'googleMapsData' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('isAutocompleteInit', 'setAutocompleteInit', false),
-    withState('autocompleteHandle', '', () => React.createRef()),
     withFormik({
         mapPropsToValues: () => ({
             name: '',
             activityField: '',
             noOfEmployees: '',
-            location: '',
-            place: {
-                addressComponents: null,
-                formattedAddress: null,
-                latitude: null,
-                longitude: null,
-                internationalPhoneNumber: null,
-                name: null,
-                placeId: null,
-                compoundCode: null,
-                globalCode: null,
-                rating: null,
-                reviews: null,
-                types: null,
-                googleUrl: null,
-                website: null
-            }
+            location: ''
         }),
         validationSchema: schema,
         handleSubmit: async (values, { props: { handleCompany, match, history, setFeedbackMessage }, setSubmitting }) => {
@@ -201,49 +180,6 @@ const NewCompanyHOC = compose(
             setSubmitting(false);
         },
         displayName: 'AddCompanyForm', // helps with React DevTools
-    }),
-    withHandlers({
-        initAutocomplete: ({ isAutocompleteInit, setAutocompleteInit, autocompleteHandle, setFieldValue, values }) => () => {
-            if (isAutocompleteInit) return;
-            const autocompleteInstance = new window.google.maps.places.Autocomplete(autocompleteHandle.current);
-            autocompleteInstance.addListener('place_changed', () => {
-                const place = autocompleteInstance.getPlace();
-                if (!place.geometry) {
-                    window.alert("No details available for input: '" + place.name + "'");
-                    return;
-                }
-                if (place) {
-                    setFieldValue('place', {
-                        addressComponents: place.address_components ? JSON.stringify(place.address_components) : null,
-                        formattedAddress: place.formatted_address ? place.formatted_address : null,
-                        latitude: place.geometry && place.geometry.location ? place.geometry.location.lat() : null,
-                        longitude: place.geometry && place.geometry.location ? place.geometry.location.lng() : null,
-                        internationalPhoneNumber: place.international_phone_number ? place.international_phone_number : null,
-                        name: place.name ? place.name : null,
-                        placeId: place.placeId ? place.placeId : null,
-                        compoundCode: place.plus_code && place.plus_code.compound_code ? place.plus_code.compound_code : null,
-                        globalCode: place.plus_code && place.plus_code.global_code ? place.plus_code.global_code : null,
-                        rating: place.rating ? place.rating : null,
-                        reviews: place.reviews ? JSON.stringify(place.reviews) : null,
-                        types: place.types ? JSON.stringify(place.types) : null,
-                        googleUrl: place.url ? place.url : null,
-                        website: place.website ? place.website : null
-                    }, true);
-                    if (place.formatted_address) setFieldValue('location', place.formatted_address, true);
-                    if (place.name) setFieldValue('name', place.name, true);
-                    if (place.types) setFieldValue('activityField', place.types.map(item => (item.charAt(0).toUpperCase() + item.slice(1)).replace(/_/ig, ' ')).join(', '), true);
-                }
-            });
-            setAutocompleteInit(true);
-        }
-    }),
-    lifecycle({
-        componentDidMount() {
-            if (this.props.googleMapsData.googleMaps.isLoaded && window.google && !this.props.isAutocompleteInit) this.props.initAutocomplete();
-        },
-        componentDidUpdate() {
-            if (this.props.googleMapsData.googleMaps.isLoaded && window.google && !this.props.isAutocompleteInit) this.props.initAutocomplete();
-        }
     }),
     pure
 )
