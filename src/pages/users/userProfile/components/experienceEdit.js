@@ -1,21 +1,18 @@
 import React from 'react';
 import { TextField, Checkbox, FormLabel, FormControlLabel, IconButton, Icon, Switch as ToggleSwitch, FormGroup, Button } from '@material-ui/core';
-import { compose, pure, withState, withHandlers, lifecycle } from 'recompose';
+import { compose, pure, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
 
-import { setExperience, setProject, currentProfileQuery, googleMapsQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setExperience, setProject, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
 
 const ExperienceEditHOC = compose(
     withRouter,
     graphql(setExperience, { name: 'setExperience' }),
     graphql(setProject, { name: 'setProject' }),
-    graphql(googleMapsQuery, { name: 'googleMapsData' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('isAutocompleteInit', 'setAutocompleteInit', false),
-    withState('autocompleteHandle', '', () => React.createRef()),
     withState('formData', 'setFormData', ({ job }) => {
         if (!job) {
             return {
@@ -150,21 +147,6 @@ const ExperienceEditHOC = compose(
                     return false;
             }
         },
-        initAutocomplete: ({ isAutocompleteInit, setAutocompleteInit, autocompleteHandle, setFormData }) => () => {
-            if (isAutocompleteInit) return;
-            const autocompleteInstance = new window.google.maps.places.Autocomplete(autocompleteHandle.current);
-            autocompleteInstance.addListener('place_changed', () => {
-                const place = autocompleteInstance.getPlace();
-                if (!place.geometry) {
-                    window.alert("No details available for input: '" + place.name + "'");
-                    return;
-                }
-                if (place) {
-                    setFormData(state => ({ ...state, 'location': place.formatted_address }));
-                }
-            });
-            setAutocompleteInit(true);
-        },
         getSignedUrl: ({ formData, type, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: file.name,
@@ -238,14 +220,6 @@ const ExperienceEditHOC = compose(
             });
         }
     }),
-    lifecycle({
-        componentDidMount() {
-            if (this.props.googleMapsData.googleMaps.isLoaded && window.google && !this.props.isAutocompleteInit) this.props.initAutocomplete();
-        },
-        componentDidUpdate() {
-            if (this.props.googleMapsData.googleMaps.isLoaded && window.google && !this.props.isAutocompleteInit) this.props.initAutocomplete();
-        }
-    }),
     pure
 );
 
@@ -257,7 +231,6 @@ const ExperienceEdit = props => {
         closeEditor,
         submitForm,
         type,
-        autocompleteHandle,
         getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving
     } = props;
     const { position, company, location, startDate, endDate, isCurrent, description, video } = formData;
@@ -292,7 +265,6 @@ const ExperienceEdit = props => {
                     placeholder="Location..."
                     className='textField'
                     fullWidth
-                    inputRef={autocompleteHandle}
                     value={location || ''}
                     onChange={handleFormChange}
                 />

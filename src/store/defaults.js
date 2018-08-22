@@ -8,10 +8,6 @@ export default {
         __typename: "LocalUser",
         timestamp: 0
     },
-    googleMaps: {
-        __typename: "GoogleMapsAPI",
-        isLoaded: false
-    },
     editMode: {
         __typename: "EditMode",
         status: false

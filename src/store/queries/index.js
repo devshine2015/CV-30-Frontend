@@ -7,6 +7,5 @@ export * from './user';
 export * from './landingPage';
 export * from './locals';
 export * from './profile';
-export * from './google';
 export * from './shallowUser';
 export * from './image';
