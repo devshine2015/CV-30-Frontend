@@ -77,12 +77,33 @@
                 }
                 .postBody {
                     display: flex;
+                    flex-direction: column;
                     background: #fafafa;
                     border-top-left-radius: 10px;
                     border-top-right-radius: 10px;
                     margin-top: 15px;
                     border: 1px solid #ededed;
                     padding: 15px 20px 50px;
+                    .imagePreview {
+                        position: relative;
+                        margin-bottom: 10px;
+                        .previewImg {
+                            padding: 5px;
+                            border: 2px dotted #565656;
+                            max-width: 150px;
+                            max-height: 150px;
+                            box-sizing: border-box;
+                        }
+                        .removeBtn {
+                            position: absolute;
+                            top: -12px;
+                            left: -12px;
+                            background: #fff;
+                            color: red;
+                            width: 25px;
+                            height: 25px;
+                        }
+                    }
                 }
                 .postFooter {
                     display: flex;

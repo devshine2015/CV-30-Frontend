@@ -49,7 +49,7 @@ const ImageUploadHOC = compose(
             console.log(value);
         },
 
-        handleUploadFile: ({ image, articleId, setImage }) => async () => {
+        handleUploadFile: ({ image, articleId, setImage, onSuccess, onError, onClose }) => async () => {
             const params = {
                 fileName: image.filename,
                 contentType: image.filetype,
@@ -69,20 +69,15 @@ const ImageUploadHOC = compose(
                 let responseJson = await response.json();
 
                 let { result, error } = await uploadFile(image, responseJson.signedUrl);
+                console.log(result);
                 if (error)
-                    console.log(error);
+                    onError(error);
                 else {
-                    console.log(result);
-                    setImage({
-                        result: null,
-                        filename: null,
-                        filetype: null,
-                        src: null,
-                        error: null
-                    });
+                    onSuccess(image);
+                    onClose();
                 }
             } catch (error) {
-                console.error(error);
+                onError(error);
                 return false;
             }
         }

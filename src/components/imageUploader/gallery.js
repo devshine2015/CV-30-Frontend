@@ -26,7 +26,10 @@ const GalleryHOC = compose(
         }),
     }),
     withHandlers({
-        handleClick: () => id => console.log(id)
+        handleClick: ({ onSuccess, onClose }) => image => {
+            onSuccess(image);
+            onClose();
+        }
     })
 )
 
@@ -39,7 +42,7 @@ const Gallery = ({ imagesQuery: { loading, images }, handleClick }) => {
             <GridList cellHeight={180} className='gridList'>
                 {images && images.map(image => (
                     <GridListTile key={image.id}>
-                        <img src={`${s3BucketURL}${image.path}`} alt={image.id} className='gridImage' onClick={() => handleClick(image.id)} />
+                        <img src={`${s3BucketURL}${image.path}`} alt={image.id} className='gridImage' onClick={() => handleClick(image)} />
                     </GridListTile>
                 ))}
             </GridList>
