@@ -7,7 +7,7 @@ import { LoginMutation, AuthenticateLocal } from '../../store/queries';
 import { Link, withRouter } from 'react-router-dom';
 import { isValidEmail } from '../../constants/utils';
 
-const LoginComponent = (props) => {
+const LoginComponent = props => {
     const { match, email, password, updateEmail, updatePassword, emailError, passwordError, loading, doLogin, loginError } = props;
     const { activationSuccess } = props.location.state || false;
     const OrSeparator = () => (
@@ -36,7 +36,7 @@ const LoginComponent = (props) => {
                 </Hidden>
                 <Grid item lg={4} md={8} sm={12} xs={12} className='authFormContainer'>
                     <Paper className='authForm'>
-                        <form autoComplete="off" noValidate>
+                        <form autoComplete="off" noValidate onSubmit={event => doLogin(event)}>
                             <FormattedMessage id="login.invalidEmail" defaultMessage="Invalid email addressssss" description="Log in invalid email text">
                                 {(text) => (
                                     <TextField
@@ -91,7 +91,7 @@ const LoginComponent = (props) => {
                             }
 
                             <FormattedMessage id="actions.logIn" defaultMessage="Log in" description="Log in action">
-                                {(text) => (<Button variant="raised" className='loginButton' onClick={doLogin} disabled={!email || !password || passwordError || emailError || loading}>
+                                {(text) => (<Button variant="raised" type="submit" className='loginButton' disabled={!email || !password || passwordError || emailError || loading}>
                                     {text}
                                 </Button>)}
                             </FormattedMessage>
@@ -134,7 +134,8 @@ const LoginHOC = compose(
             setEmail(email);
             setEmailError(!isValidEmail(email));
         },
-        doLogin: (props) => async () => {
+        doLogin: props => async ev => {
+            ev.preventDefault();
             const { email, password, loginMutation, authLocal, setLoginError, match, history } = props;
             try {
                 let response = await loginMutation({
