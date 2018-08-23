@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
-export const currentProfileQuery = gql`
-query currentUser($id: String, $language: LanguageCodeType!) {
+export const profileQuery = gql`
+query profile($id: String, $language: LanguageCodeType!) {
   profile(id: $id, language: $language) {
     id
     email

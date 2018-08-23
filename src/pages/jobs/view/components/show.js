@@ -7,14 +7,14 @@ import { FacebookShareButton, GooglePlusShareButton, TwitterShareButton, Linkedi
 
 import ArticleSlider from '../../../../components/articleSlider';
 import Loader from '../../../../components/Loader';
-import { handleApplyToJob, getJobQuery, currentProfileQuery } from '../../../../store/queries';
+import { handleApplyToJob, getJobQuery, profileQuery } from '../../../../store/queries';
 import { formatCurrency } from '../../../../constants/utils';
 
 const ShowHOC = compose(
 
     graphql(handleApplyToJob, { name: 'handleApplyToJob' }),
-    graphql(currentProfileQuery, {
-        name: 'currentProfile',
+    graphql(profileQuery, {
+        name: 'currentProfileQuery',
         options: (props) => ({
             variables: {
                 language: props.match.params.lang
@@ -54,9 +54,9 @@ const ShowHOC = compose(
                             language: match.params.lang
                         }
                     }, {
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentProfile',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: match.params.lang,
                         }
@@ -74,7 +74,7 @@ const ShowHOC = compose(
 const Show = props => {
     const {
         getJobQuery: { loading: jobLoading, job },
-        currentProfile: { loading: currentProfileLoading, profile },
+        currentProfileQuery: { loading: currentProfileLoading, profile },
     } = props;
 
     if (jobLoading || currentProfileLoading) {

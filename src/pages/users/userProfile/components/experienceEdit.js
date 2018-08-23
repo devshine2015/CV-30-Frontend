@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
 
-import { setExperience, setProject, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setExperience, setProject, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 
 const ExperienceEditHOC = compose(
     withRouter,
@@ -77,9 +77,9 @@ const ExperienceEditHOC = compose(
                                 language: match.params.lang
                             },
                             refetchQueries: [{
-                                query: currentProfileQuery,
+                                query: profileQuery,
                                 fetchPolicy: 'network-only',
-                                name: 'currentUser',
+                                name: 'currentProfileQuery',
                                 variables: {
                                     language: match.params.lang
                                 }
@@ -115,9 +115,9 @@ const ExperienceEditHOC = compose(
                                 language: match.params.lang
                             },
                             refetchQueries: [{
-                                query: currentProfileQuery,
+                                query: profileQuery,
                                 fetchPolicy: 'network-only',
-                                name: 'currentUser',
+                                name: 'currentProfileQuery',
                                 variables: {
                                     language: match.params.lang
                                 }

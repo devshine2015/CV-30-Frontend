@@ -6,12 +6,12 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
-import { updateCoverMutation, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { updateCoverMutation, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 
 const ColorPickerHOC = compose(
     withRouter,
-    graphql(currentProfileQuery, {
-        name: 'currentUser',
+    graphql(profileQuery, {
+        name: 'currentProfileQuery',
         options: (props) => ({
             variables: {
                 language: props.match.params.lang
@@ -38,9 +38,9 @@ const ColorPickerHOC = compose(
                         color: color ? color.style : 'none'
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en'
                         }
@@ -63,7 +63,7 @@ const ColorPickerHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ currentUser: { profile }, setFileParams }) => async (file, callback) => {
+        getSignedUrl: ({ currentProfileQuery: { profile }, setFileParams }) => async (file, callback) => {
             const params = {
                 fileName: `cover.${file.type.replace('image/', '')}`,
                 contentType: file.type,
@@ -120,9 +120,9 @@ const ColorPickerHOC = compose(
                         contentType: contentType.replace('image/', '')
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en'
                         }

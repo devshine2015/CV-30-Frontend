@@ -12,7 +12,7 @@ import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
 import NamePopUp from './namePopUp';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { setFeedbackMessage, updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle, handleFollow } from '../../../../store/queries';
+import { setFeedbackMessage, updateAvatar, profileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle, handleFollow } from '../../../../store/queries';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
@@ -25,8 +25,8 @@ const HeaderHOC = compose(
     graphql(localUserQuery, { name: 'localUserData' }),
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(handleFollow, { name: 'handleFollow' }),
-    graphql(currentProfileQuery, {
-        name: 'currentUser',
+    graphql(profileQuery, {
+        name: 'currentProfileQuery',
         options: (props) => ({
             variables: {
                 language: props.match.params.lang,
@@ -84,9 +84,9 @@ const HeaderHOC = compose(
                         language: 'en'
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en',
                             id: profileId
@@ -172,9 +172,9 @@ const HeaderHOC = compose(
                         contentType: fileType
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en',
                             id: match.params.profileId
@@ -221,15 +221,15 @@ const HeaderHOC = compose(
                         }
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'profileQuery',
                         variables: {
                             language: match.params.lang,
                             id: match.params.profileId
                         }
                     }, {
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
@@ -260,7 +260,7 @@ const HeaderHOC = compose(
 
 
 const Header = props => {
-    const { currentProfile: { profile } } = props;
+    const { profileQuery: { profile } } = props;
     const { lang, profileId } = props.match.params;
 
     if (!profile || (profileId && profile.id !== profileId))
@@ -274,7 +274,7 @@ const Header = props => {
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress,
         localUserData, refetchBgImage, forceCoverRender,
         isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor,
-        toggleFollow, currentUser,
+        toggleFollow, currentProfileQuery,
         toggleNameEditor, closeNameEditor, nameAnchor
     } = props;
 
@@ -321,10 +321,10 @@ const Header = props => {
             `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}`
             : defaultUserAvatar;
 
-    let isFollowAllowed = !currentUser.loading && currentUser.profile && profileId;
+    let isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile && profileId;
     let isFollowing = false;
     if (isFollowAllowed) {
-        const { profile: { id: currentUserId, followees } } = currentUser;
+        const { profile: { id: currentUserId, followees } } = currentProfileQuery;
         if (currentUserId !== profileId) {
             isFollowing = followees.find(u => u.id === profileId) !== undefined;
         } else {

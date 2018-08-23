@@ -3,7 +3,7 @@ import { Button, Menu, MenuItem, TextField, Icon, IconButton } from '@material-u
 import { compose, pure, withState, withHandlers } from 'recompose';
 
 import fields from '../../../../constants/contact';
-import { setContact, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setContact, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
@@ -65,9 +65,9 @@ const EditContactDetailsHOC = compose(
                         contact: formData
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en',
                             id: match.params.profileId

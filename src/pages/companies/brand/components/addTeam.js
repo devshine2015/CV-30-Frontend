@@ -35,7 +35,7 @@ const AddTeamHOC = compose(
                     refetchQueries: [{
                         query: companyQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'companyQuery',
                         variables: {
                             language: 'en',
                             id: match.params.companyId

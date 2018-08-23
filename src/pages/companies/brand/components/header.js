@@ -17,7 +17,7 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ArticlePopup from '../../../../components/ArticlePopup';
 import AddTeam from './addTeam';
 import { s3BucketURL, companiesFolder } from '../../../../constants/s3';
-import { companyQuery, handleArticle, handleCompany, handleFollow, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { companyQuery, handleArticle, handleCompany, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import TeamSlider from './teamSlider';
 
@@ -29,8 +29,8 @@ const HeaderHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(handleCompany, { name: 'handleCompany' }),
     graphql(handleFollow, { name: 'handleFollow' }),
-    graphql(currentProfileQuery, {
-        name: 'currentUser',
+    graphql(profileQuery, {
+        name: 'currentProfileQuery',
         options: (props) => ({
             variables: {
                 language: props.match.params.lang,
@@ -179,7 +179,7 @@ const HeaderHOC = compose(
                             id: company.id
                         }
                     }, {
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
@@ -309,14 +309,14 @@ const Header = props => {
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress, refetchBgImage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker,
         forceLogoRender, forceCoverRender,
-        toggleFollow, currentUser
+        toggleFollow, currentProfileQuery
     } = props;
     const { lang, companyId } = match.params;
 
-    const isFollowAllowed = !currentUser.loading && currentUser.profile;
+    const isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile;
     let isFollowing = false;
     if (isFollowAllowed) {
-        const { profile: { followingCompanies } } = currentUser;
+        const { profile: { followingCompanies } } = currentProfileQuery;
         isFollowing = followingCompanies.find(co => co.id === companyId) !== undefined;
     }
 

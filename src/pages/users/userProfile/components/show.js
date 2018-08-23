@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Icon, IconButton, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
-import { setStory, setSalary, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setStory, setSalary, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { withRouter } from 'react-router-dom';
 
 
@@ -65,9 +65,9 @@ const ShowHOC = compose(
                         language: match.params.lang
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: match.params.lang
                         }
@@ -104,9 +104,9 @@ const ShowHOC = compose(
                         }
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: match.params.lang,
                             id: match.params.profileId

@@ -4,7 +4,7 @@ import { graphql } from 'react-apollo';
 import { Popover, IconButton, Icon, TextField } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
-import { updateUserSettingsMutation, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { updateUserSettingsMutation, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 
 const NamePopUpHOC = compose(
     withRouter,
@@ -42,9 +42,9 @@ const NamePopUpHOC = compose(
                         position
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language
                         }
