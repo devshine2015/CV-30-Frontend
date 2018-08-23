@@ -261,7 +261,9 @@ const Show = props => {
                             />
                         </React.Fragment>
                     }
-                    <hr />
+                    {(aboutMeArticles && aboutMeArticles.length > 0) &&
+                        <hr />
+                    }
                     <div className='myStoryContainer'>
                         <h4>My&nbsp;<b>story</b></h4>
                         {
