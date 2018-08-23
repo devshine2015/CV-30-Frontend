@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import ColorPicker from './colorPicker';
-import { queryTeam, handleFollow, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { queryTeam, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 
 import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
@@ -12,8 +12,8 @@ import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const HeaderHOC = compose(
     graphql(handleFollow, { name: 'handleFollow' }),
-    graphql(currentProfileQuery, {
-        name: 'currentUser',
+    graphql(profileQuery, {
+        name: 'currentProfileQuery',
         options: (props) => ({
             variables: {
                 language: props.match.params.lang,
@@ -55,7 +55,7 @@ const HeaderHOC = compose(
                             id: team.id
                         }
                     }, {
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
@@ -90,13 +90,13 @@ const Header = props => {
         match: { params: { lang, teamId } },
         queryTeam: { team: { company, hasProfileCover, coverContentType, coverBackground, name } },
         colorPickerAnchor, toggleColorPicker, closeColorPicker, refetchBgImage, forceCoverRender,
-        toggleFollow, currentUser
+        toggleFollow, currentProfileQuery
     } = props;
 
-    const isFollowAllowed = !currentUser.loading && currentUser.profile;
+    const isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile;
     let isFollowing = false;
     if (isFollowAllowed) {
-        const { profile: { followingTeams } } = currentUser;
+        const { profile: { followingTeams } } = currentProfileQuery;
         isFollowing = followingTeams.find(te => te.id === teamId) !== undefined;
     }
 

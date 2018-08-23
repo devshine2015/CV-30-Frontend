@@ -4,7 +4,7 @@ import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { currentProfileQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation, setFeedbackMessage } from '../../../../store/queries';
+import { profileQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation, setFeedbackMessage } from '../../../../store/queries';
 
 const SettingsHOC = compose(
     graphql(updateAvatar, { name: 'updateAvatar' }),
@@ -19,18 +19,18 @@ const SettingsHOC = compose(
     withState('settingsFormError', 'setSettingsFormError', ''),
     withState('settingsFormSuccess', 'setSettingsFormSuccess', false),
     withState('fileParams', 'setFileParams', {}),
-    withState('formData', 'setFormData', ({ currentUser }) => {
-        if (!currentUser || !currentUser.profile)
+    withState('formData', 'setFormData', ({ currentProfileQuery }) => {
+        if (!currentProfileQuery || !currentProfileQuery.profile)
             return {};
-        let { firstName, lastName, email } = currentUser.profile;
+        let { firstName, lastName, email } = currentProfileQuery.profile;
         return { firstName, lastName, email };
     }),
     withHandlers({
-        getSignedUrl: ({ currentUser, setFileParams, setFeedbackMessage }) => async (file, callback) => {
+        getSignedUrl: ({ currentProfileQuery, setFileParams, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
-                id: currentUser.profile.id,
+                id: currentProfileQuery.profile.id,
                 type: 'avatar'
             };
             setFileParams(params);
@@ -87,7 +87,7 @@ const SettingsHOC = compose(
                         contentType: contentType.replace('image/', '')
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
@@ -155,7 +155,7 @@ const SettingsHOC = compose(
                         }
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
@@ -172,11 +172,12 @@ const SettingsHOC = compose(
     pure
 )
 const Settings = props => {
-    const { settingsFormSuccess, settingsFormError, getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, localUserData, currentUser, handleFormChange, formData, saveUserDetails } = props;
+    const { settingsFormSuccess, settingsFormError, getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, localUserData, currentProfileQuery, handleFormChange, formData, saveUserDetails } = props;
     const { firstName, lastName, email, oldPassword, newPassword, newPasswordConfirm } = formData;
 
+    const { profile } = currentProfileQuery;
     let avatar =
-        (!localUserData.loading && currentUser.profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${currentUser.profile.id}/avatar.${currentUser.profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
+        (!localUserData.loading && profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
 
     return (
         <div className='settingsTab'>

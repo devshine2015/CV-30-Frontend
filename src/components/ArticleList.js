@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 
 import { s3BucketURL } from '../constants/s3';
-import { getArticles, handleArticle, currentProfileQuery, companyQuery, queryTeam } from '../store/queries';
+import { getArticles, handleArticle, profileQuery, companyQuery, queryTeam } from '../store/queries';
 
 const ArticleBrowserHOC = compose(
     withRouter,
@@ -33,7 +33,7 @@ const ArticleBrowserHOC = compose(
                     article.isFeatured = true;
                     article.id = articleId;
                     refetchQuery = {
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
@@ -45,7 +45,7 @@ const ArticleBrowserHOC = compose(
                     article.isAboutMe = true;
                     article.id = articleId;
                     refetchQuery = {
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {

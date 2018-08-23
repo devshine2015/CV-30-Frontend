@@ -8,7 +8,7 @@ import NewPost from './components/newPost';
 
 const NewsFeed = props => {
     const {
-        currentUser: { loading, profile },
+        currentProfileQuery: { loading, profile },
         newsFeedArticlesQuery,
         match: { params: { lang } }
     } = props;

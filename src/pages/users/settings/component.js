@@ -8,7 +8,7 @@ import Jobs from './components/jobs';
 import Loader from '../../../components/Loader';;
 
 const UserSettings = props => {
-    const { handleTabChange, activeTab, currentUser: { loading } } = props;
+    const { handleTabChange, activeTab, currentProfileQuery: { loading } } = props;
 
     if (loading)
         return <Loader />
