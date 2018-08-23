@@ -49,7 +49,7 @@ const ImageUploadHOC = compose(
             console.log(value);
         },
 
-        handleUploadFile: ({ image, articleId, setImage, onSuccess, onError, onClose }) => async () => {
+        handleUploadFile: ({ image, articleId, onSuccess, onError, onClose }) => async () => {
             const params = {
                 fileName: image.filename,
                 contentType: image.filetype,
@@ -88,7 +88,7 @@ const ImageUpload = ({ image, onChange, handleUploadFile }) => {
     return (
         <div className='imageUpload'>
             <DropNCrop onChange={onChange} value={image} />
-            <Button onClick={handleUploadFile} className='uploadBtn'>Upload</Button>
+            <Button onClick={handleUploadFile} className='uploadBtn' disabled={!image || !image.filename}>Upload</Button>
         </div>
     )
 };
