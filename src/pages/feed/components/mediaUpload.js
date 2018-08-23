@@ -37,7 +37,6 @@ const MediaUploadPopUpHOC = compose(
         openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
         closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
         handleError: ({ setFeedbackMessage }) => async error => {
-
             await setFeedbackMessage({
                 variables: {
                     status: 'error',

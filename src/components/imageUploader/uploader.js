@@ -49,13 +49,20 @@ const ImageUploadHOC = compose(
             console.log(value);
         },
 
-        handleUploadFile: ({ image, articleId, onSuccess, onError, onClose }) => async () => {
+        handleUploadFile: ({ image, articleId, onSuccess, onError, onClose, type }) => async () => {
             const params = {
                 fileName: image.filename,
                 contentType: image.filetype,
-                id: articleId || uuid(),
-                type: 'article'
+                // id: articleId || uuid(),
+                type
             };
+
+            if (type === 'article')
+                params.id = articleId || uuid();
+            if (type === 'lp_header')
+                params.fileName = `headerCover.${image.filetype.replace('image/', '')}`;
+            if (type === 'lp_footer')
+                params.fileName = `footerCover.${image.filetype.replace('image/', '')}`;
 
             try {
                 let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
@@ -69,7 +76,7 @@ const ImageUploadHOC = compose(
                 let responseJson = await response.json();
 
                 let { result, error } = await uploadFile(image, responseJson.signedUrl);
-                console.log(result);
+
                 if (error)
                     onError(error);
                 else {

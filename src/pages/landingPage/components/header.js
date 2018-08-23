@@ -142,7 +142,7 @@ const Header = props => {
                         colorPickerAnchor={colorPickerAnchor}
                         onClose={closeColorPicker}
                         refetchBgImage={refetchBgImage}
-                        type='header'
+                        type='lp_header'
                     />
                 </React.Fragment>
             }

@@ -5,7 +5,7 @@ import Uploader from './uploader';
 
 const ImageUploader = ({
     open, articleId,
-    onClose, onError, onSuccess,
+    onClose, onError, onSuccess, type,
     handleTabChange, activeTab
 }) => {
     return (
@@ -54,7 +54,7 @@ const ImageUploader = ({
                 </div>
                 <div className='popupBody'>
                     {activeTab === 'gallery' && <Gallery onError={onError} onSuccess={onSuccess} onClose={onClose} />}
-                    {activeTab === 'upload' && <Uploader onError={onError} onSuccess={onSuccess} articleId={articleId} onClose={onClose} />}
+                    {activeTab === 'upload' && <Uploader onError={onError} onSuccess={onSuccess} articleId={articleId} onClose={onClose} type={type} />}
                 </div>
             </div>
         </Modal>

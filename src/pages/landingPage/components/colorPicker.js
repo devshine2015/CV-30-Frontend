@@ -1,12 +1,12 @@
 import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../constants/headerBackgrounds';
 import { landingPage, handleLandingPage, setFeedbackMessage } from '../../../store/queries';
+import ImageUploader from '../../../components/imageUploader';
 
 const ColorPickerHOC = compose(
     withRouter,
@@ -16,6 +16,7 @@ const ColorPickerHOC = compose(
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('fileParams', 'setFileParams', {}),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
@@ -23,12 +24,12 @@ const ColorPickerHOC = compose(
         setBackgroundColor: ({ handleLandingPage, setFeedbackMessage, match: { params: { lang: language } }, type }) => async color => {
             let details = {};
             switch (type) {
-                case 'header':
+                case 'lp_header':
                     details = {
                         coverBackground: color ? color.style : 'none'
                     };
                     break;
-                case 'footer':
+                case 'lp_footer':
                     details = {
                         footerCoverBackground: color ? color.style : 'none'
                     };
@@ -66,77 +67,33 @@ const ColorPickerHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ match: { params: { companyId } }, setFileParams, type }) => async (file, callback) => {
-            let fileName;
-            switch (type) {
-                case 'header':
-                    fileName = `headerCover.${file.type.replace('image/', '')}`;
-                    break;
-                case 'footer':
-                    fileName = `footerCover.${file.type.replace('image/', '')}`;
-                    break;
-            }
-
-            const params = {
-                fileName,
-                contentType: file.type,
-                type: 'landingPage_cover'
-            };
-
-            setFileParams(params);
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-            }
-        },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
-            setIsUploading(true);
-            next(file);
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
-            console.log(error);
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
             await setFeedbackMessage({
                 variables: {
                     status: 'error',
-                    message: error || error.message
+                    message: JSON.stringify(error, null, 2)
                 }
             });
         },
-        onFinish: ({ setFeedbackMessage, setIsUploading, handleLandingPage, refetchBgImage, fileParams: { contentType }, match: { params: { lang: language } }, type }) => async () => {
+        handleSuccess: ({
+            setFeedbackMessage, setIsUploading,
+            handleLandingPage, refetchBgImage,
+            match: { params: { lang: language } }, type
+        }) => async ({ filetype }) => {
             let details = {};
             switch (type) {
-                case 'header':
+                case 'lp_header':
                     details = {
                         hasCover: true,
-                        coverContentType: contentType.replace('image/', '')
+                        coverContentType: filetype.replace('image/', '')
                     };
                     break;
-                case 'footer':
-
+                case 'lp_footer':
                     details = {
                         hasFooterCover: true,
-                        footerCoverContentType: contentType.replace('image/', '')
+                        footerCoverContentType: filetype.replace('image/', '')
                     };
                     break;
             }
@@ -180,13 +137,12 @@ const ColorPickerHOC = compose(
     pure
 );
 
-const ColorPicker = (props) => {
-    const { colorPickerAnchor, onClose,
-        setBackgroundColor,
-        activeTab, handleTabChange,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinish,
-    } = props;
-    return (
+const ColorPicker = ({
+    colorPickerAnchor, onClose,
+    setBackgroundColor,
+    activeTab, handleTabChange,
+    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess, type
+}) => (
         <Popover
             anchorOrigin={{
                 vertical: 'bottom',
@@ -212,28 +168,18 @@ const ColorPicker = (props) => {
                     <Tab label="Patterns" value='patterns' />
                 </Tabs>
 
-                <label htmlFor="uploadCoverPhoto">
-                    <S3Uploader
-                        id="uploadCoverPhoto"
-                        name="uploadCoverPhoto"
-                        className='hiddenInput'
-                        getSignedUrl={getSignedUrl}
-                        accept="image/*"
-                        preprocess={onUploadStart}
-                        onProgress={onProgress}
-                        onError={onError}
-                        onFinish={onFinish}
-                        uploadRequestHeaders={{
-                            'x-amz-acl': 'public-read',
-                        }}
-                    />
-                    <Button component='span' size='small' className='picUploadButton'>
-                        Upload picture
-                    </Button>
-                </label>
-
-
+                <Button size='small' className='picUploadButton' onClick={openImageUpload}>
+                    Upload picture
+                </Button>
+                <ImageUploader
+                    type={type}
+                    open={imageUploadOpen}
+                    onClose={closeImageUpload}
+                    onError={handleError}
+                    onSuccess={handleSuccess}
+                />
             </div>
+
             <div className='popupBody'>
                 {activeTab === 'colors' &&
                     <div className='pickerContainer colors'>
@@ -262,6 +208,6 @@ const ColorPicker = (props) => {
             </div>
         </Popover>
     );
-}
+
 
 export default ColorPickerHOC(ColorPicker);

@@ -123,7 +123,7 @@ const Footer = props => {
                         colorPickerAnchor={colorPickerAnchor}
                         onClose={closeColorPicker}
                         refetchBgImage={refetchBgImage}
-                        type='footer'
+                        type='lp_footer'
                     />
                 </React.Fragment>
             }
