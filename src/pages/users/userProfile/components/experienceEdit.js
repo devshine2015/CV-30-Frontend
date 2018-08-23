@@ -5,7 +5,7 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid/v4';
 
-import { setExperience, setProject, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setExperience, setProject, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import ImageUploader from '../../../../components/imageUploader';
 
 const ExperienceEditHOC = compose(
