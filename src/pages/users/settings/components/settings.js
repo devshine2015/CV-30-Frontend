@@ -89,7 +89,7 @@ const SettingsHOC = compose(
                     refetchQueries: [{
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: match.params.lang
                         }
@@ -157,7 +157,7 @@ const SettingsHOC = compose(
                     refetchQueries: [{
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: match.params.lang
                         }

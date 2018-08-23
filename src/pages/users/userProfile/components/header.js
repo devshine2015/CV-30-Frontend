@@ -86,7 +86,7 @@ const HeaderHOC = compose(
                     refetchQueries: [{
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en',
                             id: profileId
@@ -174,7 +174,7 @@ const HeaderHOC = compose(
                     refetchQueries: [{
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en',
                             id: match.params.profileId
@@ -223,7 +223,7 @@ const HeaderHOC = compose(
                     refetchQueries: [{
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: match.params.lang,
                             id: match.params.profileId

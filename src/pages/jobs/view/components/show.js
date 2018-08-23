@@ -56,7 +56,7 @@ const ShowHOC = compose(
                     }, {
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentProfile',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: match.params.lang,
                         }

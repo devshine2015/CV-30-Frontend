@@ -44,7 +44,7 @@ const NamePopUpHOC = compose(
                     refetchQueries: [{
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language
                         }

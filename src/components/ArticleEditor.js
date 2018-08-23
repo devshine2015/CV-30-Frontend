@@ -47,7 +47,7 @@ const ArticleEditorHOC = compose(
                     refetchQuery = {
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: match.params.lang
                         }
@@ -57,7 +57,7 @@ const ArticleEditorHOC = compose(
                     refetchQuery = {
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: match.params.lang
                         }
@@ -67,7 +67,7 @@ const ArticleEditorHOC = compose(
                     refetchQuery = {
                         query: companyQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'companyQuery',
                         variables: {
                             language: match.params.lang,
                             id: match.params.companyId

@@ -67,7 +67,7 @@ const EditContactDetailsHOC = compose(
                     refetchQueries: [{
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en',
                             id: match.params.profileId

@@ -40,7 +40,7 @@ const ColorPickerHOC = compose(
                     refetchQueries: [{
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en'
                         }
@@ -122,7 +122,7 @@ const ColorPickerHOC = compose(
                     refetchQueries: [{
                         query: currentProfileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentUser',
+                        name: 'currentProfileQuery',
                         variables: {
                             language: 'en'
                         }
