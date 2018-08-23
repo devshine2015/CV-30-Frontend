@@ -11,7 +11,7 @@ import EditToggle from '../../../components/EditToggle';
 
 const UserProfile = props => {
     const {
-        currentProfile: { loading, profile },
+        profileQuery: { loading, profile },
         currentUser: { auth: { currentUser } }
     } = props;
 

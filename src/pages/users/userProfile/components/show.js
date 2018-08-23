@@ -23,11 +23,11 @@ const ShowHOC = compose(
     withState('newXP', 'setNewXP', false),
     withState('newProj', 'setNewProj', false),
     withState('isPopUpOpen', 'setIsPopUpOpen', false),
-    withState('story', 'setMyStory', ({ currentProfile: { profile } }) => (profile.story && profile.story.i18n) ? profile.story.i18n[0].description : ''),
+    withState('story', 'setMyStory', ({ profileQuery: { profile } }) => (profile.story && profile.story.i18n) ? profile.story.i18n[0].description : ''),
     withState('editContactDetails', 'setEditContactDetails', false),
     withState('contactExpanded', 'setContactExpanded', true),
-    withState('isSalaryPublic', 'setSalaryPrivacy', ({ currentProfile: { profile } }) => profile.salary ? profile.salary.isPublic : false),
-    withState('desiredSalary', 'setDesiredSalary', ({ currentProfile: { profile } }) => profile.salary ? profile.salary.amount : 0),
+    withState('isSalaryPublic', 'setSalaryPrivacy', ({ profileQuery: { profile } }) => profile.salary ? profile.salary.isPublic : false),
+    withState('desiredSalary', 'setDesiredSalary', ({ profileQuery: { profile } }) => profile.salary ? profile.salary.amount : 0),
     withHandlers({
         addNewExperience: ({ newXP, setNewXP }) => () => {
             setNewXP(!newXP);
@@ -143,7 +143,7 @@ const ShowHOC = compose(
 const Show = props => {
     const {
         getEditMode: { editMode: { status: editMode } },
-        currentProfile: { profile },
+        profileQuery: { profile },
         newXP, newProj, addNewExperience, closeNewExperience, addNewProject, closeNewProject,
         editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
         openArticlePopUp, isPopUpOpen, closeArticlePopUp,

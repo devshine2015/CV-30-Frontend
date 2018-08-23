@@ -36,7 +36,7 @@ const HeaderHOC = compose(
         }),
     }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('count', 'setCount', ({ currentProfile: { profile } }) => profile.featuredArticles ? profile.featuredArticles.length - 1 : 0),
+    withState('count', 'setCount', ({ profileQuery: { profile } }) => profile.featuredArticles ? profile.featuredArticles.length - 1 : 0),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
     withState('skillsAnchor', 'setSkillsAnchor', null),
     withState('nameAnchor', 'setNameAnchor', null),
@@ -53,7 +53,7 @@ const HeaderHOC = compose(
         closeColorPicker: ({ setColorPickerAnchor }) => () => {
             setColorPickerAnchor(null);
         },
-        openSkillsModal: ({ currentProfile: { profile: { skills, values } }, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
+        openSkillsModal: ({ profileQuery: { profile: { skills, values } }, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
             if (type === 'values')
                 setSkillsModalData({
                     type: type,
@@ -110,7 +110,7 @@ const HeaderHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ currentProfile: { profile }, setFeedbackMessage }) => async (file, callback) => {
+        getSignedUrl: ({ profileQuery: { profile }, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
