@@ -12,7 +12,7 @@ import ColorPicker from './colorPicker';
 import SkillsEditor from './skillsEditor';
 import NamePopUp from './namePopUp';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { setFeedbackMessage, updateAvatar, currentProfileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle, handleFollow } from '../../../../store/queries';
+import { setFeedbackMessage, updateAvatar, profileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle, handleFollow } from '../../../../store/queries';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
@@ -25,7 +25,7 @@ const HeaderHOC = compose(
     graphql(localUserQuery, { name: 'localUserData' }),
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(handleFollow, { name: 'handleFollow' }),
-    graphql(currentProfileQuery, {
+    graphql(profileQuery, {
         name: 'currentUser',
         options: (props) => ({
             variables: {
@@ -84,7 +84,7 @@ const HeaderHOC = compose(
                         language: 'en'
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
@@ -172,7 +172,7 @@ const HeaderHOC = compose(
                         contentType: fileType
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
@@ -221,15 +221,15 @@ const HeaderHOC = compose(
                         }
                     },
                     refetchQueries: [{
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
+                        name: 'profileQuery',
                         variables: {
                             language: match.params.lang,
                             id: match.params.profileId
                         }
                     }, {
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {

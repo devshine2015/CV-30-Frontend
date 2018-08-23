@@ -17,7 +17,7 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ArticlePopup from '../../../../components/ArticlePopup';
 import AddTeam from './addTeam';
 import { s3BucketURL, companiesFolder } from '../../../../constants/s3';
-import { companyQuery, handleArticle, handleCompany, handleFollow, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { companyQuery, handleArticle, handleCompany, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import TeamSlider from './teamSlider';
 
@@ -29,7 +29,7 @@ const HeaderHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(handleCompany, { name: 'handleCompany' }),
     graphql(handleFollow, { name: 'handleFollow' }),
-    graphql(currentProfileQuery, {
+    graphql(profileQuery, {
         name: 'currentUser',
         options: (props) => ({
             variables: {
@@ -179,7 +179,7 @@ const HeaderHOC = compose(
                             id: company.id
                         }
                     }, {
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {

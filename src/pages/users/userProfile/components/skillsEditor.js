@@ -1,7 +1,7 @@
 import React from 'react';
 import { Popover, FormControl, IconButton, Icon } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
-import { setSkills, setValues, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setSkills, setValues, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
@@ -56,7 +56,7 @@ const SkillsEditHOC = compose(
                                 removeSkills: toRemove
                             },
                             refetchQueries: [{
-                                query: currentProfileQuery,
+                                query: profileQuery,
                                 fetchPolicy: 'network-only',
                                 name: 'currentProfileQuery',
                                 variables: {
@@ -90,7 +90,7 @@ const SkillsEditHOC = compose(
                                 removeValues: toRemove
                             },
                             refetchQueries: [{
-                                query: currentProfileQuery,
+                                query: profileQuery,
                                 fetchPolicy: 'network-only',
                                 name: 'currentProfileQuery',
                                 variables: {

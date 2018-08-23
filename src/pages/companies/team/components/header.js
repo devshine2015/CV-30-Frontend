@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import ColorPicker from './colorPicker';
-import { queryTeam, handleFollow, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { queryTeam, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 
 import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
@@ -12,7 +12,7 @@ import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const HeaderHOC = compose(
     graphql(handleFollow, { name: 'handleFollow' }),
-    graphql(currentProfileQuery, {
+    graphql(profileQuery, {
         name: 'currentUser',
         options: (props) => ({
             variables: {
@@ -55,7 +55,7 @@ const HeaderHOC = compose(
                             id: team.id
                         }
                     }, {
-                        query: currentProfileQuery,
+                        query: profileQuery,
                         fetchPolicy: 'network-only',
                         name: 'currentProfileQuery',
                         variables: {
