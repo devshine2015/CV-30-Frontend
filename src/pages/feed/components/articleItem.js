@@ -110,7 +110,7 @@ const ArticleItem = props => {
 
     const appreciatedCount = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;
 
-    const canEdit = currentUser.id === author.id;
+    const canEdit = currentUser && currentUser.id === author.id;
 
     return (
         <div className='listItem userListItem'>
