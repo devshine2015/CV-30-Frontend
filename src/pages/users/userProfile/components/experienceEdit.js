@@ -4,9 +4,9 @@ import { compose, pure, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid/v4';
-import S3Uploader from 'react-s3-uploader';
 
-import { setExperience, setProject, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setExperience, setProject, currentProfileQuery, setFeedbackMessage } from '../../../../store/queries';
+import ImageUploader from '../../../../components/imageUploader';
 
 const ExperienceEditHOC = compose(
     withRouter,
@@ -37,7 +37,12 @@ const ExperienceEditHOC = compose(
     withState('isSaving', 'setIsSaving', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: () => error => { },
+        handleSuccess: () => file => { console.log(file) },
         handleFormChange: props => event => {
             if (typeof event.name !== undefined && event.name === 'video') {
                 props.setFormData(state => ({ ...state, video: event }));
@@ -231,7 +236,9 @@ const ExperienceEdit = props => {
         closeEditor,
         submitForm,
         type,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving
+        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        isSaving
+
     } = props;
     const { position, company, location, startDate, endDate, isCurrent, description, video } = formData;
 
@@ -336,25 +343,19 @@ const ExperienceEdit = props => {
                         })}
                         value={video ? video.path : ''}
                     /> :
-                    <label htmlFor="fileUpload">
-                        <S3Uploader
-                            id="fileUpload"
-                            name="fileUpload"
-                            className='hiddenInput'
-                            getSignedUrl={getSignedUrl}
-                            accept="image/*"
-                            preprocess={onUploadStart}
-                            onProgress={onProgress}
-                            onError={onError}
-                            onFinish={onFinishUpload}
-                            uploadRequestHeaders={{
-                                'x-amz-acl': 'public-read',
-                            }}
-                        />
-                        <Button component="span" className='uploadBtn' disabled={isSaving}>
+                    <React.Fragment>
+                        <Button className='uploadBtn' onClick={openImageUpload}>
                             Upload
-                        </Button>
-                    </label>
+                    </Button>
+                        <ImageUploader
+                            type
+                            open={imageUploadOpen}
+                            onClose={closeImageUpload}
+                            onError={handleError}
+                            onSuccess={handleSuccess}
+                        />
+                    </React.Fragment>
+
                 }
             </section>
             <section className='editControls'>
