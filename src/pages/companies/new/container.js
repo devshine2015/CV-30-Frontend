@@ -3,20 +3,11 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 // import uuid from 'uuid/v4';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
-import { handleCompany, industriesQuery } from '../../../store/queries';
+import { handleCompany } from '../../../store/queries';
 
 const NewCompanyHOC = compose(
     withRouter,
     graphql(handleCompany, { name: 'handleCompany' }),
-    graphql(industriesQuery, {
-        name: 'industriesQuery',
-        options: ({ match}) => ({
-            variables: {
-                language: match.params.lang,
-            },
-            fetchPolicy: 'network-only'
-        }),
-    }),
     // withState('formData', 'setFormData', { id: uuid() }),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),

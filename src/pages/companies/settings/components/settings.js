@@ -12,25 +12,15 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import { companyQuery, updateAvatarTimestampMutation, handleCompany, setFeedbackMessage, industriesQuery } from '../../../../store/queries';
+import { companyQuery, updateAvatarTimestampMutation, handleCompany, setFeedbackMessage } from '../../../../store/queries';
 
-import Loader from '../../../../components/Loader';
-import SuggestionsInput from '../../../../components/SuggestionsInput';
+import IndustryInput from '../../../../components/IndustryInput';
 import LocationInput from '../../../../components/LocationInput';
 
 const SettingsHOC = compose(
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
     graphql(handleCompany, { name: 'handleCompany' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    graphql(industriesQuery, {
-        name: 'industriesQuery',
-        options: ({ match}) => ({
-            variables: {
-                language: match.params.lang,
-            },
-            fetchPolicy: 'network-only'
-        }),
-    }),
     withState('isSaving', 'setIsSaving', false),
     withState('settingsFormError', 'setSettingsFormError', ''),
     withState('settingsFormSuccess', 'setSettingsFormSuccess', false),
@@ -128,13 +118,9 @@ const Settings = props => {
         handleFormChange, formData,
         saveUserDetails,
         headline, updateHeadline,
-        description, updateDescription,
-        industriesQuery
+        description, updateDescription
     } = props;
     const { name, location, industry, noOfEmployees } = formData;
-
-    if (industriesQuery.loading)
-        return <Loader/>;
 
     return (
         <div className='settingsTab'>
@@ -156,15 +142,9 @@ const Settings = props => {
                 />
             </div>
             <div className='infoFields'>
-                <SuggestionsInput
-                    suggestions={industriesQuery.industries}
-                    name='industry'
-                    label='Industry'
-                    placeholder='Enter your industry...'
-                    className='textField'
+                <IndustryInput
                     onChange={handleFormChange}
-                    value={industry || ''}
-                    getSuggestionValue={s => s ? s.i18n[0].title : ''}
+                    value={industry}
                 />
 
                 <LocationInput

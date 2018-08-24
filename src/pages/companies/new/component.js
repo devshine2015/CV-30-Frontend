@@ -12,19 +12,15 @@ import { withRouter } from 'react-router-dom';
 import { companiesQuery, setFeedbackMessage } from '../../../store/queries';
 import schema from './validation';
 
-import Loader from '../../../components/Loader';
-import SuggestionsInput from '../../../components/SuggestionsInput';
+import IndustryInput from '../../../components/IndustryInput';
 import LocationInput from '../../../components/LocationInput';
 
 const NewCompany = props => {
     const {
         // getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, uploadProgress,
         cancel,
-        values, touched, errors, isSubmitting, handleChange, handleSubmit, isValid,
-        industriesQuery,
+        values, touched, errors, isSubmitting, handleChange, handleSubmit, isValid
     } = props;
-    if (industriesQuery.loading)
-        return <Loader />;
 
     return (
         <div className='newCompanyRoot'>
@@ -99,18 +95,11 @@ const NewCompany = props => {
                         <div className='colorPicker'></div>
                     </section> */}
                     <section className='details'>
-                        <SuggestionsInput
+                        <IndustryInput
                             error={touched.industry && errors.industry}
                             helperText={errors.industry}
-                            suggestions={industriesQuery.industries}
-                            name='industry'
-                            label='Industry'
-                            placeholder="Enter industry..."
-                            className='textField'
                             onChange={handleChange}
-                            value={values.industry || ''}
-                            getSuggestionValue={s => s ? s.i18n[0].title : ''}
-                            fullWidth
+                            value={values.industry}
                         />
 
                         <TextField
