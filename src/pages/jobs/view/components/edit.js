@@ -62,13 +62,13 @@ const EditHOC = compose(
             skills: skills.map(skill => skill.i18n[0].title),
             selectedJobTypes: jobTypes.map(jt => jt.id),
             salary: {
-                amountMin: salary.amountMin,
-                amountMax: salary.amountMax,
-                currency: salary.currency
+                amountMin: salary ? salary.amountMin : 0,
+                amountMax: salary ? salary.amountMax : 1000,
+                currency: salary ? salary.currency : 'eur'
             },
             salaryRangeStart: 0,
             salaryRangeEnd: 5000,
-            salaryPublic: salary.isPublic
+            salaryPublic: salary ? salary.isPublic : false
         };
 
         return jobEdit;

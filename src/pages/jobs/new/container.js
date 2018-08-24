@@ -42,7 +42,7 @@ const NewJobHOC = compose(
             },
             salaryRangeStart: 0,
             salaryRangeEnd: 5000,
-            salaryPublic: true,
+            salaryPublic: false,
             skills: [],
             expireDate: new Date()
         };
