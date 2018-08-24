@@ -20,6 +20,8 @@ import 'rc-slider/assets/index.css';
 import TagsInput from '../../../components/TagsInput';
 import { formatCurrency } from '../../../constants/utils';
 
+import LocationInput from '../../../components/LocationInput';
+
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
@@ -33,7 +35,7 @@ const NewJob = props => {
         return <Loader />
 
     const {
-        formData: { title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills, selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary, salaryPublic },
+        formData: { title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills, selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary, salaryPublic, location },
         handleFormChange, updateDescription, updateIdealCandidate, handleSliderChange, publishJob, onSkillsChange,
         getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
         anchorEl, handleClick, handleClose, addField, formData, removeTextField
@@ -221,6 +223,11 @@ const NewJob = props => {
                                     <Checkbox name="salaryPublic" checked={salaryPublic} onChange={handleFormChange} />
                                 }
                                 label="Public" />
+                        </section>
+                        <section className='locationSection'>
+                            <LocationInput
+                                value={location}
+                                onChange={handleFormChange} />
                         </section>
                     </div>
                 </Grid>

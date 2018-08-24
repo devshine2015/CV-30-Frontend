@@ -16,6 +16,7 @@ import { companyQuery, updateAvatarTimestampMutation, handleCompany, setFeedback
 
 import Loader from '../../../../components/Loader';
 import SuggestionsInput from '../../../../components/SuggestionsInput';
+import LocationInput from '../../../../components/LocationInput';
 
 const SettingsHOC = compose(
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
@@ -166,15 +167,11 @@ const Settings = props => {
                     getSuggestionValue={s => s ? s.i18n[0].title : ''}
                 />
 
-                <TextField
-                    name='location'
-                    label='Location'
-                    placeholder='Enter your location...'
-                    className='textField'
+                <LocationInput
+                    value={location}
                     onChange={handleFormChange}
-                    value={location || ''}
-                    type='text'
                 />
+                
                 <TextField
                     name='noOfEmployees'
                     label='Number of noOfEmployees'

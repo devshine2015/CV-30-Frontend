@@ -22,6 +22,8 @@ import TagsInput from '../../../../components/TagsInput';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
+import LocationInput from '../../../../components/LocationInput';
+
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
@@ -47,7 +49,7 @@ const EditHOC = compose(
         })
     }),
     withState('formData', 'setFormData', props => {
-        const { getJobQuery: { job: { id, team, i18n, expireDate, company, activityField, skills, jobTypes, salary } } } = props;
+        const { getJobQuery: { job: { id, team, i18n, expireDate, company, activityField, skills, jobTypes, salary, location } } } = props;
 
         let jobEdit = {
             id,
@@ -68,7 +70,8 @@ const EditHOC = compose(
             },
             salaryRangeStart: 0,
             salaryRangeEnd: 5000,
-            salaryPublic: salary ? salary.isPublic : false
+            salaryPublic: salary ? salary.isPublic : false,
+            location
         };
 
         return jobEdit;
@@ -152,7 +155,7 @@ const EditHOC = compose(
         updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
 
         publishJob: ({ handleJob, formData, match, setFeedbackMessage }) => async () => {
-            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField } = formData;
+            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField, location } = formData;
             try {
                 await handleJob({
                     variables: {
@@ -171,7 +174,8 @@ const EditHOC = compose(
                                 isPublic: salaryPublic
                             },
                             skills,
-                            activityField
+                            activityField,
+                            location
                         }
                     },
                     refetchQueries: [{
@@ -247,7 +251,7 @@ const Edit = props => {
         return <Loader />
 
     const {
-        formData: { title, expireDate, benefits, teamId, description, idealCandidate, activityField, selectedJobTypes, skills, salary, salaryPublic, salaryRangeStart, salaryRangeEnd }, handleFormChange,
+        formData: { title, expireDate, benefits, teamId, description, idealCandidate, activityField, selectedJobTypes, skills, salary, salaryPublic, salaryRangeStart, salaryRangeEnd, location }, handleFormChange,
         getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
         updateDescription, updateIdealCandidate,
         anchorEl, handleClick, handleClose, addField, formData, removeTextField,
@@ -437,6 +441,11 @@ const Edit = props => {
                                     <Checkbox name="salaryPublic" checked={salaryPublic} onChange={handleFormChange} />
                                 }
                                 label="Public" />
+                        </section>
+                        <section className='locationSection'>
+                            <LocationInput
+                                value={location}
+                                onChange={handleFormChange} />
                         </section>
                     </form>
                 </Grid>

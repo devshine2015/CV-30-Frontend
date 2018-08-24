@@ -44,7 +44,8 @@ const NewJobHOC = compose(
             salaryRangeEnd: 5000,
             salaryPublic: false,
             skills: [],
-            expireDate: new Date()
+            expireDate: new Date(),
+            location: ''
         };
     }),
     withState('isUploading', 'setIsUploading', false),

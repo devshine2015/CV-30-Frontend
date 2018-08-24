@@ -14,6 +14,7 @@ import schema from './validation';
 
 import Loader from '../../../components/Loader';
 import SuggestionsInput from '../../../components/SuggestionsInput';
+import LocationInput from '../../../components/LocationInput';
 
 const NewCompany = props => {
     const {
@@ -36,16 +37,11 @@ const NewCompany = props => {
             <Grid container className='mainBody newCompany'>
                 <Grid item lg={6} sm={11}>
                     <section className='locationSection'>
-                        <TextField
+                        <LocationInput
+                            value={values.location}
+                            onChange={handleChange}
                             error={touched.location && errors.location}
                             helperText={errors.location}
-                            name="location"
-                            label="Location"
-                            placeholder="Enter location..."
-                            className='textField'
-                            fullWidth
-                            onChange={handleChange}
-                            value={values.location}
                         />
                     </section>
                     <section className='titleSection'>

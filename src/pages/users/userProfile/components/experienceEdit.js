@@ -7,6 +7,7 @@ import uuid from 'uuid/v4';
 
 import { setExperience, setProject, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import ImageUploader from '../../../../components/imageUploader';
+import LocationInput from '../../../../components/LocationInput';
 
 const ExperienceEditHOC = compose(
     withRouter,
@@ -266,13 +267,8 @@ const ExperienceEdit = props => {
                     onChange={handleFormChange}
                     value={company || ''}
                 />
-                <TextField
-                    name="location"
-                    label="Add location"
-                    placeholder="Location..."
-                    className='textField'
-                    fullWidth
-                    value={location || ''}
+                <LocationInput
+                    value={location}
                     onChange={handleFormChange}
                 />
                 <div className='datePickers'>
