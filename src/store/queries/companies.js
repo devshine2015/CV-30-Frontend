@@ -1,10 +1,42 @@
 import gql from 'graphql-tag';
 
+const minimumCompanyResult = gql`
+  fragment minimumCompanyResult on Company {
+    id
+    name
+    location
+    noOfEmployees
+    i18n {
+      headline
+      description
+    }
+    featuredArticles {
+      id
+      images {
+        id
+        path
+      }
+      videos {
+        id
+        path
+      }
+    }
+    hasLogo
+    logoContentType
+    logoPath
+    industry {
+      id 
+      i18n {
+        title
+      }
+    }
+  }
+`;
+
 export const companyQuery = gql`
 query company($id: String!, $language: LanguageCodeType!) {
   company(id: $id, language: $language) {
-    id
-    name
+    ...minimumCompanyResult
     i18n {
       headline
       description
@@ -54,9 +86,7 @@ query company($id: String!, $language: LanguageCodeType!) {
         path
       }
     }
-    activityField
     noOfEmployees
-    location
     faqs {
       id
       i18n {
@@ -83,44 +113,22 @@ query company($id: String!, $language: LanguageCodeType!) {
     owner {
       id
     }
-    hasLogo
-    logoContentType
-    logoPath
     hasCover
     coverContentType
     coverPath
     coverBackground
   }
 }
+${minimumCompanyResult}
 `;
 
 export const companiesQuery = gql`
   query companies($language: LanguageCodeType!) {
     companies(language: $language) {
-      id
-      name
-      location
-      noOfEmployees
-      i18n {
-        headline
-        description
-      }
-      featuredArticles {
-        id
-        images {
-          id
-          path
-        }
-        videos {
-          id
-          path
-        }
-      }
-      hasLogo
-      logoContentType
-      logoPath
+      ...minimumCompanyResult
     }
   }
+  ${minimumCompanyResult}
 `;
 
 export const handleCompany = gql`

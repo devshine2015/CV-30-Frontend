@@ -38,11 +38,11 @@ const SettingsHOC = compose(
 
     }),
     withState('formData', 'setFormData', props => {
-        let { currentCompany: { company: { id, activityField, location, noOfEmployees, name } } } = props;
+        let { currentCompany: { company: { id, industry, location, noOfEmployees, name } } } = props;
         if (!props.currentCompany || !props.currentCompany.company)
             return {};
 
-        return { id, activityField, location, noOfEmployees, name };
+        return { id, industry: industry ? industry.i18n[0].title : '', location, noOfEmployees, name };
     }),
     withHandlers({
         handleFormChange: props => event => {
@@ -60,7 +60,7 @@ const SettingsHOC = compose(
             const {
                 handleCompany, setIsSaving,
                 setSettingsFormSuccess, setSettingsFormError, updateUserSettings,
-                formData: { id, activityField, location, noOfEmployees, name },
+                formData: { id, industry, location, noOfEmployees, name },
                 match,
                 headline, description,
                 setFeedbackMessage
@@ -73,7 +73,7 @@ const SettingsHOC = compose(
                     variables: {
                         language: match.params.lang,
                         details: {
-                            id, activityField, location, noOfEmployees, name, headline, description
+                            id, industry, location, noOfEmployees, name, headline, description
                         }
                     },
                     refetchQueries: [{
@@ -115,8 +115,7 @@ const Settings = props => {
         headline, updateHeadline,
         description, updateDescription
     } = props;
-    const { name, location, activityField, noOfEmployees } = formData;
-
+    const { name, location, industry, noOfEmployees } = formData;
 
     return (
         <div className='settingsTab'>
@@ -139,12 +138,12 @@ const Settings = props => {
             </div>
             <div className='infoFields'>
                 <TextField
-                    name='activityField'
-                    label='Activity field'
-                    placeholder='Enter your activity field...'
+                    name='industry'
+                    label='Industry'
+                    placeholder='Enter your industry...'
                     className='textField'
                     onChange={handleFormChange}
-                    value={activityField || ''}
+                    value={industry || ''}
                     type='text'
                 />
                 <TextField

@@ -19,7 +19,7 @@ const CompanyHOC = compose(
 
 const Company = props => {
     const { activeTab, handleTabChange, company, match: { params: { lang } } } = props;
-    const { id, name, field, location, noOfEmployees, i18n, jobs, team, hasLogo, logoContentType } = company;
+    const { id, name, industry, location, noOfEmployees, i18n, jobs, team, hasLogo, logoContentType } = company;
     let avatar =
         hasLogo ? `${s3BucketURL}/${companiesFolder}/${id}/logo.${logoContentType}` : defaultCompanyLogo;
     //style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }}
@@ -35,7 +35,7 @@ const Company = props => {
                             {name}
                             <i className='fas fa-caret-down' />
                         </h6>
-                        <p className='userTitle'>{field}</p>
+                        <p className='userTitle'>{industry && industry.i18n[0].title}</p>
                     </div>
                 </Link>
             </div>

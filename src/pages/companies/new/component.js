@@ -97,15 +97,15 @@ const NewCompany = props => {
                     </section> */}
                     <section className='details'>
                         <TextField
-                            error={touched.activityField && errors.activityField}
-                            helperText={errors.activityField}
-                            name="activityField"
-                            label="Field of Activity"
-                            placeholder="Enter field of activity..."
+                            error={touched.industry && errors.industry}
+                            helperText={errors.industry}
+                            name="industry"
+                            label="Industry"
+                            placeholder="Enter industry..."
                             className='textField'
                             fullWidth
                             onChange={handleChange}
-                            value={values.activityField}
+                            value={values.industry}
                         />
                         <TextField
                             error={touched.noOfEmployees && errors.noOfEmployees}
@@ -138,7 +138,7 @@ const NewCompanyHOC = compose(
     withFormik({
         mapPropsToValues: () => ({
             name: '',
-            activityField: '',
+            industry: '',
             noOfEmployees: '',
             location: ''
         }),

@@ -305,7 +305,7 @@ const Header = props => {
     const {
         getEditMode: { editMode: { status: editMode } },
         headline, updateHeadline, submitHeadline, match, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
-        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, activityField, teams, hasLogo, logoContentType, hasCover, coverContentType, coverBackground } },
+        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, industry, teams, hasLogo, logoContentType, hasCover, coverContentType, coverBackground } },
         getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress, refetchBgImage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker,
         forceLogoRender, forceCoverRender,
@@ -344,7 +344,7 @@ const Header = props => {
                     <Avatar alt={avatar} src={avatar} className='avatar' />
                     <div className='avatarTexts'>
                         <h3>{name}</h3>
-                        <h4>{activityField}</h4>
+                        <h4>{industry && industry.i18n[0].title}</h4>
                     </div>
 
                     {editMode &&
@@ -513,7 +513,7 @@ const Header = props => {
 
             </Grid>
             <Grid container className='activityFields'>
-                <Chip label={activityField} className='chip activity' />
+                <Chip label={industry && industry.i18n[0].title} className='chip activity' />
                 <Chip label={location} className='chip activity' />
                 <Chip label={noOfEmployees} className='chip activity' />
             </Grid>
