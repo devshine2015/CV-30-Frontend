@@ -12,12 +12,19 @@ import { withRouter } from 'react-router-dom';
 import { companiesQuery, setFeedbackMessage } from '../../../store/queries';
 import schema from './validation';
 
+import Loader from '../../../components/Loader';
+import SuggestionsInput from '../../../components/SuggestionsInput';
+
 const NewCompany = props => {
     const {
         // getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, uploadProgress,
         cancel,
-        values, touched, errors, isSubmitting, handleChange, handleSubmit, isValid
+        values, touched, errors, isSubmitting, handleChange, handleSubmit, isValid,
+        industriesQuery,
     } = props;
+    if (industriesQuery.loading)
+        return <Loader />;
+
     return (
         <div className='newCompanyRoot'>
             <Grid container className='header'>
@@ -96,17 +103,20 @@ const NewCompany = props => {
                         <div className='colorPicker'></div>
                     </section> */}
                     <section className='details'>
-                        <TextField
+                        <SuggestionsInput
                             error={touched.industry && errors.industry}
                             helperText={errors.industry}
-                            name="industry"
-                            label="Industry"
+                            suggestions={industriesQuery.industries}
+                            name='industry'
+                            label='Industry'
                             placeholder="Enter industry..."
                             className='textField'
-                            fullWidth
                             onChange={handleChange}
-                            value={values.industry}
+                            value={values.industry || ''}
+                            getSuggestionValue={s => s ? s.i18n[0].title : ''}
+                            fullWidth
                         />
+
                         <TextField
                             error={touched.noOfEmployees && errors.noOfEmployees}
                             helperText={errors.noOfEmployees}

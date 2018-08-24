@@ -131,6 +131,17 @@ export const companiesQuery = gql`
   ${minimumCompanyResult}
 `;
 
+export const industriesQuery = gql`
+  query industries($language: LanguageCodeType!) {
+    industries(language: $language) {
+      id
+      i18n {
+        title
+      }
+    }
+  }
+`;
+
 export const handleCompany = gql`
     mutation handleCompany($language: LanguageCodeType!, $details: CompanyInput!) {
         handleCompany(language: $language, details:  $details){
