@@ -72,8 +72,12 @@ export const getArticle = gql`
 `;
 
 export const getNewsFeedArticles = gql`
-    query newsFeedArticles($language: LanguageCodeType!) {
-        newsFeedArticles(language: $language) {
+    query newsFeedArticles(
+        $language: LanguageCodeType!, 
+        $peopleOrCompany: String
+        $tags: [String]
+    ) {
+        newsFeedArticles(language: $language, peopleOrCompany: $peopleOrCompany, tags: $tags) {
             following {
                 ...standardArticleResult
             }
