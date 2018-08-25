@@ -49,20 +49,21 @@ const ImageUploadHOC = compose(
             console.log(value);
         },
 
-        handleUploadFile: ({ image, articleId, onSuccess, onError, onClose, type }) => async () => {
+        handleUploadFile: ({ image, id, onSuccess, onError, onClose, type }) => async () => {
             const params = {
                 fileName: image.filename,
                 contentType: image.filetype,
-                // id: articleId || uuid(),
                 type
             };
 
-            if (type === 'article')
-                params.id = articleId || uuid();
+            if (type === 'article' || type === 'company_cover' || type === 'logo')
+                params.id = id || uuid();
             if (type === 'lp_header')
                 params.fileName = `headerCover.${image.filetype.replace('image/', '')}`;
             if (type === 'lp_footer')
                 params.fileName = `footerCover.${image.filetype.replace('image/', '')}`;
+
+            console.log(JSON.stringify(params, null, 2));
 
             try {
                 let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
@@ -94,7 +95,10 @@ const ImageUploadHOC = compose(
 const ImageUpload = ({ image, onChange, handleUploadFile }) => {
     return (
         <div className='imageUpload'>
-            <DropNCrop onChange={onChange} value={image} />
+            <DropNCrop
+                onChange={onChange}
+                value={image}
+            />
             <Button onClick={handleUploadFile} className='uploadBtn' disabled={!image || !image.filename}>Upload</Button>
         </div>
     )

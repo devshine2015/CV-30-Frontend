@@ -4,7 +4,7 @@ import Gallery from './gallery';
 import Uploader from './uploader';
 
 const ImageUploader = ({
-    open, articleId,
+    open, id,
     onClose, onError, onSuccess, type,
     handleTabChange, activeTab
 }) => {
@@ -54,7 +54,7 @@ const ImageUploader = ({
                 </div>
                 <div className='popupBody'>
                     {activeTab === 'gallery' && <Gallery onError={onError} onSuccess={onSuccess} onClose={onClose} />}
-                    {activeTab === 'upload' && <Uploader onError={onError} onSuccess={onSuccess} articleId={articleId} onClose={onClose} type={type} />}
+                    {activeTab === 'upload' && <Uploader onError={onError} onSuccess={onSuccess} id={id} onClose={onClose} type={type} />}
                 </div>
             </div>
         </Modal>

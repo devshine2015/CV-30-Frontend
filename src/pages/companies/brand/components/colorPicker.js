@@ -1,21 +1,20 @@
 import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
 import { handleCompany, companyQuery, setFeedbackMessage } from '../../../../store/queries';
+import ImageUploader from '../../../../components/imageUploader';
+import { companiesFolder } from '../../../../constants/s3';
 
 const ColorPickerHOC = compose(
     withRouter,
     graphql(handleCompany, { name: 'handleCompany' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('activeTab', 'setActiveTab', 'colors'),
-    withState('isUploading', 'setIsUploading', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('fileParams', 'setFileParams', {}),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
@@ -57,46 +56,9 @@ const ColorPickerHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ match: { params: { companyId } }, setFileParams, setFeedbackMessage }) => async (file, callback) => {
-            const params = {
-                fileName: `cover.${file.type.replace('image/', '')}`,
-                contentType: file.type,
-                id: companyId,
-                type: 'company_cover'
-            };
-
-            setFileParams(params);
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-            }
-        },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
-            setIsUploading(true);
-            next(file);
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
                 variables: {
@@ -105,20 +67,20 @@ const ColorPickerHOC = compose(
                 }
             });
         },
-        onFinish: ({
-            setIsUploading, handleCompany, refetchBgImage,
-            fileParams: { contentType },
+        handleSuccess: ({
+            handleCompany, refetchBgImage,
             match: { params: { companyId, lang: language } },
             setFeedbackMessage
-        }) => async () => {
+        }) => async ({ path, filename }) => {
+            const coverPath = path ? path : `/${companiesFolder}/${companyId}/${filename}`;
+
             try {
                 await handleCompany({
                     variables: {
                         language,
                         details: {
                             id: companyId,
-                            hasCover: true,
-                            coverContentType: contentType.replace('image/', '')
+                            coverPath
                         }
                     },
                     refetchQueries: [{
@@ -147,8 +109,6 @@ const ColorPickerHOC = compose(
                     }
                 });
             }
-
-            setIsUploading(false);
             refetchBgImage();
         }
     }),
@@ -159,7 +119,8 @@ const ColorPicker = (props) => {
     const { colorPickerAnchor, onClose,
         setBackgroundColor,
         activeTab, handleTabChange,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinish,
+        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        match: { params: { companyId } }
     } = props;
     return (
         <Popover
@@ -186,28 +147,17 @@ const ColorPicker = (props) => {
                     <Tab label="Colors" value='colors' />
                     <Tab label="Patterns" value='patterns' />
                 </Tabs>
-
-                <label htmlFor="uploadCoverPhoto">
-                    <S3Uploader
-                        id="uploadCoverPhoto"
-                        name="uploadCoverPhoto"
-                        className='hiddenInput'
-                        getSignedUrl={getSignedUrl}
-                        accept="image/*"
-                        preprocess={onUploadStart}
-                        onProgress={onProgress}
-                        onError={onError}
-                        onFinish={onFinish}
-                        uploadRequestHeaders={{
-                            'x-amz-acl': 'public-read',
-                        }}
-                    />
-                    <Button component='span' size='small' className='picUploadButton'>
-                        Upload picture
+                <Button size='small' className='picUploadButton' onClick={openImageUpload}>
+                    Upload picture
                     </Button>
-                </label>
-
-
+                <ImageUploader
+                    type='company_cover'
+                    open={imageUploadOpen}
+                    onClose={closeImageUpload}
+                    onError={handleError}
+                    onSuccess={handleSuccess}
+                    id={companyId}
+                />
             </div>
             <div className='popupBody'>
                 {activeTab === 'colors' &&

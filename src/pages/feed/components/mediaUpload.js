@@ -133,7 +133,7 @@ const MediaUploadPopUp = ({
                 onClose={closeImageUpload}
                 onError={handleError}
                 onSuccess={handleSuccess}
-                articleId={postId}
+                id={postId}
             />
         </Popover>
     );
