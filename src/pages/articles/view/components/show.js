@@ -1,18 +1,38 @@
 import React from 'react';
-import { Grid, Avatar, Button, Icon } from '@material-ui/core';
+import { Grid, Avatar, Button, Icon, IconButton } from '@material-ui/core';
 import ReactPlayer from 'react-player';
-import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
+import { FormattedDate, FormattedMessage } from 'react-intl';
 import { DiscussionEmbed } from 'disqus-react';
+import { compose, withState, withHandlers, pure } from 'recompose';
 
-import { s3BucketURL } from '../../../../constants/s3';
+import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
+import { defaultUserAvatar } from '../../../../constants/utils';
 import Loader from '../../../../components/Loader';
-import Comment from './comment';
 import { disqusShortname, disqusUrlPrefix } from '../../../../constants/disqus';
+import AddTags from './addTags';
+
+const ArticleShowHOC = compose(
+    withState('tagAnchor', 'setTagAnchor', null),
+    withHandlers({
+        openTagEditor: ({ setTagAnchor }) => target => setTagAnchor(target),
+        closeTagEditor: ({ setTagAnchor }) => () => setTagAnchor(null),
+    }),
+    pure
+);
 
 const ArticleShow = props => {
-    const { match, getArticle: { loading, article: { id: articleId, author: { id: authorId, email, firstName, lastName, position }, images, videos, i18n, created_at } } } = props;
 
-    if (loading)
+    const { match,
+        getArticle: { loading,
+            article: { id: articleId,
+                author: { id: authorId, email, firstName, lastName, position, hasAvatar, avatarContentType },
+                images, videos, i18n, createdAt, tags }
+        },
+        currentUser: { loading: currentUserLoading, auth: { currentUser } },
+        openTagEditor, closeTagEditor, tagAnchor, addVote
+    } = props;
+
+    if (loading || currentUserLoading)
         return <Loader />
 
     let title = (i18n && i18n[0] && i18n[0].title) ? i18n[0].title : '';
@@ -25,17 +45,17 @@ const ArticleShow = props => {
     if (videos && videos.length > 0) {
         video = videos[0].path;
     }
-    let avatar /*= hasAvatar ? `${s3BucketURL}/${profilesFolder}/${authorId}/avatar.${avatarContentType}` : defaultUserAvatar*/;
+    let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${authorId}/avatar.${avatarContentType}` : defaultUserAvatar;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
-    let likes = 123;
+
+    let likes = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;
+    const isAddTagAllowed = !!currentUser;
 
     const disqusConfig = {
         url: disqusUrlPrefix + match.url,
         identifier: articleId,
         title: title,
     };
-
-    const comments = [{}, {}];
 
     return (
         <Grid container className='mainBody articleShow'>
@@ -80,7 +100,7 @@ const ArticleShow = props => {
                             <p className='userTitle'>{position}</p>
                         </div>
                     </div>
-                    <FormattedDate value={created_at}>
+                    <FormattedDate value={createdAt}>
                         {(text) => (<p className='articleDate'>{text}</p>)}
                     </FormattedDate>
                     <section className='likesSection'>
@@ -91,37 +111,51 @@ const ArticleShow = props => {
                                 </p>
                             )}
                         </FormattedMessage>
-                        <Button className='likeBtn' disableRipple>
-                            <Icon className='icon'>add</Icon>
-                            <FormattedMessage id='article.likeBtn' defaultMessage="Compliment your own way" description="Compliment">
-                                {(text) => (
-                                    <span className='text'>{text}</span>
-                                )}
-                            </FormattedMessage>
-                        </Button>
+                        {
+                            isAddTagAllowed &&
+                            <React.Fragment>
+                                <Button className='likeBtn' disableRipple onClick={event => openTagEditor(event.target)}>
+                                    <Icon className='icon'>add</Icon>
+                                    <FormattedMessage id='article.likeBtn' defaultMessage="Compliment your own way" description="Compliment" >
+                                        {(text) => (<span className='text'>{text}</span>)}
+                                    </FormattedMessage>
+                                </Button>
+                                <AddTags
+                                    tagAnchor={tagAnchor}
+                                    closeTagEditor={closeTagEditor}
+                                    articleId={articleId}
+                                    tags={tags}
+                                />
+                            </React.Fragment>
+                        }
                     </section>
-                    <section className='commentsSection'>
-                        <FormattedMessage id={comments.length <= 1 ? 'comments.singular' : 'comments.plural'} defaultMessage="Comments" description="Comments">
-                            {(text) => (
-                                <p className='comments'>
-                                    <span className='count'>{comments.length}</span>&nbsp;{text}
-                                </p>
-                            )}
-                        </FormattedMessage>
-                        {comments && comments.map(comment => <Comment comment={comment} />)}
-                    </section>
-                    <FormattedMessage id='comment.action' defaultMessage="Comment" description="Comment">
-                        {(text) => (
-                            <Button className='addCommentBtn'>
-                                <Icon className='icon'>chat_bubble</Icon>
-                                {text}
-                            </Button>
-                        )}
-                    </FormattedMessage>
+                    {(tags && tags.length > 0) &&
+                        <section className='tags'>
+                            {
+                                tags.map(tag => {
+                                    const { id, i18n, users } = tag;
+                                    const result = users.find(user => user.id === currentUser.id);
+                                    let userHasVoted = !!result;
+                                    return (
+                                        <span className='tag' key={id}>
+                                            {
+                                                userHasVoted ?
+                                                    <span className='votes'>{tag.users.length}</span>
+                                                    : <IconButton className='voteBtn' onClick={() => addVote(tag)}>
+                                                        <Icon>add</Icon>
+                                                    </IconButton>
+                                            }
+                                            <span className='title'>{i18n[0].title}</span>
+                                        </span>
+                                    )
+                                })
+                            }
+                        </section>
+                    }
                 </div>
             </Grid>
         </Grid>
     );
 }
 
-export default ArticleShow; 
+export default ArticleShowHOC(ArticleShow); 

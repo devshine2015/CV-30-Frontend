@@ -256,13 +256,51 @@
                     font-weight: 100;
                     margin-left: 10px;
                 }
-                .likes,
-                .comments {
+                .likes {
                     color: #277dba;
                     font-size: 2rem;
                     font-weight: bold;
                     .count {
                         font-weight: 100;
+                    }
+                }
+                .tags {
+                    margin-top: 30px;
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    .addTagBtn {
+                        width: 35px;
+                        height: 35px;
+                        background: #277dba;
+                        color: #fff;
+                        margin-right: 15px;
+                    }
+                    .tag {
+                        font-size: 1rem;
+                        color: #277dba;
+                        margin: 0;
+                        margin-right: 20px;
+                        display: inline-flex;
+                        align-items: center;
+                        min-height: 35px;
+                        padding: inherit;
+                        background-color: inherit;
+                        border-radius: inherit;
+                        .votes {
+                            font-weight: bold;
+                            margin-right: 5px;
+                        }
+                        .voteBtn {
+                            color: #277dba;
+                            width: 24px;
+                            height: 24px;
+                            margin-right: 5px;
+                            background: rgba(39, 125, 186, 0.3);
+                            &:hover {
+                                background: rgba(39, 125, 186, 0.6);
+                            }
+                        }
                     }
                 }
                 .likeBtn {
@@ -408,7 +446,6 @@
                         font-style: italic;
                     }
                 }
-                .tags {}
                 hr {
                     border-color: rgba(255, 255, 255, .5);
                     margin: 30px 0;
@@ -458,6 +495,10 @@
     padding: 15px;
     width: 400px;
     max-width: 90%;
+    .addTag {
+        display: flex;
+        flex-direction: column;
+    }
     .title {
         font-size: 1rem;
         font-weight: 500;
@@ -473,7 +514,8 @@
             border-bottom-color: #fff !important;
         }
     }
-    .helperText {
+    .helperText,
+    .inputHelperText {
         display: block;
         position: relative;
         margin: 10px 0;
@@ -481,5 +523,39 @@
         font-size: .75rem;
         font-weight: 100;
         font-style: italic;
+    }
+    .inputHelperText {
+        margin-bottom: 0;
+    }
+    .submitBtn {
+        background: #fff;
+        color: #277dba;
+        margin-left: auto;
+        width: 30px;
+        height: 30px;
+    }
+    .textField {
+        color: #fff;
+        .tagInput,
+        .textFieldLabel {
+            color: #fff !important;
+        }
+        .textFieldUnderline {
+            &:before,
+            &:after {
+                border-bottom-color: #fff !important;
+            }
+        }
+        .inputRoot {
+            flex-wrap: wrap;
+            padding: 5px 0;
+            .chip {
+                margin: 2px;
+            }
+            .tagInput {
+                width: auto;
+                padding: 0 3px;
+            }
+        }
     }
 }
