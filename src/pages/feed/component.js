@@ -1,16 +1,18 @@
 import React from 'react';
-import { Grid, TextField } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 import Loader from '../../components/Loader';
 import ArticlesList from './components/articlesList';
 import { Link } from 'react-router-dom';
 import NewPost from './components/newPost';
+import NewsFeedSearch from './components/newsFeedSearch';
 
 const NewsFeed = props => {
     const {
         currentProfileQuery: { loading, profile },
         newsFeedArticlesQuery,
-        match: { params: { lang } }
+        match: { params: { lang } },
+        setSearchData, searchData
     } = props;
 
 
@@ -18,7 +20,7 @@ const NewsFeed = props => {
         return <Loader />
 
     const followingArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.following : [];
-
+    
     return (
         <div className='newsFeedRoot'>
             <Grid container className='mainBody brandShow'>
@@ -68,24 +70,7 @@ const NewsFeed = props => {
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
                         <div className='fixed'>
-                            <section className='searchFields'>
-                                <TextField
-                                    name='generalSearch'
-                                    label='Keywords, people or companies'
-                                    placeholder='Search for keywords, people or companies...'
-                                    type="search"
-                                    className='textField'
-                                    fullWidth
-                                />
-                                <TextField
-                                    name='hastags'
-                                    label='#hashtags'
-                                    placeholder='Search for hastags...'
-                                    type="search"
-                                    className='textField'
-                                    fullWidth
-                                />
-                            </section>
+                            <NewsFeedSearch searchData={searchData} setSearchData={setSearchData}/>
                             <section className='promo'>
                                 <span>Promo</span>
                             </section>

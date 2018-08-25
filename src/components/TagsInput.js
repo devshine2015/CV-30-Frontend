@@ -40,6 +40,8 @@ class TagsInput extends Component {
         return (
             <TextField
                 id="newSkill"
+                label={this.props.label}
+                placeholder={this.props.placeholder}
                 value={this.state.newTag}
                 onChange={this.handleChange}
                 onKeyDown={this.handleKeyDown}
