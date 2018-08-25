@@ -23,7 +23,7 @@ const AddTagHOC = compose(
                     variables: {
                         language,
                         details: {
-                            title: newTag,
+                            titles: [newTag],
                             articleId,
                             isSet: true
                         }

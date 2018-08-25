@@ -104,7 +104,7 @@ export const handleArticle = gql`
 `;
 
 export const handleArticleTags = gql`
-    mutation handleArticleTags($language: LanguageCodeType!, $details: ArticleTagInput!) {
+    mutation handleArticleTags($language: LanguageCodeType!, $details: ArticleTagsInput!) {
         handleArticleTags(language: $language, details: $details) {
             status
             error

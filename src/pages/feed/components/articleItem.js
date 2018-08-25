@@ -36,7 +36,7 @@ const ArticleItemHOC = compose(
                     variables: {
                         language,
                         details: {
-                            title: tag.i18n[0].title,
+                            titles: [tag.i18n[0].title],
                             articleId: article.id,
                             isSet: true
                         }
