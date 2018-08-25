@@ -13,17 +13,18 @@ const AddTagHOC = compose(
     withState('newTag', 'setNewTag', ''),
     withHandlers({
         updateNewTag: ({ setNewTag }) => text => setNewTag(text),
-        handleKeyPress: ({ handleArticleTags, articleId, newTag, setNewTag, match: { params: { lang: language } }, setFeedbackMessage, closeTagEditor }) => async event => {
+        handleKeyPress: ({ handleArticleTags, articleId, tags, newTag, setNewTag, match: { params: { lang: language } }, setFeedbackMessage, closeTagEditor }) => async event => {
             if (event.key !== 'Enter')
                 return;
 
             event.preventDefault();
+            let currentTags = tags.map(tag => tag.i18n[0].title);
             try {
                 await handleArticleTags({
                     variables: {
                         language,
                         details: {
-                            titles: [newTag],
+                            titles: [...currentTags, newTag],
                             articleId,
                             isSet: true
                         }

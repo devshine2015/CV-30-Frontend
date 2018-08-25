@@ -22,7 +22,6 @@ class TagsInput extends Component {
                 this.setState({ newTag: '' })
                 this.props.onChange([...this.props.value, newTag]);
             }
-            //e.target.value = ''
         }
 
         if (e.keyCode === 8 && this.props.value.length && !e.target.value.length) {

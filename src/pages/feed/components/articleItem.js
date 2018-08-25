@@ -218,6 +218,7 @@ const ArticleItem = props => {
                 tagAnchor={tagAnchor}
                 closeTagEditor={closeTagEditor}
                 articleId={id}
+                tags={tags}
             />
         </div>
     );
