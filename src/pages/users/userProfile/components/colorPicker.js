@@ -112,13 +112,20 @@ const ColorPickerHOC = compose(
     pure
 );
 
-const ColorPicker = (props) => {
+const ColorPicker = props => {
+    console.log(props);
     const { colorPickerAnchor, onClose,
         setBackgroundColor,
         activeTab, handleTabChange,
         openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-        currentProfileQuery: { profile: { id: profileId } }
+        currentProfileQuery: { loading, profile }
     } = props;
+
+    if (loading)
+        return null;
+
+    const { id: profileId } = profile;
+
     return (
         <Popover
             anchorOrigin={{

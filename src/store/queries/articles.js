@@ -8,8 +8,7 @@ const standardArticleResult = gql`
             email
             firstName
             lastName
-            hasAvatar
-            avatarContentType
+            avatarPath
             position
         }
         isPost
@@ -22,8 +21,7 @@ const standardArticleResult = gql`
         postingTeam {
             id
             name
-            hasProfileCover
-            coverContentType
+            coverPath
         }
         images {
             id

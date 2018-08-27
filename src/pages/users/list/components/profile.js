@@ -31,8 +31,8 @@ const Article = props => {
 const Profile = props => {
     const { activeTab, handleTabChange, user } = props;
 
-    let { id, firstName, lastName, email, position, hasAvatar, avatarContentType, skills, values, aboutMeArticles } = user;
-    let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : defaultUserAvatar;
+    let { id, firstName, lastName, email, position, avatarPath, skills, values, aboutMeArticles } = user;
+    let avatar = avatarPath ? `${s3BucketURL}${avatarPath}` : defaultUserAvatar;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
 
     return (

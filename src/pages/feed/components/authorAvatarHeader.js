@@ -3,19 +3,16 @@ import { Link } from 'react-router-dom';
 import { Avatar } from '@material-ui/core';
 
 import { defaultUserAvatar, defaultCompanyLogo } from '../../../constants/utils';
-import { s3BucketURL, profilesFolder, companiesFolder, teamsFolder } from '../../../constants/s3';
+import { s3BucketURL, teamsFolder } from '../../../constants/s3';
 
 const AuthorAvatarHeader = ({ article, lang }) => {
-    // const { hasAvatar, avatarContentType, id, firstName, lastName, email } = props.profile;
-    // const avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : defaultUserAvatar;
-    // const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
     let avatar, displayName, linkTo, title;
 
     const { postAs, postingCompany, postingTeam, author } = article;
 
     if (postAs === 'profile') {
-        const { hasAvatar, avatarContentType, id, firstName, lastName, email, position } = author;
-        avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : defaultUserAvatar;
+        const { id, firstName, lastName, email, position, avatarPath } = author;
+        avatar = avatarPath ? `${s3BucketURL}${avatarPath}` : defaultUserAvatar;
         displayName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
         linkTo = `/${lang}/profile/${id}`;
         title = position;
@@ -26,8 +23,8 @@ const AuthorAvatarHeader = ({ article, lang }) => {
         linkTo = `/${lang}/company/${id}`;
         title = 'Comppany';
     } else if (postAs === 'team') {
-        const { id, name, hasProfileCover, coverContentType } = postingTeam;
-        avatar = hasProfileCover ? `${s3BucketURL}/${teamsFolder}/${id}/cover.${coverContentType}` : defaultCompanyLogo;
+        const { id, name, coverPath } = postingTeam;
+        avatar = coverPath ? `${s3BucketURL}${coverPath}` : defaultCompanyLogo;
         displayName = name;
         linkTo = `/${lang}/team/${id}`;
         title = 'Team';

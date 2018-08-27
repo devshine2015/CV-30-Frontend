@@ -25,7 +25,7 @@ const ArticleShow = props => {
     const { match,
         getArticle: { loading,
             article: { id: articleId,
-                author: { id: authorId, email, firstName, lastName, position, hasAvatar, avatarContentType },
+                author: { id: authorId, email, firstName, lastName, position, avatarPath },
                 images, videos, i18n, createdAt, tags }
         },
         currentUser: { loading: currentUserLoading, auth: { currentUser } },
@@ -45,7 +45,7 @@ const ArticleShow = props => {
     if (videos && videos.length > 0) {
         video = videos[0].path;
     }
-    let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${authorId}/avatar.${avatarContentType}` : defaultUserAvatar;
+    let avatar = avatarPath ? `${s3BucketURL}${avatarPath}` : defaultUserAvatar;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
 
     let likes = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;

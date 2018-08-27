@@ -154,9 +154,7 @@ query profile($id: String, $language: LanguageCodeType!) {
       teams {
         id
         name
-        hasProfileCover
-        coverContentType
-        coverBackground
+        coverPath
       }
     }
   }

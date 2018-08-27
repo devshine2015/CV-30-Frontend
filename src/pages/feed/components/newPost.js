@@ -28,9 +28,7 @@ const NewPostHOC = compose(
             {
                 label: (profile.firstName && profile.lastName) ? `${profile.firstName} ${profile.lastName}` : profile.email,
                 id: profile.id,
-                avatar: (profile.hasAvatar) ?
-                    `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?` :
-                    defaultUserAvatar,
+                avatar: (profile.avatarPath) ? `${s3BucketURL}${profile.avatarPath}` : defaultUserAvatar,
                 type: 'profile'
             }
         ];
@@ -44,10 +42,11 @@ const NewPostHOC = compose(
                 });
                 if (company.teams && company.teams.length > 0) {
                     company.teams.forEach(team => {
+                        console.log(team);
                         options.push({
                             label: team.name,
                             id: team.id,
-                            avatar: team.hasProfileCover ? `${s3BucketURL}/${teamsFolder}/${team.id}/cover.${team.coverContentType}` : defaultCompanyLogo,
+                            avatar: team.coverPath ? `${s3BucketURL}${team.coverPath}` : defaultCompanyLogo,
                             type: 'team'
                         });
                     })
