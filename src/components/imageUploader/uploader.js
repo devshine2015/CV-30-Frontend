@@ -92,12 +92,13 @@ const ImageUploadHOC = compose(
     })
 );
 
-const ImageUpload = ({ image, onChange, handleUploadFile }) => {
+const ImageUpload = ({ image, onChange, handleUploadFile, type }) => {
     return (
         <div className='imageUpload'>
             <DropNCrop
                 onChange={onChange}
                 value={image}
+                maxFileSize={type === 'company_logo' ? 210000 : 3145728}
             />
             <Button onClick={handleUploadFile} className='uploadBtn' disabled={!image || !image.filename}>Upload</Button>
         </div>

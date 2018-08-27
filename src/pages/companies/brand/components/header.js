@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactPlayer from 'react-player';
-import { Grid, Avatar, Button, Chip, Icon, IconButton, CircularProgress } from '@material-ui/core';
+import { Grid, Avatar, Button, Chip, Icon, IconButton } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
+import { companyQuery, handleArticle, handleCompany, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { graphql } from 'react-apollo';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -14,16 +16,14 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import ArticlePopup from '../../../../components/ArticlePopup';
-import AddTeam from './addTeam';
-import { s3BucketURL, companiesFolder } from '../../../../constants/s3';
-import { companyQuery, handleArticle, handleCompany, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
-import { graphql } from 'react-apollo';
-import TeamSlider from './teamSlider';
 
-import S3Uploader from 'react-s3-uploader';
+import TeamSlider from './teamSlider';
+import AddTeam from './addTeam';
 import ColorPicker from './colorPicker';
+import ArticlePopup from '../../../../components/ArticlePopup';
+import { s3BucketURL, companiesFolder } from '../../../../constants/s3';
 import { defaultHeaderOverlay, defaultCompanyLogo } from '../../../../constants/utils';
+import ImageUploader from '../../../../components/imageUploader';
 
 const HeaderHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
@@ -50,12 +50,9 @@ const HeaderHOC = compose(
 
     }),
     withState('colorPickerAnchor', 'setColorPickerAnchor', null),
-    withState('fileType', 'setFileType', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
     withState('forceLogoRender', 'setForceLogoRender', 0),
-    withState('isUploading', 'setIsUploading', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -204,99 +201,60 @@ const HeaderHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ companyQuery: { company }, setFeedbackMessage }) => async (file, callback) => {
-            const params = {
-                fileName: `logo.${file.type.replace('image/', '')}`,
-                contentType: file.type,
-                id: company.id,
-                type: 'logo'
-            };
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error.message
-                    }
-                });
-            }
-        },
-        onUploadStart: ({ setIsUploading, setFileType }) => (file, next) => {
-            let size = file.size;
-            if (size > 500 * 1024) {
-                alert('File is too big!');
-            } else {
-                setIsUploading(true);
-                setFileType(file.type.replace('image/', ''))
-                next(file);
-            }
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
+        handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
                 variables: {
                     status: 'error',
-                    message: error.message
+                    message: error || error.message
                 }
             });
         },
-        onFinishUpload: ({ setIsUploading, handleCompany, match: { params: { lang: language, companyId } }, fileType, setForceLogoRender, setFeedbackMessage }) => async () => {
-            try {
-                await handleCompany({
-                    variables: {
-                        language,
-                        details: {
-                            id: companyId,
-                            hasLogo: true,
-                            logoContentType: fileType
-                        }
-                    },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
+        handleSuccess: ({
+            handleCompany, match: { params: { lang: language, companyId } },
+            setForceLogoRender, setFeedbackMessage }) =>
+            async ({ path, filename }) => {
+                const logoPath = path ? path : `/${companiesFolder}/${companyId}/${filename}`;
+                try {
+                    await handleCompany({
                         variables: {
                             language,
-                            id: companyId
+                            details: {
+                                id: companyId,
+                                logoPath
+                            }
+                        },
+                        refetchQueries: [{
+                            query: companyQuery,
+                            fetchPolicy: 'network-only',
+                            name: 'companyQuery',
+                            variables: {
+                                language,
+                                id: companyId
+                            }
+                        }]
+                    });
+                    await setFeedbackMessage({
+                        variables: {
+                            status: 'success',
+                            message: 'File uploaded successfully.'
                         }
-                    }]
-                });
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'success',
-                        message: 'File uploaded successfully.'
-                    }
-                });
-            }
-            catch (err) {
-                console.log(err);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: err.message
-                    }
-                });
-            }
-            setIsUploading(false);
-            setForceLogoRender(Date.now());
-        },
-        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now())
+                    });
+                }
+                catch (err) {
+                    console.log(err);
+                    await setFeedbackMessage({
+                        variables: {
+                            status: 'error',
+                            message: err.message
+                        }
+                    });
+                }
+                setForceLogoRender(Date.now());
+            },
+        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
     }),
     pure
 )
@@ -305,23 +263,25 @@ const Header = props => {
     const {
         getEditMode: { editMode: { status: editMode } },
         headline, updateHeadline, submitHeadline, match, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
-        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, industry, teams, hasLogo, logoContentType, coverPath, coverBackground } },
-        getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress, refetchBgImage,
+        companyQuery: { company: { name, featuredArticles, location, noOfEmployees, industry, teams, logoPath, coverPath, coverBackground } },
         toggleColorPicker, colorPickerAnchor, closeColorPicker,
         forceLogoRender, forceCoverRender,
-        toggleFollow, currentProfileQuery
+        toggleFollow, currentProfileQuery,
+        refetchBgImage, openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
     } = props;
+
     const { lang, companyId } = match.params;
 
     const isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile;
     let isFollowing = false;
+
     if (isFollowAllowed) {
         const { profile: { followingCompanies } } = currentProfileQuery;
         isFollowing = followingCompanies.find(co => co.id === companyId) !== undefined;
     }
 
     let avatar =
-        hasLogo ? `${s3BucketURL}/${companiesFolder}/${companyId}/logo.${logoContentType}?${forceLogoRender}` : defaultCompanyLogo;
+        logoPath ? `${s3BucketURL}${logoPath}?${forceLogoRender}` : defaultCompanyLogo;
 
     let headerStyle = null;
 
@@ -336,7 +296,6 @@ const Header = props => {
         headerStyle.background += `, url(${newCover})`;
     }
 
-
     return (
         <div className='header' style={headerStyle}>
             <Grid container className='headerLinks'>
@@ -349,37 +308,20 @@ const Header = props => {
 
                     {editMode &&
                         <React.Fragment>
-                            <label htmlFor="uploadProfileImg">
-                                <S3Uploader
-                                    id="uploadProfileImg"
-                                    name="uploadProfileImg"
-                                    className='hiddenInput'
-                                    getSignedUrl={getSignedUrl}
-                                    accept="image/*"
-                                    preprocess={onUploadStart}
-                                    onProgress={onProgress}
-                                    onError={onError}
-                                    onFinish={onFinishUpload}
-                                    uploadRequestHeaders={{
-                                        'x-amz-acl': 'public-read',
-                                    }}
-
-                                />
-                                <Button component='span' className='badgeRoot' disabled={isUploading}>
-                                    <Icon>
-                                        camera_alt
+                            <Button className='badgeRoot' onClick={openImageUpload}>
+                                <Icon>
+                                    camera_alt
                                     </Icon>
-                                </Button>
-                            </label>
-                            {isUploading &&
-                                <CircularProgress
-                                    className='avatarLoadCircle'
-                                    value={uploadProgress}
-                                    size={80}
-                                    variant='determinate'
-                                    thickness={2}
-                                />
-                            }
+                            </Button>
+
+                            <ImageUploader
+                                type='company_logo'
+                                open={imageUploadOpen}
+                                onClose={closeImageUpload}
+                                onError={handleError}
+                                onSuccess={handleSuccess}
+                                id={companyId}
+                            />
                             <ColorPicker
                                 colorPickerAnchor={colorPickerAnchor}
                                 onClose={closeColorPicker}
