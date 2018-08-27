@@ -154,8 +154,7 @@ query profile($id: String, $language: LanguageCodeType!) {
     ownedCompanies {
       id
       name
-      hasLogo
-      logoContentType
+      logoPath
       teams {
         id
         name

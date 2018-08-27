@@ -17,8 +17,7 @@ const standardArticleResult = gql`
         postingCompany {
             id
             name
-            hasLogo
-            logoContentType
+            logoPath
         }
         postingTeam {
             id

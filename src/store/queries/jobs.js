@@ -12,7 +12,8 @@ query jobs($language: LanguageCodeType!) {
         company {
             id
             name
-            location
+			location
+			logoPath
         }
         location
     }

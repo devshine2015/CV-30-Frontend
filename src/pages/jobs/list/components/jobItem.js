@@ -5,15 +5,21 @@ import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 
+import {s3BucketURL} from '../../../../constants/s3';
+
 const JobItem = props => {
-    const { match, job: { i18n, company: { name: companyName }, expireDate, videos, images, id, appliedDate, jobLevels, benefits, location } } = props;
+    const { match, job: { i18n, company: { name: companyName, logoPath }, expireDate, videos, images, id, appliedDate, jobLevels, benefits, location } } = props;
     const { title, description } = i18n[0];
 
     return (
         <div className='listItem jobListItem'>
             <div className='leftOverlay'>
                 <Link to={`/${match.params.lang}/job/${id}`}>
-                    <Avatar alt="Gabriel" src={defaultCompanyLogo} className='avatar' style={{ margin: 3, backgroundColor: '#fff' }} imgProps={{ style: { objectFit: 'contain' } }} />
+                    <Avatar 
+                    alt={companyName} 
+                    src={logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo} 
+                    className='avatar' 
+                    />
                 </Link>
                 <Link to={`/${match.params.lang}/job/${id}`} style={{ textDecoration: 'none' }}>
                     <div className='leftOverlayTexts'>

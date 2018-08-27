@@ -36,11 +36,10 @@ const NewPostHOC = compose(
         ];
         if (profile.ownedCompanies && profile.ownedCompanies.length > 0) {
             profile.ownedCompanies.forEach(company => {
-
                 options.push({
                     label: company.name,
                     id: company.id,
-                    avatar: company.hasLogo ? `${s3BucketURL}/${companiesFolder}/${company.id}/logo.${company.logoContentType}` : defaultCompanyLogo,
+                    avatar: company.logoPath ? `${s3BucketURL}${company.logoPath}` : defaultCompanyLogo,
                     type: 'company'
                 });
                 if (company.teams && company.teams.length > 0) {
