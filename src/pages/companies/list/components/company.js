@@ -19,15 +19,15 @@ const CompanyHOC = compose(
 
 const Company = props => {
     const { activeTab, handleTabChange, company, match: { params: { lang } } } = props;
-    const { id, name, industry, location, noOfEmployees, i18n, jobs, team, hasLogo, logoContentType } = company;
+    const { id, name, industry, location, noOfEmployees, i18n, jobs, team, logoPath } = company;
     let avatar =
-        hasLogo ? `${s3BucketURL}/${companiesFolder}/${id}/logo.${logoContentType}` : defaultCompanyLogo;
-    //style={{ backgroundColor: '#fff', margin: 3 }} imgProps={{ style: { objectFit: 'contain' } }}
+        logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo;
+
     return (
         <div className='listItem companyListItem'>
             <div className='leftOverlay'>
                 <Link to={`/${lang}/company/${id}`}>
-                    <Avatar alt="Gabriel" src={avatar} className='avatar' />
+                    <Avatar alt={name} src={avatar} className='avatar' />
                 </Link>
                 <Link to={`/${lang}/company/${id}`} style={{ textDecoration: 'none' }}>
                     <div className='leftOverlayTexts'>
