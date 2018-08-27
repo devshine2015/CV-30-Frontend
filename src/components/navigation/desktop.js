@@ -5,11 +5,10 @@ import { NavLink, Link } from 'react-router-dom';
 import { Manager, Target, Popper } from 'react-popper';
 import classNames from 'classnames';
 
-import { s3BucketURL, profilesFolder } from '../../constants/s3';
+import { s3BucketURL } from '../../constants/s3';
 import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
 
 const DesktopNav = props => {
-    console.log(props);
     const {
         localUserData: { loading: localUserLoading, localUser: { timestamp } },
         currentUser: { loading: currentUserLoading, auth: { currentUser } },
