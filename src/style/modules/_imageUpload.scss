@@ -78,6 +78,10 @@
                 text-transform: capitalize;
                 margin-left: auto;
                 margin-top: 10px;
+                &:disabled {
+                    pointer-events: all;
+                    cursor: not-allowed;
+                }
             }
         }
     }

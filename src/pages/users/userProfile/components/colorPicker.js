@@ -1,12 +1,13 @@
 import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
 import { updateCoverMutation, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import ImageUploader from '../../../../components/imageUploader';
+import { profilesFolder } from '../../../../constants/s3';
 
 const ColorPickerHOC = compose(
     withRouter,
@@ -22,10 +23,7 @@ const ColorPickerHOC = compose(
     graphql(updateCoverMutation, { name: 'updateCoverMutation' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('activeTab', 'setActiveTab', 'colors'),
-    withState('isUploading', 'setIsUploading', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
-    withState('fileParams', 'setFileParams', {}),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
@@ -63,46 +61,8 @@ const ColorPickerHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ currentProfileQuery: { profile }, setFileParams }) => async (file, callback) => {
-            const params = {
-                fileName: `cover.${file.type.replace('image/', '')}`,
-                contentType: file.type,
-                id: profile.id,
-                type: 'profile_cover'
-            };
 
-            setFileParams(params);
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-            }
-        },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
-            setIsUploading(true);
-            next(file);
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
+        handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
                 variables: {
@@ -111,13 +71,13 @@ const ColorPickerHOC = compose(
                 }
             });
         },
-        onFinish: ({ setFeedbackMessage, setIsUploading, updateCoverMutation, refetchBgImage, fileParams: { contentType } }) => async () => {
+        handleSuccess: ({ setFeedbackMessage, updateCoverMutation, refetchBgImage, currentProfileQuery: { profile: { id } } }) => async ({ path, filename }) => {
+            const coverPath = path ? path : `/${profilesFolder}/${id}/${filename}`;
             try {
                 await updateCoverMutation({
                     variables:
                     {
-                        status: true,
-                        contentType: contentType.replace('image/', '')
+                        path: coverPath
                     },
                     refetchQueries: [{
                         query: profileQuery,
@@ -144,9 +104,10 @@ const ColorPickerHOC = compose(
                     }
                 });
             }
-            setIsUploading(false);
             refetchBgImage();
-        }
+        },
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
     }),
     pure
 );
@@ -155,7 +116,8 @@ const ColorPicker = (props) => {
     const { colorPickerAnchor, onClose,
         setBackgroundColor,
         activeTab, handleTabChange,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinish,
+        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        currentProfileQuery: { profile: { id: profileId } }
     } = props;
     return (
         <Popover
@@ -183,27 +145,19 @@ const ColorPicker = (props) => {
                     <Tab label="Patterns" value='patterns' />
                 </Tabs>
 
-                <label htmlFor="uploadCoverPhoto">
-                    <S3Uploader
-                        id="uploadCoverPhoto"
-                        name="uploadCoverPhoto"
-                        className='hiddenInput'
-                        getSignedUrl={getSignedUrl}
-                        accept="image/*"
-                        preprocess={onUploadStart}
-                        onProgress={onProgress}
-                        onError={onError}
-                        onFinish={onFinish}
-                        uploadRequestHeaders={{
-                            'x-amz-acl': 'public-read',
-                        }}
-                    />
-                    <Button component='span' size='small' className='picUploadButton'>
-                        Upload picture
+
+                <Button size='small' className='picUploadButton' onClick={openImageUpload}>
+                    Upload picture
                     </Button>
-                </label>
 
-
+                <ImageUploader
+                    type='profile_cover'
+                    open={imageUploadOpen}
+                    onClose={closeImageUpload}
+                    onError={handleError}
+                    onSuccess={handleSuccess}
+                    id={profileId}
+                />
             </div>
             <div className='popupBody'>
                 {activeTab === 'colors' &&

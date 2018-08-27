@@ -110,11 +110,7 @@ query profile($id: String, $language: LanguageCodeType!) {
       facebook
       linkedin
     }
-    hasAvatar
-    avatarContentType
     avatarPath
-    hasProfileCover
-    profileCoverContentType
     coverPath
     coverBackground
     story {
@@ -183,16 +179,17 @@ export const updateUserSettingsMutation = gql`
 
 
 export const updateAvatar = gql`
-    mutation updateAvatar($status: Boolean!, $contentType: ImageType!){
-        avatar(status: $status, contentType: $contentType){
-           status
+    mutation updateAvatar($status: Boolean, $contentType: ImageType, $path: String) {
+        avatar(status: $status, contentType: $contentType, path: $path) {
+            status
+            error
         }
     }
 `;
 
 export const updateCoverMutation = gql`
-    mutation updateCoverMutation($status: Boolean, $color: String, $contentType: ImageType) {
-        profileCover(status: $status, contentType: $contentType) {
+    mutation updateCoverMutation($status: Boolean, $color: String, $contentType: ImageType, $path: String) {
+        profileCover(status: $status, contentType: $contentType, path: $path) {
             status
             error
         }

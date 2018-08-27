@@ -3,7 +3,6 @@ import { Grid, Avatar, Button, Icon, Hidden, Chip, CircularProgress, IconButton 
 import { compose, pure, withState, withHandlers } from "recompose";
 import { FormattedMessage } from 'react-intl';
 import { NavLink, withRouter, Link } from 'react-router-dom';
-import S3Uploader from 'react-s3-uploader';
 import { graphql } from 'react-apollo';
 import ReactPlayer from 'react-player';
 import { Redirect } from 'react-router-dom';
@@ -17,6 +16,8 @@ import { setFeedbackMessage, updateAvatar, profileQuery, updateAvatarTimestampMu
 import ArticlePopup from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
 import { defaultHeaderOverlay, defaultUserAvatar } from '../../../../constants/utils';
+import ImageUploader from '../../../../components/imageUploader';
+
 
 const HeaderHOC = compose(
     withRouter,
@@ -42,10 +43,8 @@ const HeaderHOC = compose(
     withState('nameAnchor', 'setNameAnchor', null),
     withState('skillsModalData', 'setSkillsModalData', null),
     withState('forceCoverRender', 'setForceCoverRender', 0),
-    withState('isUploading', 'setIsUploading', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
     withState('isArticlePopUpOpen', 'setIsArticlePopUpOpen', false),
-    withState('fileType', 'setFileType', null),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
         toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
             setColorPickerAnchor(event.target);
@@ -110,51 +109,9 @@ const HeaderHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ profileQuery: { profile }, setFeedbackMessage }) => async (file, callback) => {
-            const params = {
-                fileName: `avatar.${file.type.replace('image/', '')}`,
-                contentType: file.type,
-                id: profile.id,
-                type: 'avatar'
-            };
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-                callback(error);
-
-            }
-        },
-        onUploadStart: ({ setIsUploading, setFileType }) => (file, next) => {
-            let size = file.size;
-            if (size > 500 * 1024) {
-                alert('File is too big!');
-            } else {
-                setIsUploading(true);
-                setFileType(file.type.replace('image/', ''))
-                next(file);
-            }
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
                 variables: {
@@ -163,47 +120,48 @@ const HeaderHOC = compose(
                 }
             });
         },
-        onFinishUpload: (props) => async () => {
-            const { setFeedbackMessage, setIsUploading, updateAvatar, updateAvatarTimestamp, match, fileType } = props;
-            try {
-                await updateAvatar({
-                    variables: {
-                        status: true,
-                        contentType: fileType
-                    },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
+        handleSuccess: ({
+            setFeedbackMessage, updateAvatar, updateAvatarTimestamp,
+            profileQuery: { profile: { id: profileId } } }) =>
+            async ({ path, filename }) => {
+                const avatarPath = path ? path : `/${profilesFolder}/${profileId}/${filename}`;
+                try {
+                    await updateAvatar({
                         variables: {
-                            language: 'en',
-                            id: match.params.profileId
+                            path: avatarPath
+                        },
+                        refetchQueries: [{
+                            query: profileQuery,
+                            fetchPolicy: 'network-only',
+                            name: 'currentProfileQuery',
+                            variables: {
+                                language: 'en',
+                                id: profileId
+                            }
+                        }]
+                    });
+                    await updateAvatarTimestamp({
+                        variables: {
+                            timestamp: Date.now()
                         }
-                    }]
-                });
-                await updateAvatarTimestamp({
-                    variables: {
-                        timestamp: Date.now()
-                    }
-                });
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'success',
-                        message: 'Changes saved successfully.'
-                    }
-                });
-            }
-            catch (err) {
-                console.log(err);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: err.message
-                    }
-                });
-            }
-            setIsUploading(false);
-        },
+                    });
+                    await setFeedbackMessage({
+                        variables: {
+                            status: 'success',
+                            message: 'Changes saved successfully.'
+                        }
+                    });
+                }
+                catch (err) {
+                    console.log(err);
+                    await setFeedbackMessage({
+                        variables: {
+                            status: 'error',
+                            message: err.message
+                        }
+                    });
+                }
+            },
         refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
         toggleStoryEditor: ({ setIsArticlePopUpOpen }) => () => {
             setIsArticlePopUpOpen(true);
@@ -271,22 +229,21 @@ const Header = props => {
         closeColorPicker, toggleColorPicker, colorPickerAnchor,
         removeStory,
         openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
-        getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isUploading, uploadProgress,
         localUserData, refetchBgImage, forceCoverRender,
         isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor,
         toggleFollow, currentProfileQuery,
-        toggleNameEditor, closeNameEditor, nameAnchor
+        toggleNameEditor, closeNameEditor, nameAnchor,
+        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
     } = props;
 
     const {
         firstName,
-        lastName,
         email,
         position,
         featuredArticles,
         // skills,
         // values,
-        coverBackground, hasProfileCover
+        coverBackground, coverPath
     } = profile;
 
     const skills = profile.skills ? profile.skills.map(item => {
@@ -311,18 +268,18 @@ const Header = props => {
         headerStyle = { background: defaultHeaderOverlay }
     }
 
-    if (hasProfileCover) {
-        let newCover = `${s3BucketURL}/${profilesFolder}/${profile.id}/cover.${profile.profileCoverContentType}?${forceCoverRender}`;
+    if (coverPath) {
+        let newCover = `${s3BucketURL}${coverPath}?${forceCoverRender}`;
         headerStyle.background += `, url(${newCover})`;
     }
 
     let avatar =
-        (!localUserData.loading && profile.hasAvatar) ?
-            `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}`
-            : defaultUserAvatar;
+        (!localUserData.loading && profile.avatarPath) ?
+            `${s3BucketURL}${profile.avatarPath}?${localUserData.localUser.timestamp}` : defaultUserAvatar;
 
     let isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile && profileId;
     let isFollowing = false;
+
     if (isFollowAllowed) {
         const { profile: { id: currentUserId, followees } } = currentProfileQuery;
         if (currentUserId !== profileId) {
@@ -339,37 +296,20 @@ const Header = props => {
                     <Avatar alt={firstName} src={avatar} key={avatar} className='avatar' />
                     {editMode &&
                         <React.Fragment>
-                            <label htmlFor="uploadProfileImg">
-                                <S3Uploader
-                                    id="uploadProfileImg"
-                                    name="uploadProfileImg"
-                                    className='hiddenInput'
-                                    getSignedUrl={getSignedUrl}
-                                    accept="image/*"
-                                    preprocess={onUploadStart}
-                                    onProgress={onProgress}
-                                    onError={onError}
-                                    onFinish={onFinishUpload}
-                                    uploadRequestHeaders={{
-                                        'x-amz-acl': 'public-read',
-                                    }}
-
-                                />
-                                <Button component='span' className='badgeRoot' disabled={isUploading}>
-                                    <Icon>
-                                        camera_alt
+                            <Button className='badgeRoot' onClick={openImageUpload}>
+                                <Icon>
+                                    camera_alt
                                     </Icon>
-                                </Button>
-                            </label>
-                            {isUploading &&
-                                <CircularProgress
-                                    className='avatarLoadCircle'
-                                    value={uploadProgress}
-                                    size={130}
-                                    variant='determinate'
-                                    thickness={2}
-                                />
-                            }
+                            </Button>
+                            <ImageUploader
+                                type='profile_avatar'
+                                open={imageUploadOpen}
+                                onClose={closeImageUpload}
+                                onError={handleError}
+                                onSuccess={handleSuccess}
+                                id={profile.id}
+                            />
+
                             <ColorPicker
                                 colorPickerAnchor={colorPickerAnchor}
                                 onClose={closeColorPicker}

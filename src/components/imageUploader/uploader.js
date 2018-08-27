@@ -53,11 +53,10 @@ const ImageUploadHOC = compose(
             const params = {
                 fileName: image.filename,
                 contentType: image.filetype,
+                id,
                 type
             };
 
-            if (type === 'article' || type === 'company_cover' || type === 'logo')
-                params.id = id || uuid();
             if (type === 'lp_header')
                 params.fileName = `headerCover.${image.filetype.replace('image/', '')}`;
             if (type === 'lp_footer')
@@ -93,12 +92,13 @@ const ImageUploadHOC = compose(
 );
 
 const ImageUpload = ({ image, onChange, handleUploadFile, type }) => {
+    let maxFileSize = (type === 'company_logo') || (type === 'profile_avatar') ? 209715 : 3145728
     return (
         <div className='imageUpload'>
             <DropNCrop
                 onChange={onChange}
                 value={image}
-                maxFileSize={type === 'company_logo' ? 210000 : 3145728}
+                maxFileSize={maxFileSize}
             />
             <Button onClick={handleUploadFile} className='uploadBtn' disabled={!image || !image.filename}>Upload</Button>
         </div>
