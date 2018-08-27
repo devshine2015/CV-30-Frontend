@@ -88,7 +88,7 @@ const Header = props => {
     const {
         getEditMode: { editMode: { status: editMode } },
         match: { params: { lang, teamId } },
-        queryTeam: { team: { company, hasProfileCover, coverContentType, coverBackground, name } },
+        queryTeam: { team: { company, coverPath, coverBackground, name } },
         colorPickerAnchor, toggleColorPicker, closeColorPicker, refetchBgImage, forceCoverRender,
         toggleFollow, currentProfileQuery
     } = props;
@@ -108,8 +108,8 @@ const Header = props => {
         headerStyle = { background: defaultHeaderOverlay }
     }
 
-    if (hasProfileCover) {
-        let newCover = `${s3BucketURL}/${teamsFolder}/${teamId}/cover.${coverContentType}?${forceCoverRender}`;
+    if (coverPath) {
+        let newCover = `${s3BucketURL}${coverPath}?${forceCoverRender}`;
         headerStyle.background += `, url(${newCover})`;
     }
 

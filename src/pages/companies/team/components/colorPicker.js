@@ -1,19 +1,18 @@
 import React from 'react';
 import { Popover, Button, Tab, Tabs } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import S3Uploader from 'react-s3-uploader';
+import { graphql } from 'react-apollo';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
 import { handleTeam, queryTeam, setFeedbackMessage } from '../../../../store/queries';
-import { graphql } from 'react-apollo';
+import { teamsFolder } from '../../../../constants/s3';
+import ImageUploader from '../../../../components/imageUploader';
 
 const ColorPickerHOC = compose(
     graphql(handleTeam, { name: 'handleTeam' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('activeTab', 'setActiveTab', 'colors'),
-    withState('isUploading', 'setIsUploading', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('fileParams', 'setFileParams', {}),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
@@ -56,45 +55,9 @@ const ColorPickerHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ setFeedbackMessage, match: { params: { teamId } }, setFileParams }) => async (file, callback) => {
-            const params = {
-                fileName: `cover.${file.type.replace('image/', '')}`,
-                contentType: file.type,
-                id: teamId,
-                type: 'team_cover'
-            };
-            setFileParams(params);
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-            }
-        },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
-            setIsUploading(true);
-            next(file);
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: () => async error => {
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
                 variables: {
@@ -103,15 +66,18 @@ const ColorPickerHOC = compose(
                 }
             });
         },
-        onFinish: ({ setIsUploading, handleTeam, refetchBgImage, match: { params: { teamId, lang } }, company, fileParams: { contentType } }) => async () => {
+        handleSuccess: ({
+            setFeedbackMessage, handleTeam, refetchBgImage,
+            match: { params: { teamId, lang } }, company,
+        }) => async ({ path, filename }) => {
+            const coverPath = path ? path : `/${teamsFolder}/${teamId}/${filename}`;
             try {
                 await handleTeam({
                     variables:
                     {
                         teamDetails: {
                             id: teamId,
-                            hasProfileCover: true,
-                            coverContentType: contentType.replace('image/', ''),
+                            coverPath,
                             companyId: company.id
                         }
                     },
@@ -125,11 +91,22 @@ const ColorPickerHOC = compose(
                         }
                     }]
                 });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
             }
             catch (err) {
                 console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
             }
-            setIsUploading(false);
             refetchBgImage();
         }
     }),
@@ -140,7 +117,8 @@ const ColorPicker = (props) => {
     const { colorPickerAnchor, onClose,
         setBackgroundColor,
         activeTab, handleTabChange,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinish,
+        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        match: { params: { teamId } }
     } = props;
     return (
         <Popover
@@ -168,26 +146,18 @@ const ColorPicker = (props) => {
                     <Tab label="Patterns" value='patterns' />
                 </Tabs>
 
-                <label htmlFor="uploadCoverPhoto">
-                    <S3Uploader
-                        id="uploadCoverPhoto"
-                        name="uploadCoverPhoto"
-                        className='hiddenInput'
-                        getSignedUrl={getSignedUrl}
-                        accept="image/*"
-                        preprocess={onUploadStart}
-                        onProgress={onProgress}
-                        onError={onError}
-                        onFinish={onFinish}
-                        uploadRequestHeaders={{
-                            'x-amz-acl': 'public-read',
-                        }}
-                    />
-                    <Button component='span' size='small' className='picUploadButton'>
-                        Upload picture
-                    </Button>
-                </label>
 
+                <Button size='small' className='picUploadButton' onClick={openImageUpload}>
+                    Upload picture
+                    </Button>
+                <ImageUploader
+                    type='team_cover'
+                    open={imageUploadOpen}
+                    onClose={closeImageUpload}
+                    onError={handleError}
+                    onSuccess={handleSuccess}
+                    id={teamId}
+                />
 
             </div>
             <div className='popupBody'>
