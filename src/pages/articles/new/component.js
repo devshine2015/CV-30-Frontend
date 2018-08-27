@@ -53,7 +53,6 @@ const NewArticle = ({
                                 toolbarInline: true,
                                 charCounterCount: false,
                                 imageUploadRemoteUrls: false,
-                                // quickInsertTags: null,
                                 toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo'],
                                 events: {
                                     'froalaEditor.image.beforeUpload': (e, editor, images) => getSignedURL(e, editor, images),
@@ -118,7 +117,7 @@ const NewArticle = ({
                                 </Button>
                                     <ImageUploader
                                         type
-                                        articleId={id}
+                                        id={id}
                                         open={imageUploadOpen}
                                         onClose={closeImageUpload}
                                         onError={handleError}

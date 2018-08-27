@@ -121,9 +121,8 @@ const NewArticleHOC = compose(
                     body: JSON.stringify(params)
                 });
                 let responseJson = await response.json();
-
                 editor.opts.imageUploadMethod = 'PUT';
-                editor.opts.imageUploadURL = responseJson.signedURL;
+                editor.opts.imageUploadURL = responseJson.signedUrl;
                 editor.image.upload();
                 return true;
             } catch (error) {
