@@ -45,8 +45,7 @@ export const getCurrentUser = gql`
                 firstName
                 lastName
                 email
-                hasAvatar
-                avatarContentType
+                avatarPath
                 god
                  __typename
             }

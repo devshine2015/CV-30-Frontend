@@ -21,10 +21,8 @@ const MobileNav = (props) => {
         return <span>Loading...</span>
 
     let avatar =
-        (!localUserLoading && currentUser && currentUser.hasAvatar) ?
-            `${s3BucketURL}/${profilesFolder}/${currentUser.id}/avatar.${currentUser.avatarContentType}?${timestamp}` :
-            defaultUserAvatar;
-
+        (!localUserLoading && currentUser && currentUser.avatarPath) ?
+            `${s3BucketURL}${currentUser.avatarPath}?${timestamp}` : defaultUserAvatar;
 
     return (
         <React.Fragment>

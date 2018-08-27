@@ -9,6 +9,7 @@ import { s3BucketURL, profilesFolder } from '../../constants/s3';
 import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
 
 const DesktopNav = props => {
+    console.log(props);
     const {
         localUserData: { loading: localUserLoading, localUser: { timestamp } },
         currentUser: { loading: currentUserLoading, auth: { currentUser } },
@@ -20,9 +21,8 @@ const DesktopNav = props => {
         return <span>Loading...</span>
 
     let avatar =
-        (!localUserLoading && currentUser && currentUser.hasAvatar) ?
-            `${s3BucketURL}/${profilesFolder}/${currentUser.id}/avatar.${currentUser.avatarContentType}?${timestamp}` :
-            defaultUserAvatar;
+        (!localUserLoading && currentUser && currentUser.avatarPath) ?
+            `${s3BucketURL}${currentUser.avatarPath}?${timestamp}` : defaultUserAvatar;
 
     return (
         <React.Fragment>

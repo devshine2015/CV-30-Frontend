@@ -9,9 +9,8 @@ export const LoginMutation = gql`
             id
             email
             firstName
-            lastName
-            hasAvatar
-            avatarContentType
+            lastName            
+            avatarPath
             god
         }        
     }
