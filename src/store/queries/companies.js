@@ -20,9 +20,7 @@ const minimumCompanyResult = gql`
         id
         path
       }
-    }
-    hasLogo
-    logoContentType
+    }    
     logoPath
     industry {
       id 
@@ -112,9 +110,7 @@ query company($id: String!, $language: LanguageCodeType!) {
     }
     owner {
       id
-    }
-    hasCover
-    coverContentType
+    }    
     coverPath
     coverBackground
   }
