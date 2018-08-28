@@ -60,7 +60,7 @@ const UsersList = props => {
                                     className='textField'
                                 />
                                 <TextField
-                                    name='comppany'
+                                    name='company'
                                     label='Company'
                                     placeholder='Search by company...'
                                     type="search"
