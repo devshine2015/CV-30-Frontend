@@ -195,12 +195,11 @@ const ArticleItem = props => {
                         {
                             (tags && tags.length > 0) && tags.map(tag => {
                                 const { id, i18n, users } = tag;
-                                const result = users.find(user => user.id === currentUser.id);
-                                let userHasVoted = !!result;
+                                const userHasVoted = currentUser && users.findIndex(user => user.id === currentUser.id) > -1;
                                 return (
                                     <span className='tag' key={id}>
                                         {
-                                            userHasVoted ?
+                                            userHasVoted || !currentUser ?
                                                 <span className='votes'>{tag.users.length}</span>
                                                 : <IconButton className='voteBtn' onClick={() => addVote(tag)}>
                                                     <Icon>add</Icon>

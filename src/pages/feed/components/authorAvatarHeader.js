@@ -21,7 +21,7 @@ const AuthorAvatarHeader = ({ article, lang }) => {
         avatar = logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo;
         displayName = name;
         linkTo = `/${lang}/company/${id}`;
-        title = 'Comppany';
+        title = 'Company';
     } else if (postAs === 'team') {
         const { id, name, coverPath } = postingTeam;
         avatar = coverPath ? `${s3BucketURL}${coverPath}` : defaultCompanyLogo;
