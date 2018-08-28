@@ -75,12 +75,7 @@ export const getNewsFeedArticles = gql`
         $tags: [String]
     ) {
         newsFeedArticles(language: $language, peopleOrCompany: $peopleOrCompany, tags: $tags) {
-            following {
-                ...standardArticleResult
-            }
-            others {
-                ...standardArticleResult
-            }
+            ...standardArticleResult
         }
     }
     ${standardArticleResult}
@@ -98,6 +93,15 @@ export const getFeedArticles = gql`
 export const handleArticle = gql`
     mutation handleArticle($language: LanguageCodeType!, $article: ArticleInput, $options: ArticleOptions) {
         handleArticle(language: $language, article: $article, options: $options) {
+            status
+            error
+        }
+    }
+`;
+
+export const removeArticle = gql`
+    mutation removeArticle($id: String!) {
+        removeArticle(id: $id) {
             status
             error
         }

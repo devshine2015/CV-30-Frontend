@@ -1,5 +1,29 @@
 import gql from 'graphql-tag';
 
+const standardArticleData = gql`
+    fragment standardArticleData on Article {
+        id
+        images {
+            id
+            path
+        }
+        videos {
+            id
+            path
+        }
+        i18n {
+            title
+            description
+        }
+        featuredImage {
+            id
+            path
+        }
+        createdAt
+        updatedAt
+    }
+`;
+
 export const handleLandingPage = gql`
     mutation handleLandingPage($language: LanguageCodeType!, $details: LandingPageInput!) {
         handleLandingPage(language: $language, details: $details) {
@@ -23,7 +47,11 @@ export const landingPage = gql`
             i18n {
                 headline
                 footerMessage
-            }           
+            }
+            articles {
+                ...standardArticleData
+            }      
         }
     }
+    ${standardArticleData}
 `;

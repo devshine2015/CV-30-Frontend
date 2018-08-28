@@ -19,7 +19,7 @@ const NewsFeed = props => {
     if (loading || newsFeedArticlesQuery.loading)
         return <Loader />
 
-    const followingArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.following : [];
+    const newsFeedArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles : [];
     
     return (
         <div className='newsFeedRoot'>
@@ -64,7 +64,7 @@ const NewsFeed = props => {
                         </section>
                     }
                     <section className='articlesList'>
-                        <ArticlesList articles={followingArticles} />
+                        <ArticlesList articles={newsFeedArticles} />
                     </section>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
