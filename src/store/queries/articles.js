@@ -75,12 +75,7 @@ export const getNewsFeedArticles = gql`
         $tags: [String]
     ) {
         newsFeedArticles(language: $language, peopleOrCompany: $peopleOrCompany, tags: $tags) {
-            following {
-                ...standardArticleResult
-            }
-            others {
-                ...standardArticleResult
-            }
+            ...standardArticleResult
         }
     }
     ${standardArticleResult}
