@@ -1,10 +1,17 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton, Icon } from '@material-ui/core';
 import ReactPlayer from 'react-player';
+import { graphql } from 'react-apollo';
 
 import ArticlePopUp from './articlePopUp';
+import { s3BucketURL } from '../../../constants/s3';
+import { stripHtmlTags } from '../../../constants/utils';
+import { getCurrentUser, setEditMode } from '../../../store/queries';
+
 const FeaturesHOC = compose(
+    graphql(getCurrentUser, { name: 'currentUser' }),
+    graphql(setEditMode, { name: 'setEditMode' }),
     withState('articlePopUpOpen', 'setArticlePopUpOpen', false),
     withHandlers({
         toggleArticlePopUp: ({ setArticlePopUpOpen }) => () => {
@@ -13,33 +20,47 @@ const FeaturesHOC = compose(
         closeArticlePopUp: ({ setArticlePopUpOpen }) => () => {
             setArticlePopUpOpen(false);
         },
+        handleEditBtnClick: ({ history, setEditMode, match: { params: { lang } } }) => async id => {
+            await setEditMode({
+                variables: {
+                    status: true
+                }
+            });
+            return history.push(`/${lang}/article/${id}`);
+        },
     }),
     pure
 );
 
 const Features = props => {
     const {
-        stories, editMode,
+        editMode, handleEditBtnClick,
+        landingPage: { landingPage: { articles } },
+        currentUser: { loading, auth: { currentUser } },
         articlePopUpOpen, toggleArticlePopUp, closeArticlePopUp
     } = props;
+
+    const god = currentUser ? currentUser.god : false;
+
     return (
         <div className='featuresContainer'>
-            {stories && stories.map((story, index) => {
-                let { id, images, videos, i18n } = story;
+            {articles && articles.map((article, index) => {
+                let { id, images, videos, i18n } = article;
                 let image, video;
-                if (story.images && story.images.length > 0) {
-                    // image = `${s3BucketURL}${story.images[0].path}`; //used for REAL articles :)
-                    image = story.images[0].path;
-                }
-                if (story.videos && story.videos.length > 0) {
-                    video = story.videos[0].path;
-                }
+
+                if (article.images && article.images.length > 0)
+                    image = `${s3BucketURL}${images[0].path}`;
+
+                if (article.videos && article.videos.length > 0)
+                    video = videos[0].path;
+
                 return (
                     <Grid container className={index % 2 === 0 ? 'featureRow' : 'featureRow featureRowReverse'} key={id}>
+
                         <Grid item md={5} sm={12} xs={12} className='featureImageContainer'>
                             <div className='featureImage'>
                                 {image &&
-                                    <img src={image} alt={story.id} className='articleImg' />
+                                    <img src={image} alt={id} className='articleImg' />
                                 }
                                 {(video && !image) &&
                                     <ReactPlayer
@@ -62,8 +83,15 @@ const Features = props => {
                         </Grid>
 
                         <Grid item md={5} sm={11} xs={11} className='featureTexts'>
-                            <h2 className='featureHeading'>{i18n[0].title}</h2>
-                            <p className='featureText'>{i18n[0].description}</p>
+                            <h2 className='featureHeading'>
+                                {i18n[0].title}
+                                {god &&
+                                    <IconButton className='editBtn' onClick={() => handleEditBtnClick(id)}>
+                                        <Icon>edit</Icon>
+                                    </IconButton>
+                                }
+                            </h2>
+                            <p className='featureText'>{stripHtmlTags(i18n[0].description)}</p>
                         </Grid>
                     </Grid>
                 )
@@ -71,7 +99,7 @@ const Features = props => {
             {
                 editMode &&
                 <div className='addFeaturedArticle' onClick={toggleArticlePopUp}>
-                    + Add Story
+                    + Add Article
                 </div>
             }
             <ArticlePopUp open={articlePopUpOpen} onClose={closeArticlePopUp} />

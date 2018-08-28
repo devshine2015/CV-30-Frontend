@@ -88,7 +88,6 @@ const HeaderHOC = compose(
 const Header = props => {
     const {
         switchEditMode,
-        feedbackMessage, closeFeedback,
         headline, updateHeadline, submitHeadline,
         toggleColorPicker, closeColorPicker, colorPickerAnchor, refetchBgImage, forceCoverRender,
         landingPage: { loading, landingPage }

@@ -53,7 +53,7 @@ const StoriesSlider = props => {
                     }
 
                     if (image)
-                        return (<img src={image} alt={story.id} className={itemClass} key={story.id}/>)
+                        return (<img src={image} alt={story.id} className={itemClass} key={story.id} />)
 
                     if (video && !image)
                         return (<ReactPlayer
@@ -81,7 +81,7 @@ const StoriesSlider = props => {
 };
 
 export default compose(
-    withState('count', 'setCount', ({ stories }) => (stories.length - 1)),
+    withState('count', 'setCount', ({ stories }) => ((stories && stories.length > 0) ? stories.length - 1 : 0)),
     Slider,
     pure
 )(StoriesSlider);

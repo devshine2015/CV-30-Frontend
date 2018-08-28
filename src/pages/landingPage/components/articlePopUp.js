@@ -4,9 +4,18 @@ import { compose, pure, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 import uuid from 'uuidv4';
-import S3Uploader from 'react-s3-uploader';
+
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+// Require Font Awesome.
+import 'font-awesome/css/font-awesome.css';
+import FroalaEditor from 'react-froala-wysiwyg';
 
 import { handleArticle, landingPage, setFeedbackMessage } from '../../../store/queries';
+import ImageUploader from '../../../components/imageUploader';
 
 const ArticlePopUpHOC = compose(
     withRouter,
@@ -20,136 +29,109 @@ const ArticlePopUpHOC = compose(
         };
     }),
     withState('isVideoUrl', 'changeMediaType', true),
-    withState('isSaving', 'setIsSaving', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
-        handleFormChange: props => event => {
+        handleFormChange: ({ setFormData }) => event => {
             const target = event.currentTarget;
-            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const value = target.value;
             const name = target.name;
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            props.setFormData(state => ({ ...state, [name]: value }));
+            setFormData(state => ({ ...state, [name]: value }));
         },
         switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
             changeMediaType(!isVideoUrl);
         },
-        saveArticle: ({ formData, handleArticle, setIsSaving, isSaving, match, onClose, setFeedbackMessage }) => async () => {
-            // if (isSaving)
-            //     return false;
+        updateDescription: ({ setFormData }) => text => setFormData(state => ({ ...state, 'description': text })),
 
-            // setIsSaving(true);
-            console.log(formData);
-
-            // try {
-            //     await handleArticle({
-            //         variables: {
-            //             language: match.params.lang,
-            //             article,
-            //             options
-            //         },
-            //         refetchQueries: [refetchQuery]
-            //     });
-            //     onClose();
-            // await setFeedbackMessage({
-            //     variables: {
-            //         status: 'success',
-            //         message: 'Changes saved successfully.'
-            //     }
-            // });
-            // }
-            // catch (err) {
-            //     console.log(err);
-            //     setIsSaving(true);
-            // await setFeedbackMessage({
-            //     variables: {
-            //         status: 'error',
-            //         message: err.message
-            //     }
-            // });
-
-            // }
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: JSON.stringify(error, null, 2)
+                }
+            });
         },
-        getSignedUrl: ({ formData }) => async (file, callback) => {
-            const params = {
-                fileName: file.name,
-                contentType: file.type,
-                id: formData.id,
-                type: 'article'
+        handleSuccess: ({ setFormData, formData: { id } }) => async ({ path, filename }) =>
+            setFormData(state => ({
+                ...state, 'images': [{
+                    id: uuid(),
+                    title: filename,
+                    sourceType: 'article',
+                    source: id,
+                    path: path ? path : `/articles/${id}/${filename}`
+                }]
+            })),
+
+        saveArticle: ({ formData, handleArticle, match: { params: { lang: language } }, onClose, setFeedbackMessage }) => async () => {
+            const { id, title, description, videoURL, images } = formData;
+            let article = {
+                id,
+                title,
+                description,
+                postAs: 'landingPage',
+                images,
             };
 
+            if (videoURL) {
+                article.videos = [
+                    {
+                        id: uuid(),
+                        title: videoURL,
+                        sourceType: 'article',
+                        path: videoURL
+
+                    }
+                ];
+            }
+
             try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
+                await handleArticle({
+                    variables: {
+                        language,
+                        article
                     },
-                    body: JSON.stringify(params)
+                    refetchQueries: [{
+                        query: landingPage,
+                        fetchPolicy: 'network-only',
+                        name: 'landingPage',
+                        variables: {
+                            language
+                        }
+                    }]
                 });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+                onClose();
+            }
+            catch (err) {
+                console.log(err);
                 await setFeedbackMessage({
                     variables: {
                         status: 'error',
-                        message: error || error.message
+                        message: err.message
                     }
                 });
             }
         },
-        onUploadStart: ({ setIsSaving, formData, setFormData, match }) => (file, next) => {
-            let size = file.size;
-            if (size > 1024 * 1024) {
-                alert('File is too big!');
-            } else {
-                let newFormData = Object.assign({}, formData);
 
-                newFormData.images = [{
-                    id: uuid(),
-                    title: file.name,
-                    sourceType: 'article',
-                    source: formData.id,
-                    path: `/articles/${formData.id}/${file.name}`
-                }];
-                setFormData(newFormData);
-                setIsSaving(true);
-                next(file);
-            }
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
-            console.log(error);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'error',
-                    message: error || error.message
-                }
-            });
-        },
-        onFinishUpload: ({ setIsSaving, setFeedbackMessage }) => async data => {
-            setIsSaving(false);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'success',
-                    message: 'File uploaded successfully.'
-                }
-            });
-        },
     }),
     pure
 )
 
 const ArticlePopUp = ({
     open, onClose,
-    getSignedUrl, onProgress, onError, onFinishUpload, onUploadStart, isSaving, saveArticle,
-    formData: { title, description, videoURL },
-    handleFormChange, isVideoUrl, switchMediaType
+    saveArticle,
+    formData: { id, title, description, videoURL },
+    handleFormChange, isVideoUrl, switchMediaType, updateDescription,
+    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess
 }) => {
     return (
         <Modal
@@ -159,7 +141,7 @@ const ArticlePopUp = ({
             }}
             onClose={onClose}
         >
-            <div className='storyEditPaper'>
+            <div className='LP_storyEditPaper'>
                 <div className='popupBody'>
                     <div className='newArticleForm'>
                         <h4>Add article</h4>
@@ -173,20 +155,22 @@ const ArticlePopUp = ({
                                 value={title || ''}
                                 fullWidth
                             />
-                            <TextField
-                                name="description"
-                                label="Article body"
-                                placeholder="Article body..."
-                                className='textField'
-                                multiline
-                                rows={1}
-                                rowsMax={10}
-                                onChange={handleFormChange}
-                                value={description || ''}
-                                fullWidth
+
+                            <FroalaEditor
+                                config={{
+                                    placeholderText: 'Article body goes here',
+                                    iconsTemplate: 'font_awesome_5',
+                                    toolbarInline: true,
+                                    charCounterCount: false,
+                                    quickInsertTags: [''],
+                                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                }}
+                                model={description}
+                                onModelChange={updateDescription}
                             />
+                            <hr />
                             <FormGroup row className='mediaToggle'>
-                                <span className='mediaToggleLabel'>Upload visuals</span>
+                                <span className='mediaToggleLabel'>Article cover</span>
                                 <FormLabel className={!isVideoUrl ? 'active' : ''}>Photo</FormLabel>
                                 <ToggleSwitch
                                     checked={isVideoUrl}
@@ -212,32 +196,26 @@ const ArticlePopUp = ({
                                     value={videoURL || ''}
                                     fullWidth
                                 /> :
-                                <label htmlFor="uploadArticleImage">
-                                    <S3Uploader
-                                        id="uploadArticleImage"
-                                        name="uploadArticleImage"
-                                        className='hiddenInput'
-                                        getSignedUrl={getSignedUrl}
-                                        accept="image/*"
-                                        preprocess={onUploadStart}
-                                        onProgress={onProgress}
-                                        onError={onError}
-                                        onFinish={onFinishUpload}
-                                        uploadRequestHeaders={{
-                                            'x-amz-acl': 'public-read'
-                                        }}
-                                    />
-                                    <Button component='span' className='badgeRoot' disabled={isSaving}>
+                                <React.Fragment>
+                                    <Button className='badgeRoot' onClick={openImageUpload}>
                                         Upload
-                        </Button>
-                                </label>
+                                    </Button>
+                                    <ImageUploader
+                                        type='article'
+                                        open={imageUploadOpen}
+                                        onClose={closeImageUpload}
+                                        onError={handleError}
+                                        onSuccess={handleSuccess}
+                                        id={id}
+                                    />
+                                </React.Fragment>
                             }
                         </section>
                         <section className='editControls'>
-                            <IconButton className='cancelBtn' onClick={onClose} disabled={isSaving}>
+                            <IconButton className='cancelBtn' onClick={onClose}>
                                 <Icon>close</Icon>
                             </IconButton>
-                            <IconButton className='submitBtn' onClick={saveArticle} disabled={isSaving}>
+                            <IconButton className='submitBtn' onClick={saveArticle}>
                                 <Icon>done</Icon>
                             </IconButton>
                         </section>
