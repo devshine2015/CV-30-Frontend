@@ -3,7 +3,7 @@ import { compose, withState, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
-import { profileQuery, getNewsFeedArticles } from '../../store/queries';
+import { profileQuery, getNewsFeedArticles, getCurrentUser } from '../../store/queries';
 
 const NewsFeedHOC = compose(
     withRouter,
@@ -23,7 +23,7 @@ const NewsFeedHOC = compose(
     }),
     graphql(getNewsFeedArticles, {
         name: 'newsFeedArticlesQuery',
-        options: ({match, searchData: {peopleOrCompany, tags}}) => ({
+        options: ({ match, searchData: { peopleOrCompany, tags } }) => ({
             fetchPolicy: 'network-only',
             variables: {
                 language: match.params.lang,

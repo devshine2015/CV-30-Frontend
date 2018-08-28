@@ -9,3 +9,4 @@ export * from './locals';
 export * from './profile';
 export * from './shallowUser';
 export * from './image';
+export * from './ads';

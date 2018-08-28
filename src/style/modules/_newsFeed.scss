@@ -198,13 +198,33 @@
                 }
                 .promo {
                     display: flex;
+                    position: relative;
                     width: 100%;
                     height: 280px;
                     background: #8c8c8c;
                     color: #fff;
                     align-items: center;
                     justify-content: center;
-                    span {
+                    .floatingEditBtn {
+                        position: absolute;
+                        top: -18px;
+                        right: 10px;
+                        width: 35px;
+                        height: 35px;
+                        background: #397db9;
+                        color: #fff;
+                        box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+                    }
+                    .promoLink {
+                        display: flex;
+                        width: 100%;
+                        height: 100%;
+                        overflow: hidden;
+                        .promoImg {
+                            object-fit: cover;
+                        }
+                    }
+                    .noPromo {
                         font-size: 1rem;
                         color: #fff;
                         text-transform: uppercase;
@@ -316,6 +336,76 @@
                 font-size: 0.75rem;
                 color: #969696;
             }
+        }
+    }
+}
+
+.promoEditPaper {
+    background: #fff;
+    border: 1px solid #707881;
+    border-radius: 5px !important;
+    width: 465px;
+    position: relative;
+    overflow: visible !important;
+    margin-top: 20px;
+    margin-left: 50px;
+    .popupBody {
+        padding: 15px;
+        background: #fafafa;
+        border-top: 1px solid #f5f5f5;
+        border-bottom: 1px solid #f5f5f5;
+        display: flex;
+        border-radius: 5px !important;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        flex-direction: column;
+        .media {
+            display: flex;
+            max-width: 100%;
+            max-height: 280px;
+            overflow: hidden;
+            img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: fill;
+            }
+            .deleteBtn {
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                background: #fff;
+                color: red;
+                box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+                top: 5px;
+                right: 5px;
+                border: 1px solid rgba(0, 0, 0, 0.2);
+            }
+        }
+        .imgUpload {
+            position: relative;
+            margin: 10px auto 0;
+            max-width: 50%;
+            background: #397db9;
+            color: #fff;
+            box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+        }
+    }
+    .textField {
+        margin-top: 15px;
+    }
+    .popupFooter {
+        background: #fff;
+        padding: 15px;
+        position: relative;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        .footerCheck {
+            position: absolute;
+            background: #4484bd;
+            color: #fff;
+            border-radius: 50%;
+            bottom: -24px;
+            right: 20px;
         }
     }
 }

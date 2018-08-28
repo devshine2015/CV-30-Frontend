@@ -6,6 +6,7 @@ import ArticlesList from './components/articlesList';
 import { Link } from 'react-router-dom';
 import NewPost from './components/newPost';
 import NewsFeedSearch from './components/newsFeedSearch';
+import Promo from './components/promo';
 
 const NewsFeed = props => {
     const {
@@ -15,12 +16,11 @@ const NewsFeed = props => {
         setSearchData, searchData
     } = props;
 
-
     if (loading || newsFeedArticlesQuery.loading)
         return <Loader />
 
     const newsFeedArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles : [];
-    
+
     return (
         <div className='newsFeedRoot'>
             <Grid container className='mainBody brandShow'>
@@ -31,7 +31,7 @@ const NewsFeed = props => {
                             <div className='profileAction company'>
                                 <h3>
                                     Conecteaza-ti compania cu urmatorul tau angajat
-                            </h3>
+                                </h3>
                                 <p>
                                     Lorem ipsum dolor sit amet, eu his scripta perpetua. Falli movet prompta has in...
                                 </p>
@@ -70,10 +70,8 @@ const NewsFeed = props => {
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
                         <div className='fixed'>
-                            <NewsFeedSearch searchData={searchData} setSearchData={setSearchData}/>
-                            <section className='promo'>
-                                <span>Promo</span>
-                            </section>
+                            <NewsFeedSearch searchData={searchData} setSearchData={setSearchData} />
+                            <Promo />
                             <section className='links'>
                                 <p className='copyright'>Copyright © 2018 CV30. All rights reserved </p>
                                 <Link to={``}>About Us</Link>

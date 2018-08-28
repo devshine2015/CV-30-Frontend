@@ -3,3 +3,4 @@ export const articlesFolder = 'articles';
 export const profilesFolder = 'profiles';
 export const teamsFolder = 'team';
 export const companiesFolder = 'companies';
+export const adsFolder = 'promo';
