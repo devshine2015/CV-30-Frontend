@@ -81,19 +81,18 @@ const ColorPickerHOC = compose(
             setFeedbackMessage, setIsUploading,
             handleLandingPage, refetchBgImage,
             match: { params: { lang: language } }, type
-        }) => async ({ filetype }) => {
+        }) => async ({ path, filename }) => {
             let details = {};
+            let coverPath = path ? path : `/landingPage/${filename}`;
             switch (type) {
                 case 'lp_header':
                     details = {
-                        hasCover: true,
-                        coverContentType: filetype.replace('image/', '')
+                        coverPath
                     };
                     break;
                 case 'lp_footer':
                     details = {
-                        hasFooterCover: true,
-                        footerCoverContentType: filetype.replace('image/', '')
+                        footerCoverPath: coverPath
                     };
                     break;
             }

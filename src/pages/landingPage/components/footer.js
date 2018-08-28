@@ -95,7 +95,7 @@ const Footer = props => {
         match: { params: { lang } }
     } = props;
 
-    const { footerCoverBackground, footerCoverContentType, hasFooterCover } = landingPage || {};
+    const { footerCoverBackground, footerCoverPath } = landingPage || {};
 
     let footerStyle = null;
 
@@ -105,8 +105,8 @@ const Footer = props => {
         footerStyle = { background: defaultHeaderOverlay }
     }
 
-    if (hasFooterCover) {
-        let newCover = `${s3BucketURL}/landingPage/footerCover.${footerCoverContentType}?${forceCoverRender}`;
+    if (footerCoverPath) {
+        let newCover = `${s3BucketURL}${footerCoverPath}?${forceCoverRender}`;
         footerStyle.background += `, url(${newCover})`;
     }
 

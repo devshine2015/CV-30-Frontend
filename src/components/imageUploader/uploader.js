@@ -57,11 +57,6 @@ const ImageUploadHOC = compose(
                 type
             };
 
-            if (type === 'lp_header')
-                params.fileName = `headerCover.${image.filetype.replace('image/', '')}`;
-            if (type === 'lp_footer')
-                params.fileName = `footerCover.${image.filetype.replace('image/', '')}`;
-
             console.log(JSON.stringify(params, null, 2));
 
             try {

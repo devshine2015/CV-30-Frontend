@@ -101,7 +101,7 @@ const Header = props => {
     const god = currentUser ? currentUser.god : false;
     const editMode = god ? props.editMode : false;
 
-    const { coverBackground, coverContentType, hasCover } = landingPage || {};
+    const { coverBackground, coverPath } = landingPage || {};
 
     let headerStyle = null;
 
@@ -111,8 +111,8 @@ const Header = props => {
         headerStyle = { background: defaultHeaderOverlay }
     }
 
-    if (hasCover) {
-        let newCover = `${s3BucketURL}/landingPage/headerCover.${coverContentType}?${forceCoverRender}`;
+    if (coverPath) {
+        let newCover = `${s3BucketURL}${coverPath}?${forceCoverRender}`;
         headerStyle.background += `, url(${newCover})`;
     }
     return (
