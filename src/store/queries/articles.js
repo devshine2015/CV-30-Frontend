@@ -104,6 +104,15 @@ export const handleArticle = gql`
     }
 `;
 
+export const removeArticle = gql`
+    mutation removeArticle($id: String!) {
+        removeArticle(id: $id) {
+            status
+            error
+        }
+    }
+`;
+
 export const handleArticleTags = gql`
     mutation handleArticleTags($language: LanguageCodeType!, $details: ArticleTagsInput!) {
         handleArticleTags(language: $language, details: $details) {
