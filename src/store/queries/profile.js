@@ -1,5 +1,28 @@
 import gql from 'graphql-tag';
 
+const profileFollowingData = gql`
+    fragment profileFollowingData on Profile {
+        followees {
+            id
+            email
+            firstName
+            lastName
+            hasAvatar
+            avatarPath
+        }
+        followingCompanies {
+            id
+        }
+        followingJobs {
+            id
+        }
+        followingTeams {
+            id
+        }
+    }
+`;
+
+
 export const profileQuery = gql`
 query profile($id: String, $language: LanguageCodeType!) {
   profile(id: $id, language: $language) {
@@ -132,18 +155,6 @@ query profile($id: String, $language: LanguageCodeType!) {
     followers {
       id
     }
-    followees {
-      id
-    }
-    followingCompanies {
-      id
-    }
-    followingJobs {
-      id
-    }
-    followingTeams {
-      id
-    }
     appliedJobs {
       id
     }
@@ -157,8 +168,10 @@ query profile($id: String, $language: LanguageCodeType!) {
         coverPath
       }
     }
+    ...profileFollowingData
   }
 }
+${profileFollowingData}
 `;
 
 export const updateUserSettingsMutation = gql`

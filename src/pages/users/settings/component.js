@@ -3,9 +3,10 @@ import { Grid, Tabs, Tab } from '@material-ui/core';
 
 import Settings from './components/settings';
 import Jobs from './components/jobs';
+import Following from './components/following';
 // import Notifications from './components/notifications';
 // import Following from './components/following';
-import Loader from '../../../components/Loader';;
+import Loader from '../../../components/Loader';
 
 const UserSettings = props => {
     const { handleTabChange, activeTab, currentProfileQuery: { loading } } = props;
@@ -67,6 +68,7 @@ const UserSettings = props => {
                     </Tabs>
                     {activeTab === 'settings' && <Settings {...props} />}
                     {activeTab === 'jobs' && <Jobs {...props} />}
+                    {activeTab === 'following' && <Following {...props} />}
                 </Grid>
             </Grid>
         </div>
