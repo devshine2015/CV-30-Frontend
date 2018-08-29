@@ -35,11 +35,11 @@ const FeaturesHOC = compose(
 const Features = props => {
     const {
         editMode, handleEditBtnClick,
-        landingPage: { landingPage: { articles } },
+        landingPage: { landingPage },
         currentUser: { loading, auth: { currentUser } },
         articlePopUpOpen, toggleArticlePopUp, closeArticlePopUp
     } = props;
-
+    const { articles } = landingPage || {};
     const god = currentUser ? currentUser.god : false;
 
     return (
