@@ -15,17 +15,15 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
-import { handleLandingPage, landingPage, setFeedbackMessage, getCurrentUser } from '../../../store/queries';
-import Loader from '../../../components/Loader';
+import { handleLandingPage, landingPage, setFeedbackMessage } from '../../../store/queries';
 
 const HeaderHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    graphql(getCurrentUser, { name: 'currentUser' }),
 
     withState('headline', 'setHeadline', props => {
         try {
-            let { landingPage: { landingPage: { i18n } } } = props;
+            const { landingPageQuery: { landingPage: { i18n } } } = props;
             return (i18n && i18n[0] && i18n[0].headline) ? i18n[0].headline : '';
         }
         catch (err) {
@@ -87,18 +85,11 @@ const HeaderHOC = compose(
 
 const Header = props => {
     const {
-        switchEditMode,
+        switchEditMode, editMode, isEditAllowed,
         headline, updateHeadline, submitHeadline,
         toggleColorPicker, closeColorPicker, colorPickerAnchor, refetchBgImage, forceCoverRender,
-        landingPage: { loading, landingPage }
+        landingPageQuery: { landingPage },
     } = props;
-
-    if (loading || props.currentUser.loading)
-        return <Loader />;
-
-    const { auth: { currentUser } } = props.currentUser;
-    const god = currentUser ? currentUser.god : false;
-    const editMode = god ? props.editMode : false;
 
     const { coverBackground, coverPath } = landingPage || {};
 
@@ -117,7 +108,7 @@ const Header = props => {
     return (
         <div className='header' style={headerStyle}>
             {
-                god &&
+                isEditAllowed &&
                 <FormGroup row className='editToggle'>
                     <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
                     <ToggleSwitch checked={editMode} onChange={switchEditMode}

@@ -25,7 +25,7 @@ const FooterHOC = compose(
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('footerMessage', 'setFooterMessage', props => {
         try {
-            let { landingPage: { landingPage: { i18n } } } = props;
+            let { landingPageQuery: { landingPage: { i18n } } } = props;
             return (i18n && i18n[0] && i18n[0].footerMessage) ? i18n[0].footerMessage : '';
         }
         catch (err) {
@@ -91,7 +91,7 @@ const Footer = props => {
         editMode,
         footerMessage, updateFooterMessage, submitFooterMessage,
         toggleColorPicker, colorPickerAnchor, closeColorPicker, refetchBgImage, forceCoverRender,
-        landingPage: { landingPage },
+        landingPageQuery: { landingPage },
         match: { params: { lang } }
     } = props;
 

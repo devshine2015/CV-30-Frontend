@@ -5,11 +5,10 @@ import Features from './components/features';
 import Footer from './components/footer';
 import Loader from '../../components/Loader';
 
-
 const LandingPage = props => {
-    const { landingPage: { loading } } = props;
+    const { currentUserQuery, landingPageQuery } = props;
 
-    if (loading)
+    if (!currentUserQuery.auth || !landingPageQuery.landingPage)
         return <Loader />
 
     return (

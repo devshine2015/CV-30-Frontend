@@ -7,10 +7,9 @@ import { graphql } from 'react-apollo';
 import ArticlePopUp from './articlePopUp';
 import { s3BucketURL } from '../../../constants/s3';
 import { stripHtmlTags } from '../../../constants/utils';
-import { getCurrentUser, setEditMode } from '../../../store/queries';
+import { setEditMode } from '../../../store/queries';
 
 const FeaturesHOC = compose(
-    graphql(getCurrentUser, { name: 'currentUser' }),
     graphql(setEditMode, { name: 'setEditMode' }),
     withState('articlePopUpOpen', 'setArticlePopUpOpen', false),
     withHandlers({
@@ -34,13 +33,12 @@ const FeaturesHOC = compose(
 
 const Features = props => {
     const {
-        editMode, handleEditBtnClick,
-        landingPage: { landingPage },
-        currentUser: { loading, auth: { currentUser } },
-        articlePopUpOpen, toggleArticlePopUp, closeArticlePopUp
+        editMode, isEditAllowed, handleEditBtnClick,
+        articlePopUpOpen, toggleArticlePopUp, closeArticlePopUp,
+        landingPageQuery: { landingPage }
     } = props;
+
     const { articles } = landingPage || {};
-    const god = currentUser ? currentUser.god : false;
 
     return (
         <div className='featuresContainer'>
@@ -85,7 +83,7 @@ const Features = props => {
                         <Grid item md={5} sm={11} xs={11} className='featureTexts'>
                             <h2 className='featureHeading'>
                                 {i18n[0].title}
-                                {god &&
+                                {isEditAllowed &&
                                     <IconButton className='editBtn' onClick={() => handleEditBtnClick(id)}>
                                         <Icon>edit</Icon>
                                     </IconButton>
