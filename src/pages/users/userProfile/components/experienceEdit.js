@@ -8,6 +8,7 @@ import uuid from 'uuid/v4';
 import { setExperience, setProject, profileQuery, setFeedbackMessage } from '../../../../store/queries';
 import ImageUploader from '../../../../components/imageUploader';
 import LocationInput from '../../../../components/LocationInput';
+import { s3BucketURL } from '../../../../constants/s3';
 
 const ExperienceEditHOC = compose(
     withRouter,
@@ -25,25 +26,30 @@ const ExperienceEditHOC = compose(
             };
         }
 
-        const { id, company, position, location, startDate, endDate, isCurrent, i18n, videos } = job;
-        // const { description } = i18n[0];
+        const { id, company, position, location, startDate, endDate, isCurrent, i18n, videos, images } = job;
         let description = (i18n && i18n[0]) ? i18n[0].description : '';
 
         let data = {
-            id, company, position, location, startDate, endDate, isCurrent, description, video: !!videos.length ? { ...videos[0], name: 'video' } : { name: 'video', path: '' }
+            id, company, position, location, startDate, endDate, isCurrent, description, images, video: !!videos.length ? { ...videos[0], name: 'video' } : { name: 'video', path: '' }
         };
         return data;
     }),
-    withState('isVideoUrl', 'changeMediaType', true),
+    withState('isVideoUrl', 'changeMediaType', ({ job }) => {
+        if (!job)
+            return true;
+
+        let { images } = job;
+
+        if (images && images.length > 0)
+            return false;
+
+        return true;
+    }),
     withState('isSaving', 'setIsSaving', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
-        handleError: () => error => { },
-        handleSuccess: () => file => { console.log(file) },
         handleFormChange: props => event => {
             if (typeof event.name !== undefined && event.name === 'video') {
                 props.setFormData(state => ({ ...state, video: event }));
@@ -153,62 +159,10 @@ const ExperienceEditHOC = compose(
                     return false;
             }
         },
-        getSignedUrl: ({ formData, type, setFeedbackMessage }) => async (file, callback) => {
-            const params = {
-                fileName: file.name,
-                contentType: file.type,
-                id: formData.id,
-                type: type
-            };
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-                callback(error);
-            }
-        },
-        onUploadStart: ({ setIsSaving, formData, setFormData, type }) => (file, next) => {
-            let size = file.size;
-            if (size > 1024 * 1024) {
-                alert('File is too big!');
-            } else {
-                let newFormData = Object.assign({}, formData);
-
-                //add image to current formData
-                newFormData.images = [{
-                    id: uuid(),
-                    title: file.name,
-                    sourceType: type,
-                    source: formData.id, //article id
-                    path: `/${type}/${formData.id}/${file.name}`
-                }];
-                setFormData(newFormData);
-                setIsSaving(true);
-                next(file);
-            }
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setIsSaving, setFeedbackMessage }) => async  error => {
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
-            setIsSaving(false);
             await setFeedbackMessage({
                 variables: {
                     status: 'error',
@@ -216,15 +170,16 @@ const ExperienceEditHOC = compose(
                 }
             });
         },
-        onFinishUpload: ({ setIsSaving, setFeedbackMessage }) => async () => {
-            setIsSaving(false);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'success',
-                    message: 'Changes saved successfully.'
-                }
-            });
-        }
+        handleSuccess: ({ setFormData, formData: { id }, type }) => async ({ path, filename }) => {
+            let images = [{
+                id: uuid(),
+                sourceType: type,
+                source: id, //article id
+                path: path ? path : `/${type}/${id}/${filename}`
+            }];
+            setFormData(state => ({ ...state, images }));
+        },
+        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, images: null }))
     }),
     pure
 );
@@ -238,10 +193,16 @@ const ExperienceEdit = props => {
         submitForm,
         type,
         openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-        isSaving
-
+        isSaving,
+        removeImage
     } = props;
-    const { position, company, location, startDate, endDate, isCurrent, description, video } = formData;
+
+    const { id, position, company, location, startDate, endDate, isCurrent, description, video, images } = formData;
+
+    let image;
+    if (images && images.length > 0) {
+        image = `${s3BucketURL}${images[0].path}`;
+    }
 
     return (
         <form className='experienceForm' noValidate autoComplete='off'>
@@ -340,11 +301,20 @@ const ExperienceEdit = props => {
                         value={video ? video.path : ''}
                     /> :
                     <React.Fragment>
-                        <Button className='uploadBtn' onClick={openImageUpload}>
-                            Upload
-                    </Button>
+                        {image ?
+                            <div className="imagePreview">
+                                <img src={image} className='previewImg' />
+                                <IconButton className='removeBtn' onClick={removeImage}>
+                                    <Icon>cancel</Icon>
+                                </IconButton>
+                            </div> :
+                            <Button className='uploadBtn' onClick={openImageUpload}>
+                                Upload
+                            </Button>
+                        }
                         <ImageUploader
-                            type
+                            id={id}
+                            type={type}
                             open={imageUploadOpen}
                             onClose={closeImageUpload}
                             onError={handleError}

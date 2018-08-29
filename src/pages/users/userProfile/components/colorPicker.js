@@ -113,7 +113,6 @@ const ColorPickerHOC = compose(
 );
 
 const ColorPicker = props => {
-    console.log(props);
     const { colorPickerAnchor, onClose,
         setBackgroundColor,
         activeTab, handleTabChange,
