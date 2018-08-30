@@ -8,6 +8,7 @@
     background: #fff;
     display: flex;
     flex-direction: column;
+
     .popupHeader {
         border-bottom: 2px solid #ececec;
         display: flex;
@@ -15,36 +16,37 @@
         align-items: center;
         padding: 15px 15px 0;
         flex-wrap: wrap;
+
         .tabsContainer {
             width: 100%;
             min-height: auto;
             margin-top: 15px;
+
             .tabsFlexContainer {
                 align-items: baseline;
                 justify-content: space-evenly;
+
                 .tabItemRoot {
                     min-width: auto;
                     min-height: auto;
+
                     .tabItemLabelContainer {
                         padding: 15px 5px 5px;
                     }
+
                     .tabItemLabel {
                         text-transform: none;
                         font-size: 1rem;
                     }
                 }
             }
-            .tabOr {
-                font-size: 0.85rem;
-                color: #cbcbcb;
-                text-transform: uppercase;
-                margin: 0 10px;
-            }
+
             .tabIndicator {
                 background-color: #397db9;
             }
         }
     }
+
     .popupBody {
         background: #fafafa;
         border-top: 1px solid #f5f5f5;
@@ -54,30 +56,36 @@
         border-bottom-right-radius: 5px;
         flex: 1;
         overflow-y: auto;
+
         .gallery {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
             overflow: hidden;
             padding: 20px;
+
             .gridImage {
                 cursor: pointer;
                 box-sizing: border-box;
+
                 &:hover {
                     border: 3px solid #fff;
                 }
             }
         }
+
         .imageUpload {
             padding: 20px;
             display: flex;
             flex-direction: column;
+
             .uploadBtn {
                 background: #4893cc;
                 color: #fff;
                 text-transform: capitalize;
                 margin-left: auto;
                 margin-top: 10px;
+
                 &:disabled {
                     pointer-events: all;
                     cursor: not-allowed;
