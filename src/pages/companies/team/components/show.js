@@ -1,17 +1,16 @@
 import React from 'react';
-import { Grid, Avatar, IconButton, Icon } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers } from 'recompose';
 
 
-import { s3BucketURL } from '../../../../constants/s3';
 import ArticleSlider from '../../../../components/articleSlider';
 import ArticlePopUp from '../../../../components/ArticlePopup';
 import MembersPopup from './memberPopup';
 import { handleTeamMember, queryTeam, setFeedbackMessage, handleShallowUser } from '../../../../store/queries';
 import { graphql } from '../../../../../node_modules/react-apollo';
-import { defaultUserAvatar } from '../../../../constants/utils';
+import ShowMember from './showMember';
 
 const ShowHOC = compose(
     graphql(handleTeamMember, { name: 'handleTeamMemberMutation' }),
@@ -107,36 +106,6 @@ const ShowHOC = compose(
     })
 );
 
-const ShowMember = ({ profile, removeMember, editMode }) => {
-    console.log(profile);
-    const { id, avatarPath, firstName, lastName, email } = profile;
-    let avatar = avatarPath ? `${s3BucketURL}${avatarPath}` : defaultUserAvatar;
-    let initials = (firstName && lastName) ? `${firstName.charAt(0)}${lastName.charAt(0)}` : email;
-    const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
-
-    return (
-        <div className='teamMember'>
-            <Avatar src={avatar} className='avatar'>
-                {
-                    !avatarPath ?
-                        initials
-                        : null
-                }
-            </Avatar>
-            <span className='teamMemberName'>{fullName}</span>
-            <i className='fas fa-check-circle'
-            // onClick={showDetails}
-            />
-            {
-                editMode &&
-                <IconButton className='removeBtn' onClick={() => removeMember(id)}>
-                    <Icon>cancel</Icon>
-                </IconButton>
-            }
-        </div>
-    )
-}
-
 const Show = props => {
     const {
         getEditMode: { editMode: { status: editMode } },
@@ -159,6 +128,7 @@ const Show = props => {
                                 profile={profile}
                                 removeMember={removeMember}
                                 editMode={editMode}
+                                type='user'
                             />
                         )}
                         {shallowMembers && shallowMembers.map(profile =>
@@ -167,6 +137,7 @@ const Show = props => {
                                 profile={profile}
                                 removeMember={removeShallowMember}
                                 editMode={editMode}
+                                type='shallow'
                             />
                         )}
                     </div>

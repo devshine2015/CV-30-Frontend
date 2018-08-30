@@ -27,6 +27,7 @@ query team($id: String!, $language: LanguageCodeType!) {
       lastName
       email
       avatarPath
+      position
     }
     shallowMembers {
       id

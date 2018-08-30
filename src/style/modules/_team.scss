@@ -386,3 +386,41 @@
         }
     }
 }
+
+.detailsPaper {
+    min-width: 300px !important;
+    min-height: 100px !important;
+    background: #414141 !important;
+    border-radius: 5px !important;
+    padding: 20px !important;
+    box-sizing: border-box;
+
+    .title {
+        font-weight: 100;
+        color: #fff;
+        font-size: 1.5rem;
+        margin: 0 0 25px 0;
+        padding: 0;
+    }
+
+    .detailsLink {
+        background: #fff;
+        color: #277dba;
+        font-weight: 500;
+        font-size: 1.35rem;
+        padding: 10px;
+        border-radius: 5px;
+        text-decoration: none;
+
+        &:first-of-type {
+            margin-right: 10px;
+        }
+    }
+
+    .description {
+        font-weight: 100;
+        color: #fff;
+        font-size: 1rem;
+        margin: 0 0 25px 0;
+    }
+}
