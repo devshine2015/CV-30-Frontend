@@ -72,7 +72,7 @@ const PromoEditHOC = compose(
             setFormData(state => ({ ...state, image }));
         },
         removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, 'image': null })),
-        saveData: ({ formData, handleAd, setFeedbackMessage, match: { params: { lang: language } } }) => async () => {
+        saveData: ({ formData, handleAd, setFeedbackMessage, match: { params: { lang: language } }, setPromoAnchor }) => async () => {
             console.log(formData);
             try {
                 await handleAd({
@@ -95,6 +95,7 @@ const PromoEditHOC = compose(
                         message: 'Changes saved successfully.'
                     }
                 });
+                setPromoAnchor(null);
             }
             catch (err) {
                 console.log(err);
