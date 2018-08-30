@@ -44,7 +44,7 @@ const ArticlePopUp = (props) => {
                                 labelContainer: 'tabItemLabelContainer'
                             }}
                         />
-                        <span className='tabOr'> OR </span>
+                        <Tab disabled label=' OR ' />
                         <Tab
                             label="Create a new article"
                             value='new'

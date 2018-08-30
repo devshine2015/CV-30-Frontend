@@ -38,7 +38,7 @@ const ImageUploader = ({
                                 labelContainer: 'tabItemLabelContainer'
                             }}
                         />
-                        <span className='tabOr'> OR </span>
+                        <Tab disabled label=' OR ' />
                         <Tab
                             label="Upload a new picture"
                             value='upload'

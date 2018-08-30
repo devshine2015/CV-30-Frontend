@@ -42,7 +42,7 @@ const TeamMembers = (props) => {
                                 labelContainer: 'tabItemLabelContainer'
                             }}
                         />
-                        <span className='tabOr'> OR </span>
+                        <Tab disabled label=' OR ' />
                         <Tab
                             label="Create a new profile"
                             value='new'
