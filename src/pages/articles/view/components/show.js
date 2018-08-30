@@ -1,13 +1,12 @@
 import React from 'react';
-import { Grid, Avatar, Button, Icon, IconButton } from '@material-ui/core';
+import { Grid, Button, Icon, IconButton } from '@material-ui/core';
 import ReactPlayer from 'react-player';
 import { FormattedDate, FormattedMessage } from 'react-intl';
 import { DiscussionEmbed } from 'disqus-react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 
-import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { defaultUserAvatar } from '../../../../constants/utils';
-import Loader from '../../../../components/Loader';
+import { s3BucketURL } from '../../../../constants/s3';
+import AuthorAvatarHeader from '../../../../components/AvatarHeader/AuthorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../../constants/disqus';
 import AddTags from './addTags';
 
@@ -21,19 +20,17 @@ const ArticleShowHOC = compose(
 );
 
 const ArticleShow = props => {
-
-    const { match,
-        getArticle: { loading,
-            article: { id: articleId,
-                author: { id: authorId, email, firstName, lastName, position, avatarPath },
-                images, videos, i18n, createdAt, tags }
-        },
-        currentUser: { loading: currentUserLoading, auth: { currentUser } },
+    const {
+        match,
+        getArticle: { article },
+        currentUser: { auth: { currentUser } },
         openTagEditor, closeTagEditor, tagAnchor, addVote
     } = props;
 
-    if (loading || currentUserLoading)
-        return <Loader />
+    const {
+        id: articleId,
+        images, videos, i18n, createdAt, tags
+    } = article;
 
     let title = (i18n && i18n[0] && i18n[0].title) ? i18n[0].title : '';
     let articleBody = (i18n && i18n[0] && i18n[0].description) ? i18n[0].description : '';
@@ -45,8 +42,6 @@ const ArticleShow = props => {
     if (videos && videos.length > 0) {
         video = videos[0].path;
     }
-    let avatar = avatarPath ? `${s3BucketURL}${avatarPath}` : defaultUserAvatar;
-    let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
 
     let likes = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;
     const isAddTagAllowed = !!currentUser;
@@ -56,6 +51,7 @@ const ArticleShow = props => {
         identifier: articleId,
         title: title,
     };
+    const { lang } = match.params;
 
     return (
         <Grid container className='mainBody articleShow'>
@@ -90,16 +86,7 @@ const ArticleShow = props => {
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
-                    <div className='author'>
-                        <Avatar alt={firstName || lastName || email} src={avatar} className='avatar' />
-                        <div className='texts'>
-                            <h6 className='userName'>
-                                <span>{fullName}</span>
-                                <i className='fas fa-caret-down' />
-                            </h6>
-                            <p className='userTitle'>{position}</p>
-                        </div>
-                    </div>
+                    <AuthorAvatarHeader article={article} lang={lang} /> 
                     <FormattedDate value={createdAt}>
                         {(text) => (<p className='articleDate'>{text}</p>)}
                     </FormattedDate>

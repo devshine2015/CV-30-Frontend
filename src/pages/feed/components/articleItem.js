@@ -6,7 +6,7 @@ import { CommentCount } from 'disqus-react';
 import ReactPlayer from 'react-player';
 import { graphql } from 'react-apollo';
 
-import AuthorAvatarHeader from './authorAvatarHeader';
+import AuthorAvatarHeader from '../../../components/AvatarHeader/AuthorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../constants/disqus';
 import { stripHtmlTags } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
@@ -114,7 +114,9 @@ const ArticleItem = props => {
 
     return (
         <div className='listItem userListItem'>
-            <AuthorAvatarHeader article={article} lang={lang} />
+            <div className='leftOverlay'>
+                <AuthorAvatarHeader article={article} lang={lang} />
+            </div>
             <span className={canEdit ? 'articleDate editable' : 'articleDate'}>{new Date(createdAt).toLocaleDateString()}</span>
             <div className={canEdit ? 'rightOverlay editable' : 'rightOverlay'}>
                 Works at&nbsp;<span className='highlight'>CV30</span>&nbsp;-&nbsp;<span className='highlight'>Marketing team</span>

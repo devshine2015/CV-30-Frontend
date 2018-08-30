@@ -313,6 +313,61 @@
                     }
                 }
 
+                .leftOverlay {
+                    padding: 0 30px 0 2px;
+                    align-items: center;
+                    justify-content: space-between;
+                    border-radius: 35px;
+                    background: #fff;
+                    border: 1px solid #ededed;
+                    display: flex;
+
+                    .avatar {
+                        background-color: #565656;
+                        margin: 3px;
+                        width: 60px;
+                        height: 60px;
+                    }
+
+                    .leftOverlayTexts {
+                        margin-left: 15px;
+                        padding: 15px 0;
+                        .userName,
+                        .userTitle,
+                        .companyName,
+                        .expires {
+                            margin: 0;
+                            padding: 0;
+                            color: #565656;
+                        }
+                        .userName,
+                        .companyName {
+                            display: flex;
+                            align-items: flex-start;
+                            font-size: 1rem;
+                            i {
+                                cursor: pointer;
+                                margin-left: 10px;
+                            }
+                        }
+                        .userTitle,
+                        .expires {
+                            font-size: 0.75rem;
+                            font-weight: 100;
+                        }
+                        .expires {
+                            color: #a0a0a0;
+                            span {
+                                color: #414141;
+                            }
+                        }
+                    }
+                }
+
+
+
+                
+
                 .articleDate {
                     color: #b6b6b6;
                     font-size: 1rem;

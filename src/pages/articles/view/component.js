@@ -8,11 +8,11 @@ import EditToggle from '../../../components/EditToggle';
 const Article = props => {
     const {
         getEditMode: { editMode: { status: editMode } },
-        getArticle: { loading, article },
+        getArticle: { article },
         currentUser: { loading: currentUserLoading, auth: { currentUser } }
     } = props;
 
-    if (loading || currentUserLoading)
+    if (!article || currentUserLoading)
         return <Loader />
 
     const { author: { id: authorId } } = article || {};
