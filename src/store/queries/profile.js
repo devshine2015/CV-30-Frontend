@@ -12,12 +12,23 @@ const profileFollowingData = gql`
         }
         followingCompanies {
             id
-        }
-        followingJobs {
-            id
+            name
+            industry {
+                i18n {
+                    title
+                }
+            }
+            logoPath
         }
         followingTeams {
             id
+            name
+        }
+        followingJobs {
+            id
+            i18n {
+                title
+            }
         }
     }
 `;
