@@ -2,45 +2,162 @@ import React from 'react';
 import { Avatar } from '@material-ui/core';
 import { compose, pure, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
+import { handleFollow, setFeedbackMessage, profileQuery } from '../../../../store/queries';
+import { withRouter, Link } from 'react-router-dom';
 
 import { s3BucketURL } from '../../../../constants/s3';
-import { defaultUserAvatar } from '../../../../constants/utils';
+import { defaultUserAvatar, defaultCompanyLogo } from '../../../../constants/utils';
 
 const ShowUser = props => {
-    const { id, hasAvatar, avatarPath, firstName, lastName, email } = props.profile;
+    const { profile, match: { params: { lang } }, onUnfollow } = props;
+    const { id, hasAvatar, avatarPath, firstName, lastName, email } = profile;
     const avatar = avatarPath ? `${s3BucketURL}${avatarPath}` : defaultUserAvatar;
     const initials = (firstName && lastName) ? `${firstName.charAt(0)}${lastName.charAt(0)}` : email;
     const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
     return (
         <div className='followee'>
-            <Avatar alt={firstName} src={avatar} className='avatar'>
-                {
-                    !hasAvatar ?
-                        initials
-                        : null
-                }
-            </Avatar>
-            <span className='followeeName'>{fullName}</span>
-            <i className='fas fa-times-circle' onClick={() => props.onUnfollow(id)} />
+            <Link to={`/${lang}/profile/${id}`} style={{ textDecoration: 'none' }}>
+                <Avatar alt={firstName} src={avatar} className='avatar'>
+                    {
+                        !hasAvatar ?
+                            initials
+                            : null
+                    }
+                </Avatar>
+                <span className='followeeName'>{fullName}</span>
+            </Link>
+            <i className='fas fa-times-circle' onClick={() => onUnfollow(id)} />
+        </div>
+    )
+}
+
+const ShowCompany = props => {
+    const { company, match: { params: { lang } }, onUnfollow } = props;
+    const { id, name, industry, logoPath } = company || {};
+    const avatar = logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo;
+    return (
+        <div className='company'>
+            <Link to={`/${lang}/company/${id}`}>
+                <Avatar alt={name} src={avatar} className='avatar' />
+            </Link>
+            <Link to={`/${lang}/company/${id}`} style={{ textDecoration: 'none' }}>
+                <div className='leftOverlayTexts'>
+                    <h6 className='userName'>
+                        {name}
+                        <i className='fas fa-caret-down' />
+                    </h6>
+                    <p className='userTitle'>{industry && industry.i18n[0].title}</p>
+                </div>
+            </Link>
+            <i className='fas fa-times-circle' onClick={() => onUnfollow(id)} />
+        </div>
+    )
+}
+
+const ShowTeam = props => {
+    const { team, match: { params: { lang } }, onUnfollow } = props;
+    const { id, name } = team;
+    return (
+        <div className='team'>
+            <Link to={`/${lang}/team/${id}`} style={{ textDecoration: 'none' }}>
+                <div className='leftOverlayTexts'>
+                    <h6 className='userName'>
+                        {name}
+                        <i className='fas fa-caret-down' />
+                    </h6>
+                </div>
+            </Link>
+            <i className='fas fa-times-circle' onClick={() => onUnfollow(id)} />
+        </div>
+    )
+}
+
+const ShowJob = props => {
+    const { job, match: { params: { lang } }, onUnfollow } = props;
+    const { id, i18n } = job;
+    const { title } = i18n && i18n.length ? i18n[0] : {};
+    return (
+        <div className='team'>
+            <Link to={`/${lang}/job/${id}`} style={{ textDecoration: 'none' }}>
+                <div className='leftOverlayTexts'>
+                    <h6 className='userName'>
+                        {title}
+                        <i className='fas fa-caret-down' />
+                    </h6>
+                </div>
+            </Link>
+            <i className='fas fa-times-circle' onClick={() => onUnfollow(id)} />
         </div>
     )
 }
 
 const FollowingHOC = compose(
     withRouter,
-    // graphql(getJobsQuery, {
-    //     name: 'getJobsQuery',
-    //     options: props => ({
-    //         fetchPolicy: 'network-only',
-    //         variables: {
-    //             language: props.match.params.lang
-    //         },
-    //     }),
-    // }),
+    graphql(handleFollow, { name: 'handleFollowMutation' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withHandlers({
-        unfollowUserHandler: props => id => {
-            
+        unfollowHandler: ({ handleFollowMutation, match, setFeedbackMessage }) => async (id, category) => {
+            try {
+                const details = { isFollowing: false};
+                switch (category) {
+                    case 'user':
+                        details.userToFollowId = id;
+                        break;
+                    case 'company':
+                        details.companyId = id;
+                        break;
+                    case 'team':
+                        details.teamId = id;
+                        break;
+                    case 'job':
+                        details.jobId = id;
+                        break;
+                    default:
+                        throw new Error('Not supported!');
+                }
+                await handleFollowMutation({
+                    variables: {
+                        details
+                    },
+                    refetchQueries: [{
+                        query: profileQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'currentProfileQuery',
+                        variables: {
+                            language: match.params.lang
+                        }
+                    }]
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
+        }
+    }),
+    withHandlers({
+        unfollowUserHandler: ({unfollowHandler}) => id => {
+            unfollowHandler(id, 'user');
+        },
+        unfollowCompanyHandler: ({unfollowHandler}) => id => {
+            unfollowHandler(id, 'company');
+        },
+        unfollowTeamHandler: ({unfollowHandler}) => id => {
+            unfollowHandler(id, 'team');
+        },
+        unfollowJobHandler: ({unfollowHandler}) => id => {
+            unfollowHandler(id, 'job');
         }
     }),
     pure
@@ -48,26 +165,62 @@ const FollowingHOC = compose(
 
 const Following = props => {
     const {
-        currentProfileQuery: { profile: { followees, followingTeams, followingJobs, followingCompanies} },
-        unfollowUserHandler
+        currentProfileQuery: { profile: { followees, followingCompanies, followingTeams, followingJobs } },
+        unfollowUserHandler, unfollowCompanyHandler, unfollowTeamHandler, unfollowJobHandler,
+        match
     } = props;
-    console.log(followees);
+    
     return (
         <div className='following'>
             <section className='followingCompanies'>
                 <h2 className='sectionTitle'>Companies</h2>
+                {
+                    followingCompanies && followingCompanies.map(item => (
+                        <ShowCompany
+                            key={item.id}
+                            company={item}
+                            onUnfollow={unfollowCompanyHandler}
+                            match={match}
+                        />
+                    ))
+                }
             </section>
             <section className='followingTeams'>
                 <h2 className='sectionTitle'>Teams</h2>
+                {
+                    followingTeams && followingTeams.map(item => (
+                        <ShowTeam
+                            key={item.id}
+                            team={item}
+                            onUnfollow={unfollowTeamHandler}
+                            match={match}
+                        />
+                    ))
+                }
             </section>
             <section className='followingJobs'>
                 <h2 className='sectionTitle'>Jobs</h2>
+                {
+                    followingJobs && followingJobs.map(item => (
+                        <ShowJob
+                            key={item.id}
+                            job={item}
+                            onUnfollow={unfollowJobHandler}
+                            match={match}
+                        />
+                    ))
+                }
             </section>
             <section className='followees'>
                 <h2 className='sectionTitle'>People</h2>
                 {
                     followees && followees.map(item => (
-                        <ShowUser key={item.id} profile={item} onUnfollow={unfollowUserHandler}/>
+                        <ShowUser
+                            key={item.id}
+                            profile={item}
+                            onUnfollow={unfollowUserHandler}
+                            match={match}
+                        />
                     ))
                 }
             </section>
