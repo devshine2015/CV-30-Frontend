@@ -155,6 +155,36 @@
                 background: #eee;
                 padding: 20px;
             }
+
+            .uploadBtn {
+                background: #397db9;
+                color: #fff;
+                text-transform: capitalize;
+                margin: 10px 0;
+            }
+
+            .imagePreview {
+                position: relative;
+                margin-bottom: 10px;
+
+                .previewImg {
+                    padding: 5px;
+                    border: 2px dotted #565656;
+                    max-width: 150px;
+                    max-height: 150px;
+                    box-sizing: border-box;
+                }
+
+                .removeBtn {
+                    position: absolute;
+                    top: -12px;
+                    left: -12px;
+                    background: #fff;
+                    color: red;
+                    width: 25px;
+                    height: 25px;
+                }
+            }
         }
     }
 

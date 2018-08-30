@@ -3,7 +3,7 @@ import DropNCrop from '@synapsestudios/react-drop-n-crop';
 import '@synapsestudios/react-drop-n-crop/lib/react-drop-n-crop.min.css';
 import { compose, withState, withHandlers } from 'recompose';
 import { Button } from '@material-ui/core';
-import uuid from 'uuidv4';
+
 
 const uploadFile = async (image, signedUrl) => {
     let block = image.result.split(";");

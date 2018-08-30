@@ -1,13 +1,16 @@
 .teamRoot {
     background: #fbf2f5;
     margin-top: 65px;
+
     .header {
         background: linear-gradient(to bottom, rgba(95, 155, 205, 0.75), rgba(95, 155, 205, 0.75)), url('https://changingwinds.files.wordpress.com/2017/12/teams.jpg');
         min-height: 80vh;
+
         .leftHeaderLinks {
             display: flex;
             align-items: center;
             padding-top: 15px;
+
             .backButton {
                 color: #fff;
                 border: 1px solid #fff;
@@ -15,10 +18,12 @@
                 border-radius: 20px;
                 text-transform: none;
                 padding: 5px 15px;
+
                 i {
                     margin-right: 15px;
                 }
             }
+
             .teamName {
                 position: relative;
                 margin-left: 10px;
@@ -30,11 +35,13 @@
                 font-weight: 500;
             }
         }
+
         .colorPickerButton {
             background: #4893cc;
             color: #fff;
             padding: 2px 10px 2px 30px;
             margin: 25px 0 0 80px;
+
             .icon {
                 width: 50px;
                 height: 50px;
@@ -46,36 +53,44 @@
                 align-items: center;
                 justify-content: center;
             }
+
             &:hover {
                 background: #397db9;
+
                 .icon {
                     background: #397db9;
                 }
             }
         }
     }
+
     .teamShow {
         .centralColumn {
             section {
                 margin-top: 50px;
+
                 &:last-child {
                     padding-bottom: 50px;
                 }
             }
+
             .titleHeading {
                 font-size: 2rem;
                 color: #662828;
                 font-weight: 100;
                 line-height: 1.3;
+
                 b {
                     display: block;
                     font-weight: bold;
                 }
             }
+
             .teamMembersContainer {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: space-between;
+
                 .teamMember {
                     display: flex;
                     align-content: center;
@@ -86,36 +101,58 @@
                     padding: 5px;
                     justify-content: space-between;
                     margin: 0 30px 30px 0;
+                    position: relative;
+
                     .avatar {
                         width: 80px;
                         height: 80px;
                         background: #565656;
                     }
+
                     .teamMemberName {
                         color: #565656;
                         font-size: 1.125rem;
                         font-weight: 500;
                         margin: auto 10px;
                     }
+
                     i {
                         color: #277dba;
                         font-size: 2rem;
                         margin: auto 15px;
                         cursor: pointer;
                     }
+
+                    .removeBtn {
+                        width: 25px;
+                        min-width: auto;
+                        height: 25px;
+                        min-height: auto;
+                        border-radius: 50%;
+                        background: #fff;
+                        color: #ff0000;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+                    }
                 }
             }
+
             .teamLife {
+
                 // margin-bottom: 50px;
                 .sliderHeader {
                     display: flex;
                     align-items: flex-end;
                     justify-content: space-between;
                     margin-bottom: 20px;
+
                     .sliderControls {
                         display: flex;
                         align-items: center;
                         justify-content: space-evenly;
+
                         .sliderDot {
                             border-radius: 50%;
                             width: 8px;
@@ -123,6 +160,7 @@
                             background: #414141;
                             opacity: 0.3;
                             margin: 0 3px;
+
                             &.active {
                                 width: 15px;
                                 height: 15px;
@@ -131,32 +169,40 @@
                         }
                     }
                 }
+
                 .sliderContents {
                     background: #fff;
                     border: 1px solid #ecebec;
                     display: none;
+
                     &.active {
                         display: flex;
                     }
+
                     .textContents {
                         padding: 20px 15px;
                         color: #565656;
+
                         h4 {
                             font-size: 1rem;
                             font-weight: normal;
                         }
+
                         p {
                             font-size: 0.75rem;
                             font-weight: 100;
                         }
                     }
+
                     .media {
                         width: 600px;
                         height: 360px;
+
                         @media (max-width: 600px) {
                             height: auto;
                             width: auto;
                         }
+
                         img {
                             max-width: 100%;
                             max-height: 100%;
@@ -164,11 +210,13 @@
                             width: 100%;
                         }
                     }
+
                     @media (max-width: 600px) {
                         flex-direction: column;
                     }
                 }
             }
+
             .teamBackLink {
                 position: relative;
                 display: block;
@@ -180,14 +228,17 @@
                 text-align: center;
             }
         }
+
         .columnRightContent {
             border-top: 1px solid;
             border-left: 1px solid;
             border-color: #f0f0f0;
             padding: 25px 20px;
+
             @media (max-width: 960px) {
                 top: auto;
             }
+
             .columnTitle {
                 color: #397db9;
                 font-weight: 100;
@@ -195,19 +246,23 @@
                 margin: 0;
                 padding: 0;
             }
+
             .jobs {
                 display: flex;
                 flex-direction: column;
                 margin-top: 15px;
+
                 .jobItem {
                     display: flex;
                     border-bottom: 1px solid #ebebeb;
                     padding: 15px 0;
                     align-items: center;
+
                     .media {
                         display: flex;
                         position: relative;
                         flex: 1;
+
                         .mediaFake {
                             width: 250px;
                             height: 140px;
@@ -216,10 +271,12 @@
                             display: flex;
                             align-items: center;
                             justify-content: center;
+
                             i {
                                 color: #fff;
                             }
                         }
+
                         span.role {
                             background: #414141;
                             color: #fff;
@@ -229,16 +286,19 @@
                             left: 10px;
                         }
                     }
+
                     .info {
                         display: flex;
                         flex-direction: column;
                         flex: 1;
                         margin-left: 15px;
+
                         h5 {
                             font-size: 1rem;
                             color: #414141;
                             font-weight: bold;
                         }
+
                         span {
                             font-size: 1rem;
                             font-weight: normal;
@@ -247,14 +307,17 @@
                     }
                 }
             }
+
             @media (max-width: 960px) {
                 background: none;
                 margin-bottom: 5px;
+
                 .columnTitle {
                     color: #662828;
                 }
             }
         }
+
         .addItemBtn {
             position: relative;
             display: flex;
@@ -275,18 +338,22 @@
 .membersContainer {
     display: flex;
     flex-direction: column;
+
     .memberItem {
         display: flex;
         align-items: center;
         padding: 10px 20px;
         cursor: pointer;
         user-select: none;
+
         &:hover {
             background: rgba(0, 0, 0, 0.1);
         }
+
         &:active {
             background: rgba(0, 0, 0, 0.2);
         }
+
         .avatar {
             width: 80px;
             height: 80px;
@@ -294,20 +361,24 @@
             color: #fff;
             margin-right: 20px;
         }
+
         .memberInfo {
             margin-left: 15px;
             padding: 15px 0;
+
             .userName,
             .userTitle {
                 margin: 0;
                 padding: 0;
                 color: #565656;
             }
+
             .userName {
                 display: flex;
                 align-items: flex-start;
                 font-size: 1rem;
             }
+
             .userTitle {
                 font-size: 0.75rem;
                 font-weight: 100;

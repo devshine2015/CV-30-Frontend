@@ -1,16 +1,17 @@
 import React from 'react';
-import { Grid, Avatar } from '@material-ui/core';
+import { Grid, Avatar, IconButton, Icon } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers } from 'recompose';
 
 
-import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
+import { s3BucketURL } from '../../../../constants/s3';
 import ArticleSlider from '../../../../components/articleSlider';
 import ArticlePopUp from '../../../../components/ArticlePopup';
 import MembersPopup from './memberPopup';
 import { handleTeamMember, queryTeam, setFeedbackMessage, handleShallowUser } from '../../../../store/queries';
 import { graphql } from '../../../../../node_modules/react-apollo';
+import { defaultUserAvatar } from '../../../../constants/utils';
 
 const ShowHOC = compose(
     graphql(handleTeamMember, { name: 'handleTeamMemberMutation' }),
@@ -106,22 +107,32 @@ const ShowHOC = compose(
     })
 );
 
-const ShowMember = props => {
-    const { id, hasAvatar, avatarContentType, firstName, lastName, email } = props.profile;
-    let avatar = hasAvatar ? `${s3BucketURL}/${profilesFolder}/${id}/avatar.${avatarContentType}` : null;
+const ShowMember = ({ profile, removeMember, editMode }) => {
+    console.log(profile);
+    const { id, avatarPath, firstName, lastName, email } = profile;
+    let avatar = avatarPath ? `${s3BucketURL}${avatarPath}` : defaultUserAvatar;
     let initials = (firstName && lastName) ? `${firstName.charAt(0)}${lastName.charAt(0)}` : email;
     const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
+
     return (
         <div className='teamMember'>
             <Avatar src={avatar} className='avatar'>
                 {
-                    !hasAvatar ?
+                    !avatarPath ?
                         initials
                         : null
                 }
             </Avatar>
             <span className='teamMemberName'>{fullName}</span>
-            <i className='fas fa-check-circle' onClick={() => props.removeMember(id)} />
+            <i className='fas fa-check-circle'
+            // onClick={showDetails}
+            />
+            {
+                editMode &&
+                <IconButton className='removeBtn' onClick={() => removeMember(id)}>
+                    <Icon>cancel</Icon>
+                </IconButton>
+            }
         </div>
     )
 }
@@ -142,8 +153,22 @@ const Show = props => {
                 <section className='teamMembers'>
                     <h2 className='titleHeading'>Team<b>members</b></h2>
                     <div className='teamMembersContainer'>
-                        {members && members.map(profile => <ShowMember key={profile.id} profile={profile} removeMember={removeMember}/>)}
-                        {shallowMembers && shallowMembers.map(profile => <ShowMember key={profile.id} profile={profile} removeMember={removeShallowMember}/>)}
+                        {members && members.map(profile =>
+                            <ShowMember
+                                key={profile.id}
+                                profile={profile}
+                                removeMember={removeMember}
+                                editMode={editMode}
+                            />
+                        )}
+                        {shallowMembers && shallowMembers.map(profile =>
+                            <ShowMember
+                                key={profile.id}
+                                profile={profile}
+                                removeMember={removeShallowMember}
+                                editMode={editMode}
+                            />
+                        )}
                     </div>
                     {editMode &&
                         <React.Fragment>

@@ -1,22 +1,25 @@
 import React from 'react';
-import { TextField, IconButton, Icon } from '@material-ui/core';
+import { TextField, IconButton, Icon, Button } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import uuid from 'uuidv4';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { handleShallowUser, setFeedbackMessage, queryTeam } from '../../../../store/queries';
+import { profilesFolder, s3BucketURL } from '../../../../constants/s3';
+import ImageUploader from '../../../../components/imageUploader';
 
 const NewProfileHOC = compose(
     withRouter,
-    withState('formData', 'setFormData', props => {
+    graphql(handleShallowUser, { name: 'handleShallowUserMutation' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+    withState('formData', 'setFormData', () => {
         return {
             id: uuid()
         };
     }),
     withState('isSaving', 'setIsSaving', false),
-    graphql(handleShallowUser, { name: 'handleShallowUserMutation' }),
-    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.currentTarget;
@@ -67,17 +70,33 @@ const NewProfileHOC = compose(
                     }
                 });
             }
-        }
+        },
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
+            console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
+        },
+        handleSuccess: ({ setFormData, formData: { id } }) => async ({ path, filename }) =>
+            setFormData(state => ({ ...state, 'avatarPath': path ? path : `/${profilesFolder}/${id}/${filename}` })),
+        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, 'avatarPath': null })),
+
     }),
     pure
 )
 
 const NewProfile = props => {
     const {
-        formData: { firstName, lastName, email, position },
-        handleFormChange, onClose, isSaving, saveMember
+        formData: { id, firstName, lastName, email, position, description, avatarPath },
+        handleFormChange, onClose, isSaving, saveMember,
+        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess, removeImage
     } = props;
-    
+
     return (
         <div className='newMemberForm'>
             <h4>Add member</h4>
@@ -118,6 +137,36 @@ const NewProfile = props => {
                     value={position || ''}
                     fullWidth
                 />
+                <TextField
+                    name="description"
+                    label="Description"
+                    placeholder="Short description..."
+                    className='textField'
+                    onChange={handleFormChange}
+                    value={description || ''}
+                    fullWidth
+                />
+                {avatarPath ?
+                    <div className="imagePreview">
+                        <img src={`${s3BucketURL}${avatarPath}`} className='previewImg' />
+                        <IconButton className='removeBtn' onClick={removeImage}>
+                            <Icon>cancel</Icon>
+                        </IconButton>
+                    </div> :
+                    <React.Fragment>
+                        <Button className='uploadBtn' onClick={openImageUpload}>
+                            Upload picture
+                    </Button>
+                        <ImageUploader
+                            type='profile_avatar'
+                            open={imageUploadOpen}
+                            onClose={closeImageUpload}
+                            onError={handleError}
+                            onSuccess={handleSuccess}
+                            id={id}
+                        />
+                    </React.Fragment>
+                }
             </section>
             <section className='editControls'>
                 <IconButton className='cancelBtn' onClick={onClose} disabled={isSaving}>
