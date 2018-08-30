@@ -64,18 +64,9 @@ query team($id: String!, $language: LanguageCodeType!) {
 }
 `;
 
-export const addMemberToTeam = gql`
-    mutation addMemberToTeam($teamId: String!, $memberId: String!) {
-        addMemberToTeam(teamId: $teamId, memberId: $memberId) {
-            status
-            error
-        }
-    }
-`;
-
-export const removeMemberFromTeam = gql`
-    mutation removeMemberFromTeam($teamId: String!, $memberId: String!) {
-        removeMemberFromTeam(teamId: $teamId, memberId: $memberId) {
+export const handleTeamMember = gql`
+    mutation handleTeamMember($teamId: String!, $memberId: String!, $add: Boolean) {
+        handleTeamMember(teamId: $teamId, memberId: $memberId, add: $add) {
             status
             error
         }
