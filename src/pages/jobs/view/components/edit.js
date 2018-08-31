@@ -1,8 +1,8 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { TextField, Grid, Button, Select, MenuItem, FormControl, Input, Checkbox, ListItemText, IconButton, Icon, Menu, FormControlLabel } from '@material-ui/core';
-import S3Uploader from 'react-s3-uploader';
+import { TextField, Grid, Button, Select, MenuItem, FormControl, Input, Checkbox, ListItemText, IconButton, Icon, Menu, FormControlLabel, Popover } from '@material-ui/core';
 import { graphql } from 'react-apollo';
+import ReactPlayer from 'react-player';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -23,6 +23,8 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 import LocationInput from '../../../../components/LocationInput';
+import { jobsFolder, s3BucketURL } from '../../../../constants/s3';
+import ImageUploader from '../../../../components/imageUploader';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
@@ -49,7 +51,7 @@ const EditHOC = compose(
         })
     }),
     withState('formData', 'setFormData', props => {
-        const { getJobQuery: { job: { id, team, i18n, expireDate, company, activityField, skills, jobTypes, salary, location } } } = props;
+        const { getJobQuery: { job: { id, team, i18n, expireDate, company, activityField, skills, jobTypes, salary, location, imagePath, videoUrl } } } = props;
 
         let jobEdit = {
             id,
@@ -71,7 +73,9 @@ const EditHOC = compose(
             salaryRangeStart: 0,
             salaryRangeEnd: 5000,
             salaryPublic: salary ? salary.isPublic : false,
-            location
+            location,
+            imagePath,
+            videoUrl
         };
 
         return jobEdit;
@@ -80,6 +84,8 @@ const EditHOC = compose(
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('uploadError', 'setUploadError', null),
     withState('anchorEl', 'setAnchorEl', null),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('videoShareAnchor', 'setVideoShareAnchor', null),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.target;
@@ -90,72 +96,13 @@ const EditHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
-        getSignedUrl: ({ setFeedbackMessage }) => async (file, callback) => {
-            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['job', getExtension].join('.');
-
-            const params = {
-                fileName: fName,
-                contentType: file.type
-            };
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-            }
-        },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
-            let size = file.size;
-            if (size > 500 * 1024) {
-                alert('File is too big!');
-            } else {
-                setIsUploading(true);
-                next(file);
-            }
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
-            console.log(error);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'error',
-                    message: error || error.message
-                }
-            });
-        },
-        onFinishUpload: ({ setIsUploading }) => async () => {
-            setIsUploading(false);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'success',
-                    message: 'File uploaded successfully.'
-                }
-            });
-        },
         updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
         updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
 
         publishJob: ({ handleJob, formData, match, setFeedbackMessage }) => async () => {
-            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField, location } = formData;
+            const { id, companyId, teamId, title, description, expireDate, idealCandidate,
+                selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField, location,
+                imagePath, videoUrl } = formData;
             try {
                 await handleJob({
                     variables: {
@@ -164,7 +111,7 @@ const EditHOC = compose(
                             id,
                             companyId,
                             teamId,
-                            title, 
+                            title,
                             description,
                             expireDate,
                             idealCandidate,
@@ -175,7 +122,9 @@ const EditHOC = compose(
                             },
                             skills,
                             activityField,
-                            location
+                            location,
+                            imagePath: imagePath || '',
+                            videoUrl: videoUrl || ''
                         }
                     },
                     refetchQueries: [{
@@ -227,8 +176,8 @@ const EditHOC = compose(
             setFormData(contact);
         },
         handleSliderChange: ({ setFormData, formData }) => value => {
-            setFormData({ 
-                ...formData, 
+            setFormData({
+                ...formData,
                 salary: {
                     ...formData.salary,
                     amountMin: value[0],
@@ -238,6 +187,30 @@ const EditHOC = compose(
         },
         onSkillsChange: ({ setFormData, formData }) => skills => {
             setFormData({ ...formData, skills });
+        },
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
+            console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
+        },
+        handleSuccess: ({ setFormData, formData: { id } }) => ({ path, filename }) =>
+            setFormData(state => ({ ...state, imagePath: path ? path : `/${jobsFolder}/${id}/${filename}` })),
+        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, imagePath: null })),
+        removeVideo: ({ setFormData }) => () => setFormData(state => ({ ...state, videoUrl: null })),
+        openVideoShare: ({ setVideoShareAnchor }) => ev => setVideoShareAnchor(ev.target),
+        closeVideoShare: ({ setVideoShareAnchor }) => () => setVideoShareAnchor(null),
+        handleVideoKeyPress: ({ setFormData, setVideoShareAnchor }) => event => {
+            if (event.key === 'Enter') {
+                const videoUrl = event.target.value;
+                setFormData(state => ({ ...state, videoUrl }));
+                setVideoShareAnchor(null);
+            }
         }
     }),
     pure
@@ -251,12 +224,15 @@ const Edit = props => {
         return <Loader />
 
     const {
-        formData: { title, expireDate, benefits, teamId, description, idealCandidate, activityField, selectedJobTypes, skills, salary, salaryPublic, salaryRangeStart, salaryRangeEnd, location }, handleFormChange,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
+        formData: { id, title, expireDate, benefits, teamId, description, idealCandidate, activityField,
+            selectedJobTypes, skills, salary, salaryPublic, salaryRangeStart, salaryRangeEnd, location,
+            imagePath, videoUrl }, handleFormChange,
         updateDescription, updateIdealCandidate,
         anchorEl, handleClick, handleClose, addField, formData, removeTextField,
         publishJob, onSkillsChange, handleSliderChange,
-        feedbackMessage, closeFeedback
+        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        openVideoShare, closeVideoShare, videoShareAnchor, handleVideoKeyPress,
+        removeImage, removeVideo
     } = props;
 
     return (
@@ -287,28 +263,87 @@ const Edit = props => {
                             <p className='helperText'>
                                 Add/Edit images or embed video links.
                             </p>
-                            <label htmlFor="uploadJobImage">
-                                <S3Uploader
-                                    id="uploadJobImage"
-                                    name="uploadJobImage"
-                                    className='hiddenInput'
-                                    getSignedUrl={getSignedUrl}
-                                    accept="image/*"
-                                    preprocess={onUploadStart}
-                                    onProgress={onProgress}
-                                    onError={onError}
-                                    onFinish={onFinishUpload}
-                                    uploadRequestHeaders={{
-                                        'x-amz-acl': 'public-read',
-                                    }}
-                                />
-                                <Button component='span' className='mediaBtn' disabled={isUploading}>
-                                    Add image
-                                </Button>
-                            </label>
-                            <Button className='mediaBtn'>
-                                Share video
-                            </Button>
+
+                            {(imagePath || videoUrl) ?
+                                <React.Fragment>
+                                    {imagePath &&
+                                        <div className="imagePreview">
+                                            <img src={`${s3BucketURL}${imagePath}`} className='previewImg' />
+                                            <IconButton className='removeBtn' onClick={removeImage}>
+                                                <Icon>cancel</Icon>
+                                            </IconButton>
+                                        </div>
+                                    }
+                                    {(videoUrl && !imagePath) &&
+                                        <div className="imagePreview">
+                                            <ReactPlayer
+                                                url={videoUrl}
+                                                width='150px'
+                                                height='150px'
+                                                config={{
+                                                    youtube: {
+                                                        playerVars: {
+                                                            showinfo: 0,
+                                                            controls: 0,
+                                                            modestbranding: 1,
+                                                            loop: 1
+                                                        }
+                                                    }
+                                                }}
+                                                playing={false} />
+                                            <IconButton className='removeBtn' onClick={removeVideo}>
+                                                <Icon>cancel</Icon>
+                                            </IconButton>
+                                        </div>
+                                    }
+                                </React.Fragment>
+                                : <React.Fragment>
+                                    <Button className='mediaBtn' onClick={openImageUpload}>
+                                        Add image
+                                    </Button>
+
+                                    <ImageUploader
+                                        type='job'
+                                        open={imageUploadOpen}
+                                        onClose={closeImageUpload}
+                                        onError={handleError}
+                                        onSuccess={handleSuccess}
+                                        id={id}
+                                    />
+
+                                    <Button className='mediaBtn' onClick={openVideoShare}>
+                                        Share video
+                                    </Button>
+
+                                    <Popover
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'center',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'center',
+                                        }}
+                                        open={Boolean(videoShareAnchor)}
+                                        anchorEl={videoShareAnchor}
+                                        onClose={closeVideoShare}
+                                        classes={{
+                                            paper: 'promoEditPaper'
+                                        }}
+                                    >
+                                        <div className='popupBody'>
+                                            <TextField
+                                                name="videoUrl"
+                                                label="Video URL"
+                                                placeholder="Enter video link..."
+                                                className='textField'
+                                                onKeyPress={handleVideoKeyPress}
+                                                fullWidth
+                                            />
+                                        </div>
+                                    </Popover>
+                                </React.Fragment>
+                            }
                         </section>
                         <section className='jobDescription'>
                             <h2 className='sectionTitle'>Job <b>description</b></h2>
