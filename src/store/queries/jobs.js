@@ -18,6 +18,7 @@ query jobs($language: LanguageCodeType!) {
 		location
 		imagePath
 		videoUrl
+		status
     }
 }
 `;
@@ -30,6 +31,7 @@ query job($id: String!, $language: LanguageCodeType!) {
 		expireDate
 		imagePath
 		videoUrl
+		status
 		i18n {
 			title
 			description

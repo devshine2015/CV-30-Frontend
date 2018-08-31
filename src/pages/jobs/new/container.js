@@ -46,7 +46,10 @@ const NewJobHOC = compose(
             salaryPublic: false,
             skills: [],
             expireDate: new Date(),
-            location: ''
+            location: '',
+            imagePath: '',
+            videoUrl: '',
+            status: 'draft'
         };
     }),
     withState('isUploading', 'setIsUploading', false),
@@ -67,7 +70,7 @@ const NewJobHOC = compose(
         publishJob: ({ handleJob, formData, match, history, setFeedbackMessage }) => async () => {
             const { id, companyId, teamId, title, description, expireDate, idealCandidate,
                 selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField, imagePath,
-                videoUrl, location } = formData;
+                videoUrl, location, status } = formData;
 
             try {
                 await handleJob({
@@ -90,7 +93,8 @@ const NewJobHOC = compose(
                             activityField,
                             imagePath,
                             videoUrl,
-                            location
+                            location,
+                            status
                         }
                     }
                 });

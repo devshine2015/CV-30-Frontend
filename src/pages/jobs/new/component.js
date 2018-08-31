@@ -38,7 +38,7 @@ const NewJob = props => {
 
     const {
         formData: { id, title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills,
-            selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary, salaryPublic, location, imagePath, videoUrl },
+            selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary, salaryPublic, location, imagePath, videoUrl, status },
         handleFormChange, updateDescription, updateIdealCandidate, handleSliderChange, publishJob, onSkillsChange,
         anchorEl, handleClick, handleClose, addField, formData, removeTextField,
         openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
@@ -370,6 +370,22 @@ const NewJob = props => {
                                     })}
                             </div>
 
+                        </section>
+
+                        <section className='jobStatus'>
+                            <Select
+                                name='status'
+                                onChange={handleFormChange}
+                                value={status || ''}
+                                className='jobStatusSelect'
+                            >
+                                <MenuItem value="" disabled>
+                                    <em>Set status</em>
+                                </MenuItem>
+                                {
+                                    ['draft', 'active', 'archived'].map(item => <MenuItem value={item} key={item}>{item.toUpperCase()}</MenuItem>)
+                                }
+                            </Select>
                         </section>
                         <Button className='saveBtn' onClick={publishJob}>
                             Publish job

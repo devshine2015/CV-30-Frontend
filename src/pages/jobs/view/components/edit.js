@@ -51,7 +51,7 @@ const EditHOC = compose(
         })
     }),
     withState('formData', 'setFormData', props => {
-        const { getJobQuery: { job: { id, team, i18n, expireDate, company, activityField, skills, jobTypes, salary, location, imagePath, videoUrl } } } = props;
+        const { getJobQuery: { job: { id, team, i18n, expireDate, company, activityField, skills, jobTypes, salary, location, imagePath, videoUrl, status } } } = props;
 
         let jobEdit = {
             id,
@@ -75,7 +75,8 @@ const EditHOC = compose(
             salaryPublic: salary ? salary.isPublic : false,
             location,
             imagePath,
-            videoUrl
+            videoUrl,
+            status
         };
 
         return jobEdit;
@@ -102,7 +103,7 @@ const EditHOC = compose(
         publishJob: ({ handleJob, formData, match, setFeedbackMessage }) => async () => {
             const { id, companyId, teamId, title, description, expireDate, idealCandidate,
                 selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField, location,
-                imagePath, videoUrl } = formData;
+                imagePath, videoUrl, status } = formData;
             try {
                 await handleJob({
                     variables: {
@@ -124,7 +125,8 @@ const EditHOC = compose(
                             activityField,
                             location,
                             imagePath: imagePath || '',
-                            videoUrl: videoUrl || ''
+                            videoUrl: videoUrl || '',
+                            status
                         }
                     },
                     refetchQueries: [{
@@ -226,7 +228,7 @@ const Edit = props => {
     const {
         formData: { id, title, expireDate, benefits, teamId, description, idealCandidate, activityField,
             selectedJobTypes, skills, salary, salaryPublic, salaryRangeStart, salaryRangeEnd, location,
-            imagePath, videoUrl }, handleFormChange,
+            imagePath, videoUrl, status }, handleFormChange,
         updateDescription, updateIdealCandidate,
         anchorEl, handleClick, handleClose, addField, formData, removeTextField,
         publishJob, onSkillsChange, handleSliderChange,
@@ -558,6 +560,21 @@ const Edit = props => {
                                     })}
                             </div>
 
+                        </section>
+                        <section className='jobStatus'>
+                            <Select
+                                name='status'
+                                onChange={handleFormChange}
+                                value={status || ''}
+                                className='jobStatusSelect'
+                            >
+                                <MenuItem value="" disabled>
+                                    <em>Set status</em>
+                                </MenuItem>
+                                {
+                                    ['draft', 'active', 'archived'].map(item => <MenuItem value={item} key={item}>{item.toUpperCase()}</MenuItem>)
+                                }
+                            </Select>
                         </section>
                         <Button className='saveBtn' onClick={publishJob}>
                             Publish job
