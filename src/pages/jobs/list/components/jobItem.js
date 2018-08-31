@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 import {s3BucketURL} from '../../../../constants/s3';
 
 const JobItem = props => {
-    const { match, job: { i18n, company: { name: companyName, logoPath }, expireDate, videos, images, id, appliedDate, jobLevels, benefits, location } } = props;
+    const { match, company: { name: companyName, logoPath }, job: { id, i18n, expireDate, videos, images, appliedDate, jobLevels, benefits, location } } = props;
     const { title, description } = i18n[0];
 
     return (

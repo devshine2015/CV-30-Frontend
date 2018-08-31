@@ -22,14 +22,22 @@ const JobListHOC = compose(
 );
 
 const JobsList = props => {
-    const { getJobsQuery: { loading, jobs } } = props;
-    if (loading)
-        return <Loader />
+    //console.log(props);
+    const { currentCompany: { company }} = props;
+    const { jobs } = company;
+    // const { getJobsQuery: { loading, jobs } } = props;
+    // if (loading)
+    //     return <Loader />
     return (
         <div className='jobsList'>
-            {jobs.map((job, index) => (<JobItem job={job} key={job.id} />))}
+            {jobs && jobs.map(job => (
+                <JobItem
+                    key={job.id} 
+                    company={company}
+                    job={job}
+                />))}
         </div>
     );
 }
 
-export default JobListHOC(JobsList);
+export default JobsList;
