@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Avatar, CircularProgress, Chip } from '@material-ui/core';
+import { Avatar, Chip } from '@material-ui/core';
 import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
