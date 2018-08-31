@@ -2,7 +2,8 @@ import React from 'react';
 import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { Link } from 'react-router-dom';
-
+import { FormattedDate } from 'react-intl';
+import ReactPlayer from 'react-player';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -19,7 +20,7 @@ import Story from './story';
 import ArticleSlider from '../../../../components/articleSlider';
 import { companyQuery, handleCompany, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
-import { stripHtmlTags } from '../../../../constants/utils';
+import { s3BucketURL } from '../../../../constants/s3';
 
 const ShowHOC = compose(
     graphql(handleCompany, { name: 'handleCompany' }),
@@ -210,17 +211,45 @@ const Show = (props) => {
                                 return (
                                     <div className='jobItem' key={job.id}>
                                         <div className='media'>
-                                            <div className='mediaFake'>
-                                                <i className="fas fa-play fa-3x"></i>
-                                            </div>
+                                            {(job.imagePath || job.videoUrl) ?
+                                                <React.Fragment>
+                                                    {
+                                                        job.imagePath && <img src={`${s3BucketURL}${job.imagePath}`} alt={job.id} />
+                                                    }
+                                                    {(job.videoUrl && !job.imagePath) &&
+                                                        <ReactPlayer
+                                                            url={job.videoUrl}
+                                                            width='250px'
+                                                            height='140px'
+                                                            config={{
+                                                                youtube: {
+                                                                    playerVars: {
+                                                                        showinfo: 0,
+                                                                        controls: 0,
+                                                                        modestbranding: 1,
+                                                                        loop: 1
+                                                                    }
+                                                                }
+                                                            }}
+                                                            playing={false} />}
+                                                </React.Fragment> :
+                                                <div className='mediaFake'>
+                                                    <i className="fas fa-play fa-3x"></i>
+                                                </div>
+                                            }
                                             {job.level &&
                                                 <span className='role'>{job.level}</span>
                                             }
                                         </div>
                                         <div className='info'>
                                             <Link to={`/${lang}/job/${job.id}`}>
-                                                <h5>{job.i18n[0].title}</h5>
-                                                <span>{stripHtmlTags(job.i18n[0].description)}</span>
+                                                <h5 className='jobTitle'>{job.i18n[0].title}</h5>
+                                                <p className='details'>
+                                                    <FormattedDate value={job.expireDate} month='short' day='2-digit'                >
+                                                        {(text) => (<span>{text}</span>)}
+                                                    </FormattedDate>
+                                                    <span>&nbsp;-&nbsp;{job.location}</span>
+                                                </p>
                                             </Link>
                                         </div>
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedDate } from 'react-intl';
 import { compose, withState, withHandlers } from 'recompose';
+import ReactPlayer from 'react-player';
 
 
 import ArticleSlider from '../../../../components/articleSlider';
@@ -11,6 +12,7 @@ import MembersPopup from './memberPopup';
 import { handleTeamMember, queryTeam, setFeedbackMessage, handleShallowUser } from '../../../../store/queries';
 import { graphql } from '../../../../../node_modules/react-apollo';
 import ShowMember from './showMember';
+import { s3BucketURL } from '../../../../constants/s3';
 
 const ShowHOC = compose(
     graphql(handleTeamMember, { name: 'handleTeamMemberMutation' }),
@@ -188,17 +190,50 @@ const Show = props => {
                     <div className='jobs'>
                         {
                             jobs.map(job => {
+                                console.log(job);
                                 return (
                                     <div className='jobItem' key={job.id}>
                                         <div className='media'>
-                                            <div className='mediaFake'>
-                                                <i className="fas fa-play fa-3x"></i>
-                                            </div>
-                                            <span className='role'>{job.level}</span>
+                                            {(job.imagePath || job.videoUrl) ?
+                                                <React.Fragment>
+                                                    {
+                                                        job.imagePath && <img src={`${s3BucketURL}${job.imagePath}`} alt={job.id} />
+                                                    }
+                                                    {(job.videoUrl && !job.imagePath) &&
+                                                        <ReactPlayer
+                                                            url={job.videoUrl}
+                                                            width='250px'
+                                                            height='140px'
+                                                            config={{
+                                                                youtube: {
+                                                                    playerVars: {
+                                                                        showinfo: 0,
+                                                                        controls: 0,
+                                                                        modestbranding: 1,
+                                                                        loop: 1
+                                                                    }
+                                                                }
+                                                            }}
+                                                            playing={false} />}
+                                                </React.Fragment> :
+                                                <div className='mediaFake'>
+                                                    <i className="fas fa-play fa-3x"></i>
+                                                </div>
+                                            }
+                                            {job.level &&
+                                                <span className='role'>{job.level}</span>
+                                            }
                                         </div>
                                         <div className='info'>
-                                            <h5>{job.title}</h5>
-                                            <span>{job.date} - {job.location}</span>
+                                            <Link to={`/${lang}/job/${job.id}`}>
+                                                <h5 className='jobTitle'>{job.i18n[0].title}</h5>
+                                                <p className='details'>
+                                                    <FormattedDate value={job.expireDate} month='short' day='2-digit'                >
+                                                        {(text) => (<span>{text}</span>)}
+                                                    </FormattedDate>
+                                                    <span>&nbsp;-&nbsp;{job.location}</span>
+                                                </p>
+                                            </Link>
                                         </div>
 
                                     </div>

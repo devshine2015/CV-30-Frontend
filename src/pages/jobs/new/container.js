@@ -87,6 +87,7 @@ const NewJobHOC = compose(
                             skills,
                             activityField,
                             imagePath,
+                            videoUrl,
                             location
                         }
                     }

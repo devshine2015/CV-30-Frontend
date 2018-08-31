@@ -33,14 +33,15 @@ const minimumCompanyResult = gql`
 
 const companyJobData = gql`
   fragment companyJobData on Job {
-    id
-    name
+    id    
     expireDate
     location
     i18n {
       title
       description
     }
+    imagePath
+    videoUrl
   }
 `;
 

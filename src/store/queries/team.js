@@ -54,13 +54,15 @@ query team($id: String!, $language: LanguageCodeType!) {
       }
     }
     jobs {
-      id
-      name
+      id      
+      location
       expireDate
       i18n {
         title
         description
       }
+      imagePath
+      videoUrl
     }
     coverBackground
     coverPath
