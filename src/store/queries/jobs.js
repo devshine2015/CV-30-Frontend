@@ -28,6 +28,8 @@ query job($id: String!, $language: LanguageCodeType!) {
 		id
 		createdAt
 		expireDate
+		imagePath
+		videoUrl
 		i18n {
 			title
 			description

@@ -65,7 +65,9 @@ const NewJobHOC = compose(
             props.setFormData(state => ({ ...state, [name]: value }));
         },
         publishJob: ({ handleJob, formData, match, history, setFeedbackMessage }) => async () => {
-            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField, imagePath, videoUrl, location } = formData;
+            const { id, companyId, teamId, title, description, expireDate, idealCandidate,
+                selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField, imagePath,
+                videoUrl, location } = formData;
 
             try {
                 await handleJob({
@@ -110,7 +112,6 @@ const NewJobHOC = compose(
                 });
             }
         },
-
         handleClick: ({ setAnchorEl }) => event => setAnchorEl(event.currentTarget),
         handleClose: ({ setAnchorEl }) => () => setAnchorEl(null),
         addField: ({ setAnchorEl, formData, setFormData }) => (fieldId) => {

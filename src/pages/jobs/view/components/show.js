@@ -4,11 +4,13 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { FormattedDate } from 'react-intl';
 import { FacebookShareButton, GooglePlusShareButton, TwitterShareButton, LinkedinShareButton } from 'react-share';
+import ReactPlayer from 'react-player';
 
 import ArticleSlider from '../../../../components/articleSlider';
 import Loader from '../../../../components/Loader';
 import { handleApplyToJob, getJobQuery, profileQuery } from '../../../../store/queries';
 import { formatCurrency } from '../../../../constants/utils';
+import { s3BucketURL } from '../../../../constants/s3';
 
 const ShowHOC = compose(
 
@@ -83,12 +85,14 @@ const Show = props => {
         //TODO
         return <div>Job not found...</div>;
     } else {
+        console.log(job);
         const { expanded, expandPanel, setApplyToJob } = props;
-        const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles, jobs }, expireDate, createdAt, activityField, salary, skills, jobTypes/*, videos, images*/ } = job;
+        const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles, jobs },
+            expireDate, createdAt, activityField, salary, skills, jobTypes, videoUrl, imagePath } = job;
         // TODO: appliedDate, jobLevel, benefits from props
         // const appliedDate = new Date(2018, Math.random() * 7, Math.random()*31).toLocaleDateString();
         // const jobLevels = ['entry', 'mid', 'senior'];
-        
+
         const benefits = [
             {
                 icon: 'fas fa-car',
@@ -137,6 +141,29 @@ const Show = props => {
                 </div>
                 <Grid container className='mainBody jobShow'>
                     <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
+                        <section className='media'>
+                            {imagePath &&
+                                <img src={`${s3BucketURL}${imagePath}`} alt={title} className='jobImage' />
+                            }
+                            {(videoUrl && !imagePath) &&
+                                <ReactPlayer
+                                    url={videoUrl}
+                                    width='100%'
+                                    height='100%'
+                                    config={{
+                                        youtube: {
+                                            playerVars: {
+                                                showinfo: 0,
+                                                controls: 0,
+                                                modestbranding: 1,
+                                                loop: 1
+                                            }
+                                        }
+                                    }}
+                                    playing={false} />
+                            }
+
+                        </section>
                         <section className='jobDescription'>
                             <h2 className='sectionTitle'>Job <b>description</b></h2>
                             <p className='detailedDescription' dangerouslySetInnerHTML={{ __html: description }} />
@@ -158,10 +185,10 @@ const Show = props => {
                         </section>
 
                         {activityField &&
-                        <section className='activityType'>
-                            <h2 className='sectionTitle'>Activity <b>field</b></h2>
-                            <p className='detailedDescription'>{activityField.i18n[0].title}</p>
-                        </section>
+                            <section className='activityType'>
+                                <h2 className='sectionTitle'>Activity <b>field</b></h2>
+                                <p className='detailedDescription'>{activityField.i18n[0].title}</p>
+                            </section>
                         }
                         <section className='skills'>
                             <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
