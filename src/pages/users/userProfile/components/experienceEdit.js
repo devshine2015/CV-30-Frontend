@@ -15,7 +15,7 @@ const ExperienceEditHOC = compose(
     graphql(setExperience, { name: 'setExperience' }),
     graphql(setProject, { name: 'setProject' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', ({ job }) => {
+    withState('formData', 'setFormData', ({ job, type }) => {
         if (!job) {
             return {
                 id: uuid(),
@@ -30,7 +30,10 @@ const ExperienceEditHOC = compose(
         let description = (i18n && i18n[0]) ? i18n[0].description : '';
 
         let data = {
-            id, company, position, location, startDate, endDate, isCurrent, description, images, video: !!videos.length ? { ...videos[0], name: 'video' } : { name: 'video', path: '' }
+            id, company, position, location, startDate, endDate,
+            isCurrent, description,
+            video: !!videos.length ? { ...videos[0], name: 'video' } : { name: 'video', path: '' },
+            image: !!images.length ? { id: images[0].id, path: images[0].path, sourceType: type } : null
         };
         return data;
     }),
@@ -68,8 +71,8 @@ const ExperienceEditHOC = compose(
             changeMediaType(!isVideoUrl);
         },
         submitForm: ({ formData, setExperience, setProject, type, match, closeEditor, setFeedbackMessage }) => async () => {
-            let { id, title, description, position, company, startDate, endDate, isCurrent, images, video, location } = formData;
-            const videos = [];
+            let { id, title, description, position, company, startDate, endDate, isCurrent, image, video, location } = formData;
+            const videos = [], images = [];
             if (video.path && !!video.path.length) {
                 videos.push({
                     id: video.id ? video.id : uuid(),
@@ -78,7 +81,22 @@ const ExperienceEditHOC = compose(
                     sourceType: type
                 });
             }
-            let data = { id, location, title, description, position, company, startDate, endDate, isCurrent, videos, images };
+            if (image && image.path) {
+                images.push({
+                    id: image.id || uuid(),
+                    source: id,
+                    path: image.path,
+                    sourceType: type
+                });
+            }
+            let data = {
+                id, location, title, description, position, company,
+                startDate,
+                isCurrent, videos, images
+            };
+
+            if (!isCurrent)
+                data.endDate = endDate;
 
             switch (type) {
                 case 'experience':
@@ -158,6 +176,7 @@ const ExperienceEditHOC = compose(
                 default:
                     return false;
             }
+            closeEditor();
         },
         openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
         closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
@@ -171,15 +190,15 @@ const ExperienceEditHOC = compose(
             });
         },
         handleSuccess: ({ setFormData, formData: { id }, type }) => async ({ path, filename }) => {
-            let images = [{
+            let image = {
                 id: uuid(),
                 sourceType: type,
                 source: id, //article id
                 path: path ? path : `/${type}/${id}/${filename}`
-            }];
-            setFormData(state => ({ ...state, images }));
+            };
+            setFormData(state => ({ ...state, image }));
         },
-        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, images: null }))
+        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, image: null }))
     }),
     pure
 );
@@ -197,12 +216,7 @@ const ExperienceEdit = props => {
         removeImage
     } = props;
 
-    const { id, position, company, location, startDate, endDate, isCurrent, description, video, images } = formData;
-
-    let image;
-    if (images && images.length > 0) {
-        image = `${s3BucketURL}${images[0].path}`;
-    }
+    const { id, position, company, location, startDate, endDate, isCurrent, description, video, image } = formData;
 
     return (
         <form className='experienceForm' noValidate autoComplete='off'>
@@ -303,7 +317,7 @@ const ExperienceEdit = props => {
                     <React.Fragment>
                         {image ?
                             <div className="imagePreview">
-                                <img src={image} className='previewImg' />
+                                <img src={`${s3BucketURL}${image.path}`} className='previewImg' />
                                 <IconButton className='removeBtn' onClick={removeImage}>
                                     <Icon>cancel</Icon>
                                 </IconButton>
