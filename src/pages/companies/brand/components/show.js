@@ -18,12 +18,13 @@ import AddNewStory from './addStory';
 import QuestionEdit from './questionEdit';
 import Story from './story';
 import ArticleSlider from '../../../../components/articleSlider';
-import { companyQuery, handleCompany, setFeedbackMessage } from '../../../../store/queries';
+import { companyQuery, handleCompany, handleFAQ, setFeedbackMessage } from '../../../../store/queries';
 import { graphql } from 'react-apollo';
 import { s3BucketURL } from '../../../../constants/s3';
 
 const ShowHOC = compose(
     graphql(handleCompany, { name: 'handleCompany' }),
+    graphql(handleFAQ, { name: 'handleFAQ' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('expanded', 'updateExpanded', null),
     withState('edited', 'updateEdited', null),
@@ -94,6 +95,47 @@ const ShowHOC = compose(
         addQA: ({ addNewQA }) => () => {
             addNewQA(true);
         },
+        deleteQA: props => async (e, id) => {
+            e.stopPropagation();
+            const { handleFAQ, setFeedbackMessage, match } = props;
+            try {
+                await handleFAQ({
+                    variables: {
+                        language: match.params.lang,
+                        faq: {
+                            id,
+                            companyId: match.params.companyId,
+                            remove: true
+                        }
+                    },
+
+                    refetchQueries: [{
+                        query: companyQuery,
+                        fetchPolicy: 'network-only',
+                        name: 'companyQuery',
+                        variables: {
+                            language: match.params.lang,
+                            id: match.params.companyId
+                        }
+                    }]
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
+        },
         closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
     }),
     pure
@@ -106,7 +148,8 @@ const Show = (props) => {
         companyQuery: { company: { name, faqs, officeArticles, storiesArticles, jobs } },
         edited, editPanel, addQA, newQA,
         match: { params: { lang, companyId } },
-        description, updateDescription, submitDescription
+        description, updateDescription, submitDescription,
+        deleteQA
     } = props;
 
     return (
@@ -180,6 +223,11 @@ const Show = (props) => {
                                                     <Icon>edit</Icon>
                                                 </IconButton>
                                             }
+                                            {editMode &&
+                                                <IconButton onClick={(e) => deleteQA(e, item.id)} className='editBtn'>
+                                                    <Icon>delete</Icon>
+                                                </IconButton>
+                                            }
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
                                             {item.i18n[0].answer}
@@ -187,7 +235,7 @@ const Show = (props) => {
                                     </ExpansionPanel>
                                 )
                             else
-                                return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} />
+                            return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} />
                         })
                     }
                     {
