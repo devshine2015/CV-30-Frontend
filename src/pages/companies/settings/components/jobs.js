@@ -11,7 +11,10 @@ const JobsList = props => {
                 <JobItem
                     key={job.id} 
                     company={company}
-                    job={job}
+                    job={{
+                        ...job,
+                        company
+                    }}
                 />))}
         </div>
     );
