@@ -5,6 +5,7 @@ import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
 
 import { teamsQuery, handleJob, setFeedbackMessage, jobTypesQuery } from '../../../store/queries';
+import { jobsFolder } from '../../../constants/s3';
 
 const NewJobHOC = compose(
     withRouter,
@@ -51,6 +52,8 @@ const NewJobHOC = compose(
     withState('isUploading', 'setIsUploading', false),
     withState('uploadProgress', 'setUploadProgress', 0),
     withState('anchorEl', 'setAnchorEl', null),
+    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('videoShareAnchor', 'setVideoShareAnchor', null),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.target;
@@ -61,69 +64,8 @@ const NewJobHOC = compose(
             }
             props.setFormData(state => ({ ...state, [name]: value }));
         },
-        getSignedUrl: ({ setFeedbackMessage }) => async (file, callback) => {
-            let getExtension = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
-            let fName = ['job', getExtension].join('.');
-
-            const params = {
-                fileName: fName,
-                contentType: file.type
-            };
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-            }
-        },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
-            let size = file.size;
-            if (size > 500 * 1024) {
-                alert('File is too big!');
-            } else {
-                setIsUploading(true);
-                next(file);
-            }
-        },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
-            console.log(error);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'error',
-                    message: error || error.message
-                }
-            });
-        },
-        onFinishUpload: ({ setIsUploading, setFeedbackMessage }) => async () => {
-            setIsUploading(false);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'success',
-                    message: 'File uploaded successfully.'
-                }
-            });
-        },
         publishJob: ({ handleJob, formData, match, history, setFeedbackMessage }) => async () => {
-            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField } = formData;
+            const { id, companyId, teamId, title, description, expireDate, idealCandidate, selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField, imagePath, videoUrl, location } = formData;
 
             try {
                 await handleJob({
@@ -133,7 +75,7 @@ const NewJobHOC = compose(
                             id,
                             companyId,
                             teamId,
-                            title, 
+                            title,
                             description,
                             expireDate,
                             idealCandidate,
@@ -143,7 +85,9 @@ const NewJobHOC = compose(
                                 isPublic: salaryPublic
                             },
                             skills,
-                            activityField
+                            activityField,
+                            imagePath,
+                            location
                         }
                     }
                 });
@@ -166,13 +110,8 @@ const NewJobHOC = compose(
             }
         },
 
-        handleClick: ({ setAnchorEl }) => event => {
-            setAnchorEl(event.currentTarget);
-        },
-
-        handleClose: ({ setAnchorEl }) => () => {
-            setAnchorEl(null);
-        },
+        handleClick: ({ setAnchorEl }) => event => setAnchorEl(event.currentTarget),
+        handleClose: ({ setAnchorEl }) => () => setAnchorEl(null),
         addField: ({ setAnchorEl, formData, setFormData }) => (fieldId) => {
             let contact = Object.assign({}, formData);
             if (!contact[fieldId]) {
@@ -188,18 +127,39 @@ const NewJobHOC = compose(
         },
         updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
         updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
-        handleSliderChange: ({ setFormData, formData }) => value => {
-            setFormData({ 
-                ...formData, 
+        handleSliderChange: ({ setFormData, formData }) => value =>
+            setFormData({
+                ...formData,
                 salary: {
                     ...formData.salary,
                     amountMin: value[0],
                     amountMax: value[1]
                 }
+            }),
+        onSkillsChange: ({ setFormData, formData }) => skills => setFormData({ ...formData, skills }),
+        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
+        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleError: ({ setFeedbackMessage }) => async error => {
+            console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
             });
         },
-        onSkillsChange: ({ setFormData, formData }) => skills => {
-            setFormData({ ...formData, skills });
+        handleSuccess: ({ setFormData, formData: { id } }) => ({ path, filename }) =>
+            setFormData(state => ({ ...state, imagePath: path ? path : `/${jobsFolder}/${id}/${filename}` })),
+        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, imagePath: null })),
+        removeVideo: ({ setFormData }) => () => setFormData(state => ({ ...state, videoUrl: null })),
+        openVideoShare: ({ setVideoShareAnchor }) => ev => setVideoShareAnchor(ev.target),
+        closeVideoShare: ({ setVideoShareAnchor }) => () => setVideoShareAnchor(null),
+        handleVideoKeyPress: ({ setFormData, setVideoShareAnchor }) => event => {
+            if (event.key === 'Enter') {
+                const videoUrl = event.target.value;
+                setFormData(state => ({ ...state, videoUrl }));
+                setVideoShareAnchor(null);
+            }
         }
     }),
     pure

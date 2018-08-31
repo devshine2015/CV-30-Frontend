@@ -15,7 +15,9 @@ query jobs($language: LanguageCodeType!) {
 			location
 			logoPath
         }
-        location
+		location
+		imagePath
+		videoUrl
     }
 }
 `;

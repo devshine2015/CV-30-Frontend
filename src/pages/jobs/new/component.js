@@ -1,6 +1,6 @@
 import React from 'react';
-import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon, FormControl, Input, Checkbox, ListItemText, FormControlLabel } from '@material-ui/core';
-import S3Uploader from 'react-s3-uploader';
+import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon, FormControl, Input, Checkbox, ListItemText, FormControlLabel, Popover } from '@material-ui/core';
+import ReactPlayer from 'react-player';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -21,6 +21,8 @@ import TagsInput from '../../../components/TagsInput';
 import { formatCurrency } from '../../../constants/utils';
 
 import LocationInput from '../../../components/LocationInput';
+import ImageUploader from '../../../components/imageUploader';
+import { s3BucketURL } from '../../../constants/s3';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
@@ -35,10 +37,13 @@ const NewJob = props => {
         return <Loader />
 
     const {
-        formData: { title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills, selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary, salaryPublic, location },
+        formData: { id, title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills,
+            selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary, salaryPublic, location, imagePath, videoUrl },
         handleFormChange, updateDescription, updateIdealCandidate, handleSliderChange, publishJob, onSkillsChange,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading,
-        anchorEl, handleClick, handleClose, addField, formData, removeTextField
+        anchorEl, handleClick, handleClose, addField, formData, removeTextField,
+        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        openVideoShare, closeVideoShare, videoShareAnchor, handleVideoKeyPress,
+        removeImage, removeVideo
     } = props;
 
     return (
@@ -69,28 +74,87 @@ const NewJob = props => {
                             <p className='helperText'>
                                 Add/Edit images or embed video links.
                             </p>
-                            <label htmlFor="uploadJobImage">
-                                <S3Uploader
-                                    id="uploadJobImage"
-                                    name="uploadJobImage"
-                                    className='hiddenInput'
-                                    getSignedUrl={getSignedUrl}
-                                    accept="image/*"
-                                    preprocess={onUploadStart}
-                                    onProgress={onProgress}
-                                    onError={onError}
-                                    onFinish={onFinishUpload}
-                                    uploadRequestHeaders={{
-                                        'x-amz-acl': 'public-read',
-                                    }}
-                                />
-                                <Button component='span' className='mediaBtn' disabled={isUploading}>
-                                    Add image
-                                </Button>
-                            </label>
-                            <Button className='mediaBtn'>
-                                Share video
-                            </Button>
+
+                            {(imagePath || videoUrl) ?
+                                <React.Fragment>
+                                    {imagePath &&
+                                        <div className="imagePreview">
+                                            <img src={`${s3BucketURL}${imagePath}`} className='previewImg' />
+                                            <IconButton className='removeBtn' onClick={removeImage}>
+                                                <Icon>cancel</Icon>
+                                            </IconButton>
+                                        </div>
+                                    }
+                                    {(videoUrl && !imagePath) &&
+                                        <div className="imagePreview">
+                                            <ReactPlayer
+                                                url={videoUrl}
+                                                width='150px'
+                                                height='150px'
+                                                config={{
+                                                    youtube: {
+                                                        playerVars: {
+                                                            showinfo: 0,
+                                                            controls: 0,
+                                                            modestbranding: 1,
+                                                            loop: 1
+                                                        }
+                                                    }
+                                                }}
+                                                playing={false} />
+                                            <IconButton className='removeBtn' onClick={removeVideo}>
+                                                <Icon>cancel</Icon>
+                                            </IconButton>
+                                        </div>
+                                    }
+                                </React.Fragment>
+                                : <React.Fragment>
+                                    <Button className='mediaBtn' onClick={openImageUpload}>
+                                        Add image
+                                    </Button>
+
+                                    <ImageUploader
+                                        type='job'
+                                        open={imageUploadOpen}
+                                        onClose={closeImageUpload}
+                                        onError={handleError}
+                                        onSuccess={handleSuccess}
+                                        id={id}
+                                    />
+
+                                    <Button className='mediaBtn' onClick={openVideoShare}>
+                                        Share video
+                                    </Button>
+
+                                    <Popover
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'center',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'center',
+                                        }}
+                                        open={Boolean(videoShareAnchor)}
+                                        anchorEl={videoShareAnchor}
+                                        onClose={closeVideoShare}
+                                        classes={{
+                                            paper: 'promoEditPaper'
+                                        }}
+                                    >
+                                        <div className='popupBody'>
+                                            <TextField
+                                                name="videoUrl"
+                                                label="Video URL"
+                                                placeholder="Enter video link..."
+                                                className='textField'
+                                                onKeyPress={handleVideoKeyPress}
+                                                fullWidth
+                                            />
+                                        </div>
+                                    </Popover>
+                                </React.Fragment>
+                            }
                         </section>
                         <section className='jobDescription'>
                             <h2 className='sectionTitle'>Job <b>description</b></h2>
