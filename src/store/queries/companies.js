@@ -31,6 +31,19 @@ const minimumCompanyResult = gql`
   }
 `;
 
+const companyJobData = gql`
+  fragment companyJobData on Job {
+    id
+    name
+    expireDate
+    location
+    i18n {
+      title
+      description
+    }
+  }
+`;
+
 export const companyQuery = gql`
 query company($id: String!, $language: LanguageCodeType!) {
   company(id: $id, language: $language) {
@@ -93,13 +106,7 @@ query company($id: String!, $language: LanguageCodeType!) {
       }
     }
     jobs {
-      id
-      name
-      expireDate
-      i18n {
-        title
-        description
-      }
+      ...companyJobData
     }
     teams {
       id
@@ -116,6 +123,7 @@ query company($id: String!, $language: LanguageCodeType!) {
   }
 }
 ${minimumCompanyResult}
+${companyJobData}
 `;
 
 export const companiesQuery = gql`

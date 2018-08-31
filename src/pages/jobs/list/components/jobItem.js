@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Avatar, CircularProgress, Chip } from '@material-ui/core';
+import { Avatar, Chip } from '@material-ui/core';
 import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 import {s3BucketURL} from '../../../../constants/s3';
 
 const JobItem = props => {
-    const { match, job: { i18n, company: { name: companyName, logoPath }, expireDate, videos, images, id, appliedDate, jobLevels, benefits, location } } = props;
+    const { match, job: { id, i18n, expireDate, videos, images, appliedDate, jobLevels, benefits, location, company: { name: companyName, logoPath } } } = props;
     const { title, description } = i18n[0];
 
     return (
