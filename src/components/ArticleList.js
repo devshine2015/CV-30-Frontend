@@ -6,8 +6,8 @@ import { withRouter } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 
 import { s3BucketURL } from '../constants/s3';
-import { getArticles, handleArticle, queryTeam } from '../store/queries';
-import { currentProfileRefetch, companyRefetch } from '../store/refetch';
+import { getArticles, handleArticle } from '../store/queries';
+import { currentProfileRefetch, companyRefetch, teamRefetch } from '../store/refetch';
 
 const ArticleBrowserHOC = compose(
     withRouter,
@@ -54,15 +54,7 @@ const ArticleBrowserHOC = compose(
                         teamId: match.params.teamId,
                         isAtOffice: true
                     };
-                    refetchQuery = {
-                        query: queryTeam,
-                        fetchPolicy: 'network-only',
-                        name: 'queryTeam',
-                        variables: {
-                            language: match.params.lang,
-                            id: match.params.teamId
-                        }
-                    };
+                    refetchQuery = teamRefetch(match.params.teamId, match.params.lang);
                     break;
                 default:
                     return false;

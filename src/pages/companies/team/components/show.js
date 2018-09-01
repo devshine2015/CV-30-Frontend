@@ -5,11 +5,11 @@ import { FormattedMessage, FormattedDate } from 'react-intl';
 import { compose, withState, withHandlers } from 'recompose';
 import ReactPlayer from 'react-player';
 
-
 import ArticleSlider from '../../../../components/articleSlider';
 import ArticlePopUp from '../../../../components/ArticlePopup';
 import MembersPopup from './memberPopup';
-import { handleTeamMember, queryTeam, setFeedbackMessage, handleShallowUser } from '../../../../store/queries';
+import { handleTeamMember, setFeedbackMessage, handleShallowUser } from '../../../../store/queries';
+import { teamRefetch } from '../../../../store/refetch';
 import { graphql } from '../../../../../node_modules/react-apollo';
 import ShowMember from './showMember';
 import { s3BucketURL } from '../../../../constants/s3';
@@ -41,15 +41,9 @@ const ShowHOC = compose(
                         memberId,
                         add: false
                     },
-                    refetchQueries: [{
-                        query: queryTeam,
-                        fetchPolicy: 'network-only',
-                        name: 'queryTeam',
-                        variables: {
-                            language: lang,
-                            id: teamId
-                        }
-                    }]
+                    refetchQueries: [
+                        teamRefetch(teamId, lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -78,15 +72,9 @@ const ShowHOC = compose(
                             isMember: false
                         }
                     },
-                    refetchQueries: [{
-                        query: queryTeam,
-                        fetchPolicy: 'network-only',
-                        name: 'queryTeam',
-                        variables: {
-                            language: lang,
-                            id: teamId
-                        }
-                    }]
+                    refetchQueries: [
+                        teamRefetch(teamId, lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

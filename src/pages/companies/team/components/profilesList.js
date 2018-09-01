@@ -1,11 +1,12 @@
 import React from 'react';
 import { Avatar } from '@material-ui/core';
-import { compose, withState, withHandlers, pure } from 'recompose';
+import { compose, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { profilesQuery, handleTeamMember, queryTeam, setFeedbackMessage } from '../../../../store/queries';
+import { s3BucketURL } from '../../../../constants/s3';
+import { profilesQuery, handleTeamMember, setFeedbackMessage } from '../../../../store/queries';
+import { teamRefetch } from '../../../../store/refetch';
 import { defaultUserAvatar } from '../../../../constants/utils';
 import Loader from '../../../../components/Loader';
 
@@ -31,15 +32,9 @@ const ProfilesListHOC = compose(
                         memberId,
                         add: true
                     },
-                    refetchQueries: [{
-                        query: queryTeam,
-                        fetchPolicy: 'network-only',
-                        name: 'queryTeam',
-                        variables: {
-                            language: lang,
-                            id: teamId
-                        }
-                    }]
+                    refetchQueries: [
+                        teamRefetch(teamId, lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

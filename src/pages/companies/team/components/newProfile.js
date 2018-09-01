@@ -5,7 +5,8 @@ import uuid from 'uuidv4';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { handleShallowUser, setFeedbackMessage, queryTeam } from '../../../../store/queries';
+import { handleShallowUser, setFeedbackMessage } from '../../../../store/queries';
+import { teamRefetch } from '../../../../store/refetch';
 import { profilesFolder, s3BucketURL } from '../../../../constants/s3';
 import ImageUploader from '../../../../components/imageUploader';
 
@@ -43,15 +44,9 @@ const NewProfileHOC = compose(
                             isMember: true
                         }
                     },
-                    refetchQueries: [{
-                        query: queryTeam,
-                        fetchPolicy: 'network-only',
-                        name: 'queryTeam',
-                        variables: {
-                            language: lang,
-                            id: teamId
-                        }
-                    }]
+                    refetchQueries: [
+                        teamRefetch(teamId, lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

@@ -4,8 +4,8 @@ import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import ColorPicker from './colorPicker';
-import { queryTeam, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
-import { currentProfileRefetch } from '../../../../store/refetch';
+import { handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { currentProfileRefetch, teamRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 
 import { s3BucketURL } from '../../../../constants/s3';
@@ -46,16 +46,9 @@ const HeaderHOC = compose(
                             isFollowing: !isFollowing
                         }
                     },
-                    refetchQueries: [{
-                        query: queryTeam,
-                        fetchPolicy: 'network-only',
-                        name: 'queryTeam',
-                        variables: {
-                            language: match.params.lang,
-                            id: team.id
-                        }
-                    },
-                    currentProfileRefetch(match.params.lang)
+                    refetchQueries: [
+                        teamRefetch(team.id, match.params.lang),
+                        currentProfileRefetch(match.params.lang)
                     ]
                 });
                 await setFeedbackMessage({

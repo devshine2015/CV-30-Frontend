@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { handleArticle, queryTeam } from '../store/queries';
-import { currentProfileRefetch, companyRefetch } from '../store/refetch';
+import { handleArticle } from '../store/queries';
+import { currentProfileRefetch, companyRefetch, teamRefetch } from '../store/refetch';
 import { graphql } from 'react-apollo';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
@@ -54,15 +54,7 @@ const ArticleEditorHOC = compose(
                     refetchQuery = companyRefetch(match.params.companyId, match.params.lang);
                     break;
                 case 'job_officeLife':
-                    refetchQuery = {
-                        query: queryTeam,
-                        fetchPolicy: 'network-only',
-                        name: 'queryTeam',
-                        variables: {
-                            language: match.params.lang,
-                            id: match.params.teamId
-                        }
-                    };
+                    refetchQuery = teamRefetch(match.params.teamId, match.params.lang);
                     break;
                 default:
                     return false;

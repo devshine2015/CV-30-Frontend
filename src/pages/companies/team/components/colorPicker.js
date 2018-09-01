@@ -4,7 +4,8 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
-import { handleTeam, queryTeam, setFeedbackMessage } from '../../../../store/queries';
+import { handleTeam, setFeedbackMessage } from '../../../../store/queries';
+import { teamRefetch } from '../../../../store/refetch';
 import { teamsFolder } from '../../../../constants/s3';
 import ImageUploader from '../../../../components/imageUploader';
 
@@ -28,15 +29,9 @@ const ColorPickerHOC = compose(
                             companyId: company.id
                         }
                     },
-                    refetchQueries: [{
-                        query: queryTeam,
-                        fetchPolicy: 'network-only',
-                        name: 'queryTeam',
-                        variables: {
-                            language: lang,
-                            id: teamId
-                        }
-                    }]
+                    refetchQueries: [
+                        teamRefetch(teamId, lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -81,15 +76,9 @@ const ColorPickerHOC = compose(
                             companyId: company.id
                         }
                     },
-                    refetchQueries: [{
-                        query: queryTeam,
-                        fetchPolicy: 'network-only',
-                        name: 'queryTeam',
-                        variables: {
-                            language: lang,
-                            id: teamId
-                        }
-                    }]
+                    refetchQueries: [
+                        teamRefetch(teamId, lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
