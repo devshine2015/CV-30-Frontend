@@ -8,8 +8,8 @@ import ReactPlayer from 'react-player';
 
 import ArticleSlider from '../../../../components/articleSlider';
 import Loader from '../../../../components/Loader';
-import { handleApplyToJob, getJobQuery, profileQuery } from '../../../../store/queries';
-import { currentProfileRefetch } from '../../../../store/refetch';
+import { handleApplyToJob, profileQuery } from '../../../../store/queries';
+import { currentProfileRefetch, jobRefetch } from '../../../../store/refetch';
 import { formatCurrency } from '../../../../constants/utils';
 import { s3BucketURL } from '../../../../constants/s3';
 
@@ -48,16 +48,9 @@ const ShowHOC = compose(
                         jobId: match.params.jobId,
                         isApplying
                     },
-                    refetchQueries: [{
-                        query: getJobQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'getJobQuery',
-                        variables: {
-                            id: match.params.jobId,
-                            language: match.params.lang
-                        }
-                    },
-                    currentProfileRefetch(match.params.lang)
+                    refetchQueries: [
+                        jobRefetch(match.params.jobId, match.params.lang),
+                        currentProfileRefetch(match.params.lang)
                     ]
                 });
             }

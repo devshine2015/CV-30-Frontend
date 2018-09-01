@@ -5,9 +5,8 @@ import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import { handleArticle, handleCompany, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
-import { companyRefetch } from '../../../../store/refetch';
+import { companyRefetch, currentProfileRefetch } from '../../../../store/refetch';
 
-import { currentProfileRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 
 // Require Editor JS files.

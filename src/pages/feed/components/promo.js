@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import uuid from 'uuidv4';
 
 import { getCurrentUser, getAds, handleAd, setFeedbackMessage } from '../../../store/queries';
+import { adsRefetch } from '../../../store/refetch';
 import Loader from '../../../components/Loader';
 import ImageUploader from '../../../components/imageUploader';
 import { s3BucketURL, adsFolder } from '../../../constants/s3';
@@ -80,14 +81,9 @@ const PromoEditHOC = compose(
                         language,
                         details: formData
                     },
-                    refetchQueries: [{
-                        query: getAds,
-                        fetchPolicy: 'network-only',
-                        name: 'newsFeedArticlesQuery',
-                        variables: {
-                            language
-                        }
-                    }]
+                    refetchQueries: [
+                        adsRefetch(language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

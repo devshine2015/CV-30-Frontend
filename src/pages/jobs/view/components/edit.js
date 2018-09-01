@@ -16,7 +16,8 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import fields from '../../../../constants/contact';
 import { formatCurrency } from '../../../../constants/utils';
 import BenefitsList from '../../../../constants/benefits';
-import { teamsQuery, handleJob, setFeedbackMessage, jobTypesQuery, getJobQuery } from '../../../../store/queries';
+import { teamsQuery, handleJob, setFeedbackMessage, jobTypesQuery } from '../../../../store/queries';
+import { jobRefetch } from '../../../../store/refetch';
 import Loader from '../../../../components/Loader';
 import TagsInput from '../../../../components/TagsInput';
 import Slider from 'rc-slider';
@@ -129,15 +130,9 @@ const EditHOC = compose(
                             status
                         }
                     },
-                    refetchQueries: [{
-                        query: getJobQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'getJobQuery',
-                        variables: {
-                            id: match.params.jobId,
-                            language: match.params.lang
-                        },
-                    }]
+                    refetchQueries: [
+                        jobRefetch(match.params.jobId, match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

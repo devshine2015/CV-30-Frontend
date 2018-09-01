@@ -1,10 +1,11 @@
 import React from 'react';
-import { Popover, TextField, IconButton, Icon } from '@material-ui/core';
+import { Popover, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { handleArticleTags, setFeedbackMessage, getArticle } from '../../../../store/queries';
+import { handleArticleTags, setFeedbackMessage } from '../../../../store/queries';
+import { articleRefetch } from '../../../../store/refetch';
 import TagsInput from '../../../../components/TagsInput';
 
 const AddTagHOC = compose(
@@ -24,15 +25,9 @@ const AddTagHOC = compose(
                             isSet: true
                         }
                     },
-                    refetchQueries: [{
-                        query: getArticle,
-                        fetchPolicy: 'network-only',
-                        name: 'getArticle',
-                        variables: {
-                            id: articleId,
-                            language
-                        },
-                    }]
+                    refetchQueries: [
+                        articleRefetch(articleId, language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

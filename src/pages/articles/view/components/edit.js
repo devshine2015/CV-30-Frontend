@@ -14,7 +14,8 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import { handleArticle, setFeedbackMessage, getArticle } from '../../../../store/queries';
+import { handleArticle, setFeedbackMessage } from '../../../../store/queries';
+import { articleRefetch } from '../../../../store/refetch';
 import TagsInput from '../../../../components/TagsInput';
 
 const ArticleEditHOC = compose(
@@ -76,15 +77,9 @@ const ArticleEditHOC = compose(
                         language: match.params.lang,
                         article
                     },
-                    refetchQueries: [{
-                        query: getArticle,
-                        fetchPolicy: 'network-only',
-                        name: 'getArticle',
-                        variables: {
-                            id: match.params.articleId,
-                            language: match.params.lang
-                        },
-                    }]
+                    refetchQueries: [
+                        articleRefetch(match.params.articleId, match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
