@@ -144,13 +144,15 @@ const ShowHOC = compose(
 const Show = (props) => {
     const {
         expanded, expandPanel,
-        getEditMode: { editMode: { status: editMode } },
+        getEditMode,
         companyQuery: { company: { name, faqs, officeArticles, storiesArticles, jobs } },
+        isEditAllowed,
         edited, editPanel, addQA, newQA,
         match: { params: { lang, companyId } },
         description, updateDescription, submitDescription,
         deleteQA
     } = props;
+    const editMode = isEditAllowed && getEditMode.editMode.status;
 
     return (
         <Grid container className='mainBody brandShow'>

@@ -261,7 +261,7 @@ const HeaderHOC = compose(
 
 const Header = props => {
     const {
-        getEditMode: { editMode: { status: editMode } },
+        getEditMode, isEditAllowed,
         headline, updateHeadline, submitHeadline, match, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
         companyQuery: { company: { name, featuredArticles, location, noOfEmployees, industry, teams, logoPath, coverPath, coverBackground } },
         toggleColorPicker, colorPickerAnchor, closeColorPicker,
@@ -269,6 +269,7 @@ const Header = props => {
         toggleFollow, currentProfileQuery,
         refetchBgImage, openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
     } = props;
+    const editMode = isEditAllowed && getEditMode.editMode.status;
 
     const { lang, companyId } = match.params;
 

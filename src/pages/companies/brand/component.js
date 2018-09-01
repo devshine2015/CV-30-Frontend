@@ -18,16 +18,18 @@ const Brand = props => {
     if (loading)
         return <Loader />
 
+    const isEditAllowed= company.owner.id === userId;
+
     const Show = () => {
-        return (<CompanyShow {...props} />)
+        return (<CompanyShow {...props} isEditAllowed={isEditAllowed} />)
     };
 
     return (
         <div className='brandRoot'>
-            {(company.owner.id === userId) &&
+            {isEditAllowed &&
                 <EditToggle />
             }
-            <Header {...props} />
+            <Header {...props} isEditAllowed={isEditAllowed} />
             <React.Fragment>
                 <Switch>
                     <Route exact path='/:lang(en|ro)/company/:companyId' component={Show} />
