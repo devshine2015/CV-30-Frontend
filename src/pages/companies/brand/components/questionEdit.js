@@ -4,7 +4,8 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { handleFAQ, companyQuery, setFeedbackMessage } from '../../../../store/queries';
+import { handleFAQ, setFeedbackMessage } from '../../../../store/queries';
+import { companyRefetch } from '../../../../store/refetch';
 
 const QuestionEditHOC = compose(
     withRouter,
@@ -34,27 +35,21 @@ const QuestionEditHOC = compose(
         cancel: props => () => {
             console.log('cancel!');
         },
-        save: ({ formData, match, handleFAQ, setFeedbackMessage }) => async () => {
+        save: ({ formData, match: { params: { lang, companyId } }, handleFAQ, setFeedbackMessage }) => async () => {
             let { id, question, answer } = formData;
             try {
                 await handleFAQ({
                     variables: {
-                        language: match.params.lang,
+                        language: lang,
                         faq: {
                             id, question, answer,
-                            companyId: match.params.companyId
+                            companyId: companyId
                         }
                     },
 
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language: match.params.lang,
-                            id: match.params.companyId
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(companyId, lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

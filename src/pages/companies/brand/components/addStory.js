@@ -6,7 +6,7 @@ import S3Uploader from 'react-s3-uploader';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
-import { companyQuery } from '../../../../store/queries';
+import { companyRefetch } from '../../../../store/refetch';
 import { handleArticle, setFeedbackMessage } from '../../../../store/queries';
 
 const AddStoryHOC = compose(
@@ -88,15 +88,9 @@ const AddStoryHOC = compose(
                         language
 
                     },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language,
-                            id: companyId
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(companyId, language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

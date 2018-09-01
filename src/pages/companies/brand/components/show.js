@@ -18,7 +18,8 @@ import AddNewStory from './addStory';
 import QuestionEdit from './questionEdit';
 import Story from './story';
 import ArticleSlider from '../../../../components/articleSlider';
-import { companyQuery, handleCompany, handleFAQ, setFeedbackMessage } from '../../../../store/queries';
+import { handleCompany, handleFAQ, setFeedbackMessage } from '../../../../store/queries';
+import { companyRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 import { s3BucketURL } from '../../../../constants/s3';
 
@@ -48,15 +49,9 @@ const ShowHOC = compose(
                             description
                         }
                     },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language: match.params.lang,
-                            id: company.id
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(company.id, match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -97,27 +92,21 @@ const ShowHOC = compose(
         },
         deleteQA: props => async (e, id) => {
             e.stopPropagation();
-            const { handleFAQ, setFeedbackMessage, match } = props;
+            const { handleFAQ, setFeedbackMessage, match: { params: { lang, companyId }} } = props;
             try {
                 await handleFAQ({
                     variables: {
-                        language: match.params.lang,
+                        language: lang,
                         faq: {
                             id,
-                            companyId: match.params.companyId,
+                            companyId: companyId,
                             remove: true
                         }
                     },
 
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language: match.params.lang,
-                            id: match.params.companyId
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(companyId, lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

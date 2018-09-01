@@ -6,8 +6,8 @@ import { withRouter } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 
 import { s3BucketURL } from '../constants/s3';
-import { getArticles, handleArticle, companyQuery, queryTeam } from '../store/queries';
-import { currentProfileRefetch } from '../store/refetch';
+import { getArticles, handleArticle, queryTeam } from '../store/queries';
+import { currentProfileRefetch, companyRefetch } from '../store/refetch';
 
 const ArticleBrowserHOC = compose(
     withRouter,
@@ -46,15 +46,7 @@ const ArticleBrowserHOC = compose(
                         companyId: match.params.companyId,
                         isFeatured: true
                     };
-                    refetchQuery = {
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language: match.params.lang,
-                            id: match.params.companyId
-                        }
-                    };
+                    refetchQuery = companyRefetch(match.params.companyId, match.params.lang);
                     break;
                 case 'job_officeLife':
                     options = {

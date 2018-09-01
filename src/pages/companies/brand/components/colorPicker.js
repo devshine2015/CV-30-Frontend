@@ -5,7 +5,8 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
-import { handleCompany, companyQuery, setFeedbackMessage } from '../../../../store/queries';
+import { handleCompany, setFeedbackMessage } from '../../../../store/queries';
+import { companyRefetch } from '../../../../store/refetch';
 import ImageUploader from '../../../../components/imageUploader';
 import { companiesFolder } from '../../../../constants/s3';
 
@@ -29,15 +30,9 @@ const ColorPickerHOC = compose(
                             coverBackground: color.style
                         }
                     },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language,
-                            id: companyId
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(companyId, language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -83,15 +78,9 @@ const ColorPickerHOC = compose(
                             coverPath
                         }
                     },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language,
-                            id: companyId
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(companyId, language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

@@ -10,7 +10,8 @@ import AuthorAvatarHeader from '../../../components/AvatarHeader/AuthorAvatarHea
 import { disqusShortname, disqusUrlPrefix } from '../../../constants/disqus';
 import { stripHtmlTags } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
-import { getCurrentUser, handleArticleTags, getNewsFeedArticles, setEditMode } from '../../../store/queries';
+import { getCurrentUser, handleArticleTags, setEditMode } from '../../../store/queries';
+import { newsFeedArticlesRefetch } from '../../../store/refetch';
 import AddTag from './addTag';
 import Loader from '../../../components/Loader';
 import EditPost from './editPost';
@@ -41,14 +42,9 @@ const ArticleItemHOC = compose(
                             isSet: true
                         }
                     },
-                    refetchQueries: [{
-                        query: getNewsFeedArticles,
-                        fetchPolicy: 'network-only',
-                        name: 'newsFeedArticlesQuery',
-                        variables: {
-                            language
-                        }
-                    }]
+                    refetchQueries: [
+                        newsFeedArticlesRefetch(language)
+                    ]
                 });
             }
             catch (err) {

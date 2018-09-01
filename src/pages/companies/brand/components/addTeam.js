@@ -4,7 +4,8 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import uuid from 'uuidv4';
 
-import { handleTeam, companyQuery, setFeedbackMessage } from '../../../../store/queries';
+import { handleTeam, setFeedbackMessage } from '../../../../store/queries';
+import { companyRefetch } from '../../../../store/refetch';
 
 const AddTeamHOC = compose(
     graphql(handleTeam, { name: 'handleTeam' }),
@@ -32,15 +33,9 @@ const AddTeamHOC = compose(
                     variables: {
                         teamDetails
                     },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language: 'en',
-                            id: match.params.companyId
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(match.params.companyId, match.params.lang)
+                    ]
                 });
                 const { error, status } = result;
                 if (status || !error) {

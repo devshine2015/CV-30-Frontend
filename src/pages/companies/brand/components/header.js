@@ -4,7 +4,9 @@ import { Grid, Avatar, Button, Chip, Icon, IconButton } from '@material-ui/core'
 import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
-import { companyQuery, handleArticle, handleCompany, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { handleArticle, handleCompany, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { companyRefetch } from '../../../../store/refetch';
+
 import { currentProfileRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 
@@ -80,15 +82,9 @@ const HeaderHOC = compose(
                             headline
                         }
                     },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language,
-                            id: company.id
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(company.id, language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -124,15 +120,9 @@ const HeaderHOC = compose(
                         },
                         language
                     },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language,
-                            id: companyId
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(companyId, language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -167,16 +157,9 @@ const HeaderHOC = compose(
                             isFollowing: !isFollowing
                         }
                     },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language,
-                            id: company.id
-                        }
-                    },
-                    currentProfileRefetch(language)
+                    refetchQueries: [
+                        companyRefetch(company.id, language),
+                        currentProfileRefetch(language)
                     ]
                 });
                 await setFeedbackMessage({
@@ -219,15 +202,9 @@ const HeaderHOC = compose(
                                 logoPath
                             }
                         },
-                        refetchQueries: [{
-                            query: companyQuery,
-                            fetchPolicy: 'network-only',
-                            name: 'companyQuery',
-                            variables: {
-                                language,
-                                id: companyId
-                            }
-                        }]
+                        refetchQueries: [
+                            companyRefetch(companyId, language)
+                        ]
                     });
                     await setFeedbackMessage({
                         variables: {

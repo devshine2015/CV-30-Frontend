@@ -2,7 +2,8 @@ import React from 'react';
 import { TextField, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
-import { handleArticle, setFeedbackMessage, getNewsFeedArticles } from '../../../store/queries';
+import { handleArticle, setFeedbackMessage } from '../../../store/queries';
+import { newsFeedArticlesRefetch } from '../../../store/refetch';
 import { withRouter } from 'react-router-dom';
 
 const EditPostHOC = compose(
@@ -23,14 +24,9 @@ const EditPostHOC = compose(
                             description: post
                         }
                     },
-                    refetchQueries: [{
-                        query: getNewsFeedArticles,
-                        fetchPolicy: 'network-only',
-                        name: 'newsFeedArticlesQuery',
-                        variables: {
-                            language
-                        }
-                    }]
+                    refetchQueries: [
+                        newsFeedArticlesRefetch(language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

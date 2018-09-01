@@ -12,7 +12,8 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import { companyQuery, updateAvatarTimestampMutation, handleCompany, setFeedbackMessage } from '../../../../store/queries';
+import { updateAvatarTimestampMutation, handleCompany, setFeedbackMessage } from '../../../../store/queries';
+import { companyRefetch } from '../../../../store/refetch';
 
 import IndustryInput from '../../../../components/IndustryInput';
 import LocationInput from '../../../../components/LocationInput';
@@ -80,15 +81,9 @@ const SettingsHOC = compose(
                             id, industry, location, noOfEmployees, name, headline, description
                         }
                     },
-                    refetchQueries: [{
-                        query: companyQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'companyQuery',
-                        variables: {
-                            language: match.params.lang,
-                            id: id
-                        }
-                    }]
+                    refetchQueries: [
+                        companyRefetch(id, match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

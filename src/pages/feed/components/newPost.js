@@ -9,9 +9,9 @@ import ReactPlayer from 'react-player';
 
 import MediaUploadPopUp from './mediaUpload';
 import { defaultUserAvatar, defaultCompanyLogo } from '../../../constants/utils';
-import { s3BucketURL, profilesFolder, companiesFolder, teamsFolder } from '../../../constants/s3';
-import { getNewsFeedArticles, handleArticle, setFeedbackMessage } from '../../../store/queries';
-
+import { s3BucketURL } from '../../../constants/s3';
+import { handleArticle, setFeedbackMessage } from '../../../store/queries';
+import { newsFeedArticlesRefetch } from '../../../store/refetch';
 
 const NewPostHOC = compose(
     withRouter,
@@ -94,14 +94,9 @@ const NewPostHOC = compose(
                         article,
                         language
                     },
-                    refetchQueries: [{
-                        query: getNewsFeedArticles,
-                        fetchPolicy: 'network-only',
-                        name: 'newsFeedArticlesQuery',
-                        variables: {
-                            language
-                        }
-                    }]
+                    refetchQueries: [
+                        newsFeedArticlesRefetch(language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

@@ -9,7 +9,8 @@ import { compose, pure } from 'recompose';
 import { withFormik } from 'formik';
 import { withRouter } from 'react-router-dom';
 
-import { companiesQuery, setFeedbackMessage } from '../../../store/queries';
+import { setFeedbackMessage } from '../../../store/queries';
+import { companiesRefetch } from '../../../store/refetch';
 import schema from './validation';
 
 import IndustryInput from '../../../components/IndustryInput';
@@ -145,14 +146,9 @@ const NewCompanyHOC = compose(
                         language: match.params.lang,
                         details: values
                     },
-                    refetchQueries: [{
-                        query: companiesQuery,
-                        name: 'companiesQuery',
-                        fetchPolicy: 'network-only',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    }]
+                    refetchQueries: [
+                        companiesRefetch(match.params.lang)
+                    ]
                 });
 
                 await setFeedbackMessage({
