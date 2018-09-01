@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Avatar } from '@material-ui/core';
 
 const AvatarHeader = props => {
-    const { displayName, avatar, linkTo, title } = props;
+    const { displayName, avatar, linkTo, title, htmlTitle, hideCaretDown } = props;
 
     return (
         <div className='avatarHeader'>
@@ -18,9 +18,10 @@ const AvatarHeader = props => {
                 <div className='texts'>
                     <h6 className='holderName'>
                         <span>{displayName}</span>
-                        <i className='fas fa-caret-down' />
+                    { !hideCaretDown && <i className='fas fa-caret-down' /> }
                     </h6>
-                    <p className='holderTitle'>{title}</p>
+                    { htmlTitle && <p className='holderTitle' dangerouslySetInnerHTML={htmlTitle()}/> }
+                    { title && <p className='holderTitle'>{title}</p> }
                 </div>
             </Link>
         </div>

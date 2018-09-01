@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
 
 import { Switch, Route } from 'react-router-dom';
 
@@ -11,7 +10,7 @@ import EditToggle from '../../../components/EditToggle';
 
 const UserProfile = props => {
     const {
-        profileQuery: { loading, profile },
+        profileQuery: { profile },
         currentUser: { auth: { currentUser } }
     } = props;
 
@@ -19,7 +18,7 @@ const UserProfile = props => {
 
     const Show = () => <UserProfileShow {...props} />
 
-    if (loading)
+    if (!profile)
         return <Loader />
 
     return (<div className='userProfileRoot'>

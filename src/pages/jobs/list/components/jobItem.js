@@ -1,34 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Avatar, Chip } from '@material-ui/core';
-import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
+import { Chip } from '@material-ui/core';
+import { stripHtmlTags } from '../../../../constants/utils';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 
-import {s3BucketURL} from '../../../../constants/s3';
+import JobAvatarHeader from '../../../../components/AvatarHeader/JobAvatarHeader'
 
 const JobItem = props => {
-    const { match, job: { id, i18n, expireDate, videos, images, appliedDate, jobLevels, benefits, location, company: { name: companyName, logoPath } } } = props;
+    const { job } = props;
+    const { i18n, videos, images, appliedDate, jobLevels, benefits, location } = job;
     const { title, description } = i18n[0];
 
     return (
         <div className='listItem jobListItem'>
             <div className='leftOverlay'>
-                <Link to={`/${match.params.lang}/job/${id}`}>
-                    <Avatar 
-                    alt={companyName} 
-                    src={logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo} 
-                    className='avatar' 
-                    />
-                </Link>
-                <Link to={`/${match.params.lang}/job/${id}`} style={{ textDecoration: 'none' }}>
-                    <div className='leftOverlayTexts'>
-                        <h6 className='companyName'>
-                            {companyName}
-                        </h6>
-                        <p className='expires'>Expires on: <span>{new Date(expireDate).toLocaleDateString()}</span></p>
-                    </div>
-                </Link>
+                <JobAvatarHeader job={job}/>
             </div>
             <div className='rightOverlay'>
                 <div className='location'>

@@ -6,7 +6,8 @@ import { handleFollow, setFeedbackMessage, profileQuery } from '../../../../stor
 import { withRouter, Link } from 'react-router-dom';
 
 import { s3BucketURL } from '../../../../constants/s3';
-import { defaultUserAvatar, defaultCompanyLogo } from '../../../../constants/utils';
+import { defaultUserAvatar } from '../../../../constants/utils';
+import CompanyHeaderAvatar from '../../../../components/AvatarHeader/CompanyAvatarHeader';
 
 const ShowUser = props => {
     const { profile, match: { params: { lang } }, onUnfollow } = props;
@@ -32,23 +33,11 @@ const ShowUser = props => {
 }
 
 const ShowCompany = props => {
-    const { company, match: { params: { lang } }, onUnfollow } = props;
-    const { id, name, industry, logoPath } = company || {};
-    const avatar = logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo;
+    const { company, onUnfollow } = props;
+    const { id } = company || {};
     return (
         <div className='company'>
-            <Link to={`/${lang}/company/${id}`}>
-                <Avatar alt={name} src={avatar} className='avatar' />
-            </Link>
-            <Link to={`/${lang}/company/${id}`} style={{ textDecoration: 'none' }}>
-                <div className='leftOverlayTexts'>
-                    <h6 className='userName'>
-                        {name}
-                        <i className='fas fa-caret-down' />
-                    </h6>
-                    <p className='userTitle'>{industry && industry.i18n[0].title}</p>
-                </div>
-            </Link>
+            <CompanyHeaderAvatar company={company} titleType='industry'/>
             <i className='fas fa-times-circle' onClick={() => onUnfollow(id)} />
         </div>
     )

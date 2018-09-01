@@ -4,11 +4,11 @@ import { compose, mapProps, pure } from 'recompose';
 import AvatarHeader from './AvatarHeader';
 
 const CompanyAvatarHeaderHOC = compose(
-    mapProps(({ company: { id, name, logoPath }, lang }) => ({
+    mapProps(({ company: { id, name, logoPath, industry }, lang, titleType='industry' }) => ({
         avatar: logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo,
         displayName: name,
         linkTo: `/${lang}/company/${id}`,
-        title: 'Company'
+        title: titleType === 'industry' && industry ? industry.i18n[0].title : 'Company'
     })),
     pure
 )

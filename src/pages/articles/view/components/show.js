@@ -86,7 +86,9 @@ const ArticleShow = props => {
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
-                    <AuthorAvatarHeader article={article} lang={lang} /> 
+                    <div className='authorAvatar'>
+                        <AuthorAvatarHeader article={article} lang={lang} /> 
+                    </div>
                     <FormattedDate value={createdAt}>
                         {(text) => (<p className='articleDate'>{text}</p>)}
                     </FormattedDate>
