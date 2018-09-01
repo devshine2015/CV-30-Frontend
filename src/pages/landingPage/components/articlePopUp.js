@@ -14,7 +14,8 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import { handleArticle, landingPage, setFeedbackMessage } from '../../../store/queries';
+import { handleArticle, setFeedbackMessage } from '../../../store/queries';
+import { landingPageRefetch } from '../../../store/refetch';
 import ImageUploader from '../../../components/imageUploader';
 
 const ArticlePopUpHOC = compose(
@@ -94,14 +95,9 @@ const ArticlePopUpHOC = compose(
                         language,
                         article
                     },
-                    refetchQueries: [{
-                        query: landingPage,
-                        fetchPolicy: 'network-only',
-                        name: 'landingPage',
-                        variables: {
-                            language
-                        }
-                    }]
+                    refetchQueries: [
+                        landingPageRefetch(language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

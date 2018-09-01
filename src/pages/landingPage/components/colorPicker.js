@@ -5,7 +5,8 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../constants/headerBackgrounds';
-import { landingPage, handleLandingPage, setFeedbackMessage } from '../../../store/queries';
+import { handleLandingPage, setFeedbackMessage } from '../../../store/queries';
+import { landingPageRefetch } from '../../../store/refetch';
 import ImageUploader from '../../../components/imageUploader';
 
 const ColorPickerHOC = compose(
@@ -41,14 +42,9 @@ const ColorPickerHOC = compose(
                         language,
                         details
                     },
-                    refetchQueries: [{
-                        query: landingPage,
-                        fetchPolicy: 'network-only',
-                        name: 'landingPage',
-                        variables: {
-                            language
-                        }
-                    }]
+                    refetchQueries: [
+                        landingPageRefetch(language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -103,14 +99,9 @@ const ColorPickerHOC = compose(
                         language,
                         details
                     },
-                    refetchQueries: [{
-                        query: landingPage,
-                        fetchPolicy: 'network-only',
-                        name: 'landingPage',
-                        variables: {
-                            language
-                        }
-                    }]
+                    refetchQueries: [
+                        landingPageRefetch(language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

@@ -15,7 +15,8 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ColorPicker from './colorPicker';
 import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
-import { handleLandingPage, landingPage, setFeedbackMessage } from '../../../store/queries';
+import { handleLandingPage, setFeedbackMessage } from '../../../store/queries';
+import { landingPageRefetch } from '../../../store/refetch';
 
 const HeaderHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
@@ -51,14 +52,9 @@ const HeaderHOC = compose(
                             headline
                         }
                     },
-                    refetchQueries: [{
-                        query: landingPage,
-                        fetchPolicy: 'network-only',
-                        name: 'landingPage',
-                        variables: {
-                            language
-                        }
-                    }]
+                    refetchQueries: [
+                        landingPageRefetch(language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
