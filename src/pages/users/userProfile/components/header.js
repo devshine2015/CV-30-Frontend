@@ -12,6 +12,7 @@ import SkillsEditor from './skillsEditor';
 import NamePopUp from './namePopUp';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { setFeedbackMessage, updateAvatar, profileQuery, updateAvatarTimestampMutation, localUserQuery, handleArticle, handleFollow } from '../../../../store/queries';
+import { currentProfileRefetch, profileRefetch } from '../../../../store/refetch';
 
 import ArticlePopup from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
@@ -72,7 +73,7 @@ const HeaderHOC = compose(
         },
         toggleNameEditor: ({ setNameAnchor }) => event => setNameAnchor(event.target),
         closeNameEditor: ({ setNameAnchor }) => () => setNameAnchor(null),
-        removeStory: ({ setFeedbackMessage, handleArticle, match: { params: { profileId } } }) => async article => {
+        removeStory: ({ setFeedbackMessage, handleArticle, match: { params: { profileId, lang } } }) => async article => {
             try {
                 await handleArticle({
                     variables: {
@@ -82,15 +83,9 @@ const HeaderHOC = compose(
                         },
                         language: 'en'
                     },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: 'en',
-                            id: profileId
-                        }
-                    }]
+                    refetchQueries: [
+                        currentProfileRefetch(lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -121,7 +116,7 @@ const HeaderHOC = compose(
             });
         },
         handleSuccess: ({
-            setFeedbackMessage, updateAvatar, updateAvatarTimestamp,
+            setFeedbackMessage, updateAvatar, updateAvatarTimestamp, match,
             profileQuery: { profile: { id: profileId } } }) =>
             async ({ path, filename }) => {
                 const avatarPath = path ? path : `/${profilesFolder}/${profileId}/${filename}`;
@@ -130,15 +125,9 @@ const HeaderHOC = compose(
                         variables: {
                             path: avatarPath
                         },
-                        refetchQueries: [{
-                            query: profileQuery,
-                            fetchPolicy: 'network-only',
-                            name: 'currentProfileQuery',
-                            variables: {
-                                language: 'en',
-                                id: profileId
-                            }
-                        }]
+                        refetchQueries: [
+                            currentProfileRefetch(match.params.lang)
+                        ]
                     });
                     await updateAvatarTimestamp({
                         variables: {
@@ -178,22 +167,10 @@ const HeaderHOC = compose(
                             isFollowing: !isFollowing
                         }
                     },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'profileQuery',
-                        variables: {
-                            language: match.params.lang,
-                            id: match.params.profileId
-                        }
-                    }, {
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    }]
+                    refetchQueries: [
+                        currentProfileRefetch(match.params.lang),
+                        profileRefetch(match.params.profileId, match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -216,16 +193,15 @@ const HeaderHOC = compose(
     pure
 );
 
-
 const Header = props => {
     const { profileQuery: { profile } } = props;
     const { lang, profileId } = props.match.params;
-
+    
     if (!profile || (profileId && profile.id !== profileId))
         return <Redirect to={`/${props.match.params.lang}/myProfile/`} />;
 
     const {
-        getEditMode: { editMode: { status: editMode } },
+        getEditMode, isEditAllowed,
         closeColorPicker, toggleColorPicker, colorPickerAnchor,
         removeStory,
         openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
@@ -235,6 +211,7 @@ const Header = props => {
         toggleNameEditor, closeNameEditor, nameAnchor,
         openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
     } = props;
+    const editMode = isEditAllowed && getEditMode.editMode.status;
 
     const {
         firstName,
@@ -315,6 +292,7 @@ const Header = props => {
                                 onClose={closeColorPicker}
                                 refetchBgImage={refetchBgImage}
                                 type='profile'
+                                profile={profile}
                             />
                             <NamePopUp
                                 anchor={nameAnchor}

@@ -14,6 +14,7 @@ const profileFollowingData = gql`
             id
             name
             industry {
+                id
                 i18n {
                     title
                 }

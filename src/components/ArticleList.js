@@ -6,7 +6,8 @@ import { withRouter } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 
 import { s3BucketURL } from '../constants/s3';
-import { getArticles, handleArticle, profileQuery, companyQuery, queryTeam } from '../store/queries';
+import { getArticles, handleArticle, companyQuery, queryTeam } from '../store/queries';
+import { currentProfileRefetch } from '../store/refetch';
 
 const ArticleBrowserHOC = compose(
     withRouter,
@@ -32,26 +33,12 @@ const ArticleBrowserHOC = compose(
                 case 'profile_isFeatured':
                     article.isFeatured = true;
                     article.id = articleId;
-                    refetchQuery = {
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    };
+                    refetchQuery = currentProfileRefetch(match.params.lang);
                     break;
                 case 'profile_isAboutMe':
                     article.isAboutMe = true;
                     article.id = articleId;
-                    refetchQuery = {
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    };
+                    refetchQuery = currentProfileRefetch(match.params.lang);
                     break;
                 case 'company_featured':
                     options = {

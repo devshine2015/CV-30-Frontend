@@ -14,18 +14,19 @@ const UserProfile = props => {
         currentUser: { auth: { currentUser } }
     } = props;
 
-    const { id: userId } = currentUser || {};
-
-    const Show = () => <UserProfileShow {...props} />
-
     if (!profile)
-        return <Loader />
+        return <Loader />;
+    
+    const { id: userId } = currentUser || {};
+    const isEditAllowed= profile.id === userId;
 
+    const Show = () => <UserProfileShow {...props} isEditAllowed={isEditAllowed} />;
+    
     return (<div className='userProfileRoot'>
-        {(profile.id === userId) &&
+        {(isEditAllowed) &&
             <EditToggle />
         }
-        <Header {...props} />
+        <Header {...props} isEditAllowed={isEditAllowed} />
         <React.Fragment>
             <Switch>
                 <Route exact path='/:lang(en|ro)/myProfile/feed' component={UserProfileFeed} />

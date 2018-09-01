@@ -1,7 +1,8 @@
 import React from 'react';
 import { Popover, FormControl, IconButton, Icon } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
-import { setSkills, setValues, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setSkills, setValues, setFeedbackMessage } from '../../../../store/queries';
+import { currentProfileRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
@@ -55,14 +56,9 @@ const SkillsEditHOC = compose(
                                 addSkills: toAdd,
                                 removeSkills: toRemove
                             },
-                            refetchQueries: [{
-                                query: profileQuery,
-                                fetchPolicy: 'network-only',
-                                name: 'currentProfileQuery',
-                                variables: {
-                                    language: match.params.lang
-                                }
-                            }]
+                            refetchQueries: [
+                                currentProfileRefetch(match.params.lang)
+                            ]
                         });
                         await setFeedbackMessage({
                             variables: {
@@ -89,14 +85,9 @@ const SkillsEditHOC = compose(
                                 addValues: toAdd,
                                 removeValues: toRemove
                             },
-                            refetchQueries: [{
-                                query: profileQuery,
-                                fetchPolicy: 'network-only',
-                                name: 'currentProfileQuery',
-                                variables: {
-                                    language: match.params.lang
-                                }
-                            }]
+                            refetchQueries: [
+                                currentProfileRefetch(match.params.lang)
+                            ]
                         });
                         await setFeedbackMessage({
                             variables: {

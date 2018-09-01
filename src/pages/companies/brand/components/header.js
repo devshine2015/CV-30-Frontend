@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import { companyQuery, handleArticle, handleCompany, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { currentProfileRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 
 // Require Editor JS files.
@@ -34,7 +35,6 @@ const HeaderHOC = compose(
         options: (props) => ({
             variables: {
                 language: props.match.params.lang,
-                id: null
             },
             fetchPolicy: 'network-only'
         }),
@@ -175,14 +175,9 @@ const HeaderHOC = compose(
                             language,
                             id: company.id
                         }
-                    }, {
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language
-                        }
-                    }]
+                    },
+                    currentProfileRefetch(language)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

@@ -9,6 +9,7 @@ import ReactPlayer from 'react-player';
 import ArticleSlider from '../../../../components/articleSlider';
 import Loader from '../../../../components/Loader';
 import { handleApplyToJob, getJobQuery, profileQuery } from '../../../../store/queries';
+import { currentProfileRefetch } from '../../../../store/refetch';
 import { formatCurrency } from '../../../../constants/utils';
 import { s3BucketURL } from '../../../../constants/s3';
 
@@ -55,14 +56,9 @@ const ShowHOC = compose(
                             id: match.params.jobId,
                             language: match.params.lang
                         }
-                    }, {
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang,
-                        }
-                    }]
+                    },
+                    currentProfileRefetch(match.params.lang)
+                    ]
                 });
             }
             catch (err) {

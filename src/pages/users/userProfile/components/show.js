@@ -1,7 +1,8 @@
 import React from 'react';
 import { Grid, Icon, IconButton, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
-import { setStory, setSalary, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setStory, setSalary, setFeedbackMessage } from '../../../../store/queries';
+import { currentProfileRefetch } from '../../../../store/refetch';
 import { withRouter } from 'react-router-dom';
 
 
@@ -64,14 +65,9 @@ const ShowHOC = compose(
                         },
                         language: match.params.lang
                     },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    }]
+                    refetchQueries: [
+                        currentProfileRefetch(match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -103,15 +99,9 @@ const ShowHOC = compose(
                             currency: 'ron'
                         }
                     },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang,
-                            id: match.params.profileId
-                        }
-                    }]
+                    refetchQueries: [
+                        currentProfileRefetch(match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -142,7 +132,7 @@ const ShowHOC = compose(
 
 const Show = props => {
     const {
-        getEditMode: { editMode: { status: editMode } },
+        getEditMode, isEditAllowed,
         profileQuery: { profile },
         newXP, newProj, addNewExperience, closeNewExperience, addNewProject, closeNewProject,
         editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
@@ -151,6 +141,7 @@ const Show = props => {
         story, updateStory, saveStory,
         updateDesiredSalary, isSalaryPublic, desiredSalary, saveDesiredSalary
     } = props;
+    const editMode = isEditAllowed && getEditMode.editMode.status;
 
     const { contact, experience, projects, aboutMeArticles, salary } = profile;
 

@@ -4,7 +4,8 @@ import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { profileQuery, updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation, setFeedbackMessage } from '../../../../store/queries';
+import { updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation, setFeedbackMessage } from '../../../../store/queries';
+import { currentProfileRefetch } from '../../../../store/refetch';
 
 const SettingsHOC = compose(
     graphql(updateAvatar, { name: 'updateAvatar' }),
@@ -86,14 +87,9 @@ const SettingsHOC = compose(
                         status: true,
                         contentType: contentType.replace('image/', '')
                     },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    }]
+                    refetchQueries: [
+                        currentProfileRefetch(match.params.lang)
+                    ]
                 });
                 await updateAvatarTimestamp({
                     variables: {
@@ -154,14 +150,9 @@ const SettingsHOC = compose(
                             newPassword: newPassword ? newPassword : ''
                         }
                     },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    }]
+                    refetchQueries: [
+                        currentProfileRefetch(match.params.lang)
+                    ]
                 });
                 if (status) setSettingsFormSuccess(true);
             } catch (error) {

@@ -2,7 +2,8 @@ import React from 'react';
 import { Avatar } from '@material-ui/core';
 import { compose, pure, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
-import { handleFollow, setFeedbackMessage, profileQuery } from '../../../../store/queries';
+import { handleFollow, setFeedbackMessage } from '../../../../store/queries';
+import { currentProfileRefetch } from '../../../../store/refetch';
 import { withRouter, Link } from 'react-router-dom';
 
 import { s3BucketURL } from '../../../../constants/s3';
@@ -108,14 +109,9 @@ const FollowingHOC = compose(
                     variables: {
                         details
                     },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    }]
+                    refetchQueries: [
+                        currentProfileRefetch(match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

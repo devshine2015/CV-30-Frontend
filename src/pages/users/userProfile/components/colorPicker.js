@@ -5,21 +5,13 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { availableColors } from '../../../../constants/headerBackgrounds';
-import { updateCoverMutation, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { updateCoverMutation, setFeedbackMessage } from '../../../../store/queries';
+import { currentProfileRefetch } from '../../../../store/refetch';
 import ImageUploader from '../../../../components/imageUploader';
 import { profilesFolder } from '../../../../constants/s3';
 
 const ColorPickerHOC = compose(
     withRouter,
-    graphql(profileQuery, {
-        name: 'currentProfileQuery',
-        options: (props) => ({
-            variables: {
-                language: props.match.params.lang
-            },
-            fetchPolicy: 'network-only'
-        })
-    }),
     graphql(updateCoverMutation, { name: 'updateCoverMutation' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('activeTab', 'setActiveTab', 'colors'),
@@ -28,21 +20,16 @@ const ColorPickerHOC = compose(
         handleTabChange: ({ setActiveTab }) => (event, value) => {
             setActiveTab(value);
         },
-        setBackgroundColor: ({ updateCoverMutation, setFeedbackMessage }) => async color => {
+        setBackgroundColor: ({ updateCoverMutation, setFeedbackMessage, match }) => async color => {
             try {
                 await updateCoverMutation({
                     variables:
                     {
                         color: color ? color.style : 'none'
                     },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: 'en'
-                        }
-                    }]
+                    refetchQueries: [
+                        currentProfileRefetch(match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -71,7 +58,7 @@ const ColorPickerHOC = compose(
                 }
             });
         },
-        handleSuccess: ({ setFeedbackMessage, updateCoverMutation, refetchBgImage, currentProfileQuery: { profile: { id } } }) => async ({ path, filename }) => {
+        handleSuccess: ({ setFeedbackMessage, updateCoverMutation, refetchBgImage, profile: { id }, match }) => async ({ path, filename }) => {
             const coverPath = path ? path : `/${profilesFolder}/${id}/${filename}`;
             try {
                 await updateCoverMutation({
@@ -79,14 +66,9 @@ const ColorPickerHOC = compose(
                     {
                         path: coverPath
                     },
-                    refetchQueries: [{
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: 'en'
-                        }
-                    }]
+                    refetchQueries: [
+                        currentProfileRefetch(match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -117,13 +99,8 @@ const ColorPicker = props => {
         setBackgroundColor,
         activeTab, handleTabChange,
         openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-        currentProfileQuery: { loading, profile }
+        profile: {id: profileId}
     } = props;
-
-    if (loading)
-        return null;
-
-    const { id: profileId } = profile;
 
     return (
         <Popover

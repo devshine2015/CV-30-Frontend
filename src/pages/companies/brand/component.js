@@ -14,15 +14,13 @@ const Brand = props => {
         currentUser: { auth: { currentUser } }
     } = props;
 
-    const { id: userId } = currentUser || {};
     if (loading)
         return <Loader />
-
+    
+    const { id: userId } = currentUser || {};
     const isEditAllowed= company.owner.id === userId;
 
-    const Show = () => {
-        return (<CompanyShow {...props} isEditAllowed={isEditAllowed} />)
-    };
+    const Show = () => <CompanyShow {...props} isEditAllowed={isEditAllowed} />;
 
     return (
         <div className='brandRoot'>

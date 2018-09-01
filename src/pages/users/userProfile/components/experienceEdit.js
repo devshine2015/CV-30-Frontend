@@ -5,7 +5,8 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid/v4';
 
-import { setExperience, setProject, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { setExperience, setProject, setFeedbackMessage } from '../../../../store/queries';
+import { currentProfileRefetch } from '../../../../store/refetch';
 import ImageUploader from '../../../../components/imageUploader';
 import LocationInput from '../../../../components/LocationInput';
 import { s3BucketURL } from '../../../../constants/s3';
@@ -106,14 +107,9 @@ const ExperienceEditHOC = compose(
                                 experience: data,
                                 language: match.params.lang
                             },
-                            refetchQueries: [{
-                                query: profileQuery,
-                                fetchPolicy: 'network-only',
-                                name: 'currentProfileQuery',
-                                variables: {
-                                    language: match.params.lang
-                                }
-                            }]
+                            refetchQueries: [
+                                currentProfileRefetch(match.params.lang)
+                            ]
                         });
                         await setFeedbackMessage({
                             variables: {
@@ -144,14 +140,9 @@ const ExperienceEditHOC = compose(
                                 project: data,
                                 language: match.params.lang
                             },
-                            refetchQueries: [{
-                                query: profileQuery,
-                                fetchPolicy: 'network-only',
-                                name: 'currentProfileQuery',
-                                variables: {
-                                    language: match.params.lang
-                                }
-                            }]
+                            refetchQueries: [
+                                currentProfileRefetch(match.params.lang)
+                            ]
                         });
                         await setFeedbackMessage({
                             variables: {

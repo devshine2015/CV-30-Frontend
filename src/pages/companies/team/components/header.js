@@ -5,9 +5,10 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { NavLink, Link } from 'react-router-dom';
 import ColorPicker from './colorPicker';
 import { queryTeam, handleFollow, profileQuery, setFeedbackMessage } from '../../../../store/queries';
+import { currentProfileRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 
-import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
+import { s3BucketURL } from '../../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const HeaderHOC = compose(
@@ -16,8 +17,7 @@ const HeaderHOC = compose(
         name: 'currentProfileQuery',
         options: (props) => ({
             variables: {
-                language: props.match.params.lang,
-                id: null
+                language: props.match.params.lang
             },
             fetchPolicy: 'network-only'
         }),
@@ -54,14 +54,9 @@ const HeaderHOC = compose(
                             language: match.params.lang,
                             id: team.id
                         }
-                    }, {
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    }]
+                    },
+                    currentProfileRefetch(match.params.lang)
+                    ]
                 });
                 await setFeedbackMessage({
                     variables: {

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, TextField, Switch as ToggleSwitch, FormLabel, FormGroup, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { handleArticle, profileQuery, companyQuery, queryTeam } from '../store/queries';
+import { handleArticle, companyQuery, queryTeam } from '../store/queries';
+import { currentProfileRefetch } from '../store/refetch';
 import { graphql } from 'react-apollo';
 import uuid from 'uuid/v4';
 import S3Uploader from 'react-s3-uploader';
@@ -44,24 +45,10 @@ const ArticleEditorHOC = compose(
 
             switch (type) {
                 case 'profile_isFeatured':
-                    refetchQuery = {
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    };
+                    refetchQuery = currentProfileRefetch(match.params.lang);
                     break;
                 case 'profile_isAboutMe':
-                    refetchQuery = {
-                        query: profileQuery,
-                        fetchPolicy: 'network-only',
-                        name: 'currentProfileQuery',
-                        variables: {
-                            language: match.params.lang
-                        }
-                    };
+                    refetchQuery = currentProfileRefetch(match.params.lang);
                     break;
                 case 'company_featured':
                     refetchQuery = {
