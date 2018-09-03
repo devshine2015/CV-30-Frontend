@@ -3,7 +3,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 
 const SliderHOC = compose(
     withState('activeItem', 'setItem', 0),
-    withState('count', null, ({ articles }) => articles.length - 1),
+    withState('count', null, ({ articles }) => articles ? articles.length - 1 : 0),
     withHandlers({
         prevItem: ({ activeItem, setItem, count }) => () => {
             let prevStory = activeItem - 1 < 0 ? count : activeItem - 1;

@@ -92,7 +92,7 @@ const ShowHOC = compose(
         },
         deleteQA: props => async (e, id) => {
             e.stopPropagation();
-            const { handleFAQ, setFeedbackMessage, match: { params: { lang, companyId }} } = props;
+            const { handleFAQ, setFeedbackMessage, match: { params: { lang, companyId } } } = props;
             try {
                 await handleFAQ({
                     variables: {
@@ -226,7 +226,7 @@ const Show = (props) => {
                                     </ExpansionPanel>
                                 )
                             else
-                            return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} />
+                                return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} />
                         })
                     }
                     {
@@ -246,7 +246,7 @@ const Show = (props) => {
 
                     <div className='jobs'>
                         {
-                            jobs.map(job => {
+                            jobs && jobs.map(job => {
                                 return (
                                     <div className='jobItem' key={job.id}>
                                         <div className='media'>

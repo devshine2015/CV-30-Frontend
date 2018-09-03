@@ -10,7 +10,7 @@ const ArticleSlider = props => {
         <div className='sliderRoot'>
             <div className='sliderHeader'>
                 {title || null}
-                {articles.length > 1 &&
+                {articles && articles.length > 1 &&
                     <div className='sliderControls'>
                         <IconButton className='sliderArrow' onClick={prevItem}>
                             <Icon>
@@ -33,7 +33,7 @@ const ArticleSlider = props => {
             </div>
             <div className='sliderMain'>
                 {
-                    articles.map((article, index) => {
+                    articles && articles.map((article, index) => {
                         let image, video;
                         if (article.images && article.images.length > 0) {
                             image = `${s3BucketURL}${article.images[0].path}`;
