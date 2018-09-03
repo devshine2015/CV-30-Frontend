@@ -187,10 +187,9 @@ const Show = props => {
                         </section>
 
                         {/* TODO: show only if user owns the job or don't show at all?! */}
-                        {salary && <section className='salary'>
+                        {salary && salary.isPublic && <section className='salary'>
                             <h2 className='sectionTitle'>Salary <b>range</b></h2>
                             <p>{`${salary.amountMin} - ${salary.amountMax} ${formatCurrency(salary.currency)}`}</p>
-                            <p>{salary.isPublic ? 'Public' : 'Private'}</p>
                         </section>}
 
                         <section className='companyDetails'>
