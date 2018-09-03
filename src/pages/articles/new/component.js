@@ -14,14 +14,18 @@ import ImageUploader from '../../../components/imageUploader';
 import TagsInput from '../../../components/TagsInput';
 
 
-const NewArticle = ({
-    handleFormChange, formData: { id, title, description, videoURL, tags },
-    updateDescription, saveArticle,
-    isVideoUrl, switchMediaType,
-    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess, isSaving,
-    getSignedURL, handleFroalaSuccess, handleFroalaError,
-    setTags
-}) => {
+const NewArticle = (props) => {
+    const {
+        handleFormChange, formData: { id, title, description, videoURL, tags },
+        updateDescription, saveArticle,
+        isVideoUrl, switchMediaType,
+        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        getSignedURL, handleFroalaSuccess, handleFroalaError,
+        setTags
+    } = props;
+
+    console.log(props);
+
     return (
         <div className='newArticleRoot'>
             <Grid container className='mainBody articleEdit'>
@@ -36,7 +40,7 @@ const NewArticle = ({
                             className='textField'
                             fullWidth
                             onChange={handleFormChange}
-                            value={title}
+                            value={title || ''}
                             InputProps={{
                                 classes: {
                                     input: 'titleInput',

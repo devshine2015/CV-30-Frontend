@@ -1,14 +1,103 @@
 import React from 'react';
-import { Tab, Tabs, Modal } from '@material-ui/core';
-import { compose, pure, withState, withHandlers } from 'recompose';
-import ArticleEditor from './ArticleEditor';
-import ArticleList from './ArticleList';
+import { Modal, Grid } from '@material-ui/core';
+import { FormattedMessage } from 'react-intl';
+import { Link, withRouter } from 'react-router-dom';
+import { compose, withHandlers, pure } from 'recompose';
+import { graphql } from 'react-apollo';
+import ReactPlayer from 'react-player';
 
-const ArticlePopUp = (props) => {
+import { s3BucketURL } from '../constants/s3';
+import { getArticles, handleArticle, setFeedbackMessage } from '../store/queries';
+import { currentProfileRefetch, companyRefetch, teamRefetch } from '../store/refetch';
+import Loader from './Loader';
+
+const ArticlePopUpHOC = compose(
+    withRouter,
+    graphql(getArticles, {
+        name: 'getArticles',
+        options: (props) => ({
+            variables: {
+                language: props.match.params.lang
+            },
+            fetchPolicy: 'network-only',
+        }),
+    }),
+    graphql(handleArticle, { name: 'handleArticle' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+    withHandlers({
+        updateArticle: ({ match, type, handleArticle, onClose, setFeedbackMessage }) => async articleId => {
+            let article = {};
+            let options = {};
+            let refetchQuery = {};
+
+            switch (type) {
+                case 'profile_isFeatured':
+                    article.isFeatured = true;
+                    article.id = articleId;
+                    refetchQuery = currentProfileRefetch(match.params.lang);
+                    break;
+                case 'profile_isAboutMe':
+                    article.isAboutMe = true;
+                    article.id = articleId;
+                    refetchQuery = currentProfileRefetch(match.params.lang);
+                    break;
+                case 'company_featured':
+                    options = {
+                        articleId: articleId,
+                        companyId: match.params.companyId,
+                        isFeatured: true
+                    };
+                    refetchQuery = companyRefetch(match.params.companyId, match.params.lang);
+                    break;
+                case 'job_officeLife':
+                    options = {
+                        articleId: articleId,
+                        teamId: match.params.teamId,
+                        isAtOffice: true
+                    };
+                    refetchQuery = teamRefetch(match.params.teamId, match.params.lang);
+                    break;
+                default:
+                    return false;
+            }
+
+            try {
+                await handleArticle({
+                    variables: {
+                        article,
+                        options,
+                        language: match.params.lang
+                    },
+                    refetchQueries: [refetchQuery]
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+                onClose();
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
+        }
+    }),
+    pure
+);
+
+const ArticlePopUp = props => {
     const {
-        open, onClose,
-        activeTab, handleTabChange
+        open, onClose, match: { params: { lang, companyId, teamId } }, type
     } = props;
+
+    const { articles, loading } = props.getArticles;
 
     return (
         <Modal
@@ -18,64 +107,89 @@ const ArticlePopUp = (props) => {
             }}
             onClose={onClose}
         >
-            <div className='storyEditPaper'>
-                <div className='popupHeader'>
-                    <h4>Add an article</h4>
-                    <p>
-                        Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro.
+            {loading ? <Loader /> :
+                <div className='storyEditPaper'>
+                    <div className='popupHeader'>
+                        <h4>Add an article</h4>
+                        <p>
+                            Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro.
                     </p>
-                    <Tabs
-                        value={activeTab}
-                        onChange={handleTabChange}
-                        classes={{
-                            root: 'tabsContainer',
-                            flexContainer: 'tabsFlexContainer',
-                            indicator: 'tabIndicator'
-                        }}
-                    >
-                        <Tab
-                            label="Choose an existing article"
-                            value='existing'
-                            classes={{
-                                root: 'tabItemRoot',
-                                selected: 'tabItemSelected',
-                                wrapper: 'tabItemWrapper',
-                                label: 'tabItemLabel',
-                                labelContainer: 'tabItemLabelContainer'
-                            }}
-                        />
-                        <Tab disabled label=' OR ' />
-                        <Tab
-                            label="Create a new article"
-                            value='new'
-                            classes={{
-                                root: 'tabItemRoot',
-                                selected: 'selected',
-                                wrapper: 'tabItemWrapper',
-                                label: 'tabItemLabel',
-                                labelContainer: 'tabItemLabelContainer'
-                            }}
-                        />
-                    </Tabs>
+                        <div className='headerChoices'>
+                            <FormattedMessage id="article.choose" defaultMessage="Choose an existing article" description="Choose an existing article">
+                                {(text) => <span>{text}</span>}
+                            </FormattedMessage>
+                            <FormattedMessage id="or" defaultMessage="OR" description="OR">
+                                {(text) => <span>{text}</span>}
+                            </FormattedMessage>
+                            <FormattedMessage id="article.createBtn" defaultMessage="Create new article" description="Create new article">
+                                {(text) => (
+                                    <Link to={{
+                                        pathname: `/${lang}/articles/new`,
+                                        state: { type, companyId, teamId }
+                                    }}
+                                        className='linkBtn'>
+                                        {text}
+                                    </Link>
+                                )}
+                            </FormattedMessage>
+                        </div>
+                    </div>
+                    <div className='popupBody'>
+                        <div className='articlesContainer'>
+                            {
+                                (articles && articles.length > 0) ? articles.map(article => {
+                                    let { id, i18n, images, videos } = article;
+                                    let { title, description } = i18n[0];
+
+                                    let image, video;
+                                    if (images && images.length > 0) {
+                                        image = `${s3BucketURL}${images[0].path}`;
+                                    }
+                                    if (videos && videos.length > 0) {
+                                        video = videos[0].path;
+                                    }
+                                    return (
+                                        <Grid container className='articleItem' onClick={() => props.updateArticle(id)} key={id}>
+                                            <Grid item sm={12} md={3} className='articleMedia'>
+                                                {image &&
+                                                    <img src={image} alt={id} className='storyImg' />
+                                                }
+                                                {(video && !image) &&
+                                                    <ReactPlayer
+                                                        url={video}
+                                                        width='200'
+                                                        height='140'
+                                                        config={{
+                                                            youtube: {
+                                                                playerVars: {
+                                                                    showinfo: 0,
+                                                                    controls: 0,
+                                                                    modestbranding: 1,
+                                                                    loop: 1
+                                                                }
+                                                            }
+                                                        }}
+                                                        playing={false} />
+                                                }
+                                            </Grid>
+                                            <Grid item sm={12} md={9} className='articleTexts'>
+                                                <h4>{title}</h4>
+                                                <p>
+                                                    {description}
+                                                </p>
+                                            </Grid>
+                                        </Grid>
+                                    )
+                                })
+                                    :
+                                    <p className='noArticles'>No articles.</p>
+                            }
+                        </div>
+                    </div>
                 </div>
-                <div className='popupBody'>
-                    {activeTab === 'existing' && <ArticleList {...props} />}
-                    {activeTab === 'new' && <ArticleEditor {...props} />}
-                </div>
-            </div>
+            }
         </Modal>
     );
-}
-
-
-const ArticlePopUpHOC = compose(
-    withState('activeTab', 'setActiveTab', 'new'),
-    withHandlers({
-        handleTabChange: ({ setActiveTab }) => (event, value) => {
-            setActiveTab(value);
-        }
-    }),
-    pure
-);
+};
 
 export default ArticlePopUpHOC(ArticlePopUp);

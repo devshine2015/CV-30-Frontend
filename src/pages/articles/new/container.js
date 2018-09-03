@@ -1,5 +1,5 @@
 import NewArticle from './component';
-import { compose, withState, pure, withHandlers, lifecycle } from 'recompose';
+import { compose, withState, pure, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuidv4';
@@ -14,7 +14,7 @@ const NewArticleHOC = compose(
     }),
     graphql(setEditMode, { name: 'setEditMode' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', props => {
+    withState('formData', 'setFormData', () => {
         return {
             id: uuid(),
             tags: []
@@ -46,15 +46,37 @@ const NewArticleHOC = compose(
         updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
         switchMediaType: ({ isVideoUrl, changeMediaType, editor }) => () => changeMediaType(!isVideoUrl),
         saveArticle: props => async () => {
-            const { handleArticle, formData: { id, title, description, videoURL, images, tags }, setIsSaving, match, setFeedbackMessage, setEditMode, history } = props;
+            const { handleArticle, formData: { id, title, description, videoURL, images, tags },
+                setIsSaving, match, setFeedbackMessage, setEditMode, history, location: { state }
+            } = props;
+            // debugger;
+
+            let { type, companyId, teamId } = state || {};
+            let options = {};
+
+            let postAs = 'profile';
+
+            if (type === 'profile_isFeatured' || type === 'profile_isAboutMe')
+                postAs = 'profile';
+            if (type === 'company_featured')
+                postAs = 'company';
+            if (type === 'job_officeLife')
+                postAs = 'team'
 
             const article = {
                 id,
                 title,
                 description,
                 images,
-                tags
+                tags,
+                postAs,
+
             };
+
+            if (companyId)
+                article.postingCompanyId = companyId;
+            if (teamId)
+                article.postingTeamId = teamId;
 
             if (videoURL) {
                 article.videos = [
@@ -68,11 +90,37 @@ const NewArticleHOC = compose(
                 ];
             }
 
+            switch (type) {
+                case 'profile_isFeatured':
+                    article.isFeatured = true;
+                    article.id = id;
+                    break;
+                case 'profile_isAboutMe':
+                    article.isAboutMe = true;
+                    article.id = id;
+                    break;
+                case 'company_featured':
+                    options = {
+                        articleId: id,
+                        companyId: companyId,
+                        isFeatured: true
+                    };
+                    break;
+                case 'job_officeLife':
+                    options = {
+                        articleId: id,
+                        teamId: teamId,
+                        isAtOffice: true
+                    };
+                    break;
+            }
+
             try {
                 await handleArticle({
                     variables: {
                         language: match.params.lang,
-                        article
+                        article,
+                        options
                     }
                 });
 

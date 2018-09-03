@@ -41,32 +41,24 @@
             margin: 5px 0;
         }
 
-        .tabsContainer {
+        .headerChoices {
+            display: flex;
+            padding: 15px 5px 10px;
             width: 100%;
-            min-height: auto;
             margin-top: 15px;
+            text-transform: none;
+            font-size: 1rem;
+            justify-content: space-around;
+            align-items: baseline;
+            font-weight: 500;
 
-            .tabsFlexContainer {
-                align-items: baseline;
-                justify-content: space-evenly;
-
-                .tabItemRoot {
-                    min-width: auto;
-                    min-height: auto;
-
-                    .tabItemLabelContainer {
-                        padding: 15px 5px 5px;
-                    }
-
-                    .tabItemLabel {
-                        text-transform: none;
-                        font-size: 1rem;
-                    }
-                }
-            }
-
-            .tabIndicator {
-                background-color: #397db9;
+            .linkBtn {
+                background: #397db9;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+                padding: 5px 10px;
+                font-size: .85rem;
             }
         }
     }
@@ -332,6 +324,7 @@
                     .leftOverlayTexts {
                         margin-left: 15px;
                         padding: 15px 0;
+
                         .userName,
                         .userTitle,
                         .companyName,
@@ -340,33 +333,34 @@
                             padding: 0;
                             color: #565656;
                         }
+
                         .userName,
                         .companyName {
                             display: flex;
                             align-items: flex-start;
                             font-size: 1rem;
+
                             i {
                                 cursor: pointer;
                                 margin-left: 10px;
                             }
                         }
+
                         .userTitle,
                         .expires {
                             font-size: 0.75rem;
                             font-weight: 100;
                         }
+
                         .expires {
                             color: #a0a0a0;
+
                             span {
                                 color: #414141;
                             }
                         }
                     }
                 }
-
-
-
-                
 
                 .articleDate {
                     color: #b6b6b6;
