@@ -8,7 +8,7 @@ import ReactPlayer from 'react-player';
 
 import ArticleSlider from '../../../../components/articleSlider';
 import Loader from '../../../../components/Loader';
-import { handleApplyToJob, profileQuery } from '../../../../store/queries';
+import { handleApplyToJob } from '../../../../store/queries';
 import { currentProfileRefetch, jobRefetch } from '../../../../store/refetch';
 import { formatCurrency } from '../../../../constants/utils';
 import { s3BucketURL } from '../../../../constants/s3';
@@ -16,15 +16,6 @@ import { s3BucketURL } from '../../../../constants/s3';
 const ShowHOC = compose(
 
     graphql(handleApplyToJob, { name: 'handleApplyToJob' }),
-    graphql(profileQuery, {
-        name: 'currentProfileQuery',
-        options: (props) => ({
-            variables: {
-                language: props.match.params.lang
-            },
-            fetchPolicy: 'network-only'
-        }),
-    }),
     withState('expanded', 'updateExpanded', null),
     withHandlers({
         expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
@@ -65,16 +56,15 @@ const ShowHOC = compose(
 const Show = props => {
     const {
         getJobQuery: { loading: jobLoading, job },
-        currentProfileQuery: { loading: currentProfileLoading, profile },
+        currentUser: { auth: { currentUser } }
     } = props;
 
-    if (jobLoading || currentProfileLoading) {
+    if (jobLoading) {
         return <Loader />
     } else if (!job) {
         //TODO
         return <div>Job not found...</div>;
     } else {
-        console.log(job);
         const { expanded, expandPanel, setApplyToJob } = props;
         const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles, jobs },
             expireDate, createdAt, activityField, salary, skills, jobTypes, videoUrl, imagePath } = job;
@@ -98,10 +88,10 @@ const Show = props => {
         const { title, description, idealCandidate } = i18n[0];
         const { description: companyDescription } = companyText[0];
 
-        let isApplyAllowed = !currentProfileLoading;
+        let isApplyAllowed = !!currentUser;
         let didApply = false;
         if (isApplyAllowed) {
-            const { id: currentUserId } = profile || {};
+            const { id: currentUserId } = currentUser || {};
             didApply = job.applicants.find(u => u.id === currentUserId) !== undefined;
         }
 
@@ -122,7 +112,7 @@ const Show = props => {
                                 <span className='availableJobs'>({jobs.length}&nbsp;jobs)</span>
                             }
                         </div>
-                        {(isApplyAllowed && profile) ? <Button className={didApply ? "appliedButton" : "applyButton"} onClick={() => setApplyToJob(!didApply)}>
+                        {isApplyAllowed ? <Button className={didApply ? "appliedButton" : "applyButton"} onClick={() => setApplyToJob(!didApply)}>
                             {didApply ? "Already applied" : "Apply Now"}
                         </Button> : null}
                     </Grid>

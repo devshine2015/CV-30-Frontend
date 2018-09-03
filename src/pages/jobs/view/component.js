@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
 import Show from './components/show';
 import Edit from './components/edit';
 import Loader from '../../../components/Loader';
@@ -16,7 +15,7 @@ const Job = props => {
         return <Loader />
 
     const { id: userId } = currentUser || {};
-
+    
     return (
         <div className='jobRoot'>
             {(job.company.owner.id === userId) &&
