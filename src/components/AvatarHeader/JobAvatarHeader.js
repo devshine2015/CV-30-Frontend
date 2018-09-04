@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { compose, mapProps, pure } from 'recompose';
 
 import { defaultCompanyLogo } from '../../constants/utils';

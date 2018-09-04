@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Hidden, IconButton, Icon, Button, FormGroup, FormLabel, Switch as ToggleSwitch, Snackbar } from '@material-ui/core';
+import { Grid, Hidden, IconButton, Icon, Button, FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 

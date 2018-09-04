@@ -3,7 +3,7 @@ import { Grid, Button, Icon, Avatar, IconButton, Badge, Drawer, ListItem } from 
 import { FormattedMessage } from 'react-intl';
 import { NavLink, Link } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
-import { s3BucketURL, profilesFolder } from '../../constants/s3';
+import { s3BucketURL } from '../../constants/s3';
 import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
 
 const MobileNav = (props) => {

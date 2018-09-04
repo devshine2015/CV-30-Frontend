@@ -308,7 +308,7 @@ const ExperienceEdit = props => {
                     <React.Fragment>
                         {image ?
                             <div className="imagePreview">
-                                <img src={`${s3BucketURL}${image.path}`} className='previewImg' />
+                                <img src={`${s3BucketURL}${image.path}`} className='previewImg' alt='' />
                                 <IconButton className='removeBtn' onClick={removeImage}>
                                     <Icon>cancel</Icon>
                                 </IconButton>

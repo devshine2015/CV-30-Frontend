@@ -3,7 +3,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { Avatar, Chip, Tabs, Tab } from '@material-ui/core';
 import { Link, withRouter } from 'react-router-dom';
 
-import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
+import { s3BucketURL } from '../../../../constants/s3';
 import { defaultUserAvatar } from '../../../../constants/utils';
 
 const ProfileHOC = compose(

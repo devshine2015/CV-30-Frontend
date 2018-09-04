@@ -141,7 +141,8 @@ const NewCompanyHOC = compose(
         validationSchema: schema,
         handleSubmit: async (values, { props: { handleCompany, match, history, setFeedbackMessage }, setSubmitting }) => {
             try {
-                const { data: { handleCompany: { status } } } = await handleCompany({
+                // const { data: { handleCompany: { status } } } = 
+                await handleCompany({
                     variables: {
                         language: match.params.lang,
                         details: values

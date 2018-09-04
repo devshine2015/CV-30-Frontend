@@ -74,6 +74,7 @@ const StoriesSlider = props => {
                             }}
                             playing={false} />
                         )
+                    return null;
                 })}
             </Grid>
         </Grid>

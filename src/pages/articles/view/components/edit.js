@@ -22,7 +22,7 @@ const ArticleEditHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('formData', 'setFormData', props => {
-        const { getArticle: { article: { images, videos, i18n, tags } } } = props;
+        const { getArticle: { article: { /*images, videos,*/ i18n, tags } } } = props;
 
         return {
             title: (i18n && i18n[0] && i18n[0].title) ? i18n[0].title : '',
@@ -172,7 +172,7 @@ const ArticleEditHOC = compose(
 
 const ArticleEdit = props => {
     const {
-        getArticle: { article: { id: articleId, author: { id: authorId, email, firstName, lastName }, images, videos, i18n, created_at } },
+        // getArticle: { article: { id: articleId, author: { id: authorId, email, firstName, lastName }, images, videos, i18n, created_at } },
         handleFormChange, formData: { title, description, tags, videoURL }, updateDescription, saveArticle,
         isVideoUrl, switchMediaType,
         getSignedUrl, onUploadStart, onError, onFinishUpload, isSaving,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
+// import { FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
 
 import Header from './components/header';
 import Show from './components/show';
@@ -18,10 +18,6 @@ const Team = props => {
         return <Loader />
 
     const { id: userId } = currentUser || {};
-
-    const ShowWithProps = () => {
-        return (<Show {...props} />)
-    };
 
     return (
         <div className='teamRoot'>

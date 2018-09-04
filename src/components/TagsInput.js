@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Chip, TextField } from '@material-ui/core';
 
-const Help = props => <small className='helperText' {...props} />
-
 class TagsInput extends Component {
     state = {
         newTag: ''

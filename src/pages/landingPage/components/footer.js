@@ -19,7 +19,7 @@ import { s3BucketURL } from '../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../constants/utils';
 import { handleLandingPage, setFeedbackMessage } from '../../../store/queries';
 import { landingPageRefetch } from '../../../store/refetch';
-import Feedback from '../../../components/Feedback';
+// import Feedback from '../../../components/Feedback';
 
 const FooterHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),

@@ -79,7 +79,7 @@ const NewJob = props => {
                                 <React.Fragment>
                                     {imagePath &&
                                         <div className="imagePreview">
-                                            <img src={`${s3BucketURL}${imagePath}`} className='previewImg' />
+                                            <img src={`${s3BucketURL}${imagePath}`} className='previewImg' alt='' />
                                             <IconButton className='removeBtn' onClick={removeImage}>
                                                 <Icon>cancel</Icon>
                                             </IconButton>

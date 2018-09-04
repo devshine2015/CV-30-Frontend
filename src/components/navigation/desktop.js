@@ -11,12 +11,12 @@ import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
 const DesktopNav = props => {
     const {
         localUserData: { loading: localUserLoading, localUser: { timestamp } },
-        currentUser: { loading: currentUserLoading, auth: { currentUser } },
+        currentUser: { loading: currentUserLoading, auth },
         match: { params: { lang } },
         doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications
     } = props;
 
-    debugger;
+    const { currentUser } = auth || {};
 
     if (localUserLoading || currentUserLoading)
         return <span>Loading...</span>

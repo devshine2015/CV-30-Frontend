@@ -3,7 +3,7 @@ import { Grid, Paper, TextField, Hidden } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { compose, pure, lifecycle, withState } from 'recompose';
 import { graphql } from 'react-apollo';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { ActivateAccountMutation } from '../../store/queries';
 
 const Activate = (props) => {

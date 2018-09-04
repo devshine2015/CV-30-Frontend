@@ -14,7 +14,7 @@ import { pure, withState, withHandlers } from 'recompose';
 import fields from '../../../../constants/contact';
 import ArticlePopUp from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
-import Feedback from '../../../../components/Feedback';
+// import Feedback from '../../../../components/Feedback';
 
 const ShowHOC = compose(
     withRouter,

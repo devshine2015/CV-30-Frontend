@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Avatar, Button, Icon, Hidden, Chip, CircularProgress, IconButton } from '@material-ui/core';
+import { Grid, Avatar, Button, Icon, Hidden, Chip, IconButton } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from "recompose";
 import { FormattedMessage } from 'react-intl';
 import { NavLink, withRouter, Link } from 'react-router-dom';

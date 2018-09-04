@@ -64,7 +64,7 @@ const SettingsHOC = compose(
         saveUserDetails: props => async () => {
             const {
                 handleCompany, setIsSaving,
-                setSettingsFormSuccess, setSettingsFormError, updateUserSettings,
+                // setSettingsFormSuccess, setSettingsFormError, updateUserSettings,
                 formData: { id, industry, location, noOfEmployees, name },
                 match,
                 headline, description,
@@ -109,7 +109,7 @@ const SettingsHOC = compose(
 const Settings = props => {
     const {
         settingsFormSuccess, settingsFormError,
-        getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving,
+        // getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving,
         handleFormChange, formData,
         saveUserDetails,
         headline, updateHeadline,

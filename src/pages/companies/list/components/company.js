@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import JobItem from './jobItem';
 import TeamMember from './teamMember';
 import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
-import { s3BucketURL, companiesFolder } from '../../../../constants/s3';
+import { s3BucketURL } from '../../../../constants/s3';
 
 const CompanyHOC = compose(
     withState('activeTab', 'setActiveTab', false),

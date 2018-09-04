@@ -125,6 +125,8 @@ const NewArticleHOC = compose(
                         isAtOffice: true
                     };
                     break;
+                default:
+                    break;
             }
 
             try {

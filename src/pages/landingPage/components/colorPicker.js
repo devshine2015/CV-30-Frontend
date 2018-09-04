@@ -35,6 +35,8 @@ const ColorPickerHOC = compose(
                         footerCoverBackground: color ? color.style : 'none'
                     };
                     break;
+                default:
+                    break;
             }
             try {
                 await handleLandingPage({
@@ -90,6 +92,8 @@ const ColorPickerHOC = compose(
                     details = {
                         footerCoverPath: coverPath
                     };
+                    break;
+                default:
                     break;
             }
 

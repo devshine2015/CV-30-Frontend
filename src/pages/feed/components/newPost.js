@@ -215,7 +215,7 @@ const NewPost = props => {
             <div className='postBody'>
                 {image &&
                     <div className="imagePreview">
-                        <img src={image} className='previewImg' />
+                        <img src={image} className='previewImg' alt='' />
                         <IconButton className='removeBtn' onClick={removeImage}>
                             <Icon>cancel</Icon>
                         </IconButton>

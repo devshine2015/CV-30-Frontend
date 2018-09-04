@@ -1,6 +1,6 @@
 import React from 'react';
-import { Grid, TextField, Button, FormGroup, FormLabel, Switch as ToggleSwitch, Chip } from '@material-ui/core';
-import S3Uploader from 'react-s3-uploader';
+import { Grid, TextField, Button, FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
+// import S3Uploader from 'react-s3-uploader';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';

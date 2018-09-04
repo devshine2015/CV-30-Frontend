@@ -5,7 +5,6 @@ import { compose, withState, withHandlers } from 'recompose';
 import { Button } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 
-
 const uploadFile = async (image, signedUrl) => {
     let block = image.result.split(";");
     let contentType = block[0].split(":")[1];
@@ -71,7 +70,7 @@ const ImageUploadHOC = compose(
                 });
                 let responseJson = await response.json();
 
-                let { result, error } = await uploadFile(image, responseJson.signedUrl);
+                let { error } = await uploadFile(image, responseJson.signedUrl);
 
                 if (error)
                     onError(error);

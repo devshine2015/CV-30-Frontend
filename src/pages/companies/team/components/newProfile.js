@@ -143,7 +143,7 @@ const NewProfile = props => {
                 />
                 {avatarPath ?
                     <div className="imagePreview">
-                        <img src={`${s3BucketURL}${avatarPath}`} className='previewImg' />
+                        <img src={`${s3BucketURL}${avatarPath}`} className='previewImg' alt='' />
                         <IconButton className='removeBtn' onClick={removeImage}>
                             <Icon>cancel</Icon>
                         </IconButton>

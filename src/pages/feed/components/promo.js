@@ -124,7 +124,7 @@ const Promo = ({
             <section className='promo'>
                 {ad ?
                     <a href={ad.url} className='promoLink' target='_blank'>
-                        <img src={`${s3BucketURL}${ad.image.path}`} className='promoImg' />
+                        <img src={`${s3BucketURL}${ad.image.path}`} className='promoImg' alt='' />
                     </a>
                     : <span className='noPromo'>Promo</span>
                 }
