@@ -16,12 +16,10 @@ const UserProfile = props => {
 
     if (!profile)
         return <Loader />;
-    
-    const { id: userId } = currentUser || {};
-    const isEditAllowed= profile.id === userId;
 
-    const Show = () => <UserProfileShow {...props} isEditAllowed={isEditAllowed} />;
-    
+    const { id: userId } = currentUser || {};
+    const isEditAllowed = profile.id === userId;
+
     return (<div className='userProfileRoot'>
         {(isEditAllowed) &&
             <EditToggle />
@@ -31,7 +29,7 @@ const UserProfile = props => {
             <Switch>
                 <Route exact path='/:lang(en|ro)/myProfile/feed' component={UserProfileFeed} />
                 <Route path='/:lang(en|ro)/profile/:profileId/feed' component={UserProfileFeed} />
-                <Route path='/:lang(en|ro)/(profile|myProfile)/:profileId?' component={Show} />
+                <Route path='/:lang(en|ro)/(profile|myProfile)/:profileId?' render={() => <UserProfileShow {...props} isEditAllowed={isEditAllowed} />} />
             </Switch>
         </React.Fragment>
     </div>

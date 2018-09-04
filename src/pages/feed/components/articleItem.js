@@ -31,7 +31,6 @@ const ArticleItemHOC = compose(
             setTagAnchor(null);
         },
         addVote: ({ handleArticleTags, match: { params: { lang: language } }, article }) => async tag => {
-            console.log(article);
             try {
                 await handleArticleTags({
                     variables: {

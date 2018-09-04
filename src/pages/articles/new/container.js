@@ -49,7 +49,6 @@ const NewArticleHOC = compose(
             const { handleArticle, formData: { id, title, description, videoURL, images, tags },
                 setIsSaving, match, setFeedbackMessage, setEditMode, history, location: { state }
             } = props;
-            // debugger;
 
             let { type, companyId, teamId } = state || {};
             let options = {};
@@ -58,7 +57,7 @@ const NewArticleHOC = compose(
 
             if (type === 'profile_isFeatured' || type === 'profile_isAboutMe')
                 postAs = 'profile';
-            if (type === 'company_featured')
+            if (type === 'company_featured' || type === 'company_officeLife' || type === 'company_moreStories')
                 postAs = 'company';
             if (type === 'job_officeLife')
                 postAs = 'team'
@@ -69,8 +68,7 @@ const NewArticleHOC = compose(
                 description,
                 images,
                 tags,
-                postAs,
-
+                postAs
             };
 
             if (companyId)
@@ -104,6 +102,20 @@ const NewArticleHOC = compose(
                         articleId: id,
                         companyId: companyId,
                         isFeatured: true
+                    };
+                    break;
+                case 'company_officeLife':
+                    options = {
+                        articleId: id,
+                        companyId,
+                        isAtOffice: true
+                    };
+                    break;
+                case 'company_moreStories':
+                    options = {
+                        articleId: id,
+                        companyId,
+                        isMoreStories: true
                     };
                     break;
                 case 'job_officeLife':

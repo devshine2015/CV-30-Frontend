@@ -3,9 +3,10 @@ import { IconButton, Icon } from '@material-ui/core';
 import ReactPlayer from 'react-player';
 
 import { s3BucketURL } from '../../constants/s3';
+import { stripHtmlTags } from '../../constants/utils';
 
 const ArticleSlider = props => {
-    const { articles, title, prevItem, activeItem, jumpToItem, nextItem } = props;
+    const { articles, title, prevItem, activeItem, jumpToItem, nextItem, editMode, editArticle } = props;
     return (
         <div className='sliderRoot'>
             <div className='sliderHeader'>
@@ -35,13 +36,13 @@ const ArticleSlider = props => {
                 {
                     articles && articles.map((article, index) => {
                         let image, video;
-                        if (article.images && article.images.length > 0) {
+
+                        if (article.images && article.images.length > 0)
                             image = `${s3BucketURL}${article.images[0].path}`;
-                            // image = article.images[0].path;
-                        }
-                        if (article.videos && article.videos.length > 0) {
+
+                        if (article.videos && article.videos.length > 0)
                             video = article.videos[0].path;
-                        }
+
                         return (
                             <div className={index === activeItem ? 'sliderContents active' : 'sliderContents'} key={article.id}>
                                 <div className='media'>
@@ -68,8 +69,13 @@ const ArticleSlider = props => {
                                 </div>
                                 <div className='textContents'>
                                     <h4>{article.i18n[0].title}</h4>
-                                    <p>{article.i18n[0].description}</p>
+                                    <p>{stripHtmlTags(article.i18n[0].description)}</p>
                                 </div>
+                                {editMode &&
+                                    <IconButton className='floatingEditBtn' onClick={() => editArticle(article.id)}>
+                                        <Icon>edit</Icon>
+                                    </IconButton>
+                                }
                             </div>
                         );
                     })

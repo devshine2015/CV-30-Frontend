@@ -616,7 +616,6 @@
             }
 
             .story {
-                margin-bottom: 25px;
                 position: relative;
 
                 &:last-child {
@@ -641,6 +640,17 @@
                     color: #fff;
                     box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
                 }
+            }
+
+            .addStoryBtn {
+                display: block;
+                color: #277dba;
+                border: 2px dashed #277dba;
+                padding: 25px;
+                text-align: center;
+                cursor: pointer;
+                border-radius: 5px;
+                margin-top: 25px;
             }
         }
     }
@@ -727,85 +737,6 @@
                         height: 40px;
                         min-width: auto;
                         min-height: auto;
-                    }
-                }
-            }
-        }
-    }
-
-    .addStoryWrapper {
-        position: relative;
-        display: block;
-        margin-top: 25px;
-
-        .addStoryBtn {
-            display: block;
-            color: #277dba;
-            border: 2px dashed #277dba;
-            padding: 25px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .newStoryForm {
-            max-height: 0px;
-            max-height: 0;
-            overflow: hidden;
-            background: #fff;
-            border-radius: 10px;
-            margin: 25px 0;
-            transition: max-height 0.15s ease-out;
-
-            &.open {
-                max-height: 1000px;
-                transition: max-height 0.25s ease-in;
-                box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
-            }
-
-            form {
-                padding: 10px 20px;
-
-                .textField {
-                    margin: 15px 0;
-                }
-
-                .mediaUpload {
-                    margin-left: -20px;
-                    margin-right: -20px;
-                    border-top: 2px solid #ddd;
-                    border-bottom: 2px solid #ddd;
-                    background: #eee;
-                    padding: 20px;
-                }
-
-                .footer {
-                    display: flex;
-                    margin: 0;
-                    padding: 15px 0;
-                    position: relative;
-                    align-items: center;
-                    justify-content: flex-end;
-
-                    button {
-                        border-radius: 50%;
-                        box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
-                    }
-
-                    .cancelBtn {
-                        width: 25px;
-                        height: 25px;
-                        min-width: auto;
-                        min-height: auto;
-                        background: #fff;
-                        color: #ff0000;
-                        margin: 0 5px;
-                    }
-
-                    .submitBtn {
-                        background: #397db9;
-                        color: #fff;
-                        margin: 0 10px;
                     }
                 }
             }

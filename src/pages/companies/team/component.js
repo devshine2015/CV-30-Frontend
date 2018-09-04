@@ -31,7 +31,7 @@ const Team = props => {
             <Header {...props} />
             <React.Fragment>
                 <Switch>
-                    <Route exact path='/:lang(en|ro)/team/:teamId' component={ShowWithProps} />
+                    <Route exact path='/:lang(en|ro)/team/:teamId' render={() => <Show {...props} />} />
                     <Route exact path='/:lang(en|ro)/team/:teamId/feed' component={Feed} />
                 </Switch>
             </React.Fragment>

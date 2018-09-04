@@ -9,28 +9,27 @@ import Loader from '../../../components/Loader';
 import EditToggle from '../../../components/EditToggle';
 
 const Brand = props => {
-    const {       
+    const {
         companyQuery: { loading, company },
         currentUser: { auth: { currentUser } }
     } = props;
 
     if (loading)
         return <Loader />
-    
-    const { id: userId } = currentUser || {};
-    const isEditAllowed= company.owner.id === userId;
 
-    const Show = () => <CompanyShow {...props} isEditAllowed={isEditAllowed} />;
+    const { id: userId } = currentUser || {};
+    const isEditAllowed = company.owner.id === userId;
 
     return (
         <div className='brandRoot'>
             {isEditAllowed &&
                 <EditToggle />
             }
+
             <Header {...props} isEditAllowed={isEditAllowed} />
             <React.Fragment>
                 <Switch>
-                    <Route exact path='/:lang(en|ro)/company/:companyId' component={Show} />
+                    <Route exact path='/:lang(en|ro)/company/:companyId' render={() => <CompanyShow {...props} isEditAllowed={isEditAllowed} />} />
                     <Route exact path='/:lang(en|ro)/company/:companyId/feed' component={CompanyFeed} />
                 </Switch>
             </React.Fragment>

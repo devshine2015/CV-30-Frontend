@@ -147,6 +147,7 @@ const Show = props => {
                     {(officeArticles && officeArticles.length > 0) &&
                         <ArticleSlider
                             articles={officeArticles}
+                            editMode={editMode}
                             title={(<h2 className='titleHeading'>Life <b>at the office</b></h2>)}
                         />
                     }

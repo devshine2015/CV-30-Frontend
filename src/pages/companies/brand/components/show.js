@@ -14,14 +14,14 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-import AddNewStory from './addStory';
 import QuestionEdit from './questionEdit';
-import Story from './story';
+import ArticleDisplay from './articleDisplay';
 import ArticleSlider from '../../../../components/articleSlider';
 import { handleCompany, handleFAQ, setFeedbackMessage } from '../../../../store/queries';
 import { companyRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 import { s3BucketURL } from '../../../../constants/s3';
+import ArticlePopup from '../../../../components/ArticlePopup';
 
 const ShowHOC = compose(
     graphql(handleCompany, { name: 'handleCompany' }),
@@ -37,6 +37,8 @@ const ShowHOC = compose(
             return '';
         return i18n[0].description;
     }),
+    withState('articlePopupOpen', 'setArticlePopupOpen', false),
+    withState('articleType', 'setArticleType', null),
     withHandlers({
         updateDescription: ({ setDescription }) => text => setDescription(text),
         submitDescription: ({ companyQuery: { company }, handleCompany, description, match, setFeedbackMessage }) => async () => {
@@ -125,7 +127,11 @@ const ShowHOC = compose(
                 });
             }
         },
-        closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
+        openArticlePopup: ({ setArticlePopupOpen, setArticleType }) => type => {
+            setArticleType(type);
+            setArticlePopupOpen(true)
+        },
+        closeArticlePopup: ({ setArticlePopupOpen }) => () => setArticlePopupOpen(false),
     }),
     pure
 );
@@ -139,8 +145,10 @@ const Show = (props) => {
         edited, editPanel, addQA, newQA,
         match: { params: { lang, companyId } },
         description, updateDescription, submitDescription,
-        deleteQA
+        deleteQA,
+        openArticlePopup, closeArticlePopup, articlePopupOpen, articleType
     } = props;
+
     const editMode = isEditAllowed && getEditMode.editMode.status;
 
     return (
@@ -173,20 +181,33 @@ const Show = (props) => {
                 <section className='officeLife'>
                     <ArticleSlider
                         articles={officeArticles}
+                        editMode={editMode}
                         title={(<h2 className='titleHeading'>Viata <b>la birou</b></h2>)}
                     />
-                    {editMode && <AddNewStory type='company_officeLife' />}
+                    {editMode &&
+                        <span className='addStoryBtn' onClick={() => openArticlePopup('company_officeLife')}>
+                            + Add
+                        </span>}
                 </section>
 
                 <section className='moreStories'>
                     <h2 className='titleHeading'>Afla <b>mai multe</b></h2>
                     {
-                        storiesArticles.map((story, index) => (
-                            <Story story={story} index={index} editMode={editMode} key={story.id} />
+                        storiesArticles.map((article, index) => (
+                            <ArticleDisplay article={article} index={index} editMode={editMode} key={article.id} />
                         ))
                     }
-                    {editMode && <AddNewStory type='company_moreStories' />}
+                    {editMode &&
+                        <span className='addStoryBtn' onClick={() => openArticlePopup('company_moreStories')}>
+                            + Add
+                        </span>}
                 </section>
+
+                <ArticlePopup
+                    open={articlePopupOpen}
+                    onClose={closeArticlePopup}
+                    type={articleType}
+                />
 
                 <section className='qaSection'>
                     <h2 className='titleHeading'>Q &amp; A</h2>

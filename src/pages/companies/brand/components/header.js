@@ -424,7 +424,6 @@ const Header = props => {
                     onClose={closeStoryEditor}
                     type='company_featured'
                 />
-
             </Grid>
             <Grid container className='activityFields'>
                 <Chip label={industry && industry.i18n[0].title} className='chip activity' />

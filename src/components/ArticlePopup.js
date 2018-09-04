@@ -19,13 +19,13 @@ const ArticlePopUpHOC = compose(
             variables: {
                 language: props.match.params.lang
             },
-            fetchPolicy: 'network-only',
+            fetchPolicy: 'network-only'
         }),
     }),
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withHandlers({
-        updateArticle: ({ match, type, handleArticle, onClose, setFeedbackMessage }) => async articleId => {
+        updateArticle: ({ match: { params: { lang, companyId, teamId } }, type, handleArticle, onClose, setFeedbackMessage }) => async articleId => {
             let article = {};
             let options = {};
             let refetchQuery = {};
@@ -34,28 +34,44 @@ const ArticlePopUpHOC = compose(
                 case 'profile_isFeatured':
                     article.isFeatured = true;
                     article.id = articleId;
-                    refetchQuery = currentProfileRefetch(match.params.lang);
+                    refetchQuery = currentProfileRefetch(lang);
                     break;
                 case 'profile_isAboutMe':
                     article.isAboutMe = true;
                     article.id = articleId;
-                    refetchQuery = currentProfileRefetch(match.params.lang);
+                    refetchQuery = currentProfileRefetch(lang);
                     break;
                 case 'company_featured':
                     options = {
-                        articleId: articleId,
-                        companyId: match.params.companyId,
+                        articleId,
+                        companyId,
                         isFeatured: true
                     };
-                    refetchQuery = companyRefetch(match.params.companyId, match.params.lang);
+                    refetchQuery = companyRefetch(companyId, lang);
+                    break;
+                case 'company_officeLife':
+                    options = {
+                        articleId,
+                        companyId,
+                        isAtOffice: true
+                    };
+                    refetchQuery = companyRefetch(companyId, lang);
+                    break;
+                case 'company_moreStories':
+                    options = {
+                        articleId,
+                        companyId,
+                        isMoreStories: true
+                    };
+                    refetchQuery = companyRefetch(companyId, lang);
                     break;
                 case 'job_officeLife':
                     options = {
-                        articleId: articleId,
-                        teamId: match.params.teamId,
+                        articleId,
+                        teamId,
                         isAtOffice: true
                     };
-                    refetchQuery = teamRefetch(match.params.teamId, match.params.lang);
+                    refetchQuery = teamRefetch(teamId, lang);
                     break;
                 default:
                     return false;
@@ -66,7 +82,7 @@ const ArticlePopUpHOC = compose(
                     variables: {
                         article,
                         options,
-                        language: match.params.lang
+                        language: lang
                     },
                     refetchQueries: [refetchQuery]
                 });
@@ -97,7 +113,7 @@ const ArticlePopUp = props => {
         open, onClose, match: { params: { lang, companyId, teamId } }, type
     } = props;
 
-    const { articles, loading } = props.getArticles;
+    const { articles, loading } = props.getArticles || {};
 
     return (
         <Modal
@@ -113,7 +129,7 @@ const ArticlePopUp = props => {
                         <h4>Add an article</h4>
                         <p>
                             Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro.
-                    </p>
+                        </p>
                         <div className='headerChoices'>
                             <FormattedMessage id="article.choose" defaultMessage="Choose an existing article" description="Choose an existing article">
                                 {(text) => <span>{text}</span>}
@@ -182,7 +198,9 @@ const ArticlePopUp = props => {
                                     )
                                 })
                                     :
-                                    <p className='noArticles'>No articles.</p>
+                                    <FormattedMessage id="articles.noArticles" defaultMessage="No articles." description="No articles">
+                                        {(text) => <p className='noArticles'>{text}</p>}
+                                    </FormattedMessage>
                             }
                         </div>
                     </div>

@@ -42,7 +42,6 @@ const NewPostHOC = compose(
                 });
                 if (company.teams && company.teams.length > 0) {
                     company.teams.forEach(team => {
-                        console.log(team);
                         options.push({
                             label: team.name,
                             id: team.id,
