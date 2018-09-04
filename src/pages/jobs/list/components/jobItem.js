@@ -7,14 +7,14 @@ import { withRouter } from 'react-router-dom';
 import JobAvatarHeader from '../../../../components/AvatarHeader/JobAvatarHeader'
 
 const JobItem = props => {
-    const { job } = props;
+    const { job, lang } = props;
     const { i18n, videos, images, appliedDate, jobLevels, benefits, location } = job;
     const { title, description } = i18n[0];
 
     return (
         <div className='listItem jobListItem'>
             <div className='leftOverlay'>
-                <JobAvatarHeader job={job}/>
+                <JobAvatarHeader job={job} lang={lang}/>
             </div>
             <div className='rightOverlay'>
                 <div className='location'>

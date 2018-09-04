@@ -34,6 +34,24 @@ const profileFollowingData = gql`
     }
 `;
 
+const profileAppliedJobsData = gql`
+    fragment profileAppliedJobsData on Profile {
+        appliedJobs {
+            id
+            location
+            i18n {
+                title
+            }
+            company {
+                id
+                name
+                location
+                logoPath
+            }
+        }
+    }
+`
+
 
 export const profileQuery = gql`
 query profile($id: String, $language: LanguageCodeType!) {
@@ -167,9 +185,6 @@ query profile($id: String, $language: LanguageCodeType!) {
     followers {
       id
     }
-    appliedJobs {
-      id
-    }
     ownedCompanies {
       id
       name
@@ -181,9 +196,11 @@ query profile($id: String, $language: LanguageCodeType!) {
       }
     }
     ...profileFollowingData
+    ...profileAppliedJobsData
   }
 }
 ${profileFollowingData}
+${profileAppliedJobsData}
 `;
 
 export const updateUserSettingsMutation = gql`
