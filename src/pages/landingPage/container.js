@@ -21,8 +21,10 @@ const LandingPageHOC = compose(
     withState('userWantsEditSwitch', 'updateUserWantsEditSwitch', false),
     lifecycle({
         componentWillReceiveProps(props) {
-            const {currentUserQuery: { auth: { currentUser } }, isEditAllowed, editMode, updateIsEditAllowed, updateEditMode, userWantsEditSwitch, updateUserWantsEditSwitch } = props;
+            const {currentUserQuery: { auth }, isEditAllowed, editMode, updateIsEditAllowed, updateEditMode, userWantsEditSwitch, updateUserWantsEditSwitch } = props;
+            const { currentUser } = auth || {};
             const newIsEditAllowed = currentUser && currentUser.god ? true : false;
+
             // isEditAllowed is the master flag
             if (newIsEditAllowed !== isEditAllowed) {
                 updateIsEditAllowed(newIsEditAllowed);
