@@ -10,7 +10,7 @@ const MobileNav = (props) => {
 
     const {
         localUserData: { loading: localUserLoading, localUser: { timestamp } },
-        currentUser: { loading: currentUserLoading, auth: { currentUser } },
+        currentUser: { loading: currentUserLoading, auth },
         match: { params: { lang } }, doLogout,
         toggleMobileNav, mobileNavOpen, closeMobileNav,
         toggleMobileNotifications, mobileNotificationIsOpen, closeMobileNotifications, notifications,
@@ -19,6 +19,8 @@ const MobileNav = (props) => {
 
     if (localUserLoading || currentUserLoading)
         return <span>Loading...</span>
+
+    const { currentUser } = auth || {};
 
     let avatar =
         (!localUserLoading && currentUser && currentUser.avatarPath) ?
@@ -34,8 +36,8 @@ const MobileNav = (props) => {
             <Grid item className='mobileNavContainer' id="mobileMainNav">
                 {/* Buttons */}
                 <Button onClick={toggleMobileProfile} className='profileButton'>
-                    <Avatar alt={currentUser.firstName || currentUser.email} src={avatar} className='avatar' />
-                    <span>{currentUser.firstName || currentUser.email}</span>
+                    <Avatar alt={(currentUser && currentUser.firstName) || (currentUser && currentUser.email)} src={avatar} className='avatar' />
+                    <span>{(currentUser && currentUser.firstName) || (currentUser && currentUser.email)}</span>
                 </Button>
 
                 <IconButton onClick={toggleMobileNotifications} className='notificationsButton'>
@@ -142,7 +144,7 @@ const MobileNav = (props) => {
                                 </FormattedMessage>
                             */}
 
-                            {currentUser.company ?
+                            {currentUser && currentUser.company ?
                                 <React.Fragment>
                                     <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
                                         {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
@@ -155,7 +157,7 @@ const MobileNav = (props) => {
                                 </FormattedMessage>
                             }
 
-                            {currentUser.company ?
+                            {currentUser && currentUser.company ?
                                 <React.Fragment>
                                     <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Company profile">
                                         {(text) => (<ListItem button

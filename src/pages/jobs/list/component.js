@@ -20,7 +20,7 @@ const JobsList = props => {
         return (
             <div className='jobsListRoot'>
                 <Grid container className='header'>
-                    <Grid item lg={6} md={6} sm={12} xs={12} className='centralColumn'>
+                    <Grid item lg={6} md={12} sm={12} xs={12} className='centralColumn'>
                         <h1 className='searchTitle'>Search <b>jobs</b></h1>
                         <div className='searchFields'>
                             <TextField
@@ -56,7 +56,7 @@ const JobsList = props => {
                 </Grid>
                 <Grid container className='mainBody jobsList'>
                     <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                        {jobs.length > 0 && jobs.map((job, index) => (<JobItem job={job} lang={lang} key={`job-${index}`} />))}
+                        {jobs && jobs.map((job, index) => (<JobItem job={job} lang={lang} key={`job-${index}`} />))}
                     </Grid>
                     <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                         <div className='columnRightContent'>

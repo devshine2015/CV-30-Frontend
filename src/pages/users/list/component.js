@@ -22,7 +22,7 @@ const UsersList = props => {
         return (
             <Grid container className='mainBody userListRoot'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    {profiles.map(user => (<Profile user={user} key={user.id} />))}
+                    { profiles && profiles.map(user => (<Profile user={user} key={user.id} />)) }
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
