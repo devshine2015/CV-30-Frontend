@@ -2,8 +2,8 @@ import React from 'react';
 import { Grid, Paper, TextField, Button, Hidden } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { compose, pure, withState, withHandlers } from 'recompose';
-import { graphql } from 'react-apollo';
-import { LoginMutation, AuthenticateLocal } from '../../store/queries';
+import { graphql, withApollo } from 'react-apollo';
+import { LoginMutation, AuthenticateLocal, loggedInUserProfile } from '../../store/queries';
 import { Link, withRouter } from 'react-router-dom';
 import { isValidEmail } from '../../constants/utils';
 
@@ -116,6 +116,7 @@ const LoginComponent = props => {
 
 const LoginHOC = compose(
     withRouter,
+    withApollo,
     graphql(LoginMutation, {
         name: 'loginMutation'
     }),
@@ -136,7 +137,7 @@ const LoginHOC = compose(
         },
         doLogin: props => async ev => {
             ev.preventDefault();
-            const { email, password, loginMutation, authLocal, setLoginError, match, history } = props;
+            const { email, password, loginMutation, authLocal, setLoginError, match, history, client, match: { params: { lang: language } } } = props;
             try {
                 let response = await loginMutation({
                     variables: {
@@ -145,9 +146,7 @@ const LoginHOC = compose(
                     }
                 });
 
-                const {
-                    error, token, refreshToken
-                } = response.data.login;
+                const { error, token, refreshToken, god } = response.data.login;
 
                 if (error) {
                     setLoginError(error || error.message || 'Something went wrong.');
@@ -156,8 +155,15 @@ const LoginHOC = compose(
                     setLoginError('Something went wrong.');
                     return false;
                 } else {
-                    const { id, email, firstName, lastName, god, avatarPath } = response.data.login;
-                    const currentUser = { id, email, firstName, lastName, avatarPath, god, __typename: 'Profile' };
+                    let currentUserQuery = await client.query({
+                        query: loggedInUserProfile,
+                        variables: { language },
+                    });
+
+                    const { id, email, firstName, lastName, avatarPath, ownedCompanies } = currentUserQuery.data.profile;
+                    let company = (ownedCompanies && ownedCompanies.length > 0) ? ownedCompanies[0] : null;
+                    const currentUser = { id, email, firstName, lastName, avatarPath, god, company, __typename: 'CurrentUser' };
+
                     await authLocal({
                         variables: {
                             status: true,
@@ -168,7 +174,7 @@ const LoginHOC = compose(
                 }
             } catch (error) {
                 console.log(error);
-                setLoginError(error || error.message || 'Something went wrong.');
+                setLoginError(error.message || 'Something went wrong.');
             }
         }
     }),

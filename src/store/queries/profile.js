@@ -357,3 +357,22 @@ mutation setPosition($position: String) {
     }
 }
 `;
+
+export const loggedInUserProfile = gql`
+    query loggedInUserProfile($id: String, $language: LanguageCodeType!) {
+        profile(id: $id, language: $language){
+            id
+            email
+            firstName
+            lastName
+            avatarPath
+            position            
+            ownedCompanies {
+                id
+                name
+                location
+                logoPath
+            }
+        }
+    }
+`;

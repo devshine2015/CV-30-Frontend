@@ -47,6 +47,12 @@ export const getCurrentUser = gql`
                 email
                 avatarPath
                 god
+                company {
+                    id
+                    name
+                    location
+                    logoPath
+                }
                  __typename
             }
         }

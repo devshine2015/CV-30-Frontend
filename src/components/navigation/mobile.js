@@ -131,15 +131,77 @@ const MobileNav = (props) => {
                         </FormattedMessage>
 
                         <div className='companiesContainer'>
-                            <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
+                            {/*
+                                <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
                                 {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
-                            </FormattedMessage>
-
-
-                            <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Logout menu item">
+                                </FormattedMessage>
+                                
+                                
+                                <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Logout menu item">
                                 {(text) => (<ListItem button onClick={closeMobileProfile} className='mobileNavItem'> {text}</ListItem>)}
-                            </FormattedMessage>
+                                </FormattedMessage>
+                            */}
 
+                            {currentUser.company ?
+                                <React.Fragment>
+                                    <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
+                                        {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
+                                    </FormattedMessage>
+                                    <h4 className='companyName'>{currentUser.company.name}</h4>
+                                </React.Fragment>
+                                :
+                                <FormattedMessage id="nav.noCompaniesLabel" defaultMessage="No company" description="Settings menu item">
+                                    {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
+                                </FormattedMessage>
+                            }
+
+                            {currentUser.company ?
+                                <React.Fragment>
+                                    <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Company profile">
+                                        {(text) => (<ListItem button
+                                            component={Link} to={`/${lang}/company/${currentUser.company.id}`}
+                                            onClick={closeMobileProfile}>
+                                            {text}
+                                        </ListItem>
+                                        )}
+                                    </FormattedMessage>
+                                    <FormattedMessage id="nav.companyJobs" defaultMessage="Jobs" description="Company jobs">
+                                        {(text) => (<ListItem button
+                                            component={Link} to={{
+                                                pathname: `/${lang}/company/${currentUser.company.id}/settings`,
+                                                state: { activeTab: 'jobs' }
+                                            }}
+                                            onClick={closeMobileProfile}>
+                                            {text}
+                                        </ListItem>
+                                        )}
+                                    </FormattedMessage>
+                                    <FormattedMessage id="nav.companySettings" defaultMessage="Settings" description="Company settings">
+                                        {(text) => (<ListItem button
+                                            component={Link} to={{
+                                                pathname: `/${lang}/company/${currentUser.company.id}/settings`,
+                                                state: { activeTab: 'settings' }
+                                            }}
+                                            onClick={closeMobileProfile}>
+                                            {text}
+                                        </ListItem>
+                                        )}
+                                    </FormattedMessage>
+                                </React.Fragment>
+                                :
+                                <FormattedMessage id="nav.noCompany" defaultMessage="Create Company" description="Create company">
+                                    {(text) => (<Link
+                                        to={{
+                                            pathname: `/${lang}/companies/new`,
+                                            state: { profile: currentUser.profile }
+                                        }}
+                                        onClick={closeMobileProfile}
+                                        className='noCompanyLink'
+                                    >
+                                        {text}
+                                    </Link>)}
+                                </FormattedMessage>
+                            }
                         </div>
 
                         <FormattedMessage id="nav.logout" defaultMessage="Logout" description="Logout menu item">

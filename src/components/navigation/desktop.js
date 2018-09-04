@@ -16,6 +16,8 @@ const DesktopNav = props => {
         doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications
     } = props;
 
+    debugger;
+
     if (localUserLoading || currentUserLoading)
         return <span>Loading...</span>
 
@@ -100,27 +102,62 @@ const DesktopNav = props => {
                                                 </FormattedMessage>
 
                                                 <div className='companiesContainer'>
-                                                    <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
-                                                        {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
-                                                    </FormattedMessage>
+                                                    {
+                                                        currentUser.company ?
+                                                            <React.Fragment>
+                                                                <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
+                                                                    {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
+                                                                </FormattedMessage>
+                                                                <h4 className='companyName'>{currentUser.company.name}</h4>
+                                                            </React.Fragment>
+                                                            :
+                                                            <FormattedMessage id="nav.noCompaniesLabel" defaultMessage="No company" description="Settings menu item">
+                                                                {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
+                                                            </FormattedMessage>
+                                                    }
 
                                                     {currentUser.company ?
-                                                        <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Company profile">
-                                                            {(text) => (<MenuItem
-                                                                component={Link} to={`/${lang}/company/${currentUser.company.id}`}
-                                                                onClick={closeProfileMenu}
-                                                            >
-                                                                {text}
-                                                            </MenuItem>
-                                                            )}
-                                                        </FormattedMessage>
+                                                        <React.Fragment>
+                                                            <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Company profile">
+                                                                {(text) => (<MenuItem
+                                                                    component={Link} to={`/${lang}/company/${currentUser.company.id}`}
+                                                                    onClick={closeProfileMenu}
+                                                                >
+                                                                    {text}
+                                                                </MenuItem>
+                                                                )}
+                                                            </FormattedMessage>
+                                                            <FormattedMessage id="nav.companyJobs" defaultMessage="Jobs" description="Company jobs">
+                                                                {(text) => (<MenuItem
+                                                                    component={Link} to={{
+                                                                        pathname: `/${lang}/company/${currentUser.company.id}/settings`,
+                                                                        state: { activeTab: 'jobs' }
+                                                                    }}
+                                                                    onClick={closeProfileMenu}
+                                                                >
+                                                                    {text}
+                                                                </MenuItem>
+                                                                )}
+                                                            </FormattedMessage>
+                                                            <FormattedMessage id="nav.companySettings" defaultMessage="Settings" description="Company settings">
+                                                                {(text) => (<MenuItem
+                                                                    component={Link} to={{
+                                                                        pathname: `/${lang}/company/${currentUser.company.id}/settings`,
+                                                                        state: { activeTab: 'settings' }
+                                                                    }}
+                                                                    onClick={closeProfileMenu}
+                                                                >
+                                                                    {text}
+                                                                </MenuItem>
+                                                                )}
+                                                            </FormattedMessage>
+                                                        </React.Fragment>
                                                         :
                                                         <FormattedMessage id="nav.noCompany" defaultMessage="Create Company" description="Create company">
-                                                            {(text) => (<Link
-                                                                to={{
-                                                                    pathname: `/${lang}/companies/new`,
-                                                                    state: { profile: currentUser.profile }
-                                                                }}
+                                                            {(text) => (<Link to={{
+                                                                pathname: `/${lang}/companies/new`,
+                                                                state: { profile: currentUser.profile }
+                                                            }}
                                                                 onClick={closeProfileMenu}
                                                                 className='noCompanyLink'
                                                             >
@@ -128,7 +165,6 @@ const DesktopNav = props => {
                                                             </Link>)}
                                                         </FormattedMessage>
                                                     }
-
                                                 </div>
 
                                                 <FormattedMessage id="nav.logout" defaultMessage="Logout" description="Logout menu item">
