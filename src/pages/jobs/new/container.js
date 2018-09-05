@@ -5,23 +5,14 @@ import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
 import { withFormik } from 'formik';
 
-import { teamsQuery, handleJob, setFeedbackMessage, jobTypesQuery } from '../../../store/queries';
+import { jobDependencies, handleJob, setFeedbackMessage } from '../../../store/queries';
 import { jobsFolder } from '../../../constants/s3';
 import { jobValidation } from './validations';
 
 const NewJobHOC = compose(
     withRouter,
-    graphql(teamsQuery, {
-        name: 'teamsQuery',
-        options: props => ({
-            fetchPolicy: 'network-only',
-            variables: {
-                language: props.match.params.lang
-            }
-        })
-    }),
-    graphql(jobTypesQuery, {
-        name: 'jobTypesQuery',
+    graphql(jobDependencies, {
+        name: 'jobDependencies',
         options: props => ({
             fetchPolicy: 'network-only',
             variables: {
@@ -37,7 +28,7 @@ const NewJobHOC = compose(
             title: '',
             companyId,
             teamId: teamId || '',
-            benefits: [],
+            jobBenefits: [],
             jobTypes: [],
             salary: {
                 amountMin: 0,

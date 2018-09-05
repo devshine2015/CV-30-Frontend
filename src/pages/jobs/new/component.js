@@ -4,6 +4,7 @@ import {
     Input, Checkbox, ListItemText, FormControlLabel, Popover, Chip
 } from '@material-ui/core';
 import ReactPlayer from 'react-player';
+import { FormattedMessage } from 'react-intl';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -15,7 +16,6 @@ import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
 import fields from '../../../constants/contact';
-import BenefitsList from '../../../constants/benefits';
 import Loader from '../../../components/Loader';
 
 import Slider from 'rc-slider';
@@ -30,24 +30,17 @@ import { s3BucketURL } from '../../../constants/s3';
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
-const NewJob = props => {
-    const {
-        teamsQuery,
-        jobTypesQuery
-    } = props;
+const NewJob = ({
+    jobDependencies: { loading, jobBenefits, jobTypes, teams },
+    updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
+    anchorEl, handleClick, handleClose, addField, removeTextField,
+    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+    openVideoShare, closeVideoShare, videoShareAnchor,
+    removeImage, removeVideo,
+    values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid }) => {
 
-    if (teamsQuery.loading || jobTypesQuery.loading)
+    if (loading)
         return <Loader />
-
-    const {
-        updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
-        anchorEl, handleClick, handleClose, addField, removeTextField,
-        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-        openVideoShare, closeVideoShare, videoShareAnchor,
-        removeImage, removeVideo,
-        //formik
-        values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid
-    } = props;
 
     return (
         <div className='newJobRoot'>
@@ -214,23 +207,34 @@ const NewJob = props => {
                             <FormControl className='formControl'>
                                 <Select
                                     multiple
-                                    value={values.benefits}
+                                    value={values.jobBenefits}
                                     onChange={handleChange}
-                                    input={<Input name="benefits" />}
+                                    input={<Input name="jobBenefits" />}
                                     renderValue={selected => (
                                         <div className='selectedBenefits'>
-                                            {selected.map(value => (
-                                                <Chip key={value} label={value} className='chip' />
-                                            ))}
+                                            {selected.map(id => {
+                                                let benefit = jobBenefits.find(benefit => benefit.id === id);
+                                                if (benefit)
+                                                    return (
+                                                        <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key}>
+                                                            {(text) => <Chip key={benefit.key} label={text} className='chip' />}
+                                                        </FormattedMessage>
+                                                    )
+                                                else
+                                                    return null;
+                                            })}
                                         </div>
                                     )}
                                     className='jobSelect'
                                 >
-                                    {BenefitsList.map(benefit => (
+                                    {jobBenefits.map(benefit => (
                                         <MenuItem key={benefit.id} value={benefit.id}>
-                                            <Checkbox checked={values.benefits.indexOf(benefit.id) > -1} />
+                                            <Checkbox checked={values.jobBenefits.indexOf(benefit.id) > -1} />
                                             <i className={benefit.icon} />
-                                            <ListItemText primary={benefit.label} />
+                                            <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key}>
+                                                {(text) => <ListItemText primary={text} />}
+                                            </FormattedMessage>
+
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -251,7 +255,7 @@ const NewJob = props => {
                                     <em>Select a team</em>
                                 </MenuItem>
                                 {
-                                    teamsQuery.teams && teamsQuery.teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
+                                    teams && teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
                                 }
 
                             </Select>
@@ -296,10 +300,10 @@ const NewJob = props => {
                                     value={values.jobTypes}
                                     onChange={handleChange}
                                     input={<Input name="jobTypes" />}
-                                    renderValue={selected => selected.map(item => jobTypesQuery.jobTypes.find(jt => jt.id === item).i18n[0].title).join(', ')}
+                                    renderValue={selected => selected.map(item => jobTypes.find(jt => jt.id === item).i18n[0].title).join(', ')}
                                     className='jobSelect'
                                 >
-                                    {jobTypesQuery.jobTypes.map(jobType => (
+                                    {jobTypes.map(jobType => (
                                         <MenuItem key={jobType.id} value={jobType.id}>
                                             <Checkbox checked={values.jobTypes.indexOf(jobType.id) > -1} />
                                             <ListItemText primary={jobType.i18n[0].title} />

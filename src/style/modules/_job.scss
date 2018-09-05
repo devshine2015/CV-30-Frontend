@@ -375,6 +375,15 @@
                         margin-right: 15px;
                     }
                 }
+
+                .selectedBenefits {
+                    display: flex;
+                    flex-wrap: wrap;
+
+                    .chip {
+                        margin: 2px;
+                    }
+                }
             }
         }
 
