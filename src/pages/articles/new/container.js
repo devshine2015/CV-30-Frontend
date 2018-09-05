@@ -44,7 +44,7 @@ const NewArticleHOC = compose(
             props.setFormData(state => ({ ...state, [name]: value }));
         },
         updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
-        switchMediaType: ({ isVideoUrl, changeMediaType, editor }) => () => changeMediaType(!isVideoUrl),
+        switchMediaType: ({ isVideoUrl, changeMediaType }) => () => changeMediaType(!isVideoUrl),
         saveArticle: props => async () => {
             const { handleArticle, formData: { id, title, description, videoURL, images, tags },
                 setIsSaving, match, setFeedbackMessage, setEditMode, history, location: { state }
@@ -151,7 +151,14 @@ const NewArticleHOC = compose(
                     }
                 });
 
-                history.push(`/${match.params.lang}/article/${id}`);
+                if (type === 'profile_isFeatured' || type === 'profile_isAboutMe')
+                    return history.push(`/${match.params.lang}/myProfile`);
+                else if (postAs === 'company' && companyId)
+                    return history.push(`/${match.params.lang}/company/${companyId}`)
+                else if (postAs === 'team' && teamId)
+                    return history.push(`/${match.params.lang}/team/${teamId}`)
+
+                return history.push(`/${match.params.lang}/article/${id}`);
             }
             catch (err) {
                 console.log(err);

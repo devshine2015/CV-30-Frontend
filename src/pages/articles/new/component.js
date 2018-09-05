@@ -14,19 +14,14 @@ import ImageUploader from '../../../components/imageUploader';
 import TagsInput from '../../../components/TagsInput';
 
 
-const NewArticle = (props) => {
-    const {
-        handleFormChange, formData: { id, title, description, videoURL, tags },
-        updateDescription, saveArticle,
-        isVideoUrl, switchMediaType,
-        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-        getSignedURL, handleFroalaSuccess, handleFroalaError,
-        setTags
-    } = props;
-
-    console.log(props);
-
-    return (
+const NewArticle = ({
+    handleFormChange, formData: { id, title, description, videoURL, tags },
+    updateDescription, saveArticle,
+    isVideoUrl, switchMediaType,
+    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+    getSignedURL, handleFroalaSuccess, handleFroalaError,
+    setTags
+}) => (
         <div className='newArticleRoot'>
             <Grid container className='mainBody articleEdit'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -139,6 +134,5 @@ const NewArticle = (props) => {
             </Grid>
         </div>
     );
-};
 
 export default NewArticle;
