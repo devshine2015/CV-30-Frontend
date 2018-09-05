@@ -89,9 +89,7 @@ const NewJobHOC = compose(
             setFieldValue(fieldId, '');
             setAnchorEl(null);
         },
-        removeTextField: ({ values }) => async key => {
-            await delete values[key];
-        },
+        removeTextField: ({ setFieldValue }) => key => setFieldValue(key, null),
         updateDescription: ({ setFieldValue }) => text => setFieldValue('description', text),
         updateIdealCandidate: ({ setFieldValue }) => text => setFieldValue('idealCandidate', text),
         handleSliderChange: ({ setFieldValue, values }) => value => {

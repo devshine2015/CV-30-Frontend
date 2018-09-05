@@ -395,7 +395,7 @@ const NewJob = ({
                                 {
                                     Object.keys(values).map((key) => {
                                         const result = fields.find(field => field.id === key);
-                                        if (result) {
+                                        if (result && values[result.id] !== null) {
                                             let text = result.text;
                                             return (
                                                 <div className='formGroup' key={key}>
@@ -432,13 +432,17 @@ const NewJob = ({
                                 }
                             </div>
                         </section>
-                        <Button
-                            className='saveBtn'
-                            onClick={handleSubmit}
-                            disabled={!isValid || isSubmitting}
-                        >
-                            Publish job
-                        </Button>
+                        <FormattedMessage id="job.save" defaultMessage="Save job">
+                            {(text) => (
+                                <Button
+                                    className='saveBtn'
+                                    onClick={handleSubmit}
+                                    disabled={!isValid || isSubmitting}
+                                >
+                                    {text}
+                                </Button>
+                            )}
+                        </FormattedMessage>
                     </div>
                 </Grid>
             </Grid>

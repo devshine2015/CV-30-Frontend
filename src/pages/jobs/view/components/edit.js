@@ -1,8 +1,13 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { TextField, Grid, Button, Select, MenuItem, FormControl, Input, Checkbox, ListItemText, IconButton, Icon, Menu, FormControlLabel, Popover } from '@material-ui/core';
+import {
+    TextField, Grid, Button, Select, MenuItem, FormControl, Input, Checkbox,
+    ListItemText, IconButton, Icon, Menu, FormControlLabel, Popover, Chip
+} from '@material-ui/core';
 import { graphql } from 'react-apollo';
 import ReactPlayer from 'react-player';
+import { withFormik } from 'formik';
+import { FormattedMessage } from 'react-intl';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -15,8 +20,9 @@ import FroalaEditor from 'react-froala-wysiwyg';
 
 import fields from '../../../../constants/contact';
 import { formatCurrency } from '../../../../constants/utils';
-import BenefitsList from '../../../../constants/benefits';
-import { teamsQuery, handleJob, setFeedbackMessage, jobTypesQuery } from '../../../../store/queries';
+import { jobValidation } from '../../new/validations';
+
+import { jobDependencies, handleJob, setFeedbackMessage } from '../../../../store/queries';
 import { jobRefetch } from '../../../../store/refetch';
 import Loader from '../../../../components/Loader';
 import TagsInput from '../../../../components/TagsInput';
@@ -31,8 +37,8 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
 const EditHOC = compose(
-    graphql(teamsQuery, {
-        name: 'teamsQuery',
+    graphql(jobDependencies, {
+        name: 'jobDependencies',
         options: props => ({
             fetchPolicy: 'network-only',
             variables: {
@@ -42,96 +48,52 @@ const EditHOC = compose(
     }),
     graphql(handleJob, { name: 'handleJob' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    graphql(jobTypesQuery, {
-        name: 'jobTypesQuery',
-        options: props => ({
-            fetchPolicy: 'network-only',
-            variables: {
-                language: props.match.params.lang
-            }
-        })
-    }),
-    withState('formData', 'setFormData', props => {
-        const { getJobQuery: { job: { id, team, i18n, expireDate, company, activityField, skills, jobTypes, salary, location, imagePath, videoUrl, status } } } = props;
-
-        let jobEdit = {
-            id,
-            expireDate,
-            teamId: team.id,
-            companyId: company.id,
-            title: (i18n && i18n[0]) ? i18n[0].title : '',
-            description: (i18n && i18n[0]) ? i18n[0].description : '',
-            idealCandidate: (i18n && i18n[0]) ? i18n[0].idealCandidate : '',
-            benefits: [],
-            activityField: activityField ? activityField.i18n[0].title : '',
-            skills: skills.map(skill => skill.i18n[0].title),
-            selectedJobTypes: jobTypes.map(jt => jt.id),
-            salary: {
-                amountMin: salary ? salary.amountMin : 0,
-                amountMax: salary ? salary.amountMax : 1000,
-                currency: salary ? salary.currency : 'eur'
-            },
-            salaryRangeStart: 0,
-            salaryRangeEnd: 5000,
-            salaryPublic: salary ? salary.isPublic : false,
-            location,
-            imagePath,
-            videoUrl,
-            status
-        };
-
-        return jobEdit;
-    }),
-    withState('isUploading', 'setIsUploading', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
     withState('anchorEl', 'setAnchorEl', null),
     withState('imageUploadOpen', 'setImageUploadOpen', false),
     withState('videoShareAnchor', 'setVideoShareAnchor', null),
-    withHandlers({
-        handleFormChange: props => event => {
-            const target = event.target;
-            const value = target.type === 'checkbox' ? target.checked : target.value;
-            const name = target.name;
-            if (!name) {
-                throw Error('Field must have a name attribute!');
-            }
-            props.setFormData(state => ({ ...state, [name]: value }));
-        },
-        updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
-        updateIdealCandidate: props => text => props.setFormData(state => ({ ...state, 'idealCandidate': text })),
+    withFormik({
+        mapPropsToValues: ({ getJobQuery: { job } }) => {
+            if (!job)
+                return {};
 
-        publishJob: ({ handleJob, formData, match, setFeedbackMessage }) => async () => {
-            const { id, companyId, teamId, title, description, expireDate, idealCandidate,
-                selectedJobTypes: jobTypes, salary, salaryPublic, skills, activityField, location,
-                imagePath, videoUrl, status } = formData;
+            const { id, i18n, activityField, company: { id: companyId }, team: { id: teamId },
+                expireDate, jobTypes, location, salary: { amountMax, amountMin, currency, isPublic }, skills, imagePath, videoUrl, status, jobBenefits, phone, email, facebook, linkedin } = job;
+
+            return {
+                id,
+                title: i18n[0].title,
+                companyId,
+                teamId,
+                jobBenefits: jobBenefits ? jobBenefits.map(benefit => benefit.id) : [],
+                jobTypes: jobTypes ? jobTypes.map(jobType => jobType.id) : [],
+                salary: { amountMax, amountMin, currency, isPublic },
+                activityField: activityField.i18n[0].title || '',
+                skills: skills ? skills.map(skill => skill.i18n[0].title) : [],
+                expireDate: new Date(expireDate).toISOString().split("T")[0],
+                location,
+                imagePath,
+                videoUrl,
+                status,
+                description: i18n[0].description || '',
+                idealCandidate: i18n[0].idealCandidate || '',
+                phone,
+                email,
+                facebook,
+                linkedin
+            };
+        },
+        validationSchema: jobValidation,
+        displayName: 'EditJobForm',
+        handleSubmit: async (values, { props: { handleJob, match: { params: { lang: language, jobId } }, setFeedbackMessage }, setSubmitting }) => {
+            setSubmitting(true);
             try {
                 await handleJob({
                     variables: {
-                        language: match.params.lang,
-                        jobDetails: {
-                            id,
-                            companyId,
-                            teamId,
-                            title,
-                            description,
-                            expireDate,
-                            idealCandidate,
-                            jobTypes,
-                            salary: {
-                                ...salary,
-                                isPublic: salaryPublic
-                            },
-                            skills,
-                            activityField,
-                            location,
-                            imagePath: imagePath || '',
-                            videoUrl: videoUrl || '',
-                            status
-                        }
+                        language,
+                        jobDetails: values
                     },
                     refetchQueries: [
-                        jobRefetch(match.params.jobId, match.params.lang)
+                        jobRefetch(jobId, language)
                     ]
                 });
                 await setFeedbackMessage({
@@ -140,8 +102,10 @@ const EditHOC = compose(
                         message: 'Changes saved successfully.'
                     }
                 });
+                setSubmitting(false);
             }
             catch (err) {
+                setSubmitting(false);
                 console.log(err);
                 await setFeedbackMessage({
                     variables: {
@@ -150,40 +114,30 @@ const EditHOC = compose(
                     }
                 });
             }
-        },
+        }
 
+    }),
+    withHandlers({
+        updateDescription: ({ setFieldValue }) => text => setFieldValue('description', text),
+        updateIdealCandidate: ({ setFieldValue }) => text => setFieldValue('idealCandidate', text),
+        handleSliderChange: ({ setFieldValue, values }) => value => {
+            setFieldValue('salary', {
+                ...values.salary,
+                amountMin: value[0],
+                amountMax: value[1],
+            });
+        },
+        onSkillsChange: ({ setFieldValue }) => skills => setFieldValue('skills', skills),
+        addField: ({ setAnchorEl, setFieldValue }) => fieldId => {
+            setFieldValue(fieldId, '');
+            setAnchorEl(null);
+        },
+        removeTextField: ({ setFieldValue }) => key => setFieldValue(key, null),
         handleClick: ({ setAnchorEl }) => event => {
             setAnchorEl(event.currentTarget);
         },
-
         handleClose: ({ setAnchorEl }) => () => {
             setAnchorEl(null);
-        },
-        addField: ({ setAnchorEl, formData, setFormData }) => (fieldId) => {
-            let contact = Object.assign({}, formData);
-            if (!contact[fieldId]) {
-                contact[fieldId] = '';
-                setFormData(contact);
-            }
-            setAnchorEl(null);
-        },
-        removeTextField: ({ formData, setFormData }) => async (key) => {
-            let contact = Object.assign({}, formData);
-            await delete contact[key];
-            setFormData(contact);
-        },
-        handleSliderChange: ({ setFormData, formData }) => value => {
-            setFormData({
-                ...formData,
-                salary: {
-                    ...formData.salary,
-                    amountMin: value[0],
-                    amountMax: value[1]
-                }
-            });
-        },
-        onSkillsChange: ({ setFormData, formData }) => skills => {
-            setFormData({ ...formData, skills });
         },
         openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
         closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
@@ -196,41 +150,26 @@ const EditHOC = compose(
                 }
             });
         },
-        handleSuccess: ({ setFormData, formData: { id } }) => ({ path, filename }) =>
-            setFormData(state => ({ ...state, imagePath: path ? path : `/${jobsFolder}/${id}/${filename}` })),
-        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, imagePath: null })),
-        removeVideo: ({ setFormData }) => () => setFormData(state => ({ ...state, videoUrl: null })),
+        handleSuccess: ({ setFieldValue, values: { id } }) => ({ path, filename }) =>
+            setFieldValue('imagePath', path ? path : `/${jobsFolder}/${id}/${filename}`),
+        removeImage: ({ setFieldValue }) => () => setFieldValue('imagePath', null),
+        removeVideo: ({ setFieldValue }) => () => setFieldValue('videoUrl', null),
         openVideoShare: ({ setVideoShareAnchor }) => ev => setVideoShareAnchor(ev.target),
         closeVideoShare: ({ setVideoShareAnchor }) => () => setVideoShareAnchor(null),
-        handleVideoKeyPress: ({ setFormData, setVideoShareAnchor }) => event => {
-            if (event.key === 'Enter') {
-                const videoUrl = event.target.value;
-                setFormData(state => ({ ...state, videoUrl }));
-                setVideoShareAnchor(null);
-            }
-        }
     }),
     pure
 );
-const Edit = props => {
-    const {
-        teamsQuery, jobTypesQuery,
-    } = props;
+const Edit = ({
+    jobDependencies: { loading, jobBenefits, jobTypes, teams },
+    updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
+    anchorEl, handleClick, handleClose, addField, removeTextField,
+    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+    openVideoShare, closeVideoShare, videoShareAnchor,
+    removeImage, removeVideo,
+    values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid }) => {
 
-    if (teamsQuery.loading || jobTypesQuery.loading)
+    if (loading)
         return <Loader />
-
-    const {
-        formData: { id, title, expireDate, benefits, teamId, description, idealCandidate, activityField,
-            selectedJobTypes, skills, salary, salaryPublic, salaryRangeStart, salaryRangeEnd, location,
-            imagePath, videoUrl, status }, handleFormChange,
-        updateDescription, updateIdealCandidate,
-        anchorEl, handleClick, handleClose, addField, formData, removeTextField,
-        publishJob, onSkillsChange, handleSliderChange,
-        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-        openVideoShare, closeVideoShare, videoShareAnchor, handleVideoKeyPress,
-        removeImage, removeVideo
-    } = props;
 
     return (
         <React.Fragment>
@@ -242,8 +181,11 @@ const Edit = props => {
                         placeholder="Job title..."
                         className='textField'
                         fullWidth
-                        onChange={handleFormChange}
-                        value={title}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.title}
+                        error={!!(touched.title && errors.title)}
+                        helperText={touched.title && errors.title}
                         InputProps={{
                             classes: {
                                 input: 'titleInput',
@@ -261,20 +203,20 @@ const Edit = props => {
                                 Add/Edit images or embed video links.
                             </p>
 
-                            {(imagePath || videoUrl) ?
+                            {(values.imagePath || (values.videoUrl && !videoShareAnchor)) ?
                                 <React.Fragment>
-                                    {imagePath &&
+                                    {values.imagePath &&
                                         <div className="imagePreview">
-                                            <img src={`${s3BucketURL}${imagePath}`} className='previewImg' alt='' />
+                                            <img src={`${s3BucketURL}${values.imagePath}`} className='previewImg' alt='job' />
                                             <IconButton className='removeBtn' onClick={removeImage}>
                                                 <Icon>cancel</Icon>
                                             </IconButton>
                                         </div>
                                     }
-                                    {(videoUrl && !imagePath) &&
+                                    {(values.videoUrl && !values.imagePath && !videoShareAnchor) &&
                                         <div className="imagePreview">
                                             <ReactPlayer
-                                                url={videoUrl}
+                                                url={values.videoUrl}
                                                 width='150px'
                                                 height='150px'
                                                 config={{
@@ -305,7 +247,7 @@ const Edit = props => {
                                         onClose={closeImageUpload}
                                         onError={handleError}
                                         onSuccess={handleSuccess}
-                                        id={id}
+                                        id={values.id}
                                     />
 
                                     <Button className='mediaBtn' onClick={openVideoShare}>
@@ -327,6 +269,7 @@ const Edit = props => {
                                         classes={{
                                             paper: 'promoEditPaper'
                                         }}
+                                        disableBackdropClick
                                     >
                                         <div className='popupBody'>
                                             <TextField
@@ -334,9 +277,22 @@ const Edit = props => {
                                                 label="Video URL"
                                                 placeholder="Enter video link..."
                                                 className='textField'
-                                                onKeyPress={handleVideoKeyPress}
                                                 fullWidth
+                                                onBlur={handleBlur}
+                                                onChange={handleChange}
+                                                value={values.videoUrl}
+                                                error={!!(touched.videoUrl && errors.videoUrl)}
+                                                helperText={touched.videoUrl && errors.videoUrl}
                                             />
+                                        </div>
+                                        <div className='popupFooter'>
+                                            <IconButton
+                                                onClick={closeVideoShare}
+                                                className='footerCheck'
+                                                disabled={(!!values.videoUrl && touched.videoUrl && errors.videoUrl)}
+                                            >
+                                                <Icon>done</Icon>
+                                            </IconButton>
                                         </div>
                                     </Popover>
                                 </React.Fragment>
@@ -352,7 +308,7 @@ const Edit = props => {
                                     charCounterCount: false,
                                     toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
                                 }}
-                                model={description}
+                                model={values.description}
                                 onModelChange={updateDescription}
                             />
                         </section>
@@ -364,9 +320,12 @@ const Edit = props => {
                             <TextField
                                 name="expireDate"
                                 type="date"
-                                value={expireDate ? (new Date(expireDate)).toISOString().split("T")[0] : (new Date()).toISOString().split("T")[0]}
-                                onChange={handleFormChange}
                                 className='jobSelect'
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.expireDate}
+                                error={!!(touched.expireDate && errors.expireDate)}
+                                helperText={touched.expireDate && errors.expireDate}
                             />
                         </section>
                         <section className='benefits'>
@@ -377,17 +336,34 @@ const Edit = props => {
                             <FormControl className='formControl'>
                                 <Select
                                     multiple
-                                    value={benefits}
-                                    onChange={handleFormChange}
-                                    input={<Input name="benefits" />}
-                                    renderValue={selected => selected.join(', ')}
+                                    value={values.jobBenefits}
+                                    onChange={handleChange}
+                                    input={<Input name="jobBenefits" />}
+                                    renderValue={selected => (
+                                        <div className='selectedBenefits'>
+                                            {selected.map(id => {
+                                                let benefit = jobBenefits.find(benefit => benefit.id === id);
+                                                if (benefit)
+                                                    return (
+                                                        <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key} key={benefit.key}>
+                                                            {(text) => <Chip label={text} className='chip' />}
+                                                        </FormattedMessage>
+                                                    )
+                                                else
+                                                    return null;
+                                            })}
+                                        </div>
+                                    )}
                                     className='jobSelect'
                                 >
-                                    {BenefitsList.map(benefit => (
+                                    {jobBenefits.map(benefit => (
                                         <MenuItem key={benefit.id} value={benefit.id}>
-                                            <Checkbox checked={benefits.indexOf(benefit.id) > -1} />
+                                            <Checkbox checked={values.jobBenefits.indexOf(benefit.id) > -1} />
                                             <i className={benefit.icon} />
-                                            <ListItemText primary={benefit.label} />
+                                            <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key}>
+                                                {(text) => <ListItemText primary={text} />}
+                                            </FormattedMessage>
+
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -400,15 +376,15 @@ const Edit = props => {
                             </p>
                             <Select
                                 name='teamId'
-                                onChange={handleFormChange}
-                                value={teamId || ''}
+                                onChange={handleChange}
+                                value={values.teamId}
                                 className='jobSelect'
                             >
                                 <MenuItem value="" disabled>
                                     <em>Select a team</em>
                                 </MenuItem>
                                 {
-                                    teamsQuery.teams && teamsQuery.teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
+                                    teams && teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
                                 }
 
                             </Select>
@@ -423,7 +399,7 @@ const Edit = props => {
                                     charCounterCount: false,
                                     toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
                                 }}
-                                model={idealCandidate}
+                                model={values.idealCandidate}
                                 onModelChange={updateIdealCandidate}
                             />
                         </section>
@@ -434,13 +410,13 @@ const Edit = props => {
                                 label="Activity field"
                                 placeholder="Activity field..."
                                 className='textField jobSelect'
-                                onChange={handleFormChange}
-                                value={activityField || ''}
+                                onChange={handleChange}
+                                value={values.activityField}
                             />
                         </section>
                         <section className='skills'>
                             <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
-                            <TagsInput value={skills} onChange={onSkillsChange} helpTagName='skill' className='textField jobSelect' />
+                            <TagsInput value={values.skills} onChange={onSkillsChange} helpTagName='skill' className='textField jobSelect' />
                         </section>
                         <section className='jobType'>
                             <h2 className='sectionTitle'>Job <b>type</b></h2>
@@ -450,15 +426,15 @@ const Edit = props => {
                             <FormControl className='formControl'>
                                 <Select
                                     multiple
-                                    value={selectedJobTypes}
-                                    onChange={handleFormChange}
-                                    input={<Input name="selectedJobTypes" />}
-                                    renderValue={selected => selected.map(item => jobTypesQuery.jobTypes.find(jt => jt.id === item).i18n[0].title).join(', ')}
+                                    value={values.jobTypes}
+                                    onChange={handleChange}
+                                    input={<Input name="jobTypes" />}
+                                    renderValue={selected => selected.map(item => jobTypes.find(jt => jt.id === item).i18n[0].title).join(', ')}
                                     className='jobSelect'
                                 >
-                                    {jobTypesQuery.jobTypes.map(jobType => (
+                                    {jobTypes.map(jobType => (
                                         <MenuItem key={jobType.id} value={jobType.id}>
-                                            <Checkbox checked={selectedJobTypes.indexOf(jobType.id) > -1} />
+                                            <Checkbox checked={values.jobTypes.indexOf(jobType.id) > -1} />
                                             <ListItemText primary={jobType.i18n[0].title} />
                                         </MenuItem>
                                     ))}
@@ -467,17 +443,46 @@ const Edit = props => {
                         </section>
                         <section className='salary'>
                             <h2 className='sectionTitle'>Salary <b>range</b></h2>
-                            <Range min={salaryRangeStart} max={salaryRangeEnd} defaultValue={[salary.amountMin, salary.amountMax]} tipFormatter={value => `${value}${formatCurrency(salary.currency)}`} step={50} onChange={handleSliderChange} />
+                            <Range
+                                min={0}
+                                max={5000}
+                                defaultValue={[values.salary.amountMin, values.salary.amountMax]}
+                                tipFormatter={value => `${value}${formatCurrency(values.salary.currency)}`}
+                                step={50}
+                                onChange={handleSliderChange}
+                            />
                             <FormControlLabel
                                 control={
-                                    <Checkbox name="salaryPublic" checked={salaryPublic} onChange={handleFormChange} />
+                                    <Checkbox name="salary.isPublic" checked={values.salary.isPublic} onChange={handleChange} />
                                 }
                                 label="Public" />
                         </section>
                         <section className='locationSection'>
                             <LocationInput
-                                value={location}
-                                onChange={handleFormChange} />
+                                value={values.location}
+                                onChange={handleChange}
+                                className='jobSelect'
+                            />
+                        </section>
+                        <section className='jobStatus'>
+                            <p className='helperText'>
+                                Select job status.
+                            </p>
+                            <FormControl className='formControl'>
+                                <Select
+                                    name='status'
+                                    onChange={handleChange}
+                                    value={values.status}
+                                    className='jobStatusSelect jobSelect'
+                                >
+                                    <MenuItem value="" disabled>
+                                        <em>Set status</em>
+                                    </MenuItem>
+                                    {
+                                        ['draft', 'active', 'archived'].map(item => <MenuItem value={item} key={item}>{item.toUpperCase()}</MenuItem>)
+                                    }
+                                </Select>
+                            </FormControl>
                         </section>
                     </form>
                 </Grid>
@@ -508,7 +513,7 @@ const Edit = props => {
                                     {
                                         fields.map((item, index) => {
                                             let key = 'addField-' + index;
-                                            let disabled = !!formData[item.id] || formData[item.id] === '';
+                                            let disabled = !!values[item.id] || values[item.id] === '';
                                             return <MenuItem onClick={() => addField(item.id)} key={key} disabled={disabled}>{item.text}</MenuItem>
                                         })
                                     }
@@ -516,9 +521,9 @@ const Edit = props => {
                             </div>
                             <div className='contactDetailsEditForm'>
                                 {
-                                    Object.keys(formData).map((key) => {
+                                    Object.keys(values).map((key) => {
                                         const result = fields.find(field => field.id === key);
-                                        if (result) {
+                                        if (result && values[result.id] !== null) {
                                             let text = result.text;
                                             return (
                                                 <div className='formGroup' key={key}>
@@ -527,8 +532,8 @@ const Edit = props => {
                                                         label={text}
                                                         placeholder={text}
                                                         className='textField'
-                                                        onChange={handleFormChange}
-                                                        value={formData[key] || ''}
+                                                        onChange={handleChange}
+                                                        value={values[key]}
                                                         InputProps={{
                                                             classes: {
                                                                 root: 'contactTextInputRoot',
@@ -538,7 +543,6 @@ const Edit = props => {
                                                         InputLabelProps={{
                                                             className: 'contactFormLabel'
                                                         }}
-
                                                     />
                                                     <IconButton
                                                         className='removeBtn'
@@ -552,28 +556,21 @@ const Edit = props => {
                                             )
                                         } else
                                             return null;
-                                    })}
-                            </div>
-
-                        </section>
-                        <section className='jobStatus'>
-                            <Select
-                                name='status'
-                                onChange={handleFormChange}
-                                value={status || ''}
-                                className='jobStatusSelect'
-                            >
-                                <MenuItem value="" disabled>
-                                    <em>Set status</em>
-                                </MenuItem>
-                                {
-                                    ['draft', 'active', 'archived'].map(item => <MenuItem value={item} key={item}>{item.toUpperCase()}</MenuItem>)
+                                    })
                                 }
-                            </Select>
+                            </div>
                         </section>
-                        <Button className='saveBtn' onClick={publishJob}>
-                            Publish job
-                        </Button>
+                        <FormattedMessage id="job.save" defaultMessage="Save job">
+                            {(text) => (
+                                <Button
+                                    className='saveBtn'
+                                    onClick={handleSubmit}
+                                    disabled={!isValid || isSubmitting}
+                                >
+                                    {text}
+                                </Button>
+                            )}
+                        </FormattedMessage>
                     </div>
                 </Grid>
             </Grid>
