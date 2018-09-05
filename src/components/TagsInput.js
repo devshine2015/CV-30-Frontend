@@ -43,7 +43,7 @@ class TagsInput extends Component {
                 value={this.state.newTag}
                 onChange={this.handleChange}
                 onKeyDown={this.handleKeyDown}
-                className='textField'
+                className={this.props.className || 'textField'}
                 fullWidth
                 FormHelperTextProps={{
                     classes: { root: 'inputHelperText' }
@@ -67,7 +67,7 @@ class TagsInput extends Component {
                 InputLabelProps={{
                     className: 'textFieldLabel'
                 }}
-                helperText={`Hit 'Enter, Tab or ,' to add new ${this.props.helpTagName}`}
+                helperText={`Hit 'Enter, Tab or ',' to add new ${this.props.helpTagName}`}
             />
         )
     }

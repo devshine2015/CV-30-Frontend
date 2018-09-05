@@ -1,5 +1,8 @@
 import React from 'react';
-import { TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon, FormControl, Input, Checkbox, ListItemText, FormControlLabel, Popover } from '@material-ui/core';
+import {
+    TextField, Grid, Button, Select, MenuItem, Menu, IconButton, Icon, FormControl,
+    Input, Checkbox, ListItemText, FormControlLabel, Popover, Chip
+} from '@material-ui/core';
 import ReactPlayer from 'react-player';
 
 // Require Editor JS files.
@@ -37,13 +40,13 @@ const NewJob = props => {
         return <Loader />
 
     const {
-        formData: { id, title, expireDate, teamId, benefits, description, idealCandidate, activityField, skills,
-            selectedJobTypes, salaryRangeStart, salaryRangeEnd, salary, salaryPublic, location, imagePath, videoUrl, status },
-        handleFormChange, updateDescription, updateIdealCandidate, handleSliderChange, publishJob, onSkillsChange,
-        anchorEl, handleClick, handleClose, addField, formData, removeTextField,
+        updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
+        anchorEl, handleClick, handleClose, addField, removeTextField,
         openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-        openVideoShare, closeVideoShare, videoShareAnchor, handleVideoKeyPress,
-        removeImage, removeVideo
+        openVideoShare, closeVideoShare, videoShareAnchor,
+        removeImage, removeVideo,
+        //formik
+        values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid
     } = props;
 
     return (
@@ -56,8 +59,11 @@ const NewJob = props => {
                         placeholder="Job title..."
                         className='textField'
                         fullWidth
-                        onChange={handleFormChange}
-                        value={title || ''}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.title}
+                        error={!!(touched.title && errors.title)}
+                        helperText={touched.title && errors.title}
                         InputProps={{
                             classes: {
                                 input: 'titleInput',
@@ -75,20 +81,20 @@ const NewJob = props => {
                                 Add/Edit images or embed video links.
                             </p>
 
-                            {(imagePath || videoUrl) ?
+                            {(values.imagePath || (values.videoUrl && !videoShareAnchor)) ?
                                 <React.Fragment>
-                                    {imagePath &&
+                                    {values.imagePath &&
                                         <div className="imagePreview">
-                                            <img src={`${s3BucketURL}${imagePath}`} className='previewImg' alt='' />
+                                            <img src={`${s3BucketURL}${values.imagePath}`} className='previewImg' alt='job' />
                                             <IconButton className='removeBtn' onClick={removeImage}>
                                                 <Icon>cancel</Icon>
                                             </IconButton>
                                         </div>
                                     }
-                                    {(videoUrl && !imagePath) &&
+                                    {(values.videoUrl && !values.imagePath && !videoShareAnchor) &&
                                         <div className="imagePreview">
                                             <ReactPlayer
-                                                url={videoUrl}
+                                                url={values.videoUrl}
                                                 width='150px'
                                                 height='150px'
                                                 config={{
@@ -119,7 +125,7 @@ const NewJob = props => {
                                         onClose={closeImageUpload}
                                         onError={handleError}
                                         onSuccess={handleSuccess}
-                                        id={id}
+                                        id={values.id}
                                     />
 
                                     <Button className='mediaBtn' onClick={openVideoShare}>
@@ -141,6 +147,7 @@ const NewJob = props => {
                                         classes={{
                                             paper: 'promoEditPaper'
                                         }}
+                                        disableBackdropClick
                                     >
                                         <div className='popupBody'>
                                             <TextField
@@ -148,9 +155,22 @@ const NewJob = props => {
                                                 label="Video URL"
                                                 placeholder="Enter video link..."
                                                 className='textField'
-                                                onKeyPress={handleVideoKeyPress}
                                                 fullWidth
+                                                onBlur={handleBlur}
+                                                onChange={handleChange}
+                                                value={values.videoUrl}
+                                                error={!!(touched.videoUrl && errors.videoUrl)}
+                                                helperText={touched.videoUrl && errors.videoUrl}
                                             />
+                                        </div>
+                                        <div className='popupFooter'>
+                                            <IconButton
+                                                onClick={closeVideoShare}
+                                                className='footerCheck'
+                                                disabled={(!!values.videoUrl && touched.videoUrl && errors.videoUrl)}
+                                            >
+                                                <Icon>done</Icon>
+                                            </IconButton>
                                         </div>
                                     </Popover>
                                 </React.Fragment>
@@ -166,7 +186,7 @@ const NewJob = props => {
                                     charCounterCount: false,
                                     toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
                                 }}
-                                model={description}
+                                model={values.description}
                                 onModelChange={updateDescription}
                             />
                         </section>
@@ -178,9 +198,12 @@ const NewJob = props => {
                             <TextField
                                 name="expireDate"
                                 type="date"
-                                value={new Date(expireDate).toISOString().split("T")[0]}
-                                onChange={handleFormChange}
                                 className='jobSelect'
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.expireDate}
+                                error={!!(touched.expireDate && errors.expireDate)}
+                                helperText={touched.expireDate && errors.expireDate}
                             />
                         </section>
                         <section className='benefits'>
@@ -191,15 +214,21 @@ const NewJob = props => {
                             <FormControl className='formControl'>
                                 <Select
                                     multiple
-                                    value={benefits}
-                                    onChange={handleFormChange}
+                                    value={values.benefits}
+                                    onChange={handleChange}
                                     input={<Input name="benefits" />}
-                                    renderValue={selected => selected.join(', ')}
+                                    renderValue={selected => (
+                                        <div className='selectedBenefits'>
+                                            {selected.map(value => (
+                                                <Chip key={value} label={value} className='chip' />
+                                            ))}
+                                        </div>
+                                    )}
                                     className='jobSelect'
                                 >
                                     {BenefitsList.map(benefit => (
                                         <MenuItem key={benefit.id} value={benefit.id}>
-                                            <Checkbox checked={benefits.indexOf(benefit.id) > -1} />
+                                            <Checkbox checked={values.benefits.indexOf(benefit.id) > -1} />
                                             <i className={benefit.icon} />
                                             <ListItemText primary={benefit.label} />
                                         </MenuItem>
@@ -214,8 +243,8 @@ const NewJob = props => {
                             </p>
                             <Select
                                 name='teamId'
-                                onChange={handleFormChange}
-                                value={teamId || ''}
+                                onChange={handleChange}
+                                value={values.teamId}
                                 className='jobSelect'
                             >
                                 <MenuItem value="" disabled>
@@ -237,7 +266,7 @@ const NewJob = props => {
                                     charCounterCount: false,
                                     toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
                                 }}
-                                model={idealCandidate}
+                                model={values.idealCandidate}
                                 onModelChange={updateIdealCandidate}
                             />
                         </section>
@@ -248,13 +277,13 @@ const NewJob = props => {
                                 label="Activity field"
                                 placeholder="Activity field..."
                                 className='textField jobSelect'
-                                onChange={handleFormChange}
-                                value={activityField || ''}
+                                onChange={handleChange}
+                                value={values.activityField}
                             />
                         </section>
                         <section className='skills'>
                             <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
-                            <TagsInput value={skills} onChange={onSkillsChange} helpTagName='skill' className='textField jobSelect' />
+                            <TagsInput value={values.skills} onChange={onSkillsChange} helpTagName='skill' className='textField jobSelect' />
                         </section>
                         <section className='jobType'>
                             <h2 className='sectionTitle'>Job <b>type</b></h2>
@@ -264,15 +293,15 @@ const NewJob = props => {
                             <FormControl className='formControl'>
                                 <Select
                                     multiple
-                                    value={selectedJobTypes}
-                                    onChange={handleFormChange}
-                                    input={<Input name="selectedJobTypes" />}
+                                    value={values.jobTypes}
+                                    onChange={handleChange}
+                                    input={<Input name="jobTypes" />}
                                     renderValue={selected => selected.map(item => jobTypesQuery.jobTypes.find(jt => jt.id === item).i18n[0].title).join(', ')}
                                     className='jobSelect'
                                 >
                                     {jobTypesQuery.jobTypes.map(jobType => (
                                         <MenuItem key={jobType.id} value={jobType.id}>
-                                            <Checkbox checked={selectedJobTypes.indexOf(jobType.id) > -1} />
+                                            <Checkbox checked={values.jobTypes.indexOf(jobType.id) > -1} />
                                             <ListItemText primary={jobType.i18n[0].title} />
                                         </MenuItem>
                                     ))}
@@ -281,17 +310,46 @@ const NewJob = props => {
                         </section>
                         <section className='salary'>
                             <h2 className='sectionTitle'>Salary <b>range</b></h2>
-                            <Range min={salaryRangeStart} max={salaryRangeEnd} defaultValue={[salary.amountMin, salary.amountMax]} tipFormatter={value => `${value}${formatCurrency(salary.currency)}`} step={50} onChange={handleSliderChange} />
+                            <Range
+                                min={0}
+                                max={5000}
+                                defaultValue={[values.salary.amountMin, values.salary.amountMax]}
+                                tipFormatter={value => `${value}${formatCurrency(values.salary.currency)}`}
+                                step={50}
+                                onChange={handleSliderChange}
+                            />
                             <FormControlLabel
                                 control={
-                                    <Checkbox name="salaryPublic" checked={salaryPublic} onChange={handleFormChange} />
+                                    <Checkbox name="salary.isPublic" checked={values.salary.isPublic} onChange={handleChange} />
                                 }
                                 label="Public" />
                         </section>
                         <section className='locationSection'>
                             <LocationInput
-                                value={location}
-                                onChange={handleFormChange} />
+                                value={values.location}
+                                onChange={handleChange}
+                                className='jobSelect'
+                            />
+                        </section>
+                        <section className='jobStatus'>
+                            <p className='helperText'>
+                                Select job status.
+                            </p>
+                            <FormControl className='formControl'>
+                                <Select
+                                    name='status'
+                                    onChange={handleChange}
+                                    value={values.status}
+                                    className='jobStatusSelect jobSelect'
+                                >
+                                    <MenuItem value="" disabled>
+                                        <em>Set status</em>
+                                    </MenuItem>
+                                    {
+                                        ['draft', 'active', 'archived'].map(item => <MenuItem value={item} key={item}>{item.toUpperCase()}</MenuItem>)
+                                    }
+                                </Select>
+                            </FormControl>
                         </section>
                     </div>
                 </Grid>
@@ -323,7 +381,7 @@ const NewJob = props => {
                                     {
                                         fields.map((item, index) => {
                                             let key = 'addField-' + index;
-                                            let disabled = !!formData[item.id] || formData[item.id] === '';
+                                            let disabled = !!values[item.id] || values[item.id] === '';
                                             return <MenuItem onClick={() => addField(item.id)} key={key} disabled={disabled}>{item.text}</MenuItem>
                                         })
                                     }
@@ -331,7 +389,7 @@ const NewJob = props => {
                             </div>
                             <div className='contactDetailsEditForm'>
                                 {
-                                    Object.keys(formData).map((key) => {
+                                    Object.keys(values).map((key) => {
                                         const result = fields.find(field => field.id === key);
                                         if (result) {
                                             let text = result.text;
@@ -342,8 +400,8 @@ const NewJob = props => {
                                                         label={text}
                                                         placeholder={text}
                                                         className='textField'
-                                                        onChange={handleFormChange}
-                                                        value={formData[key] || ''}
+                                                        onChange={handleChange}
+                                                        value={values[key]}
                                                         InputProps={{
                                                             classes: {
                                                                 root: 'contactTextInputRoot',
@@ -353,7 +411,6 @@ const NewJob = props => {
                                                         InputLabelProps={{
                                                             className: 'contactFormLabel'
                                                         }}
-
                                                     />
                                                     <IconButton
                                                         className='removeBtn'
@@ -367,27 +424,15 @@ const NewJob = props => {
                                             )
                                         } else
                                             return null;
-                                    })}
-                            </div>
-
-                        </section>
-
-                        <section className='jobStatus'>
-                            <Select
-                                name='status'
-                                onChange={handleFormChange}
-                                value={status || ''}
-                                className='jobStatusSelect'
-                            >
-                                <MenuItem value="" disabled>
-                                    <em>Set status</em>
-                                </MenuItem>
-                                {
-                                    ['draft', 'active', 'archived'].map(item => <MenuItem value={item} key={item}>{item.toUpperCase()}</MenuItem>)
+                                    })
                                 }
-                            </Select>
+                            </div>
                         </section>
-                        <Button className='saveBtn' onClick={publishJob}>
+                        <Button
+                            className='saveBtn'
+                            onClick={handleSubmit}
+                            disabled={!isValid || isSubmitting}
+                        >
                             Publish job
                         </Button>
                     </div>
