@@ -100,7 +100,9 @@ const Features = props => {
                     + Add Article
                 </div>
             }
-            <ArticlePopUp open={articlePopUpOpen} onClose={closeArticlePopUp} />
+            {articlePopUpOpen &&
+                <ArticlePopUp open={articlePopUpOpen} onClose={closeArticlePopUp} />
+            }
         </div>
 
     );

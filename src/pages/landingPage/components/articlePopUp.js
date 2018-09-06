@@ -24,7 +24,7 @@ const ArticlePopUpHOC = compose(
         name: 'handleArticle'
     }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', props => {
+    withState('formData', 'setFormData', () => {
         return {
             id: uuid()
         };
