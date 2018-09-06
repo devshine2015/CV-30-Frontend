@@ -135,17 +135,6 @@ const MobileNav = (props) => {
                         </FormattedMessage>
 
                         <div className='companiesContainer'>
-                            {/*
-                                <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
-                                {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
-                                </FormattedMessage>
-                                
-                                
-                                <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Logout menu item">
-                                {(text) => (<ListItem button onClick={closeMobileProfile} className='mobileNavItem'> {text}</ListItem>)}
-                                </FormattedMessage>
-                            */}
-
                             {currentUser && userCompany ?
                                 <React.Fragment>
                                     <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
