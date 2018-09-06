@@ -22,7 +22,7 @@ const DesktopNav = props => {
 
     const { currentUser } = auth || {};
 
-    const userCompany = (currentUser.ownedCompanies && currentUser.ownedCompanies.length > 0) ? currentUser.ownedCompanies[0] : null;
+    const userCompany = (currentUser && currentUser.ownedCompanies && currentUser.ownedCompanies.length > 0) ? currentUser.ownedCompanies[0] : null;
 
     const avatar =
         (!localUserLoading && currentUser && currentUser.avatarPath) ?
