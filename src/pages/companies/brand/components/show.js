@@ -17,7 +17,7 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import QuestionEdit from './questionEdit';
 import ArticleDisplay from './articleDisplay';
 import ArticleSlider from '../../../../components/articleSlider';
-import { handleCompany, handleFAQ, setFeedbackMessage } from '../../../../store/queries';
+import { handleCompany, handleFAQ, setFeedbackMessage, handleArticle } from '../../../../store/queries';
 import { companyRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 import { s3BucketURL } from '../../../../constants/s3';
@@ -27,6 +27,7 @@ const ShowHOC = compose(
     graphql(handleCompany, { name: 'handleCompany' }),
     graphql(handleFAQ, { name: 'handleFAQ' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+    graphql(handleArticle, { name: 'handleArticle' }),
     withState('expanded', 'updateExpanded', null),
     withState('edited', 'updateEdited', null),
     withState('editedStory', 'editStory', null),
@@ -132,6 +133,41 @@ const ShowHOC = compose(
             setArticlePopupOpen(true)
         },
         closeArticlePopup: ({ setArticlePopupOpen }) => () => setArticlePopupOpen(false),
+        deleteOfficeArticle: ({ handleArticle, setFeedbackMessage, match: { params: { companyId, lang: language } } }) => async id => {
+            try {
+                await handleArticle({
+                    variables: {
+                        article: {
+                            id
+                        },
+                        options: {
+                            articleId: id,
+                            companyId,
+                            isAtOffice: false
+                        },
+                        language
+                    },
+                    refetchQueries: [
+                        companyRefetch(companyId, language)
+                    ]
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
+        }
     }),
     pure
 );
@@ -141,7 +177,7 @@ const Show = (props) => {
         expanded, expandPanel,
         getEditMode,
         companyQuery: { company: { name, faqs, officeArticles, storiesArticles, jobs } },
-        isEditAllowed,
+        isEditAllowed, deleteOfficeArticle,
         edited, editPanel, addQA, newQA,
         match: { params: { lang, companyId } },
         description, updateDescription, submitDescription,
@@ -182,6 +218,7 @@ const Show = (props) => {
                     <ArticleSlider
                         articles={officeArticles}
                         editMode={editMode}
+                        deleteArticle={deleteOfficeArticle}
                         title={(<h2 className='titleHeading'>Viata <b>la birou</b></h2>)}
                     />
                     {editMode &&

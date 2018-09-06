@@ -6,7 +6,7 @@ import { s3BucketURL } from '../../constants/s3';
 import { stripHtmlTags } from '../../constants/utils';
 
 const ArticleSlider = props => {
-    const { articles, title, prevItem, activeItem, jumpToItem, nextItem, editMode, editArticle } = props;
+    const { articles, title, prevItem, activeItem, jumpToItem, nextItem, editMode, editArticle, deleteArticle } = props;
     return (
         <div className='sliderRoot'>
             <div className='sliderHeader'>
@@ -14,9 +14,7 @@ const ArticleSlider = props => {
                 {articles && articles.length > 1 &&
                     <div className='sliderControls'>
                         <IconButton className='sliderArrow' onClick={prevItem}>
-                            <Icon>
-                                arrow_back_ios
-                                </Icon>
+                            <Icon>arrow_back_ios</Icon>
                         </IconButton>
                         {
                             articles.map((article, index) =>
@@ -25,9 +23,7 @@ const ArticleSlider = props => {
                         }
 
                         <IconButton className='sliderArrow' onClick={nextItem}>
-                            <Icon>
-                                arrow_forward_ios
-                                </Icon>
+                            <Icon>arrow_forward_ios</Icon>
                         </IconButton>
                     </div>
                 }
@@ -72,9 +68,14 @@ const ArticleSlider = props => {
                                     <p>{stripHtmlTags(article.i18n[0].description)}</p>
                                 </div>
                                 {editMode &&
-                                    <IconButton className='floatingEditBtn' onClick={() => editArticle(article.id)}>
-                                        <Icon>edit</Icon>
-                                    </IconButton>
+                                    <React.Fragment>
+                                        <IconButton className='floatingEditBtn' onClick={() => editArticle(article.id)}>
+                                            <Icon>edit</Icon>
+                                        </IconButton>
+                                        <IconButton className='floatingDeleteBtn' onClick={() => deleteArticle(article.id)}>
+                                            <Icon>cancel</Icon>
+                                        </IconButton>
+                                    </React.Fragment>
                                 }
                             </div>
                         );

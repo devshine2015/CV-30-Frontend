@@ -8,7 +8,7 @@ import ReactPlayer from 'react-player';
 import ArticleSlider from '../../../../components/articleSlider';
 import ArticlePopUp from '../../../../components/ArticlePopup';
 import MembersPopup from './memberPopup';
-import { handleTeamMember, setFeedbackMessage, handleShallowUser } from '../../../../store/queries';
+import { handleTeamMember, setFeedbackMessage, handleShallowUser, handleArticle } from '../../../../store/queries';
 import { teamRefetch } from '../../../../store/refetch';
 import { graphql } from '../../../../../node_modules/react-apollo';
 import ShowMember from './showMember';
@@ -18,6 +18,7 @@ const ShowHOC = compose(
     graphql(handleTeamMember, { name: 'handleTeamMemberMutation' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     graphql(handleShallowUser, { name: 'handleShallowUserMutation' }),
+    graphql(handleArticle, { name: 'handleArticle' }),
     withState('isArticlePopupOpen', 'setIsArticlePopupOpen', false),
     withState('isMembersPopupOpen', 'setIsMembersPopupOpen', false),
     withHandlers({
@@ -92,6 +93,41 @@ const ShowHOC = compose(
                     }
                 });
             }
+        },
+        deleteOfficeArticle: ({ handleArticle, setFeedbackMessage, match: { params: { teamId, lang: language } } }) => async id => {
+            try {
+                await handleArticle({
+                    variables: {
+                        article: {
+                            id
+                        },
+                        options: {
+                            articleId: id,
+                            teamId,
+                            isAtOffice: false
+                        },
+                        language
+                    },
+                    refetchQueries: [
+                        teamRefetch(teamId, language)
+                    ]
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
         }
     })
 );
@@ -103,7 +139,7 @@ const Show = props => {
         isMembersPopupOpen, openMembersPopup, closeMembersPopup,
         match: { params: { lang, teamId } },
         queryTeam: { team: { company, members, shallowMembers, officeArticles, jobs } },
-        removeMember, removeShallowMember
+        removeMember, removeShallowMember, deleteOfficeArticle
     } = props;
 
     return (
@@ -148,6 +184,7 @@ const Show = props => {
                         <ArticleSlider
                             articles={officeArticles}
                             editMode={editMode}
+                            deleteArticle={deleteOfficeArticle}
                             title={(<h2 className='titleHeading'>Life <b>at the office</b></h2>)}
                         />
                     }

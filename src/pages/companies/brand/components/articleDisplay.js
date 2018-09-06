@@ -5,12 +5,13 @@ import { compose, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { setEditMode } from '../../../../store/queries';
+import { setEditMode, handleArticle, setFeedbackMessage } from '../../../../store/queries';
+import { companyRefetch } from '../../../../store/refetch';
 import { s3BucketURL } from '../../../../constants/s3';
 import { stripHtmlTags } from '../../../../constants/utils';
 
 const ArticleDisplay = props => {
-    const { editMode, article, index, editArticle } = props;
+    const { editMode, article, index, editArticle, deleteArticle } = props;
     let image, video;
 
     if (article.images && article.images.length > 0)
@@ -48,9 +49,14 @@ const ArticleDisplay = props => {
                 <p>{stripHtmlTags(article.i18n[0].description)}</p>
             </div>
             {editMode &&
-                <IconButton className='floatingEditBtn' onClick={() => editArticle(article.id)}>
-                    <Icon>edit</Icon>
-                </IconButton>
+                <React.Fragment>
+                    <IconButton className='floatingEditBtn' onClick={() => editArticle(article.id)}>
+                        <Icon>edit</Icon>
+                    </IconButton>
+                    <IconButton className='floatingDeleteBtn' onClick={() => deleteArticle(article.id)}>
+                        <Icon>cancel</Icon>
+                    </IconButton>
+                </React.Fragment>
             }
         </div>
     )
@@ -60,6 +66,8 @@ const ArticleDisplay = props => {
 const ArticleDisplayHOC = compose(
     withRouter,
     graphql(setEditMode, { name: 'setEditMode' }),
+    graphql(handleArticle, { name: 'handleArticle' }),
+    graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withHandlers({
         editArticle: ({ setEditMode, history, match: { params: { lang } } }) => async id => {
             await setEditMode({
@@ -68,6 +76,41 @@ const ArticleDisplayHOC = compose(
                 }
             });
             return history.push(`/${lang}/article/${id}`);
+        },
+        deleteArticle: ({ handleArticle, setFeedbackMessage, match: { params: { companyId, lang: language } } }) => async id => {
+            try {
+                await handleArticle({
+                    variables: {
+                        article: {
+                            id
+                        },
+                        options: {
+                            articleId: id,
+                            companyId: companyId,
+                            isMoreStories: false
+                        },
+                        language
+                    },
+                    refetchQueries: [
+                        companyRefetch(companyId, language)
+                    ]
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
         }
     }),
     pure
