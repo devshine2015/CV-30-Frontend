@@ -427,6 +427,16 @@
                     border: none;
                 }
             }
+
+            .fixed {
+                position: sticky;
+                top: 115px;
+
+                @media(max-width: 600px) {
+                    position: relative;
+                    top: auto;
+                }
+            }
         }
     }
 
@@ -538,6 +548,16 @@
                     cursor: not-allowed;
                     pointer-events: all;
                 }
+            }
+        }
+
+        .fixed {
+            position: sticky;
+            top: 65px !important;
+
+            @media(max-width: 600px) {
+                position: relative;
+                top: auto;
             }
         }
     }

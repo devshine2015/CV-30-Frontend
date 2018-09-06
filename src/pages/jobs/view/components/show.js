@@ -265,35 +265,37 @@ const Show = props => {
                     </Grid>
                     <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                         <div className='columnRightContent'>
-                            <section className='contactUs'>
-                                <h2 className="columnTitle">
-                                    Contact <b>us</b>
-                                </h2>
-                                {phone &&
-                                    <div className='contactField'>
-                                        <i className='fas fa-lg fa-phone' />
-                                        <span>{phone}</span>
-                                    </div>
-                                }
-                                {email &&
-                                    <div className='contactField'>
-                                        <i className='fas fa-envelope fa-lg' />
-                                        <a href={`mailto: ${email}`}>{email}</a>
-                                    </div>
-                                }
-                                {facebook &&
-                                    <div className='contactField'>
-                                        <i className='fab fa-lg fa-facebook' />
-                                        <a href={facebook} target="_blank">{facebook}</a>
-                                    </div>
-                                }
-                                {linkedin &&
-                                    <div className='contactField'>
-                                        <i className='fab fa-lg fa-linkedin-in' />
-                                        <a href={linkedin} target="_blank">{linkedin}</a>
-                                    </div>
-                                }
-                            </section>
+                            <div className='fixed'>
+                                <section className='contactUs'>
+                                    <h2 className="columnTitle">
+                                        Contact <b>us</b>
+                                    </h2>
+                                    {phone &&
+                                        <div className='contactField'>
+                                            <i className='fas fa-lg fa-phone' />
+                                            <span>{phone}</span>
+                                        </div>
+                                    }
+                                    {email &&
+                                        <div className='contactField'>
+                                            <i className='fas fa-envelope fa-lg' />
+                                            <a href={`mailto: ${email}`}>{email}</a>
+                                        </div>
+                                    }
+                                    {facebook &&
+                                        <div className='contactField'>
+                                            <i className='fab fa-lg fa-facebook' />
+                                            <a href={facebook} target="_blank">{facebook}</a>
+                                        </div>
+                                    }
+                                    {linkedin &&
+                                        <div className='contactField'>
+                                            <i className='fab fa-lg fa-linkedin-in' />
+                                            <a href={linkedin} target="_blank">{linkedin}</a>
+                                        </div>
+                                    }
+                                </section>
+                            </div>
                         </div>
                     </Grid>
                 </Grid>

@@ -360,89 +360,91 @@ const NewJob = ({
 
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
-                        <section className='contact'>
-                            <h2 className="columnTitle">
-                                Contact&nbsp;<b>details</b>
-                            </h2>
+                        <div className='fixed'>
+                            <section className='contact'>
+                                <h2 className="columnTitle">
+                                    Contact&nbsp;<b>details</b>
+                                </h2>
 
-                            <p className='message'>
-                                Add section
+                                <p className='message'>
+                                    Add section
                             </p>
-                            <div>
-                                <Button className='addContactFieldBtn'
-                                    aria-owns={anchorEl ? 'simple-menu' : null}
-                                    aria-haspopup="true"
-                                    onClick={handleClick}
-                                >
-                                    Select field
+                                <div>
+                                    <Button className='addContactFieldBtn'
+                                        aria-owns={anchorEl ? 'simple-menu' : null}
+                                        aria-haspopup="true"
+                                        onClick={handleClick}
+                                    >
+                                        Select field
                                 </Button>
-                                <Menu
-                                    id="simple-menu"
-                                    anchorEl={anchorEl}
-                                    open={Boolean(anchorEl)}
-                                    onClose={handleClose}
-                                >
+                                    <Menu
+                                        id="simple-menu"
+                                        anchorEl={anchorEl}
+                                        open={Boolean(anchorEl)}
+                                        onClose={handleClose}
+                                    >
+                                        {
+                                            fields.map((item, index) => {
+                                                let key = 'addField-' + index;
+                                                let disabled = !!values[item.id] || values[item.id] === '';
+                                                return <MenuItem onClick={() => addField(item.id)} key={key} disabled={disabled}>{item.text}</MenuItem>
+                                            })
+                                        }
+                                    </Menu>
+                                </div>
+                                <div className='contactDetailsEditForm'>
                                     {
-                                        fields.map((item, index) => {
-                                            let key = 'addField-' + index;
-                                            let disabled = !!values[item.id] || values[item.id] === '';
-                                            return <MenuItem onClick={() => addField(item.id)} key={key} disabled={disabled}>{item.text}</MenuItem>
+                                        Object.keys(values).map((key) => {
+                                            const result = fields.find(field => field.id === key);
+                                            if (result && values[result.id] !== null) {
+                                                let text = result.text;
+                                                return (
+                                                    <div className='formGroup' key={key}>
+                                                        <TextField
+                                                            name={key}
+                                                            label={text}
+                                                            placeholder={text}
+                                                            className='textField'
+                                                            onChange={handleChange}
+                                                            value={values[key]}
+                                                            InputProps={{
+                                                                classes: {
+                                                                    root: 'contactTextInputRoot',
+                                                                    input: 'contactTextInput',
+                                                                }
+                                                            }}
+                                                            InputLabelProps={{
+                                                                className: 'contactFormLabel'
+                                                            }}
+                                                        />
+                                                        <IconButton
+                                                            className='removeBtn'
+                                                            onClick={() => removeTextField(key)}
+                                                        >
+                                                            <Icon>
+                                                                close
+                                                        </Icon>
+                                                        </IconButton>
+                                                    </div>
+                                                )
+                                            } else
+                                                return null;
                                         })
                                     }
-                                </Menu>
-                            </div>
-                            <div className='contactDetailsEditForm'>
-                                {
-                                    Object.keys(values).map((key) => {
-                                        const result = fields.find(field => field.id === key);
-                                        if (result && values[result.id] !== null) {
-                                            let text = result.text;
-                                            return (
-                                                <div className='formGroup' key={key}>
-                                                    <TextField
-                                                        name={key}
-                                                        label={text}
-                                                        placeholder={text}
-                                                        className='textField'
-                                                        onChange={handleChange}
-                                                        value={values[key]}
-                                                        InputProps={{
-                                                            classes: {
-                                                                root: 'contactTextInputRoot',
-                                                                input: 'contactTextInput',
-                                                            }
-                                                        }}
-                                                        InputLabelProps={{
-                                                            className: 'contactFormLabel'
-                                                        }}
-                                                    />
-                                                    <IconButton
-                                                        className='removeBtn'
-                                                        onClick={() => removeTextField(key)}
-                                                    >
-                                                        <Icon>
-                                                            close
-                                                        </Icon>
-                                                    </IconButton>
-                                                </div>
-                                            )
-                                        } else
-                                            return null;
-                                    })
-                                }
-                            </div>
-                        </section>
-                        <FormattedMessage id="job.save" defaultMessage="Save job">
-                            {(text) => (
-                                <Button
-                                    className='saveBtn'
-                                    onClick={handleSubmit}
-                                    disabled={!isValid || isSubmitting}
-                                >
-                                    {text}
-                                </Button>
-                            )}
-                        </FormattedMessage>
+                                </div>
+                            </section>
+                            <FormattedMessage id="job.save" defaultMessage="Save job">
+                                {(text) => (
+                                    <Button
+                                        className='saveBtn'
+                                        onClick={handleSubmit}
+                                        disabled={!isValid || isSubmitting}
+                                    >
+                                        {text}
+                                    </Button>
+                                )}
+                            </FormattedMessage>
+                        </div>
                     </div>
                 </Grid>
             </Grid>
