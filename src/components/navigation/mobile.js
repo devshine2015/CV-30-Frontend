@@ -22,7 +22,9 @@ const MobileNav = (props) => {
 
     const { currentUser } = auth || {};
 
-    let avatar =
+    const userCompany = (currentUser.ownedCompanies && currentUser.ownedCompanies.length > 0) ? currentUser.ownedCompanies[0] : null;
+
+    const avatar =
         (!localUserLoading && currentUser && currentUser.avatarPath) ?
             `${s3BucketURL}${currentUser.avatarPath}?${timestamp}` : defaultUserAvatar;
 
@@ -144,12 +146,12 @@ const MobileNav = (props) => {
                                 </FormattedMessage>
                             */}
 
-                            {currentUser && currentUser.company ?
+                            {currentUser && userCompany ?
                                 <React.Fragment>
                                     <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
                                         {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
                                     </FormattedMessage>
-                                    <h4 className='companyName'>{currentUser.company.name}</h4>
+                                    <h4 className='companyName'>{userCompany.name}</h4>
                                 </React.Fragment>
                                 :
                                 <FormattedMessage id="nav.noCompaniesLabel" defaultMessage="No company" description="Settings menu item">
@@ -157,11 +159,11 @@ const MobileNav = (props) => {
                                 </FormattedMessage>
                             }
 
-                            {currentUser && currentUser.company ?
+                            {currentUser && userCompany ?
                                 <React.Fragment>
                                     <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Company profile">
                                         {(text) => (<ListItem button
-                                            component={Link} to={`/${lang}/company/${currentUser.company.id}`}
+                                            component={Link} to={`/${lang}/company/${userCompany.id}`}
                                             onClick={closeMobileProfile}>
                                             {text}
                                         </ListItem>
@@ -170,7 +172,7 @@ const MobileNav = (props) => {
                                     <FormattedMessage id="nav.companyJobs" defaultMessage="Jobs" description="Company jobs">
                                         {(text) => (<ListItem button
                                             component={Link} to={{
-                                                pathname: `/${lang}/company/${currentUser.company.id}/settings`,
+                                                pathname: `/${lang}/company/${userCompany.id}/settings`,
                                                 state: { activeTab: 'jobs' }
                                             }}
                                             onClick={closeMobileProfile}>
@@ -181,7 +183,7 @@ const MobileNav = (props) => {
                                     <FormattedMessage id="nav.companySettings" defaultMessage="Settings" description="Company settings">
                                         {(text) => (<ListItem button
                                             component={Link} to={{
-                                                pathname: `/${lang}/company/${currentUser.company.id}/settings`,
+                                                pathname: `/${lang}/company/${userCompany.id}/settings`,
                                                 state: { activeTab: 'settings' }
                                             }}
                                             onClick={closeMobileProfile}>

@@ -161,8 +161,7 @@ const LoginHOC = compose(
                     });
 
                     const { id, email, firstName, lastName, avatarPath, ownedCompanies } = currentUserQuery.data.profile;
-                    let company = (ownedCompanies && ownedCompanies.length > 0) ? ownedCompanies[0] : null;
-                    const currentUser = { id, email, firstName, lastName, avatarPath, god, company, __typename: 'Profile' };
+                    const currentUser = { id, email, firstName, lastName, avatarPath, god, ownedCompanies, __typename: 'Profile' };
 
                     await authLocal({
                         variables: {

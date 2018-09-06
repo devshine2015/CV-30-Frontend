@@ -16,12 +16,15 @@ const DesktopNav = props => {
         doLogout, profileMenuOpen, toggleProfileMenu, closeProfileMenu, notificationsMenuOpen, toggleNotificationsMenu, closeNotificationsMenu, notifications
     } = props;
 
-    const { currentUser } = auth || {};
 
     if (localUserLoading || currentUserLoading)
         return <span>Loading...</span>
 
-    let avatar =
+    const { currentUser } = auth || {};
+
+    const userCompany = (currentUser.ownedCompanies && currentUser.ownedCompanies.length > 0) ? currentUser.ownedCompanies[0] : null;
+
+    const avatar =
         (!localUserLoading && currentUser && currentUser.avatarPath) ?
             `${s3BucketURL}${currentUser.avatarPath}?${timestamp}` : defaultUserAvatar;
 
@@ -103,12 +106,12 @@ const DesktopNav = props => {
 
                                                 <div className='companiesContainer'>
                                                     {
-                                                        currentUser.company ?
+                                                        userCompany ?
                                                             <React.Fragment>
                                                                 <FormattedMessage id="nav.companiesLabel" defaultMessage="My company" description="Settings menu item">
                                                                     {(text) => (<span className='companiesContainerTitle'>{text}</span>)}
                                                                 </FormattedMessage>
-                                                                <h4 className='companyName'>{currentUser.company.name}</h4>
+                                                                <h4 className='companyName'>{userCompany.name}</h4>
                                                             </React.Fragment>
                                                             :
                                                             <FormattedMessage id="nav.noCompaniesLabel" defaultMessage="No company" description="Settings menu item">
@@ -116,11 +119,11 @@ const DesktopNav = props => {
                                                             </FormattedMessage>
                                                     }
 
-                                                    {currentUser.company ?
+                                                    {userCompany ?
                                                         <React.Fragment>
                                                             <FormattedMessage id="nav.companyProfile" defaultMessage="Company profile" description="Company profile">
                                                                 {(text) => (<MenuItem
-                                                                    component={Link} to={`/${lang}/company/${currentUser.company.id}`}
+                                                                    component={Link} to={`/${lang}/company/${userCompany.id}`}
                                                                     onClick={closeProfileMenu}
                                                                 >
                                                                     {text}
@@ -130,7 +133,7 @@ const DesktopNav = props => {
                                                             <FormattedMessage id="nav.companyJobs" defaultMessage="Jobs" description="Company jobs">
                                                                 {(text) => (<MenuItem
                                                                     component={Link} to={{
-                                                                        pathname: `/${lang}/company/${currentUser.company.id}/settings`,
+                                                                        pathname: `/${lang}/company/${userCompany.id}/settings`,
                                                                         state: { activeTab: 'jobs' }
                                                                     }}
                                                                     onClick={closeProfileMenu}
@@ -142,7 +145,7 @@ const DesktopNav = props => {
                                                             <FormattedMessage id="nav.companySettings" defaultMessage="Settings" description="Company settings">
                                                                 {(text) => (<MenuItem
                                                                     component={Link} to={{
-                                                                        pathname: `/${lang}/company/${currentUser.company.id}/settings`,
+                                                                        pathname: `/${lang}/company/${userCompany.id}/settings`,
                                                                         state: { activeTab: 'settings' }
                                                                     }}
                                                                     onClick={closeProfileMenu}

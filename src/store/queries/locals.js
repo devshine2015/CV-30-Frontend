@@ -47,7 +47,7 @@ export const getCurrentUser = gql`
                 email
                 avatarPath
                 god
-                company {
+                ownedCompanies {
                     id
                     name
                     location
