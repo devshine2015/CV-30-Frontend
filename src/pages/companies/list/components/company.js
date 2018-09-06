@@ -19,7 +19,7 @@ const CompanyHOC = compose(
 
 const Company = props => {
     const { activeTab, handleTabChange, company, match: { params: { lang } } } = props;
-    const { id, name, industry, location, noOfEmployees, i18n, jobs, team, logoPath } = company;
+    const { id, name, industry, location, noOfEmployees, i18n, jobs, teams, logoPath } = company;
     let avatar =
         logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo;
 
@@ -71,8 +71,8 @@ const Company = props => {
                         disabled={!jobs || jobs.length === 0}
                     />
                     <Tab
-                        label="Team"
-                        value='team'
+                        label="Teams"
+                        value='teams'
                         classes={{
                             root: 'tabRoot',
                             labelIcon: 'labelIcon',
@@ -84,7 +84,7 @@ const Company = props => {
                         disableRipple
                         disableTouchRipple
                         focusRipple
-                        disabled={!team || team.length === 0}
+                        disabled={!teams || teams.length === 0}
                     />
                 </Tabs>
             </div>
@@ -97,7 +97,7 @@ const Company = props => {
                 {
                     activeTab === 'team' &&
                     <div className='team'>
-                        {team.map((member, index) => (<TeamMember {...member} key={`member-${index}`} />))}
+                        {/* {team.map((member, index) => (<TeamMember {...member} key={`member-${index}`} />))} */}
                     </div>
                 }
             </div>

@@ -1,36 +1,5 @@
 import gql from 'graphql-tag';
 
-const minimumCompanyResult = gql`
-  fragment minimumCompanyResult on Company {
-    id
-    name
-    location
-    noOfEmployees
-    i18n {
-      headline
-      description
-    }
-    featuredArticles {
-      id
-      images {
-        id
-        path
-      }
-      videos {
-        id
-        path
-      }
-    }    
-    logoPath
-    industry {
-      id 
-      i18n {
-        title
-      }
-    }
-  }
-`;
-
 const companyJobData = gql`
   fragment companyJobData on Job {
     id    
@@ -45,14 +14,41 @@ const companyJobData = gql`
   }
 `;
 
-export const companyQuery = gql`
-query company($id: String!, $language: LanguageCodeType!) {
-  company(id: $id, language: $language) {
-    ...minimumCompanyResult
+const minimumCompanyData = gql`
+  fragment minimumCompanyData on Company {
+    id
+    name
+    location
+    noOfEmployees
     i18n {
       headline
       description
     }
+    logoPath
+    industry {
+      id 
+      i18n {
+        title
+      }
+    }
+    jobs {
+      ...companyJobData
+    }
+    teams {
+      id
+      name
+      hasProfileCover
+      coverContentType
+      coverBackground
+    }
+  }
+  ${companyJobData}
+`;
+
+export const companyQuery = gql`
+query company($id: String!, $language: LanguageCodeType!) {
+  company(id: $id, language: $language) {
+    ...minimumCompanyData
     featuredArticles {
       id
       i18n {
@@ -98,23 +94,12 @@ query company($id: String!, $language: LanguageCodeType!) {
         path
       }
     }
-    noOfEmployees
     faqs {
       id
       i18n {
         question
         answer
       }
-    }
-    jobs {
-      ...companyJobData
-    }
-    teams {
-      id
-      name
-      hasProfileCover
-      coverContentType
-      coverBackground
     }
     owner {
       id
@@ -123,17 +108,16 @@ query company($id: String!, $language: LanguageCodeType!) {
     coverBackground
   }
 }
-${minimumCompanyResult}
-${companyJobData}
+${minimumCompanyData}
 `;
 
 export const companiesQuery = gql`
   query companies($language: LanguageCodeType!) {
     companies(language: $language) {
-      ...minimumCompanyResult
+      ...minimumCompanyData
     }
   }
-  ${minimumCompanyResult}
+  ${minimumCompanyData}
 `;
 
 export const industriesQuery = gql`
