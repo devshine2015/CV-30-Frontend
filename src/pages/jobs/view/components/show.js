@@ -130,7 +130,6 @@ const Show = props => {
                                         }}
                                         playing={false} />
                                 }
-
                             </section>
                         }
                         <section className='jobDescription'>

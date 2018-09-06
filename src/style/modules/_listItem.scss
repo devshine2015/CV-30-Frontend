@@ -5,6 +5,7 @@
     border: 1px solid #ededed;
     border-radius: 10px;
     padding: 25px 15px;
+
     .leftOverlay,
     .rightOverlay {
         position: absolute;
@@ -13,18 +14,22 @@
         border-radius: 20px;
         display: flex;
     }
+
     .leftOverlay {
         left: 10px;
+
         @media(max-width: 600px) {
             position: relative;
             left: auto;
             margin-right: auto;
         }
     }
+
     .rightOverlay {
         right: 10px;
         top: -17px;
         padding: 7px 10px;
+
         @media(max-width: 600px) {
             position: relative;
             right: auto;
@@ -32,10 +37,12 @@
             margin-left: auto;
         }
     }
+
     .itemBody {
         display: flex;
         padding-top: 20px;
     }
+
     .itemFooter {
         margin: 0 -15px -25px;
         border-bottom-left-radius: 10px;
@@ -44,6 +51,7 @@
         max-height: 0;
         transition: max-height 0.15s ease-out;
         overflow: hidden;
+
         &.open {
             border-top: 1px solid #eeeeee;
             padding: 10px;
@@ -65,24 +73,29 @@
         background: #bdbdbd;
         margin: 3px;
     }
+
     .texts {
         margin-left: 15px;
         padding: 15px 0;
+
         .holderName,
         .holderTitle {
             margin: 0;
             padding: 0;
             color: #565656;
         }
+
         .holderName {
             display: flex;
             align-items: flex-start;
             font-size: 1rem;
+
             i {
                 cursor: pointer;
                 margin-left: 10px;
             }
         }
+
         .holderTitle {
             font-size: 0.75rem;
             font-weight: 100;
@@ -98,26 +111,32 @@
     flex: 1;
     background: #fff;
     margin-top: 65px;
+
     .listItem {
         margin-bottom: 60px;
+
         .leftOverlay {
             padding: 0 30px 0 2px;
             align-items: center;
             justify-content: space-between;
             top: -33px;
             border-radius: 35px;
+
             @media(max-width: 600px) {
                 top: auto;
                 margin: -10px 0 10px;
             }
+
             .avatar {
                 width: 60px;
                 height: 60px;
                 background: #bdbdbd;
             }
+
             .leftOverlayTexts {
                 margin-left: 15px;
                 padding: 15px 0;
+
                 .userName,
                 .userTitle,
                 .companyName,
@@ -126,41 +145,50 @@
                     padding: 0;
                     color: #565656;
                 }
+
                 .userName,
                 .companyName {
                     display: flex;
                     align-items: flex-start;
                     font-size: 1rem;
+
                     i {
                         cursor: pointer;
                         margin-left: 10px;
                     }
                 }
+
                 .userTitle,
                 .expires {
                     font-size: 0.75rem;
                     font-weight: 100;
                 }
+
                 .expires {
                     color: #a0a0a0;
+
                     span {
                         color: #414141;
                     }
                 }
             }
         }
+
         .rightOverlay {
             font-size: 0.75rem;
             font-weight: 100;
             color: #565656;
+
             .highlight {
                 color: #277dba;
                 font-weight: bold;
             }
+
             &.editable {
                 right: 50px;
             }
         }
+
         .floatingEditBtn {
             position: absolute;
             top: -18px;
@@ -171,6 +199,7 @@
             color: #fff;
             box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
         }
+
         .articleDate {
             position: absolute;
             top: -8px;
@@ -179,71 +208,89 @@
             background: #fff;
             font-size: .75rem;
             padding: 0 15px;
+
             &.editable {
                 right: 248px;
+
                 @media(max-width: 600px) {
                     right: 52px;
                 }
             }
+
             @media(max-width: 600px) {
                 right: 10px;
             }
         }
+
         .itemBody {
             flex-wrap: wrap;
             flex-direction: column;
+
             .chipContainer {
                 display: flex;
                 width: 100%;
                 padding: 10px 0;
                 align-items: center;
+
                 .chipTitle {
                     font-size: 0.875rem;
                     font-weight: 500;
                     margin-right: 10px;
+
                     &.skills {
                         color: #5d93e2;
                     }
+
                     &.values {
                         color: #c9a53f;
                     }
                 }
+
                 .chip {
                     background: #ebebeb;
                     border-radius: 5px;
                     color: #565656;
                     font-size: 0.75rem;
                     margin-right: 10px;
+
                     &:last-child {
                         margin-right: 0;
                     }
                 }
             }
+
             .moreBtn {
                 padding: 0;
                 color: #bababa;
                 text-transform: none;
+
                 &,
                 &:hover,
                 &:active {
                     background: none;
                 }
+
                 i {
                     margin-left: 10px;
                 }
+
                 &:hover {
                     color: #565656;
                 }
+
                 &:active {
                     color: #414141;
                 }
             }
+
             .tabsContainer {
                 min-height: auto;
             }
+
             .tabRoot {
                 min-width: auto;
                 min-height: auto;
+
                 .label {
                     &:after {
                         font-family: Font Awesome\ 5 Free;
@@ -253,6 +300,7 @@
                     }
                 }
             }
+
             .tabSelected {
                 .label {
                     &:after {
@@ -260,18 +308,23 @@
                     }
                 }
             }
+
             .labelContainer {
                 padding: 0 0 15px;
             }
+
             .tabsIndicator {
                 background: #414141;
             }
+
             .editPost {
                 display: flex;
                 margin-bottom: 20px;
+
                 .textField {
                     flex: 1;
                 }
+
                 .updatePostBtn {
                     background: #4484bd;
                     color: #fff;
@@ -281,12 +334,14 @@
                 }
             }
         }
+
         .itemFooter {
             .articles {
                 display: flex;
                 flex-direction: row;
                 flex-wrap: nowrap;
                 overflow: hidden;
+
                 .article {
                     min-width: 200px;
                     flex-basis: auto;
@@ -298,6 +353,7 @@
                     display: flex;
                     align-items: flex-end;
                     background-size: cover;
+
                     .articleTitle {
                         padding: 10px;
                         color: #fff;
@@ -322,12 +378,14 @@
     .listItem {
         .leftOverlay {
             padding: 0;
+
             .avatarHeader {
                 .texts {
                     .holderTitle {
                         font-size: 0.75rem;
                         font-weight: 100;
                         color: #a0a0a0;
+
                         span {
                             color: #414141;
                         }
@@ -345,10 +403,12 @@
             font-weight: 100;
             color: #616161;
         }
+
         .tabRoot {
             min-width: auto;
             min-height: auto;
             margin-right: 30px;
+
             .label {
                 &:after {
                     content: "" !important;
@@ -356,8 +416,10 @@
             }
         }
     }
+
     .jobs {
         display: flex;
+
         .jobItem {
             display: flex;
             border-bottom: 1px solid #ebebeb;
@@ -366,10 +428,12 @@
             width: 400px;
             margin-right: 50px;
             min-width: 400px;
+
             .media {
                 display: flex;
                 position: relative;
                 flex: 1;
+
                 .mediaFake {
                     width: 250px;
                     height: 140px;
@@ -378,10 +442,12 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
+
                     i {
                         color: #fff;
                     }
                 }
+
                 span.role {
                     background: #414141;
                     color: #fff;
@@ -391,16 +457,19 @@
                     left: 10px;
                 }
             }
+
             .info {
                 display: flex;
                 flex-direction: column;
                 flex: 1;
                 margin-left: 15px;
+
                 h5 {
                     font-size: 1rem;
                     color: #414141;
                     font-weight: bold;
                 }
+
                 span {
                     font-size: 1rem;
                     font-weight: normal;
@@ -409,11 +478,13 @@
             }
         }
     }
+
     .team {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
         overflow: hidden;
+
         .member {
             min-width: 300px;
             flex-basis: auto;
@@ -429,16 +500,19 @@
             padding: 10px;
             flex-direction: column;
             box-sizing: border-box;
+
             p {
                 color: #fff;
                 width: 100%;
                 margin: 0;
             }
+
             .name {
                 font-weight: bold;
                 font-size: 1.125rem;
                 margin-top: auto;
             }
+
             .title {
                 font-size: 0.875rem;
                 font-weight: 100;
@@ -453,49 +527,60 @@
         padding: 40px;
         background: #f4f4f4;
         box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+
         .centralColumn {
             position: relative;
             margin-left: auto;
         }
+
         .columnRight {
             position: relative;
             margin-left: auto;
         }
+
         .searchTitle {
             color: #277dba;
             font-weight: 100;
             font-size: 2rem;
+
             @media (max-width: 600px) {
                 text-align: center;
             }
         }
+
         .searchFields {
             display: flex;
             align-items: baseline;
+
             .textField {
                 flex: 1;
                 margin-right: 15px;
             }
+
             @media (max-width: 600px) {
                 flex-wrap: wrap;
                 align-items: center;
                 flex-direction: column;
+
                 .textField {
                     width: 90%;
                     margin: 0 auto 10px;
                 }
             }
         }
+
         .searchBtn {
             background: #277dba;
             color: #fff;
             text-transform: none;
+
             @media (max-width: 600px) {
                 margin-left: auto;
                 margin-right: 5%;
             }
         }
     }
+
     .columnRight {
         .columnRightContent {
             top: -80px;
@@ -507,12 +592,14 @@
             display: flex;
             flex-direction: column;
             height: calc(100% + 80px);
+
             .columnTitle {
                 color: #397db9;
                 font-weight: 100;
                 font-size: 2rem;
                 padding: 0;
             }
+
             @media (max-width: 960px) {
                 top: auto;
                 margin-bottom: 75px;
@@ -532,20 +619,24 @@
 .jobsListRoot,
 .jobsList {
     position: relative;
+
     .listItem {
         .rightOverlay {
             align-items: center;
             border: none;
             padding: 8px 12px;
             top: -17px;
+
             .location {
                 color: #565656;
                 font-weight: 100;
                 margin-right: 15px;
+
                 i {
                     margin-right: 5px;
                 }
             }
+
             .match {
                 position: relative;
                 display: flex;
@@ -553,6 +644,7 @@
                 align-items: center;
                 min-width: 80px;
                 min-height: 80px;
+
                 .matchText,
                 .matchValue {
                     font-size: 1rem;
@@ -560,16 +652,19 @@
                     color: #29a9e1;
                     text-align: center;
                 }
+
                 .matchText {
                     color: #ababab;
                     font-weight: normal;
                 }
+
                 .matchRoot {
                     color: #29a9e1;
                     position: absolute;
                 }
             }
         }
+
         .appliedDate {
             position: absolute;
             font-size: 0.75rem;
@@ -582,19 +677,29 @@
             bottom: -16px;
             left: 15px;
         }
+
         .itemBody {
             flex-wrap: nowrap;
             align-items: center;
             flex-direction: row;
+
             .media {
                 display: flex;
                 min-width: 290px;
                 min-height: 165px;
                 width: 290px;
                 height: 165px;
-                background: #d6d6d6;
                 margin-right: 20px;
+                overflow: hidden;
+                align-items: center;
+                justify-content: center;
+
+                img {
+                    max-width: 100%;
+                    max-height: 100%;
+                }
             }
+
             .details {
                 .jobTitle {
                     color: #414141;
@@ -603,9 +708,11 @@
                     margin: 0 0 15px 0;
                     padding: 0;
                 }
+
                 .levels {
                     display: flex;
                     flex-wrap: wrap;
+
                     .jobLevel {
                         height: 30px;
                         background: #ebebeb;
@@ -615,19 +722,23 @@
                         text-transform: capitalize;
                     }
                 }
+
                 .benefits {
                     display: flex;
                     flex-wrap: wrap;
+
                     .benefit {
                         color: #ababab;
                         font-size: 0.75rem;
                         font-weight: bold;
                         margin: 7px 15px 7px 0;
+
                         i {
                             margin-right: 5px;
                         }
                     }
                 }
+
                 .companyDescription {
                     margin: 0;
                     padding: 0;

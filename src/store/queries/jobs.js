@@ -2,24 +2,41 @@ import gql from 'graphql-tag';
 
 export const getJobsQuery = gql`
 query jobs($language: LanguageCodeType!) {
-    jobs(language: $language) {
-        id
-        expireDate
-        i18n {
-            title
-            description
-        }
-        company {
-            id
-            name
-			location
-			logoPath
-        }
-		location
-		imagePath
-		videoUrl
-		status
+  jobs(language: $language) {
+    id
+    expireDate
+    i18n {
+      title
+      description
     }
+    company {
+      id
+      name
+      location
+      logoPath
+    }
+    location
+    imagePath
+    videoUrl
+    status
+    activityField {
+      id
+      i18n {
+        title
+      }
+    }
+    jobTypes {
+      id
+      i18n {
+        title
+      }
+    }
+    jobBenefits {
+      id
+      key
+      icon
+    }
+  }
 }
 `;
 
