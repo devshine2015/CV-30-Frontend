@@ -91,6 +91,7 @@ query job($id: String!, $language: LanguageCodeType!) {
       }
     }
     activityField {
+      id
       i18n {
         title
       }
@@ -132,17 +133,6 @@ export const jobDependencies = gql`
 			id
 			key
 			icon
-		}
-	}
-`;
-
-export const jobTypesQuery = gql`
-	query jobTypes($language: LanguageCodeType!) {
-		jobTypes(language: $language) {
-			id
-			i18n {
-				title
-			}
 		}
 	}
 `;

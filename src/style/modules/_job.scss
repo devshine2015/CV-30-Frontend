@@ -153,23 +153,14 @@
                 }
             }
 
-            .idealCandidate {
-                .candidateTraits {
-                    list-style: none;
-                    padding-left: 0;
+            section.skills {
+                .chip {
+                    margin: 0 5px 5px 0;
+                }
 
-                    li {
-                        font-size: 1rem;
-                        color: #565656;
-                        font-weight: 100;
-                        margin-left: 15px;
-
-                        &:before {
-                            content: "-";
-                            margin-left: -15px;
-                            margin-right: 5px;
-                        }
-                    }
+                .inputRoot {
+                    display: flex;
+                    flex-wrap: wrap;
                 }
             }
 
@@ -408,6 +399,26 @@
                 .contact {
                     padding: 15px 25px;
                     background: #397db9;
+                }
+
+                .contactUs {
+                    .columnTitle {
+                        margin-bottom: 40px;
+                    }
+
+                    .contactField {
+                        margin: 25px 0;
+
+                        i {
+                            margin-right: 15px;
+                        }
+
+                        span,
+                        a {
+                            font-size: 1rem;
+                            color: #414141;
+                        }
+                    }
                 }
 
                 @media (max-width: 960px) {

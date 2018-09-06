@@ -22,7 +22,7 @@ import fields from '../../../../constants/contact';
 import { formatCurrency } from '../../../../constants/utils';
 import { jobValidation } from '../../new/validations';
 
-import { jobDependencies, handleJob, setFeedbackMessage } from '../../../../store/queries';
+import { jobDependencies, handleJob, setFeedbackMessage, setEditMode } from '../../../../store/queries';
 import { jobRefetch } from '../../../../store/refetch';
 import Loader from '../../../../components/Loader';
 import TagsInput from '../../../../components/TagsInput';
@@ -48,6 +48,7 @@ const EditHOC = compose(
     }),
     graphql(handleJob, { name: 'handleJob' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+    graphql(setEditMode, { name: 'setEditMode' }),
     withState('anchorEl', 'setAnchorEl', null),
     withState('imageUploadOpen', 'setImageUploadOpen', false),
     withState('videoShareAnchor', 'setVideoShareAnchor', null),
@@ -84,7 +85,7 @@ const EditHOC = compose(
         },
         validationSchema: jobValidation,
         displayName: 'EditJobForm',
-        handleSubmit: async (values, { props: { handleJob, match: { params: { lang: language, jobId } }, setFeedbackMessage }, setSubmitting }) => {
+        handleSubmit: async (values, { props: { handleJob, match: { params: { lang: language, jobId } }, setFeedbackMessage, setEditMode }, setSubmitting }) => {
             setSubmitting(true);
             try {
                 await handleJob({
@@ -92,9 +93,7 @@ const EditHOC = compose(
                         language,
                         jobDetails: values
                     },
-                    refetchQueries: [
-                        jobRefetch(jobId, language)
-                    ]
+                    refetchQueries: [jobRefetch(jobId, language)]
                 });
                 await setFeedbackMessage({
                     variables: {
@@ -103,6 +102,11 @@ const EditHOC = compose(
                     }
                 });
                 setSubmitting(false);
+                await setEditMode({
+                    variables: {
+                        status: false
+                    }
+                });
             }
             catch (err) {
                 setSubmitting(false);
