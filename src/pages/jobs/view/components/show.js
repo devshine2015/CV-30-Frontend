@@ -141,9 +141,9 @@ const Show = props => {
                         <section className='jobBenefits'>
                             <h2 className='sectionTitle'>Job <b>benefits</b></h2>
                             {jobBenefits && jobBenefits.map(item => (
-                                <FormattedMessage id={`benefits.${item.key}`} defaultMessage={item.key}>
+                                <FormattedMessage id={`benefits.${item.key}`} defaultMessage={item.key} key={item.key}>
                                     {(text) => (
-                                        <span className='benefit' key={item.key}>
+                                        <span className='benefit'>
                                             <i className={item.icon} />
                                             {text}
                                         </span>
@@ -179,9 +179,12 @@ const Show = props => {
                         <section className='jobType'>
                             <h2 className='sectionTitle'>Job <b>type</b></h2>
                             {jobTypes && jobTypes.map(item => (
-                                <span key={item.id}>
-                                    {item.i18n[0].title}
-                                </span>
+                                <Chip
+                                    key={item.id}
+                                    label={item.i18n[0].title}
+                                    className='chip'
+                                    clickable={false}
+                                />
                             ))}
                         </section>
 
