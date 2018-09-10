@@ -5,10 +5,8 @@ query jobs($language: LanguageCodeType!) {
   jobs(language: $language) {
     id
     expireDate
-    i18n {
-      title
-      description
-    }
+    title
+    description
     company {
       id
       name
@@ -21,15 +19,11 @@ query jobs($language: LanguageCodeType!) {
     status
     activityField {
       id
-      i18n {
-        title
-      }
+      title
     }
     jobTypes {
       id
-      i18n {
-        title
-      }
+      title
     }
     jobBenefits {
       id
@@ -49,20 +43,16 @@ query job($id: String!, $language: LanguageCodeType!) {
     imagePath
     videoUrl
     status
-    i18n {
-      title
-      description
-      idealCandidate
-    }
+    title
+    description
+    idealCandidate
     company {
       id
       name
       jobs {
         id
       }
-      i18n {
-        description
-      }
+      description
       officeArticles {
         id
         images {
@@ -73,17 +63,13 @@ query job($id: String!, $language: LanguageCodeType!) {
           id
           path
         }
-        i18n {
-          title
-          description
-        }
+        title
+        description
       }
       faqs {
         id
-        i18n {
-          question
-          answer
-        }
+        question
+        answer
       }
       owner {
         id
@@ -103,21 +89,15 @@ query job($id: String!, $language: LanguageCodeType!) {
     location
     skills {
       id
-      i18n {
-        title
-      }
+      title
     }
     activityField {
       id
-      i18n {
-        title
-      }
+      title
     }
     jobTypes {
       id
-      i18n {
-        title
-      }
+      title
     }
     salary {
       amountMin
@@ -142,9 +122,7 @@ export const jobDependencies = gql`
 		}
 		jobTypes(language: $language) {
 			id
-			i18n {
-				title
-			}
+			title
 		}
 		jobBenefits {
 			id

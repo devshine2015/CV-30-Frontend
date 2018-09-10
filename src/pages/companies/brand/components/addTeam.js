@@ -10,19 +10,24 @@ import { companyRefetch } from '../../../../store/refetch';
 const AddTeamHOC = compose(
     graphql(handleTeam, { name: 'handleTeam' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('newTeam', 'setTeamName', ''),
-    withState('teamAnchor', 'setTeamAnchor', null),
+    withState('state', 'setState', {
+        newTeam: '',
+        teamAnchor: null
+    }),
     withHandlers({
-        updateNewTeam: ({ setTeamName }) => team => {
-            setTeamName(team);
-        },
-        openTeamModal: ({ setTeamAnchor }) => target => {
-            setTeamAnchor(target);
-        },
-        closeTeamModal: ({ setTeamAnchor }) => () => {
-            setTeamAnchor(null);
-        },
-        addTeam: ({ newTeam, match, handleTeam, history, setFeedbackMessage }) => async () => {
+        updateNewTeam: ({ state, setState }) => newTeam => setState({
+            ...state,
+            newTeam
+        }),
+        openTeamModal: ({ state, setState }) => teamAnchor => setState({
+            ...state,
+            teamAnchor
+        }),
+        closeTeamModal: ({ state, setState }) => () => setState({
+            ...state,
+            teamAnchor: null
+        }),
+        addTeam: ({ state: { newTeam }, match, handleTeam, history, setFeedbackMessage }) => async () => {
             const teamDetails = {
                 id: uuid(),
                 name: newTeam,
@@ -76,7 +81,7 @@ const AddTeamHOC = compose(
 )
 
 const AddTeam = props => {
-    const { teamAnchor, closeTeamModal, newTeam, updateNewTeam, addTeam, openTeamModal } = props;
+    const { state: { teamAnchor, newTeam }, closeTeamModal, updateNewTeam, addTeam, openTeamModal } = props;
     return (
         <React.Fragment>
             <Button className='addTeamBtn' onClick={(event) => openTeamModal(event.target)}>Add Team</Button>

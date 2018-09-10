@@ -24,28 +24,18 @@ import { landingPageRefetch } from '../../../store/refetch';
 const FooterHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('footerMessage', 'setFooterMessage', props => {
-        try {
-            let { landingPageQuery: { landingPage: { i18n } } } = props;
-            return (i18n && i18n[0] && i18n[0].footerMessage) ? i18n[0].footerMessage : '';
-        }
-        catch (err) {
-            return '';
+    withState('state', 'setState', ({ landingPageQuery: { landingPage: { i18n } } }) => {
+        return {
+            footerMessage: (i18n && i18n[0] && i18n[0].footerMessage) || '',
+            colorPickerAnchor: null,
+            forceCoverRender: 0
         }
     }),
-    withState('colorPickerAnchor', 'setColorPickerAnchor', null),
-    withState('forceCoverRender', 'setForceCoverRender', 0),
     withHandlers({
-        toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
-            setColorPickerAnchor(event.target);
-        },
-        closeColorPicker: ({ setColorPickerAnchor }) => () => {
-            setColorPickerAnchor(null);
-        },
-        updateFooterMessage: ({ setFooterMessage }) => text => {
-            setFooterMessage(text)
-        },
-        submitFooterMessage: ({ footerMessage, handleLandingPage, match: { params: { lang: language } }, setFeedbackMessage }) => async () => {
+        toggleColorPicker: ({ state, setState }) => (event) => setState({ ...state, colorPickerAnchor: event.target }),
+        closeColorPicker: ({ state, setState }) => () => setState({ ...state, colorPickerAnchor: null }),
+        updateFooterMessage: ({ state, setState }) => footerMessage => setState({ ...state, footerMessage }),
+        submitFooterMessage: ({ state: { footerMessage }, handleLandingPage, match: { params: { lang: language } }, setFeedbackMessage }) => async () => {
             try {
                 await handleLandingPage({
                     variables: {
@@ -75,18 +65,18 @@ const FooterHOC = compose(
                 });
             }
         },
-        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+        refetchBgImage: ({ state, setState }) => () => setState({ ...state, forceCoverRender: Date.now() }),
         closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
-
     }),
     pure
 );
 
 const Footer = props => {
     const {
+        state: { footerMessage, colorPickerAnchor, forceCoverRender },
         editMode,
-        footerMessage, updateFooterMessage, submitFooterMessage,
-        toggleColorPicker, colorPickerAnchor, closeColorPicker, refetchBgImage, forceCoverRender,
+        updateFooterMessage, submitFooterMessage,
+        toggleColorPicker, closeColorPicker, refetchBgImage,
         landingPageQuery: { landingPage },
         match: { params: { lang } }
     } = props;

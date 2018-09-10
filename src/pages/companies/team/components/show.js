@@ -19,21 +19,15 @@ const ShowHOC = compose(
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     graphql(handleShallowUser, { name: 'handleShallowUserMutation' }),
     graphql(handleArticle, { name: 'handleArticle' }),
-    withState('isArticlePopupOpen', 'setIsArticlePopupOpen', false),
-    withState('isMembersPopupOpen', 'setIsMembersPopupOpen', false),
+    withState('state', 'setState', {
+        isArticlePopupOpen: false,
+        isMembersPopupOpen: false
+    }),
     withHandlers({
-        openArticlePopUp: ({ setIsArticlePopupOpen }) => () => {
-            setIsArticlePopupOpen(true);
-        },
-        closeArticlePopUp: ({ setIsArticlePopupOpen }) => () => {
-            setIsArticlePopupOpen(false);
-        },
-        openMembersPopup: ({ setIsMembersPopupOpen }) => () => {
-            setIsMembersPopupOpen(true);
-        },
-        closeMembersPopup: ({ setIsMembersPopupOpen }) => () => {
-            setIsMembersPopupOpen(false);
-        },
+        openArticlePopUp: ({ state, setState }) => () => setState({ ...state, isArticlePopupOpen: true }),
+        closeArticlePopUp: ({ state, setState }) => () => setState({ ...state, isArticlePopupOpen: false }),
+        openMembersPopup: ({ state, setState }) => () => setState({ ...state, isMembersPopupOpen: true }),
+        closeMembersPopup: ({ state, setState }) => () => setState({ ...state, isMembersPopupOpen: false }),
         removeMember: ({ handleTeamMemberMutation, setFeedbackMessage, match: { params: { lang, teamId } } }) => async memberId => {
             try {
                 await handleTeamMemberMutation({
@@ -134,9 +128,13 @@ const ShowHOC = compose(
 
 const Show = props => {
     const {
+        state: {
+            isArticlePopupOpen,
+            isMembersPopupOpen
+        },
         getEditMode: { editMode: { status: editMode } },
-        isArticlePopupOpen, openArticlePopUp, closeArticlePopUp,
-        isMembersPopupOpen, openMembersPopup, closeMembersPopup,
+        openArticlePopUp, closeArticlePopUp,
+        openMembersPopup, closeMembersPopup,
         match: { params: { lang, teamId } },
         queryTeam: { team: { company, members, shallowMembers, officeArticles, jobs } },
         removeMember, removeShallowMember, deleteOfficeArticle
@@ -252,7 +250,7 @@ const Show = props => {
                                         </div>
                                         <div className='info'>
                                             <Link to={`/${lang}/job/${job.id}`}>
-                                                <h5 className='jobTitle'>{job.i18n[0].title}</h5>
+                                                <h5 className='jobTitle'>{job.title}</h5>
                                                 <p className='details'>
                                                     <FormattedDate value={job.expireDate} month='short' day='2-digit'                >
                                                         {(text) => (<span>{text}</span>)}

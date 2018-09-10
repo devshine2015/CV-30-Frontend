@@ -10,7 +10,7 @@ const EditPostHOC = compose(
     withRouter,
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('post', 'setPost', ({ article: { i18n } }) => i18n && i18n[0] && i18n[0].description ? i18n[0].description : ''),
+    withState('post', 'setPost', ({ article: { description } }) => description),
     withHandlers({
         handleFormChange: ({ setPost }) => ev => setPost(ev.target.value),
         updatePost: ({ handleArticle, post, setFeedbackMessage, match: { params: { lang: language } }, article: { id }, closeEditor }) => async () => {

@@ -12,12 +12,12 @@ import ImageUploader from '../../../../components/imageUploader';
 const ColorPickerHOC = compose(
     graphql(handleTeam, { name: 'handleTeam' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('activeTab', 'setActiveTab', 'colors'),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('state', 'setState', {
+        activeTab: 'colors',
+        imageUploadOpen: false
+    }),
     withHandlers({
-        handleTabChange: ({ setActiveTab }) => (event, value) => {
-            setActiveTab(value);
-        },
+        handleTabChange: ({ state, setState }) => (_, activeTab) => setState({ ...state, activeTab }),
         setBackgroundColor: ({ setFeedbackMessage, handleTeam, match: { params: { lang, teamId } }, company }) => async color => {
             try {
                 await handleTeam({
@@ -50,8 +50,8 @@ const ColorPickerHOC = compose(
                 });
             }
         },
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
@@ -103,10 +103,15 @@ const ColorPickerHOC = compose(
 );
 
 const ColorPicker = (props) => {
-    const { colorPickerAnchor, onClose,
+    const {
+        state: {
+            activeTab,
+            imageUploadOpen
+        },
+        colorPickerAnchor, onClose,
         setBackgroundColor,
-        activeTab, handleTabChange,
-        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        handleTabChange,
+        openImageUpload, closeImageUpload, handleError, handleSuccess,
         match: { params: { teamId } }
     } = props;
     return (

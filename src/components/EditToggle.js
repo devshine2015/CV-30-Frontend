@@ -6,7 +6,7 @@ import { graphql } from 'react-apollo';
 import { setEditMode, getEditMode } from '../store/queries';
 
 
-const EditToggle = ({ switchEditMode, getEditMode: { editMode: { status } } }) => (
+const EditToggle = ({ switchEditMode, getEditMode: { editMode: { status } = { status: false } } }) => (
     <FormGroup row className='editToggle'>
         <FormLabel className={!status ? 'active' : ''}>View</FormLabel>
         <Switch checked={status} onChange={switchEditMode}

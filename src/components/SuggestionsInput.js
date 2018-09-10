@@ -54,19 +54,21 @@ const styles = theme => ({
 });
 
 const SuggestionsInputHOC = compose(
-    withState('allSuggestions', '', props => {
-        return props.suggestions;
-    }),
-    withState('suggestions', 'setSuggestions', []),
+    // withState('', '', ({ suggestions }) => ),
+    // withState('suggestions', 'setSuggestions', []),
+    withState('state', 'setState', ({ suggestions }) => ({
+        allSuggestions: suggestions,
+        suggestions: []
+    })),
     withHandlers({
-        handleSuggestionsFetchRequested: ({ allSuggestions, setSuggestions, getSuggestionValue }) => ({ value }) => {
+        handleSuggestionsFetchRequested: ({ state, setState, getSuggestionValue }) => ({ value }) => {
             const inputValue = value.trim().toLowerCase();
             const inputLength = inputValue.length;
             let count = 0;
 
             let filteredSuggestions = [];
             if (inputLength > 0) {
-                filteredSuggestions = allSuggestions.filter(suggestion => {
+                filteredSuggestions = state.allSuggestions.filter(suggestion => {
                     const keep = count < 5 && getSuggestionValue(suggestion).toLowerCase().slice(0, inputLength) === inputValue;
 
                     if (keep) {
@@ -76,12 +78,16 @@ const SuggestionsInputHOC = compose(
                     return keep;
                 });
             }
-            setSuggestions(filteredSuggestions);
+            setState({
+                ...state,
+                suggestions: filteredSuggestions
+            });
         },
 
-        handleSuggestionsClearRequested: ({ setSuggestions }) => () => {
-            setSuggestions([]);
-        },
+        handleSuggestionsClearRequested: ({ state, setState }) => () => setState({
+            ...state,
+            suggestions: []
+        }),
 
         renderSuggestion: ({ getSuggestionValue }) => (suggestion, { query, isHighlighted }) => {
             const suggestionValue = getSuggestionValue(suggestion);
@@ -115,7 +121,7 @@ const SuggestionsInput = props => {
     const { name, label, classes, className, renderSuggestion, getSuggestionValue, error, helperText } = props;
     const autosuggestProps = {
         renderInputComponent,
-        suggestions: props.suggestions,
+        suggestions: props.state.suggestions,
         onSuggestionsFetchRequested: props.handleSuggestionsFetchRequested,
         onSuggestionsClearRequested: props.handleSuggestionsClearRequested,
         getSuggestionValue,

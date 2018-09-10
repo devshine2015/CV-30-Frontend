@@ -21,37 +21,29 @@ import TagsInput from '../../../../components/TagsInput';
 const ArticleEditHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', props => {
-        const { getArticle: { article: { /*images, videos,*/ i18n, tags } } } = props;
-
-        return {
-            title: (i18n && i18n[0] && i18n[0].title) ? i18n[0].title : '',
-            description: (i18n && i18n[0] && i18n[0].description) ? i18n[0].description : '',
-            tags: tags.map(({ i18n }) => (i18n && i18n[0]) ? i18n[0].title : null)
-        };
-    }),
-    withState('isVideoUrl', 'changeMediaType', true),
-    withState('isSaving', 'setIsSaving', false),
+    withState('state', 'setState', ({ getArticle: { article: { title, description, tags } } }) => ({
+        title,
+        description,
+        tags,
+        isVideoUrl: true,
+        isSaving: false
+    })),
     withHandlers({
-        setTags: ({ setFormData }) => tags => setFormData(state => ({ ...state, tags })),
-        handleFormChange: props => event => {
+        setTags: ({ state, setState }) => tags => setState({ ...state, tags }),
+        handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            props.setFormData(state => ({ ...state, [name]: value }));
+            setState({ ...state, [name]: value });
         },
-        updateDescription: props => text => {
-            props.setFormData(state => ({ ...state, 'description': text }));
-        },
-        switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
-            changeMediaType(!isVideoUrl);
-        },
+        updateDescription: ({ state, setState }) => text => setState({ ...state, 'description': text }),
+        switchMediaType: ({ state, setState }) => text => setState({ ...state, 'isVideoUrl': !state.isVideoUrl }),
         saveArticle: props => async () => {
-            const { handleArticle, formData: { title, description, videoURL, images, tags }, setIsSaving, match, setFeedbackMessage } = props;
-
+            const { handleArticle, state, setState, match, setFeedbackMessage } = props;
+            const { formData: { title, description, videoURL, images, tags } } = state;
             const article = {
                 id: match.params.articleId,
                 title,
@@ -90,7 +82,7 @@ const ArticleEditHOC = compose(
             }
             catch (err) {
                 console.log(err);
-                setIsSaving(true);
+                setState({ ...state, isSaving: true });
                 await setFeedbackMessage({
                     variables: {
                         status: 'error',
@@ -99,11 +91,11 @@ const ArticleEditHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ formData, setFeedbackMessage }) => async (file, callback) => {
+        getSignedUrl: ({ state: { formData: { id } }, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: file.name,
                 contentType: file.type,
-                id: formData.id,
+                id,
                 type: 'article'
             };
 
@@ -129,22 +121,21 @@ const ArticleEditHOC = compose(
                 });
             }
         },
-        onUploadStart: ({ setIsSaving, formData, setFormData, match }) => (file, next) => {
+        onUploadStart: ({ state, setState }) => (file, next) => {
             let size = file.size;
             if (size > 1024 * 1024) {
                 alert('File is too big!');
             } else {
-                let newFormData = Object.assign({}, formData);
+                let newFormData = Object.assign({}, state.formData);
 
                 newFormData.images = [{
                     id: uuid(),
                     title: file.name,
                     sourceType: 'article',
-                    source: formData.id,
-                    path: `/articles/${formData.id}/${file.name}`
+                    source: state.formData.id,
+                    path: `/articles/${state.formData.id}/${file.name}`
                 }];
-                setFormData(newFormData);
-                setIsSaving(true);
+                setState({ ...state, formData: newFormData, isSaving: true });
                 next(file);
             }
         },
@@ -157,8 +148,8 @@ const ArticleEditHOC = compose(
                 }
             });
         },
-        onFinishUpload: ({ setIsSaving, setFeedbackMessage }) => async data => {
-            setIsSaving(false);
+        onFinishUpload: ({ state, setState, setFeedbackMessage }) => async data => {
+            setState({ ...state, isSaving: false });
             await setFeedbackMessage({
                 variables: {
                     status: 'success',
@@ -172,13 +163,10 @@ const ArticleEditHOC = compose(
 
 const ArticleEdit = props => {
     const {
-        // getArticle: { article: { id: articleId, author: { id: authorId, email, firstName, lastName }, images, videos, i18n, created_at } },
-        handleFormChange, formData: { title, description, tags, videoURL }, updateDescription, saveArticle,
-        isVideoUrl, switchMediaType,
-        getSignedUrl, onUploadStart, onError, onFinishUpload, isSaving,
-        setTags
+        state, handleFormChange, updateDescription, saveArticle, switchMediaType,
+        getSignedUrl, onUploadStart, onError, onFinishUpload, setTags
     } = props;
-
+    const { formData: { title, description, tags, videoURL }, isVideoUrl, isSaving } = state;
     return (
         <Grid container className='mainBody articleEdit'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>

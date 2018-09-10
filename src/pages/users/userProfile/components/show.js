@@ -21,41 +21,27 @@ const ShowHOC = compose(
     graphql(setStory, { name: 'setStory' }),
     graphql(setSalary, { name: 'setSalary' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('newXP', 'setNewXP', false),
-    withState('newProj', 'setNewProj', false),
-    withState('isPopUpOpen', 'setIsPopUpOpen', false),
-    withState('story', 'setMyStory', ({ profileQuery: { profile } }) => (profile.story && profile.story.i18n) ? profile.story.i18n[0].description : ''),
-    withState('editContactDetails', 'setEditContactDetails', false),
-    withState('contactExpanded', 'setContactExpanded', true),
-    withState('isSalaryPublic', 'setSalaryPrivacy', ({ profileQuery: { profile } }) => profile.salary ? profile.salary.isPublic : false),
-    withState('desiredSalary', 'setDesiredSalary', ({ profileQuery: { profile } }) => profile.salary ? profile.salary.amount : 0),
+    withState('state', 'setState', ({ profileQuery: { profile } }) => ({
+        newXP: false,
+        newProj: false,
+        isPopUpOpen: false,
+        story: profile.story && profile.story.description,
+        editContactDetails: false,
+        contactExpanded: true,
+        isSalaryPublic: profile.salary && profile.salary.isPublic,
+        desiredSalary: (profile.salary && profile.salary.amount) || 0
+    })),
     withHandlers({
-        addNewExperience: ({ newXP, setNewXP }) => () => {
-            setNewXP(!newXP);
-        },
-        closeNewExperience: ({ setNewXP }) => () => setNewXP(false),
-        addNewProject: ({ newProj, setNewProj }) => () => {
-            setNewProj(!newProj);
-        },
-        closeNewProject: ({ setNewProj }) => () => setNewProj(false),
-        toggleEditContact: ({ editContactDetails, setEditContactDetails, setContactExpanded }) => () => {
-            setEditContactDetails(!editContactDetails);
-            if (!editContactDetails)
-                setContactExpanded(true);
-        },
-        closeContactEdit: ({ setEditContactDetails }) => () => {
-            setEditContactDetails(false);
-        },
-        toggleContactExpanded: ({ contactExpanded, setContactExpanded }) => () => {
-            setContactExpanded(!contactExpanded)
-        },
-        toggleSalaryPrivate: ({ isSalaryPublic, setSalaryPrivacy }) => () => {
-            setSalaryPrivacy(!isSalaryPublic);
-        },
-        updateStory: ({ setMyStory }) => text => {
-            setMyStory(text);
-        },
-        saveStory: ({ setStory, story, match, setFeedbackMessage }) => async () => {
+        addNewExperience: ({ state, setState }) => () => setState({ ...state, newXP: !state.newXP }),
+        closeNewExperience: ({ state, setState }) => () => setState({ ...state, newXP: false }),
+        addNewProject: ({ state, setState }) => () => setState({ ...state, newProj: !state.newProj }),
+        closeNewProject: ({ state, setState }) => () => setState({ ...state, newProj: false }),
+        toggleEditContact: ({ state, setState }) => () => setState({ ...state, editContactDetails: !state.editContactDetails, contactExpanded: state.editContactDetails === false }),
+        closeContactEdit: ({ state, setState }) => () => setState({ ...state, editContactDetails: false }),
+        toggleContactExpanded: ({ state, setState }) => () => setState({ ...state, contactExpanded: !state.contactExpanded }),
+        toggleSalaryPrivate: ({ state, setState }) => () => setState({ ...state, isSalaryPublic: !state.isSalaryPublic }),
+        updateStory: ({ state, setState }) => story => setState({ ...state, story }),
+        saveStory: ({ setStory, state: { story }, match, setFeedbackMessage }) => async () => {
             try {
                 await setStory({
                     variables: {
@@ -86,10 +72,8 @@ const ShowHOC = compose(
                 });
             }
         },
-        updateDesiredSalary: ({ setDesiredSalary }) => salary => {
-            setDesiredSalary(salary);
-        },
-        saveDesiredSalary: ({ setSalary, isSalaryPublic, desiredSalary, match, setFeedbackMessage }) => async () => {
+        updateDesiredSalary: ({ state, setState }) => desiredSalary => setState({ ...state, desiredSalary }),
+        saveDesiredSalary: ({ setSalary, state: { isSalaryPublic, desiredSalary }, match, setFeedbackMessage }) => async () => {
             try {
                 await setSalary({
                     variables: {
@@ -120,28 +104,38 @@ const ShowHOC = compose(
                 });
             }
         },
-        openArticlePopUp: ({ setIsPopUpOpen }) => () => {
-            setIsPopUpOpen(true);
-        },
-        closeArticlePopUp: ({ setIsPopUpOpen }) => () => {
-            setIsPopUpOpen(false);
-        }
+        openArticlePopUp: ({ state, setState }) => () => setState({ ...state, isPopUpOpen: true }),
+        closeArticlePopUp: ({ state, setState }) => () => setState({ ...state, isPopUpOpen: false }),
     }),
     pure
 );
 
 const Show = props => {
     const {
+        state: {
+            newXP,
+            newProj,
+            isPopUpOpen,
+            story,
+            editContactDetails,
+            contactExpanded,
+            isSalaryPublic,
+            desiredSalary
+        },
         getEditMode, isEditAllowed,
         profileQuery: { profile },
-        newXP, newProj, addNewExperience, closeNewExperience, addNewProject, closeNewProject,
-        editContactDetails, toggleEditContact, closeContactEdit, toggleContactExpanded, contactExpanded,
-        openArticlePopUp, isPopUpOpen, closeArticlePopUp,
+        addNewExperience, closeNewExperience, addNewProject, closeNewProject,
+        toggleEditContact, closeContactEdit, toggleContactExpanded,
+        openArticlePopUp, closeArticlePopUp,
         toggleSalaryPrivate,
-        story, updateStory, saveStory,
-        updateDesiredSalary, isSalaryPublic, desiredSalary, saveDesiredSalary
+        updateStory, saveStory,
+        updateDesiredSalary, saveDesiredSalary
     } = props;
-    const editMode = isEditAllowed && getEditMode.editMode.status;
+
+    let editMode = false;
+    try {
+        editMode = isEditAllowed && getEditMode.editMode.status;
+    } catch(error) {}
 
     const { contact, experience, projects, aboutMeArticles, salary } = profile;
 

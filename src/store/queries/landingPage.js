@@ -11,10 +11,8 @@ const standardArticleData = gql`
             id
             path
         }
-        i18n {
-            title
-            description
-        }
+        title
+        description
         featuredImage {
             id
             path

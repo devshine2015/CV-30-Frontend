@@ -24,30 +24,33 @@ const ArticlePopUpHOC = compose(
         name: 'handleArticle'
     }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', () => {
-        return {
+    withState('state', 'setState', {
+        formData: {
             id: uuid()
-        };
+        },
+        isVideoUrl: true,
+        imageUploadOpen: false
     }),
-    withState('isVideoUrl', 'changeMediaType', true),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
-        handleFormChange: ({ setFormData }) => event => {
+        handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const value = target.value;
             const name = target.name;
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            setFormData(state => ({ ...state, [name]: value }));
+            setState({
+                ...state,
+                formData: {
+                    ...state.formData,
+                    [name]: value
+                }
+            });
         },
-        switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
-            changeMediaType(!isVideoUrl);
-        },
-        updateDescription: ({ setFormData }) => text => setFormData(state => ({ ...state, 'description': text })),
-
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        switchMediaType: ({ state, setState }) => () => setState({ ...state, isVideoUrl: !state.isVideoUrl }),
+        updateDescription: ({ state, setState }) => description => setState({ ...state, formData: { ...state.formData, description }}),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             await setFeedbackMessage({
                 variables: {
@@ -56,18 +59,21 @@ const ArticlePopUpHOC = compose(
                 }
             });
         },
-        handleSuccess: ({ setFormData, formData: { id } }) => async ({ path, filename }) =>
-            setFormData(state => ({
-                ...state, 'images': [{
-                    id: uuid(),
-                    title: filename,
-                    sourceType: 'article',
-                    source: id,
-                    path: path ? path : `/articles/${id}/${filename}`
-                }]
-            })),
-
-        saveArticle: ({ formData, handleArticle, match: { params: { lang: language } }, onClose, setFeedbackMessage }) => async () => {
+        handleSuccess: ({ setState, state }) => async ({ path, filename }) =>
+            setState({
+                ...state,
+                formData: {
+                    ...state.formData,
+                    'images': [{
+                        id: uuid(),
+                        title: filename,
+                        sourceType: 'article',
+                        source: state.formData.id,
+                        path: path ? path : `/articles/${state.formData.id}/${filename}`
+                    }]
+                }
+            }),
+        saveArticle: ({ state: { formData }, handleArticle, match: { params: { lang: language } }, onClose, setFeedbackMessage }) => async () => {
             const { id, title, description, videoURL, images } = formData;
             let article = {
                 id,
@@ -125,9 +131,13 @@ const ArticlePopUpHOC = compose(
 const ArticlePopUp = ({
     open, onClose,
     saveArticle,
-    formData: { id, title, description, videoURL },
-    handleFormChange, isVideoUrl, switchMediaType, updateDescription,
-    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess
+    state: {
+        imageUploadOpen,
+        isVideoUrl,
+        formData: { id, title, description, videoURL }
+    },
+    handleFormChange, switchMediaType, updateDescription,
+    openImageUpload, closeImageUpload, handleError, handleSuccess
 }) => {
     return (
         <Modal

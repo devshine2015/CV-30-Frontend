@@ -8,7 +8,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { isValidEmail } from '../../constants/utils';
 
 const LoginComponent = props => {
-    const { match, email, password, updateEmail, updatePassword, emailError, passwordError, loading, doLogin, loginError } = props;
+    const { state: { email, password, emailError, passwordError, loginError }, match,  updateEmail, updatePassword, loading, doLogin } = props;
     const { activationSuccess } = props.location.state || false;
     const OrSeparator = () => (
         <div className='divSeparator'>
@@ -43,6 +43,7 @@ const LoginComponent = props => {
                                         id="email"
                                         label="Email"
                                         className='textField'
+                                        autoComplete="email"
                                         type="email"
                                         value={email}
                                         onChange={event => updateEmail(event.target.value.trim())}
@@ -59,6 +60,7 @@ const LoginComponent = props => {
                                         label="Password"
                                         className='textField'
                                         type="password"
+                                        autoComplete="current-password"
                                         value={password}
                                         onChange={event => updatePassword(event.target.value.trim())}
                                         error={!!passwordError}
@@ -121,23 +123,28 @@ const LoginHOC = compose(
         name: 'loginMutation'
     }),
     graphql(AuthenticateLocal, { name: 'authLocal' }),
-    withState('email', 'setEmail', ''),
-    withState('emailError', 'setEmailError', null),
-    withState('password', 'setPassword', ''),
-    withState('passwordError', 'setPasswordError', null),
-    withState('loginError', 'setLoginError', null),
+    withState('state', 'setState', {
+        email: '',
+        password: '',
+        emailError: '',
+        passwordError: '',
+        loginError: ''
+    }),
     withHandlers({
-        updatePassword: ({ setPassword, setPasswordError }) => (password) => {
-            setPassword(password);
-            setPasswordError(password.length < 4);
-        },
-        updateEmail: ({ setEmail, setEmailError }) => (email) => {
-            setEmail(email);
-            setEmailError(!isValidEmail(email));
-        },
+        updatePassword: ({ state, setState }) => (password) => setState({
+            ...state,
+            password,
+            passwordError: password.length < 4
+        }),
+        updateEmail: ({ state, setState }) => (email) => setState({
+            ...state,
+            email,
+            emailError: !isValidEmail(email)
+        }),
         doLogin: props => async ev => {
             ev.preventDefault();
-            const { email, password, loginMutation, authLocal, setLoginError, match, history, client, match: { params: { lang: language } } } = props;
+            const { state, setState, loginMutation, authLocal, match, history, client, match: { params: { lang: language } } } = props;
+            const { email, password } = state;
             try {
                 let response = await loginMutation({
                     variables: {
@@ -148,11 +155,11 @@ const LoginHOC = compose(
 
                 const { error, token, refreshToken, god } = response.data.login;
 
-                if (error) {
-                    setLoginError(error || error.message || 'Something went wrong.');
-                    return false;
-                } else if (!token || !refreshToken) {
-                    setLoginError('Something went wrong.');
+                if (error || !token || !refreshToken) {
+                    setState({
+                        ...state,
+                        loginError: error || error.message || 'Something went wrong.'
+                    })
                     return false;
                 } else {
                     let currentUserQuery = await client.query({
@@ -173,7 +180,7 @@ const LoginHOC = compose(
                 }
             } catch (error) {
                 console.log(error);
-                setLoginError(error.message || 'Something went wrong.');
+                setState({ ...state, loginError: error.message || 'Something went wrong.' });
             }
         }
     }),

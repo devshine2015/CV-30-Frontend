@@ -38,41 +38,29 @@ const HeaderHOC = compose(
         }),
     }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('count', 'setCount', ({ profileQuery: { profile } }) => profile.featuredArticles ? profile.featuredArticles.length - 1 : 0),
-    withState('colorPickerAnchor', 'setColorPickerAnchor', null),
-    withState('skillsAnchor', 'setSkillsAnchor', null),
-    withState('nameAnchor', 'setNameAnchor', null),
-    withState('skillsModalData', 'setSkillsModalData', null),
-    withState('forceCoverRender', 'setForceCoverRender', 0),
-    withState('isArticlePopUpOpen', 'setIsArticlePopUpOpen', false),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('state', 'setState', {
+        colorPickerAnchor: null,
+        skillsAnchor: null,
+        nameAnchor: null,
+        skillsModalData: null,
+        forceCoverRender: 0,
+        isArticlePopUpOpen: false,
+        imageUploadOpen: false
+    }),
     withHandlers({
-        toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
-            setColorPickerAnchor(event.target);
-        },
-        closeColorPicker: ({ setColorPickerAnchor }) => () => {
-            setColorPickerAnchor(null);
-        },
-        openSkillsModal: ({ profileQuery: { profile: { skills, values } }, setSkillsAnchor, setSkillsModalData }) => (type, target) => {
-            if (type === 'values')
-                setSkillsModalData({
-                    type: type,
-                    data: values
-                })
-                    ;
-            if (type === 'skills')
-                setSkillsModalData({
-                    type: type,
-                    data: skills
-                });
-            setSkillsAnchor(target);
-        },
-        closeSkillsModal: ({ setSkillsAnchor, setSkillsModalData }) => () => {
-            setSkillsModalData(null);
-            setSkillsAnchor(null);
-        },
-        toggleNameEditor: ({ setNameAnchor }) => event => setNameAnchor(event.target),
-        closeNameEditor: ({ setNameAnchor }) => () => setNameAnchor(null),
+        toggleColorPicker: ({ state, setState }) => (event) => setState({ ...state, colorPickerAnchor: event.target }),
+        closeColorPicker: ({ state, setState }) => () => setState({ ...state, colorPickerAnchor: null }),
+        openSkillsModal: ({ profileQuery: { profile: { skills, values } }, state, setState }) => (type, skillsAnchor) => setState({
+            ...state,
+            skillsModalData: {
+                type,
+                data: type === 'values' ? values : skills
+            },
+            skillsAnchor
+        }),
+        closeSkillsModal: ({ state, setState }) => () => setState({ ...state, skillsModalData: null, skillsAnchor: null }),
+        toggleNameEditor: ({ state, setState }) => event => setState({ ...state, nameAnchor: event.target }),
+        closeNameEditor: ({ state, setState }) => () => setState({ ...state, nameAnchor: null }),
         removeStory: ({ setFeedbackMessage, handleArticle, match: { params: { profileId, lang } } }) => async article => {
             try {
                 await handleArticle({
@@ -104,8 +92,8 @@ const HeaderHOC = compose(
                 });
             }
         },
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
@@ -151,13 +139,9 @@ const HeaderHOC = compose(
                     });
                 }
             },
-        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
-        toggleStoryEditor: ({ setIsArticlePopUpOpen }) => () => {
-            setIsArticlePopUpOpen(true);
-        },
-        closeStoryEditor: ({ setIsArticlePopUpOpen }) => () => {
-            setIsArticlePopUpOpen(false);
-        },
+        refetchBgImage: ({ state, setState }) => () => setState({ ...state, forceCoverRender: Date.now() }),
+        toggleStoryEditor: ({ state, setState }) => () => setState({ ...state, isArticlePopUpOpen: true }),
+        closeStoryEditor: ({ state, setState }) => () => setState({ ...state, isArticlePopUpOpen: false }),
         toggleFollow: ({ handleFollow, match, setFeedbackMessage }) => async isFollowing => {
             try {
                 await handleFollow({
@@ -201,17 +185,21 @@ const Header = props => {
         return <Redirect to={`/${props.match.params.lang}/myProfile/`} />;
 
     const {
+        state: { colorPickerAnchor, skillsAnchor, nameAnchor, skillsModalData, forceCoverRender, isArticlePopUpOpen, imageUploadOpen },
         getEditMode, isEditAllowed,
-        closeColorPicker, toggleColorPicker, colorPickerAnchor,
+        closeColorPicker, toggleColorPicker,
         removeStory,
-        openSkillsModal, skillsModalData, skillsAnchor, closeSkillsModal,
-        localUserData, refetchBgImage, forceCoverRender,
-        isArticlePopUpOpen, toggleStoryEditor, closeStoryEditor,
+        openSkillsModal, closeSkillsModal,
+        localUserData, refetchBgImage,
+        toggleStoryEditor, closeStoryEditor,
         toggleFollow, currentProfileQuery,
-        toggleNameEditor, closeNameEditor, nameAnchor,
-        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        toggleNameEditor, closeNameEditor,
+        openImageUpload, closeImageUpload, handleError, handleSuccess,
     } = props;
-    const editMode = isEditAllowed && getEditMode.editMode.status;
+    let editMode = false;
+    try {
+        editMode = isEditAllowed && getEditMode.editMode.status;
+    } catch(error) {}
 
     const {
         firstName,
@@ -226,14 +214,14 @@ const Header = props => {
     const skills = profile.skills ? profile.skills.map(item => {
         return {
             id: item.id,
-            title: item.i18n[0].title
+            title: item.title
         }
     }) : [];
 
     const values = profile.values ? profile.values.map(item => {
         return {
             id: item.id,
-            title: item.i18n[0].title
+            title: item.title
         }
     }) : [];
 
@@ -389,7 +377,7 @@ const Header = props => {
                                                 }}
                                                 playing={false} />
                                         }
-                                        <span className='storyTitle'>{story.i18n[0].title}</span>
+                                        <span className='storyTitle'>{story.title}</span>
                                     </Link>
                                     {
                                         editMode &&

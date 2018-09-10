@@ -64,8 +64,8 @@ const ShowTeam = props => {
 
 const ShowJob = props => {
     const { job, match: { params: { lang } }, onUnfollow } = props;
-    const { id, i18n } = job;
-    const { title } = i18n && i18n.length ? i18n[0] : {};
+    const { id, title } = job;
+    
     return (
         <div className='team'>
             <Link to={`/${lang}/job/${id}`} style={{ textDecoration: 'none' }}>

@@ -31,15 +31,11 @@ const standardArticleResult = gql`
             id
             path
         }
-        i18n {
-            title
-            description
-        }
+        title
+        description
         tags {
             id
-            i18n {
-                title
-            }
+            title
             users {
                 id
                 email

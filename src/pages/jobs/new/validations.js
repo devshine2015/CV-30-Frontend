@@ -23,7 +23,7 @@ export const jobValidation = yup.object().shape({
     activityField: yup.string().trim().max(255),
     imagePath: yup.string().trim().max(1024).nullable(),
     videoUrl: yup.string().trim().max(1024).nullable()
-        .matches(/^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+/, 'Video URL does not match YouTube.'),
+        .matches(/^(http(s)??:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+/, 'Video URL does not match YouTube.'),
     skills: yup.array().of(
         yup.string().trim()
             .required('Skill needs a title')

@@ -49,34 +49,37 @@ const EditHOC = compose(
     graphql(handleJob, { name: 'handleJob' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     graphql(setEditMode, { name: 'setEditMode' }),
-    withState('anchorEl', 'setAnchorEl', null),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
-    withState('videoShareAnchor', 'setVideoShareAnchor', null),
+    withState('state', 'setState', {
+        anchorEl: null,
+        imageUploadOpen: false,
+        videoShareAnchor: null
+    }),
     withFormik({
         mapPropsToValues: ({ getJobQuery: { job } }) => {
             if (!job)
                 return {};
 
-            const { id, i18n, activityField, company: { id: companyId }, team: { id: teamId },
-                expireDate, jobTypes, location, salary: { amountMax, amountMin, currency, isPublic }, skills, imagePath, videoUrl, status, jobBenefits, phone, email, facebook, linkedin } = job;
+            const { id, title, activityField, description, idealCandidate, company: { id: companyId }, team: { id: teamId },
+                expireDate, jobTypes, location, salary: { amountMax, amountMin, currency, isPublic },
+                skills, imagePath, videoUrl, status, jobBenefits, phone, email, facebook, linkedin } = job;
 
             return {
                 id,
-                title: i18n[0].title,
+                title,
                 companyId,
                 teamId,
                 jobBenefits: jobBenefits ? jobBenefits.map(benefit => benefit.id) : [],
                 jobTypes: jobTypes ? jobTypes.map(jobType => jobType.id) : [],
                 salary: { amountMax, amountMin, currency, isPublic },
-                activityField: activityField.i18n[0].title || '',
-                skills: skills ? skills.map(skill => skill.i18n[0].title) : [],
+                activityField: activityField.title || '',
+                skills: skills ? skills.map(skill => skill.title) : [],
                 expireDate: new Date(expireDate).toISOString().split("T")[0],
                 location,
                 imagePath,
                 videoUrl,
                 status,
-                description: i18n[0].description || '',
-                idealCandidate: i18n[0].idealCandidate || '',
+                description,
+                idealCandidate,
                 phone,
                 email,
                 facebook,
@@ -119,7 +122,6 @@ const EditHOC = compose(
                 });
             }
         }
-
     }),
     withHandlers({
         updateDescription: ({ setFieldValue }) => text => setFieldValue('description', text),
@@ -132,19 +134,15 @@ const EditHOC = compose(
             });
         },
         onSkillsChange: ({ setFieldValue }) => skills => setFieldValue('skills', skills),
-        addField: ({ setAnchorEl, setFieldValue }) => fieldId => {
+        addField: ({ state, setState, setFieldValue }) => fieldId => {
             setFieldValue(fieldId, '');
-            setAnchorEl(null);
+            setState({ ...state, anchorEl: null });
         },
         removeTextField: ({ setFieldValue }) => key => setFieldValue(key, null),
-        handleClick: ({ setAnchorEl }) => event => {
-            setAnchorEl(event.currentTarget);
-        },
-        handleClose: ({ setAnchorEl }) => () => {
-            setAnchorEl(null);
-        },
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        handleClick: ({ state, setState }) => event => setState({ ...state, anchorEl: event.currentTarget }),
+        handleClose: ({ state, setState }) => () => setState({ ...state, anchorEl: null }),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
@@ -158,23 +156,26 @@ const EditHOC = compose(
             setFieldValue('imagePath', path ? path : `/${jobsFolder}/${id}/${filename}`),
         removeImage: ({ setFieldValue }) => () => setFieldValue('imagePath', null),
         removeVideo: ({ setFieldValue }) => () => setFieldValue('videoUrl', null),
-        openVideoShare: ({ setVideoShareAnchor }) => ev => setVideoShareAnchor(ev.target),
-        closeVideoShare: ({ setVideoShareAnchor }) => () => setVideoShareAnchor(null),
+        openVideoShare: ({ state, setState }) => ev => setState({ ...state, videoShareAnchor: ev.target }),
+        closeVideoShare: ({ state, setState }) => () => setState({ ...state, videoShareAnchor: null })
     }),
     pure
 );
 const Edit = ({
+    state: {
+        anchorEl,
+        imageUploadOpen,
+        videoShareAnchor
+    },
     jobDependencies: { loading, jobBenefits, jobTypes, teams },
     updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
-    anchorEl, handleClick, handleClose, addField, removeTextField,
-    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-    openVideoShare, closeVideoShare, videoShareAnchor,
+    handleClick, handleClose, addField, removeTextField,
+    openImageUpload, closeImageUpload, handleError, handleSuccess,
+    openVideoShare, closeVideoShare,
     removeImage, removeVideo,
     values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid }) => {
 
-    if (loading)
-        return <Loader />
-
+    if (loading) return <Loader />
     return (
         <React.Fragment>
             <div className='header'>
@@ -433,13 +434,13 @@ const Edit = ({
                                     value={values.jobTypes}
                                     onChange={handleChange}
                                     input={<Input name="jobTypes" />}
-                                    renderValue={selected => selected.map(item => jobTypes.find(jt => jt.id === item).i18n[0].title).join(', ')}
+                                    renderValue={selected => selected.map(item => jobTypes.find(jt => jt.id === item).title).join(', ')}
                                     className='jobSelect'
                                 >
                                     {jobTypes.map(jobType => (
                                         <MenuItem key={jobType.id} value={jobType.id}>
                                             <Checkbox checked={values.jobTypes.indexOf(jobType.id) > -1} />
-                                            <ListItemText primary={jobType.i18n[0].title} />
+                                            <ListItemText primary={jobType.title} />
                                         </MenuItem>
                                     ))}
                                 </Select>

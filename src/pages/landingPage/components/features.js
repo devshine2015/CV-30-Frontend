@@ -43,7 +43,7 @@ const Features = props => {
     return (
         <div className='featuresContainer'>
             {articles && articles.map((article, index) => {
-                let { id, images, videos, i18n } = article;
+                let { id, images, videos, title, description } = article;
                 let image, video;
 
                 if (article.images && article.images.length > 0)
@@ -82,14 +82,14 @@ const Features = props => {
 
                         <Grid item md={5} sm={11} xs={11} className='featureTexts'>
                             <h2 className='featureHeading'>
-                                {i18n[0].title}
+                                {title}
                                 {isEditAllowed &&
                                     <IconButton className='editBtn' onClick={() => handleEditBtnClick(id)}>
                                         <Icon>edit</Icon>
                                     </IconButton>
                                 }
                             </h2>
-                            <p className='featureText'>{stripHtmlTags(i18n[0].description)}</p>
+                            <p className='featureText'>{stripHtmlTags(description)}</p>
                         </Grid>
                     </Grid>
                 )

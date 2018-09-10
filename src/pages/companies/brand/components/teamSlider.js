@@ -8,44 +8,22 @@ import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../../constants/utils';
 
 const TeamSliderHOC = compose(
-    withState('visibleSlides', 'setVisibleSlides', () => {
-        let width = window.innerWidth;
-        if (width < 600) {
-            return 1;
-        }
-        if (width < 960) {
-            return 2;
-        }
-        return 3;
-    }),
-    withState('slideSize', 'setSlideSize', () => {
-        let width = window.innerWidth;
-        if (width < 600) {
-            return {
-                width: 240,
-                height: 150
-            };
-        }
-
-        return {
-            width: 320,
-            height: 200
+    withState('state', 'setState', {
+        visibleSlides: window.innerWidth < 600 ? 1 : (window.innerWidth < 960 ? 2 : 3),
+        slideSize: {
+            width: window.innerWidth < 600 ? 240 : 320,
+            height: window.innerWidth < 600 ? 150 : 200
         }
     }),
     withHandlers({
-        handleResize: ({ setVisibleSlides, setSlideSize }) => () => {
-            let width = window.innerWidth;
-            if (width < 960) {
-                setVisibleSlides(2);
+        handleResize: ({ state, setState }) => () => setState({
+            ...state,
+            visibleSlides: window.innerWidth < 600 ? 1 : (window.innerWidth < 960 ? 2 : 3),
+            slideSize: {
+                width: window.innerWidth < 600 ? 240 : 320,
+                height: window.innerWidth < 600 ? 150 : 200
             }
-            if (width < 600) {
-                setVisibleSlides(1);
-                setSlideSize({
-                    width: 240,
-                    height: 150
-                });
-            }
-        }
+        })
     }),
     lifecycle({
         componentDidMount() {
@@ -61,7 +39,7 @@ const TeamSliderHOC = compose(
 );
 
 const TeamSlider = props => {
-    const { teams, match: { params: { lang } }, visibleSlides, slideSize } = props;
+    const { teams, match: { params: { lang } }, state: { visibleSlides, slideSize } } = props;
 
     return <CarouselProvider
         dragEnabled={false}

@@ -14,12 +14,12 @@ const ColorPickerHOC = compose(
     withRouter,
     graphql(updateCoverMutation, { name: 'updateCoverMutation' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('activeTab', 'setActiveTab', 'colors'),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('state', 'setState', {
+        activeTab: 'colors',
+        imageUploadOpen: false
+    }),
     withHandlers({
-        handleTabChange: ({ setActiveTab }) => (event, value) => {
-            setActiveTab(value);
-        },
+        handleTabChange: ({ state, setState }) => (_, activeTab) => setState({ ...state, activeTab }),
         setBackgroundColor: ({ updateCoverMutation, setFeedbackMessage, match }) => async color => {
             try {
                 await updateCoverMutation({
@@ -88,17 +88,19 @@ const ColorPickerHOC = compose(
             }
             refetchBgImage();
         },
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false })
     }),
     pure
 );
 
 const ColorPicker = props => {
-    const { colorPickerAnchor, onClose,
+    const {
+        state: { activeTab, imageUploadOpen },
+        colorPickerAnchor, onClose,
         setBackgroundColor,
-        activeTab, handleTabChange,
-        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        handleTabChange,
+        openImageUpload, closeImageUpload, handleError, handleSuccess,
         profile: {id: profileId}
     } = props;
 

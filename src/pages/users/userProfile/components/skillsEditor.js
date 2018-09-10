@@ -14,22 +14,14 @@ const SkillsEditHOC = compose(
     graphql(setSkills, { name: 'setSkills' }),
     graphql(setValues, { name: 'setValues' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('initialSkills', '', ({ skillsModalData }) => {
-        if (skillsModalData && skillsModalData.data) {
-            return skillsModalData.data.map(item => item.i18n[0].title);
-        }
-        return [];
-    }),
-    withState('tagsInputSkills', 'setTagsInputSkills', ({ skillsModalData }) => {
-        if (skillsModalData && skillsModalData.data) {
-            return skillsModalData.data.map(item => item.i18n[0].title);
-        }
-        return [];
-    }),
-    withState('maxSkillCount', '', 25),
+    withState('state', 'setState', ({ skillsModalData }) =>({
+        maxSkillCount: 25,
+        initialSkills: (skillsModalData && skillsModalData.data && skillsModalData.data.map(item => item.title)) || [],
+        tagsInputSkills: (skillsModalData && skillsModalData.data && skillsModalData.data.map(item => item.title)) || []
+    })),
     withHandlers({
-        updateTagsInputSkills: ({ setTagsInputSkills, setFeedbackMessage, maxSkillCount }) => (skills) => {
-            if (skills.length > maxSkillCount) {
+        updateTagsInputSkills: ({ state, setState, setFeedbackMessage }) => (tagsInputSkills) => {
+            if (tagsInputSkills.length > state.maxSkillCount) {
                 setFeedbackMessage({
                     variables: {
                         status: 'error',
@@ -38,11 +30,9 @@ const SkillsEditHOC = compose(
                 });
                 return;
             }
-            setTagsInputSkills(skills);
+            setState({ ...state, tagsInputSkills });
         },
-        saveData: ({ setFeedbackMessage, skillsModalData, initialSkills, tagsInputSkills, setSkills, setValues, closeSkillsModal, match }) => async () => {
-            const { type } = skillsModalData;
-
+        saveData: ({ setFeedbackMessage, skillsModalData: { type }, state: { initialSkills, tagsInputSkills }, setSkills, setValues, closeSkillsModal, match }) => async () => {
             // Diff current with initial
             const toAdd = tagsInputSkills.filter(item => initialSkills.findIndex(el => el === item) === -1);
             const toRemove = initialSkills.filter(item => tagsInputSkills.findIndex(el => el === item) === -1);
@@ -117,11 +107,12 @@ const SkillsEditHOC = compose(
 
 
 const SkillsEdit = props => {
-    const { maxSkillCount, skillsAnchor, closeSkillsModal, tagsInputSkills, updateTagsInputSkills, saveData, skillsModalData } = props;
-    const { type } = skillsModalData || {};
-    const typeText = type;
-    const capitalTypeText = (type === 'values') ? "Values" : "Skills";
-
+    const { state: { tagsInputSkills, maxSkillCount }, skillsAnchor, closeSkillsModal, updateTagsInputSkills, saveData, skillsModalData } = props;
+    let type = 'values';
+    try {
+        type = skillsModalData.type;
+    } catch(error) {};
+    
     return (
         <Popover
             anchorOrigin={{
@@ -141,7 +132,7 @@ const SkillsEdit = props => {
         >
             <div className='popupHeader'>
                 <FormControl className='skillsInput' fullWidth={true}>
-                    <FormattedMessage id={`userProfile.add${capitalTypeText}`} defaultMessage={`Add ${typeText}`} description={`User header add ${typeText}`}>
+                    <FormattedMessage id={`userProfile.add${type === 'values' ? "Values" : "Skills"}`} defaultMessage={`Add ${type}`} description={`User header add ${type}`}>
                         {(text) => <span className='title'>{text}</span>}
                     </FormattedMessage>
 

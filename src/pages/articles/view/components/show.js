@@ -29,11 +29,8 @@ const ArticleShow = props => {
 
     const {
         id: articleId,
-        images, videos, i18n, createdAt, tags
+        images, videos, title, description: articleBody, createdAt, tags
     } = article;
-
-    let title = (i18n && i18n[0] && i18n[0].title) ? i18n[0].title : '';
-    let articleBody = (i18n && i18n[0] && i18n[0].description) ? i18n[0].description : '';
 
     let image, video;
     if (images && images.length > 0) {
@@ -122,7 +119,7 @@ const ArticleShow = props => {
                         <section className='tags'>
                             {
                                 tags.map(tag => {
-                                    const { id, i18n, users } = tag;
+                                    const { id, title, users } = tag;
                                     const result = users.find(user => user.id === currentUser.id);
                                     let userHasVoted = !!result;
                                     return (
@@ -134,7 +131,7 @@ const ArticleShow = props => {
                                                         <Icon>add</Icon>
                                                     </IconButton>
                                             }
-                                            <span className='title'>{i18n[0].title}</span>
+                                            <span className='title'>{title}</span>
                                         </span>
                                     )
                                 })

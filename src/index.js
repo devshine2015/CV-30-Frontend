@@ -31,7 +31,7 @@ window.$ = $;
 
     const httpLink = createHttpLink({
         uri: process.env.NODE_ENV === 'production' ? 'https://api.cv30.co/graphql' : 'http://localhost/graphql',
-        credentials: 'include'
+        credentials: 'same-origin'
     });
 
     const client = new ApolloClient({

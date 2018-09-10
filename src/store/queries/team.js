@@ -48,19 +48,15 @@ query team($id: String!, $language: LanguageCodeType!) {
         id
         path
       }
-      i18n {
-        title
-        description
-      }
+      title
+      description
     }
     jobs {
       id      
       location
       expireDate
-      i18n {
-        title
-        description
-      }
+      title
+      description
       imagePath
       videoUrl
     }

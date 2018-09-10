@@ -12,7 +12,7 @@ const AddTagHOC = compose(
     withRouter,
     graphql(handleArticleTags, { name: 'handleArticleTags' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('newTags', 'setNewTags', ({ tags }) => tags.map(tag => tag.i18n[0].title)),
+    withState('newTags', 'setNewTags', ({ tags }) => tags.map(tag => tag.title)),
     withHandlers({
         updateTags: ({ handleArticleTags, articleId, newTags, match: { params: { lang: language } }, setFeedbackMessage, closeTagEditor }) => async () => {
             try {

@@ -14,32 +14,37 @@ const NewProfileHOC = compose(
     withRouter,
     graphql(handleShallowUser, { name: 'handleShallowUserMutation' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', () => {
-        return {
+    withState('state', 'setState', {
+        formData: {
             id: uuid()
-        };
+        },
+        isSaving: false,
+        imageUploadOpen: false
     }),
-    withState('isSaving', 'setIsSaving', false),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
-        handleFormChange: props => event => {
+        handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            props.setFormData(state => ({ ...state, [name]: value }));
+            setState({
+                ...state,
+                formData: {
+                    ...state.formData,
+                    [name]: value
+                }
+            });
         },
-        saveMember: ({ handleShallowUserMutation, setFeedbackMessage, formData, match: { params: { lang, teamId } }, setIsSaving, onClose }) => async () => {
+        saveMember: ({ handleShallowUserMutation, setFeedbackMessage, state, setState, match: { params: { lang, teamId } }, onClose }) => async () => {
             try {
-                setIsSaving(true);
-
+                setState({ ...state, isSaving: true });
                 await handleShallowUserMutation({
                     variables: {
-                        shallowUser: formData,
+                        shallowUser: state.formData,
                         options: {
-                            shallowUserId: formData.id,
+                            shallowUserId: state.formData.id,
                             teamId: teamId,
                             isMember: true
                         }
@@ -54,7 +59,7 @@ const NewProfileHOC = compose(
                         message: 'Changes saved successfully.'
                     }
                 });
-                setIsSaving(false);
+                setState({ ...state, isSaving: false });
                 onClose();
             }
             catch (err) {
@@ -66,8 +71,8 @@ const NewProfileHOC = compose(
                 });
             }
         },
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
@@ -77,19 +82,18 @@ const NewProfileHOC = compose(
                 }
             });
         },
-        handleSuccess: ({ setFormData, formData: { id } }) => async ({ path, filename }) =>
-            setFormData(state => ({ ...state, 'avatarPath': path ? path : `/${profilesFolder}/${id}/${filename}` })),
-        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, 'avatarPath': null })),
-
+        handleSuccess: ({ state, setState }) => async ({ path, filename }) =>
+            setState({ ...state, formData: { ...state.formData, avatarPath: path ? path : `/${profilesFolder}/${state.formData.id}/${filename}` }}),
+        removeImage: ({ state, setState }) => () => setState({ ...state, formData: { ...state.formData, avatarPath: null }})
     }),
     pure
 )
 
 const NewProfile = props => {
     const {
-        formData: { id, firstName, lastName, email, position, description, avatarPath },
-        handleFormChange, onClose, isSaving, saveMember,
-        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess, removeImage
+        state: { isSaving, imageUploadOpen, formData: { id, firstName, lastName, email, position, description, avatarPath } },
+        handleFormChange, onClose, saveMember,
+        openImageUpload, closeImageUpload, handleError, handleSuccess, removeImage
     } = props;
 
     return (

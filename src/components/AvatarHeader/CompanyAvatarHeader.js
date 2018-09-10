@@ -8,7 +8,7 @@ const CompanyAvatarHeaderHOC = compose(
         avatar: logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo,
         displayName: name,
         linkTo: `/${lang}/company/${id}`,
-        title: titleType === 'industry' && industry ? industry.i18n[0].title : 'Company'
+        title: titleType === 'industry' && industry ? industry.title : 'Company'
     })),
     pure
 )

@@ -21,29 +21,18 @@ import { landingPageRefetch } from '../../../store/refetch';
 const HeaderHOC = compose(
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-
-    withState('headline', 'setHeadline', props => {
-        try {
-            const { landingPageQuery: { landingPage: { i18n } } } = props;
-            return (i18n && i18n[0] && i18n[0].headline) ? i18n[0].headline : '';
-        }
-        catch (err) {
-            return '';
+    withState('state', 'setState', ({ landingPageQuery: { landingPage: { i18n } } }) => {
+        return {
+            headline: (i18n && i18n[0] && i18n[0].headline) || '',
+            colorPickerAnchor: null,
+            forceCoverRender: 0
         }
     }),
-    withState('colorPickerAnchor', 'setColorPickerAnchor', null),
-    withState('forceCoverRender', 'setForceCoverRender', 0),
     withHandlers({
-        toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
-            setColorPickerAnchor(event.target);
-        },
-        closeColorPicker: ({ setColorPickerAnchor }) => () => {
-            setColorPickerAnchor(null);
-        },
-        updateHeadline: ({ setHeadline }) => text => {
-            setHeadline(text)
-        },
-        submitHeadline: ({ headline, handleLandingPage, match: { params: { lang: language } }, setFeedbackMessage }) => async () => {
+        toggleColorPicker: ({ state, setState }) => (event) => setState({ ...state, colorPickerAnchor: event.target }),
+        closeColorPicker: ({ state, setState }) => () => setState({ ...state, colorPickerAnchor: null }),
+        updateHeadline: ({ state, setState }) => headline => setState({ ...state, headline }),
+        submitHeadline: ({ state: { headline }, handleLandingPage, match: { params: { lang: language } }, setFeedbackMessage }) => async () => {
             try {
                 await handleLandingPage({
                     variables: {
@@ -73,7 +62,7 @@ const HeaderHOC = compose(
                 });
             }
         },
-        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+        refetchBgImage: ({ state, setState }) => () => setState({ ...state, forceCoverRender: Date.now() }),
         closeFeedback: ({ setFeedbackMessage }) => () => setFeedbackMessage(null)
     }),
     pure
@@ -81,9 +70,10 @@ const HeaderHOC = compose(
 
 const Header = props => {
     const {
+        state: { headline, colorPickerAnchor, forceCoverRender },
         switchEditMode, editMode, isEditAllowed,
-        headline, updateHeadline, submitHeadline,
-        toggleColorPicker, closeColorPicker, colorPickerAnchor, refetchBgImage, forceCoverRender,
+        updateHeadline, submitHeadline,
+        toggleColorPicker, closeColorPicker, refetchBgImage,
         landingPageQuery: { landingPage },
     } = props;
 

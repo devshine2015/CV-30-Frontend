@@ -32,7 +32,7 @@ const IndustryInput = props => {
             placeholder='Enter industry...'
             className='textField'
             value={value || ''}
-            getSuggestionValue={s => s ? s.i18n[0].title : ''}
+            getSuggestionValue={s => s ? s.title : ''}
             fullWidth
             {...other}
         />

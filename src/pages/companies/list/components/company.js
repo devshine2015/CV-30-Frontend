@@ -3,7 +3,6 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { Avatar, Tabs, Tab } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import JobItem from './jobItem';
-import TeamMember from './teamMember';
 import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
 import { s3BucketURL } from '../../../../constants/s3';
 
@@ -19,7 +18,7 @@ const CompanyHOC = compose(
 
 const Company = props => {
     const { activeTab, handleTabChange, company, match: { params: { lang } } } = props;
-    const { id, name, industry, location, noOfEmployees, i18n, jobs, teams, logoPath } = company;
+    const { id, name, industry, location, noOfEmployees, description, jobs, teams, logoPath } = company;
     let avatar =
         logoPath ? `${s3BucketURL}${logoPath}` : defaultCompanyLogo;
 
@@ -35,7 +34,7 @@ const Company = props => {
                             {name}
                             <i className='fas fa-caret-down' />
                         </h6>
-                        <p className='userTitle'>{industry && industry.i18n[0].title}</p>
+                        <p className='userTitle'>{industry && industry.title}</p>
                     </div>
                 </Link>
             </div>
@@ -44,7 +43,7 @@ const Company = props => {
             </div>
             <div className='itemBody'>
                 <p className='companyDescription'>
-                    {stripHtmlTags(i18n[0].description)}
+                    {stripHtmlTags(description)}
                 </p>
                 <Tabs
                     value={activeTab}

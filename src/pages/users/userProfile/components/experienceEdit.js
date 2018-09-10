@@ -16,47 +16,42 @@ const ExperienceEditHOC = compose(
     graphql(setExperience, { name: 'setExperience' }),
     graphql(setProject, { name: 'setProject' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', ({ job, type }) => {
+    withState('state', 'setState', ({ job, type }) => {
+        let formData = {};
+        let isVideoUrl = false;
         if (!job) {
-            return {
+            isVideoUrl = true;
+            formData = {
                 id: uuid(),
                 video: {
                     name: 'video',
                     path: ''
                 }
             };
+        } else {
+            const { id, company, position, location, startDate, endDate, isCurrent, description, videos, images } = job;
+            formData = {
+                id, company, position, location, startDate, endDate,
+                isCurrent, description,
+                video: !!videos.length ? { ...videos[0], name: 'video' } : { name: 'video', path: '' },
+                image: !!images.length ? { id: images[0].id, path: images[0].path, sourceType: type } : null
+            };
+            if (images && images.length > 0) isVideoUrl = false;
+            else isVideoUrl = true;
         }
-
-        const { id, company, position, location, startDate, endDate, isCurrent, i18n, videos, images } = job;
-        let description = (i18n && i18n[0]) ? i18n[0].description : '';
-
-        let data = {
-            id, company, position, location, startDate, endDate,
-            isCurrent, description,
-            video: !!videos.length ? { ...videos[0], name: 'video' } : { name: 'video', path: '' },
-            image: !!images.length ? { id: images[0].id, path: images[0].path, sourceType: type } : null
-        };
-        return data;
+        return {
+            formData,
+            isVideoUrl,
+            isSaving: false,
+            uploadProgress: 0,
+            uploadError: null,
+            imageUploadOpen: false
+        }
     }),
-    withState('isVideoUrl', 'changeMediaType', ({ job }) => {
-        if (!job)
-            return true;
-
-        let { images } = job;
-
-        if (images && images.length > 0)
-            return false;
-
-        return true;
-    }),
-    withState('isSaving', 'setIsSaving', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
-        handleFormChange: props => event => {
+        handleFormChange: ({ state, setState }) => event => {
             if (typeof event.name !== undefined && event.name === 'video') {
-                props.setFormData(state => ({ ...state, video: event }));
+                setState({ ...state, formData: { ...state.formData, video: event } });
                 return;
             }
 
@@ -66,12 +61,10 @@ const ExperienceEditHOC = compose(
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            props.setFormData(state => ({ ...state, [name]: value }));
+            setState({ ...state, formData: { ...state.formData, [name]: value } });
         },
-        switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
-            changeMediaType(!isVideoUrl);
-        },
-        submitForm: ({ formData, setExperience, setProject, type, match, closeEditor, setFeedbackMessage }) => async () => {
+        switchMediaType: ({ state, setState }) => () => setState({ ...state, isVideoUrl: !state.isVideoUrl }),
+        submitForm: ({ state: { formData }, setExperience, setProject, type, match, closeEditor, setFeedbackMessage }) => async () => {
             let { id, title, description, position, company, startDate, endDate, isCurrent, image, video, location } = formData;
             const videos = [], images = [];
             if (video.path && !!video.path.length) {
@@ -169,8 +162,8 @@ const ExperienceEditHOC = compose(
             }
             closeEditor();
         },
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
@@ -180,30 +173,29 @@ const ExperienceEditHOC = compose(
                 }
             });
         },
-        handleSuccess: ({ setFormData, formData: { id }, type }) => async ({ path, filename }) => {
+        handleSuccess: ({ setState, state, type }) => async ({ path, filename }) => {
             let image = {
                 id: uuid(),
                 sourceType: type,
-                source: id, //article id
-                path: path ? path : `/${type}/${id}/${filename}`
+                source: state.formData.id, //article id
+                path: path ? path : `/${type}/${state.formData.id}/${filename}`
             };
-            setFormData(state => ({ ...state, image }));
+            setState({ ...state, formData: { ...state.formData, image } });
         },
-        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, image: null }))
+        removeImage: ({ state, setState }) => () => setState({ ...state, formData: { ...state.formData, image: null } })
     }),
     pure
 );
 
 const ExperienceEdit = props => {
     const {
-        formData,
-        isVideoUrl, switchMediaType,
+        state: { formData, isVideoUrl, imageUploadOpen, isSaving },
+        switchMediaType,
         handleFormChange,
         closeEditor,
         submitForm,
         type,
-        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-        isSaving,
+        openImageUpload, closeImageUpload, handleError, handleSuccess,
         removeImage
     } = props;
 

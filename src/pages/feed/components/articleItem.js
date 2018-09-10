@@ -21,22 +21,20 @@ const ArticleItemHOC = compose(
     graphql(getCurrentUser, { name: 'getCurrentUser' }),
     graphql(handleArticleTags, { name: 'handleArticleTags' }),
     graphql(setEditMode, { name: 'setEditMode' }),
-    withState('editPost', 'setEditPost', false),
-    withState('tagAnchor', 'setTagAnchor', null),
+    withState('state', 'setState', {
+        editPost: false,
+        tagAnchor: null
+    }),
     withHandlers({
-        openTagEditor: ({ setTagAnchor }) => target => {
-            setTagAnchor(target);
-        },
-        closeTagEditor: ({ setTagAnchor }) => () => {
-            setTagAnchor(null);
-        },
+        openTagEditor: ({ state, setState }) => tagAnchor => setState({ ...state, tagAnchor }),
+        closeTagEditor: ({ state, setState }) => () => setState({ ...state, tagAnchor: null }),
         addVote: ({ handleArticleTags, match: { params: { lang: language } }, article }) => async tag => {
             try {
                 await handleArticleTags({
                     variables: {
                         language,
                         details: {
-                            titles: [tag.i18n[0].title],
+                            titles: [tag.title],
                             articleId: article.id,
                             isSet: true
                         }
@@ -51,9 +49,8 @@ const ArticleItemHOC = compose(
             }
         },
         handleEditBtnClick: props => async () => {
-            const { setEditPost, article: { id, isPost }, history, setEditMode, match: { params: { lang } } } = props;
-            if (isPost)
-                setEditPost(true);
+            const { state, setState, article: { id, isPost }, history, setEditMode, match: { params: { lang } } } = props;
+            if (isPost) setState({ ...state, editPost: true });
             else {
                 await setEditMode({
                     variables: {
@@ -63,17 +60,21 @@ const ArticleItemHOC = compose(
                 return history.push(`/${lang}/article/${id}`);
             }
         },
-        closeEditPost: ({ setEditPost }) => () => setEditPost(false)
+        closeEditPost: ({ state, setState }) => () => setState({ ...state, editPost: false })
     }),
     pure
 );
 
 const ArticleItem = props => {
     const {
+        state: {
+            editPost,
+            tagAnchor
+        },
         match, getCurrentUser,
         article,
-        openTagEditor, closeTagEditor, tagAnchor, addVote,
-        editPost, handleEditBtnClick, closeEditPost
+        openTagEditor, closeTagEditor, addVote,
+        handleEditBtnClick, closeEditPost
     } = props;
 
     if (getCurrentUser.loading)
@@ -82,8 +83,7 @@ const ArticleItem = props => {
     const { auth: { currentUser } } = getCurrentUser;
     const isAddTagAllowed = !!currentUser;
     const { lang } = match.params;
-    const { id, author, isPost, i18n, createdAt, images, videos, tags } = article;
-    const { title, description } = i18n[0];
+    const { id, author, isPost, title, description, createdAt, images, videos, tags } = article;
 
     let desc = stripHtmlTags(description);
     if (!isPost)
@@ -191,7 +191,7 @@ const ArticleItem = props => {
                         }
                         {
                             (tags && tags.length > 0) && tags.map(tag => {
-                                const { id, i18n, users } = tag;
+                                const { id, title, users } = tag;
                                 const userHasVoted = currentUser && users.findIndex(user => user.id === currentUser.id) > -1;
                                 return (
                                     <span className='tag' key={id}>
@@ -202,7 +202,7 @@ const ArticleItem = props => {
                                                     <Icon>add</Icon>
                                                 </IconButton>
                                         }
-                                        <span className='title'>{i18n[0].title}</span>
+                                        <span className='title'>{title}</span>
                                     </span>
                                 )
                             })

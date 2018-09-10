@@ -22,32 +22,14 @@ const SettingsHOC = compose(
     graphql(updateAvatarTimestampMutation, { name: 'updateAvatarTimestamp' }),
     graphql(handleCompany, { name: 'handleCompany' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('isSaving', 'setIsSaving', false),
-    withState('settingsFormError', 'setSettingsFormError', ''),
-    withState('settingsFormSuccess', 'setSettingsFormSuccess', false),
-    withState('headline', 'setHeadline', props => {
-        let { currentCompany: { company: { i18n } } } = props;
-
-        if (!i18n || !i18n[0] || !i18n[0].headline)
-            return '';
-        return i18n[0].headline;
-
-    }),
-    withState('description', 'setDescription', props => {
-        let { currentCompany: { company: { i18n } } } = props;
-
-        if (!i18n || !i18n[0] || !i18n[0].description)
-            return '';
-        return i18n[0].description;
-
-    }),
-    withState('formData', 'setFormData', props => {
-        let { currentCompany: { company: { id, industry, location, noOfEmployees, name } } } = props;
-        if (!props.currentCompany || !props.currentCompany.company)
-            return {};
-
-        return { id, industry: industry ? industry.i18n[0].title : '', location, noOfEmployees, name };
-    }),
+    withState('state', 'setState', ({ currentCompany: { company: { id, industry, location, noOfEmployees, name, headline, description } } }) => ({
+        isSaving: false,
+        settingsFormError: '',
+        settingsFormSuccess: false,
+        headline,
+        description,
+        formData: { id, industry: industry ? industry.title : '', location, noOfEmployees, name }
+    })),
     withHandlers({
         handleFormChange: props => event => {
             const target = event.currentTarget;
@@ -57,21 +39,22 @@ const SettingsHOC = compose(
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            props.setFormData(state => ({ ...state, [name]: value }));
+            props.setState({
+                ...props.state,
+                formData: {
+                    ...props.state.formData,
+                    [name]: value
+                }
+            });
         },
-        updateHeadline: ({ setHeadline }) => text => setHeadline(text),
-        updateDescription: ({ setDescription }) => text => setDescription(text),
+        updateHeadline: ({ state, setState }) => headline => setState({ ...state, headline }),
+        updateDescription: ({ state, setState }) => description => setState({ ...state, description }),
         saveUserDetails: props => async () => {
             const {
-                handleCompany, setIsSaving,
-                // setSettingsFormSuccess, setSettingsFormError, updateUserSettings,
-                formData: { id, industry, location, noOfEmployees, name },
-                match,
-                headline, description,
-                setFeedbackMessage
+                handleCompany, state, setState, match, setFeedbackMessage
             } = props;
-
-            setIsSaving(true);
+            const { headline, description, formData: { id, industry, location, noOfEmployees, name } } = state;
+            setState({ ...state, isSaving: true });
 
             try {
                 await handleCompany({
@@ -101,6 +84,7 @@ const SettingsHOC = compose(
                     }
                 });
             }
+            setState({ ...state, isSaving: false });
         }
     }),
     pure
@@ -108,14 +92,18 @@ const SettingsHOC = compose(
 
 const Settings = props => {
     const {
-        settingsFormSuccess, settingsFormError,
-        // getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isSaving,
-        handleFormChange, formData,
+        state: {
+            settingsFormError,
+            settingsFormSuccess,
+            headline,
+            description,
+            formData: { name, location, industry, noOfEmployees }
+        },
+        handleFormChange,
         saveUserDetails,
-        headline, updateHeadline,
-        description, updateDescription
+        updateHeadline,
+        updateDescription
     } = props;
-    const { name, location, industry, noOfEmployees } = formData;
 
     return (
         <div className='settingsTab'>

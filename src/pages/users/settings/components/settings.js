@@ -13,28 +13,24 @@ const SettingsHOC = compose(
     graphql(localUserQuery, { name: 'localUserData' }),
     graphql(updateUserSettingsMutation, { name: 'updateUserSettings' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-
-    withState('isUploading', 'setIsUploading', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('uploadError', 'setUploadError', null),
-    withState('settingsFormError', 'setSettingsFormError', ''),
-    withState('settingsFormSuccess', 'setSettingsFormSuccess', false),
-    withState('fileParams', 'setFileParams', {}),
-    withState('formData', 'setFormData', ({ currentProfileQuery }) => {
-        if (!currentProfileQuery || !currentProfileQuery.profile)
-            return {};
-        let { firstName, lastName, email } = currentProfileQuery.profile;
-        return { firstName, lastName, email };
-    }),
+    withState('state', 'setState', ({ currentProfileQuery: { profile: { firstName, lastName, email } } }) => ({
+        isUploading: false,
+        uploadProgress: 0,
+        uploadError: null,
+        settingsFormError: '',
+        settingsFormSuccess: false,
+        fileParams: {},
+        formData: { firstName, lastName, email }
+    })),
     withHandlers({
-        getSignedUrl: ({ currentProfileQuery, setFileParams, setFeedbackMessage }) => async (file, callback) => {
-            const params = {
+        getSignedUrl: ({ currentProfileQuery, state, setState, setFeedbackMessage }) => async (file, callback) => {
+            const fileParams = {
                 fileName: `avatar.${file.type.replace('image/', '')}`,
                 contentType: file.type,
                 id: currentProfileQuery.profile.id,
                 type: 'avatar'
             };
-            setFileParams(params);
+            setState({ ...state, fileParams });
 
             try {
                 let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
@@ -43,7 +39,7 @@ const SettingsHOC = compose(
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(params)
+                    body: JSON.stringify(fileParams)
                 });
                 let responseJson = await response.json();
                 callback(responseJson);
@@ -58,18 +54,16 @@ const SettingsHOC = compose(
                 });
             }
         },
-        onUploadStart: ({ setIsUploading }) => (file, next) => {
+        onUploadStart: ({ state, setState }) => (file, next) => {
             let size = file.size;
             if (size > 500 * 1024) {
                 alert('File is too big!');
             } else {
-                setIsUploading(true);
+                setState({ ...state, isUploading: true });
                 next(file);
             }
         },
-        onProgress: ({ setUploadProgress }) => (percent) => {
-            setUploadProgress(percent);
-        },
+        onProgress: ({ state, setState }) => setUploadProgress => setState({ ...state, setUploadProgress }),
         onError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
@@ -79,13 +73,12 @@ const SettingsHOC = compose(
                 }
             });
         },
-        onFinishUpload: (props) => async data => {
-            const { setIsUploading, updateAvatar, updateAvatarTimestamp, match, fileParams: { contentType }, setFeedbackMessage } = props;
+        onFinishUpload: ({ updateAvatar, updateAvatarTimestamp, match, state, setState, setFeedbackMessage }) => async data => {
             try {
                 await updateAvatar({
                     variables: {
                         status: true,
-                        contentType: contentType.replace('image/', '')
+                        contentType: state.fileParams.contentType.replace('image/', '')
                     },
                     refetchQueries: [
                         currentProfileRefetch(match.params.lang)
@@ -112,18 +105,19 @@ const SettingsHOC = compose(
                     }
                 });
             }
-            setIsUploading(false);
+            setState({ ...state, isUploading: false });
         },
-        handleFormChange: props => event => {
+        handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            props.setFormData(state => ({ ...state, [name]: value }));
+            setState({ ...state, formData: { ...state.formData, [name]: value } });
         },
-        saveUserDetails: ({ setSettingsFormSuccess, setSettingsFormError, updateUserSettings, formData: { firstName, lastName, oldPassword, newPassword, newPasswordConfirm }, match }) => async () => {
+        saveUserDetails: ({ state, setState, updateUserSettings, match }) => async () => {
+            const { formData: { firstName, lastName, oldPassword, newPassword, newPasswordConfirm } } = state;
             if (newPassword) {
                 if (!oldPassword) { alert('Please enter your current password'); return; }
                 if (newPassword !== newPasswordConfirm) { alert('New password and confirm new password do not match'); return; }
@@ -154,17 +148,22 @@ const SettingsHOC = compose(
                         currentProfileRefetch(match.params.lang)
                     ]
                 });
-                if (status) setSettingsFormSuccess(true);
+                if (status) setState({ ...state, settingsFormSuccess: true });
             } catch (error) {
-                setSettingsFormError(JSON.stringify(error));
+                setState({ ...state, settingsFormError: JSON.stringify(error) });
             }
         }
     }),
     pure
 )
 const Settings = props => {
-    const { settingsFormSuccess, settingsFormError, getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, isUploading, localUserData, currentProfileQuery, handleFormChange, formData, saveUserDetails } = props;
-    const { firstName, lastName, email, oldPassword, newPassword, newPasswordConfirm } = formData;
+    const {
+        isUploading,
+        settingsFormError,
+        settingsFormSuccess,
+        formData: { firstName, lastName, email, oldPassword, newPassword, newPasswordConfirm }
+    } = props.state
+    const { getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, localUserData, currentProfileQuery, handleFormChange, saveUserDetails } = props;
 
     const { profile } = currentProfileQuery;
     let avatar =

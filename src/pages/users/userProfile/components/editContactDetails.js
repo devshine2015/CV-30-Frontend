@@ -12,11 +12,9 @@ const EditContactDetailsHOC = compose(
     withRouter,
     graphql(setContact, { name: 'setContact' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', ({ contact }) => {
-        if (!contact) {
-            return {};
-        } else {
-            let formData = {};
+    withState('state', 'setState', ({ contact }) => {
+        let formData = {};
+        if (contact) {
             Object.keys(contact).map(key => {
                 const result = fields.find(field => field.id === key);
                 if (result && contact[key] && contact[key] !== '') {
@@ -24,42 +22,50 @@ const EditContactDetailsHOC = compose(
                 }
                 return null;
             });
-            return formData;
         }
-
+        return {
+            anchorEl: null,
+            formData
+        };
     }),
-    withState('anchorEl', 'setAnchorEl', null),
     withHandlers({
-        handleClick: ({ setAnchorEl }) => event => {
-            setAnchorEl(event.currentTarget);
-        },
-
-        handleClose: ({ setAnchorEl }) => () => {
-            setAnchorEl(null);
-        },
-        addField: ({ setAnchorEl, formData, setFormData }) => (fieldId) => {
-            let contact = Object.assign({}, formData);
+        handleClick: ({ state, setState }) => event => setState({ ...state, anchorEl: event.currentTarget }),
+        handleClose: ({ state, setState }) => () => setState({ ...state, anchorEl: null }),
+        addField: ({ state, setState }) => (fieldId) => {
+            let contact = Object.assign({}, state.formData);
             if (!contact[fieldId]) {
                 contact[fieldId] = '';
-                setFormData(contact);
             }
-            setAnchorEl(null);
+            setState({
+                ...state,
+                formData: contact,
+                anchorEl: null
+            });
         },
-        handleFormChange: props => event => {
+        handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            props.setFormData(state => ({ ...state, [name]: value }));
+            setState({
+                ...state,
+                formData: {
+                    ...state.formData,
+                    [name]: value
+                }
+            });
         },
-        removeTextField: ({ formData, setFormData }) => async (key) => {
-            let contact = Object.assign({}, formData);
+        removeTextField: ({ state, setState }) => async (key) => {
+            let contact = Object.assign({}, state.formData);
             await delete contact[key];
-            setFormData(contact);
+            setState({
+                ...state,
+                formData: contact
+            });
         },
-        updateContact: ({ setContact, formData, match, setFeedbackMessage }) => async () => {
+        updateContact: ({ setContact, state: { formData }, match, setFeedbackMessage }) => async () => {
             try {
                 await setContact({
                     variables: {
@@ -92,7 +98,8 @@ const EditContactDetailsHOC = compose(
 );
 
 const EditContactDetails = ({
-    anchorEl, handleClick, handleClose, addField, handleFormChange, formData,
+    state: { anchorEl, formData },
+    handleClick, handleClose, addField, handleFormChange,
     removeTextField, open, updateContact, feedbackMessage, closeFeedback
 }) => {
     return (

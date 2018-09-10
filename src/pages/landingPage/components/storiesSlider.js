@@ -34,8 +34,8 @@ const StoriesSlider = props => {
                     let itemClass = index === activeItem ? 'storyItem storyItemActive' : 'storyItem';
                     return (
                         <div className={itemClass} key={story.id}>
-                            <h2 className='slideTitle'>{story.i18n[0].title}</h2>
-                            <p className='slideText'>{story.i18n[0].description}</p>
+                            <h2 className='slideTitle'>{story.title}</h2>
+                            <p className='slideText'>{story.description}</p>
                         </div>
                     )
                 })}

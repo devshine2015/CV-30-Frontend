@@ -19,7 +19,7 @@ const AddTagHOC = compose(
                 return;
 
             event.preventDefault();
-            let currentTags = tags.map(tag => tag.i18n[0].title);
+            let currentTags = tags.map(tag => tag.title);
             try {
                 await handleArticleTags({
                     variables: {

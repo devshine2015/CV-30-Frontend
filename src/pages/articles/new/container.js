@@ -14,45 +14,44 @@ const NewArticleHOC = compose(
     }),
     graphql(setEditMode, { name: 'setEditMode' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', () => {
-        return {
+    withState('state', 'setState', {
+        formData: {
             id: uuid(),
-            tags: []
-        };
+            tags: [],
+            description: ''
+        },
+        isVideoUrl: true,
+        // isSaving: false,
+        editor: null,
+        imageUploadOpen: false
     }),
-    withState('isVideoUrl', 'changeMediaType', true),
-    withState('isSaving', 'setIsSaving', false),
-    withState('editor', 'setEditor', null),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
     withHandlers({
-        setTags: ({ setFormData }) => tags => setFormData(state => ({ ...state, tags })),
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        setTags: ({ state, setState }) => tags => setState({ ...state, tags }),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: () => error => { console.log(error) },
-        handleSuccess: ({ editor, formData: { id } }) => file => {
+        handleSuccess: ({ state: { editor, formData: { id } } }) => file => {
             let imageURL = `${s3BucketURL}/${articlesFolder}/${id}/${file.filename}`;
-            console.log(file);
             editor.image.insert(imageURL);
         },
-        handleFormChange: props => event => {
+        handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            props.setFormData(state => ({ ...state, [name]: value }));
+            setState({ ...state, [name]: value });
+            // props.setFormData(state => ());
         },
-        updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
-        switchMediaType: ({ isVideoUrl, changeMediaType }) => () => changeMediaType(!isVideoUrl),
+        // updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
+        updateDescription: ({ state, setState }) => text => setState({ ...state, 'description': text }),
+        switchMediaType: ({ state, setState }) => () => setState({ ...state, isVideoUrl: !state.isVideoUrl }),
         saveArticle: props => async () => {
-            const { handleArticle, formData: { id, title, description, videoURL, images, tags },
-                setIsSaving, match, setFeedbackMessage, setEditMode, history, location: { state }
-            } = props;
-
+            const { handleArticle, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state } } = props;
+            const { formData: { id, title, description, videoURL, images, tags } } = appState;
             let { type, companyId, teamId } = state || {};
             let options = {};
-
             let postAs = 'profile';
 
             if (type === 'profile_isFeatured' || type === 'profile_isAboutMe')
@@ -161,8 +160,7 @@ const NewArticleHOC = compose(
                 return history.push(`/${match.params.lang}/article/${id}`);
             }
             catch (err) {
-                console.log(err);
-                setIsSaving(true);
+                // setState({ ...state, isSaving: true });
                 await setFeedbackMessage({
                     variables: {
                         status: 'error',
@@ -171,7 +169,7 @@ const NewArticleHOC = compose(
                 });
             }
         },
-        getSignedURL: ({ formData: { id }, setFeedbackMessage }) => async (e, editor, images) => {
+        getSignedURL: ({ state: { formData: { id }, setFeedbackMessage } }) => async (e, editor, images) => {
             let file = images[0];
             const params = {
                 fileName: file.name,
@@ -192,7 +190,7 @@ const NewArticleHOC = compose(
                 let responseJson = await response.json();
                 editor.opts.imageUploadMethod = 'PUT';
                 editor.opts.imageUploadURL = responseJson.signedUrl;
-                editor.image.upload();
+                editor.image.upload(images);
                 return true;
             } catch (error) {
                 console.error(error);

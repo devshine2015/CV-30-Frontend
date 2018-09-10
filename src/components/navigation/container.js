@@ -5,8 +5,7 @@ import { getCurrentUser, localUserQuery } from '../../store/queries';
 import Navigation from './component';
 import Logout from '../../hocs/logout';
 
-
-const notifications = [
+/*const notifications = [
     {
         avatar: 'http://digitalspyuk.cdnds.net/17/25/980x490/landscape-1498216547-avatar-neytiri.jpg',
         message: 'message',
@@ -22,7 +21,7 @@ const notifications = [
         message: 'message',
         timeElapsed: '1h'
     }
-];
+];*/
 
 const NavigationHOC = compose(
     withRouter,
@@ -30,55 +29,67 @@ const NavigationHOC = compose(
         name: 'currentUser'
     }),
     graphql(localUserQuery, { name: 'localUserData' }),
-    withState('profileMenuOpen', 'setProfileMenuStatus', false),
-    withState('notificationsMenuOpen', 'setNotificationsMenuStatus', false),
-    withState('mobileNavOpen', 'setMobileNavStatus', false),
-    withState('mobileNotificationIsOpen', 'setMobileNotificationStatus', false),
-    withState('mobileProfileIsOpen', 'setMobileProfileStatus', false),
-    withState('notifications', 'setNotifications', notifications),
+    withState('state', 'setState', {
+        profileMenuOpen: false,
+        notificationsMenuOpen: false,
+        mobileNavOpen: false,
+        mobileNotificationIsOpen: false,
+        mobileProfileIsOpen: false,
+        notifications: []
+    }),
     Logout,
     withHandlers({
         //desktop profile menu functions
-        toggleProfileMenu: ({ profileMenuOpen, setProfileMenuStatus }) => (event) => {
-            setProfileMenuStatus(!profileMenuOpen);
-        },
-        closeProfileMenu: ({ setProfileMenuStatus }) => () => {
-            setProfileMenuStatus(false);
-        },
+        toggleProfileMenu: ({ state, setState }) => () => setState({
+            ...state,
+            profileMenuOpen: !state.profileMenuOpen
+        }),
+        closeProfileMenu: ({ state, setState }) => () => setState({
+            ...state,
+            profileMenuOpen: false
+        }),
         //desktop notifications menu functions
-        toggleNotificationsMenu: ({ notificationsMenuOpen, setNotificationsMenuStatus }) => () => {
-            setNotificationsMenuStatus(!notificationsMenuOpen);
-        },
-        closeNotificationsMenu: ({ setNotificationsMenuStatus }) => () => {
-            setNotificationsMenuStatus(false);
-        },
+        toggleNotificationsMenu: ({ state, setState }) => () => setState({
+            ...state,
+            notificationsMenuOpen: !state.notificationsMenuOpen
+        }),
+        closeNotificationsMenu: ({ state, setState }) => () => setState({
+            ...state,
+            notificationsMenuOpen: false
+        }),
         //mobile nav
-        toggleMobileNav: ({ mobileNavOpen, setMobileNavStatus, setMobileNotificationStatus, setMobileProfileStatus }) => () => {
-            setMobileNavStatus(!mobileNavOpen);
-            setMobileNotificationStatus(false);
-            setMobileProfileStatus(false);
-        },
-        closeMobileNav: ({ setMobileNavStatus }) => () => {
-            setMobileNavStatus(false);
-        },
+        toggleMobileNav: ({ state, setState }) => () => setState({
+            ...state,
+            mobileNavOpen: state.mobileNavOpen,
+            notificationsMenuOpen: false,
+            profileMenuOpen: false
+        }),
+        closeMobileNav: ({ state, setState }) => () => setState({
+            ...state,
+            mobileNavOpen: false
+        }),
         //mobile notifications
-        toggleMobileNotifications: ({ mobileNotificationIsOpen, setMobileNotificationStatus, setMobileNavStatus, setMobileProfileStatus }) => () => {
-            setMobileNotificationStatus(!mobileNotificationIsOpen);
-            setMobileNavStatus(false);
-            setMobileProfileStatus(false);
-        },
-        closeMobileNotifications: ({ setMobileNotificationStatus }) => () => {
-            setMobileNotificationStatus(false);
-        },
+        toggleMobileNotifications: ({ state, setState }) => () => setState({
+            ...state,
+            mobileNotificationIsOpen: state.mobileNotificationIsOpen,
+            mobileNavOpen: false,
+            mobileProfileIsOpen: false
+        }),
+        closeMobileNotifications: ({ state, setState }) => () => setState({
+            ...state,
+            mobileNotificationIsOpen: false
+        }),
         //mobile profile
-        toggleMobileProfile: ({ mobileProfileIsOpen, setMobileProfileStatus, setMobileNotificationStatus, setMobileNavStatus }) => () => {
-            setMobileProfileStatus(!mobileProfileIsOpen);
-            setMobileNavStatus(false);
-            setMobileNotificationStatus(false);
-        },
-        closeMobileProfile: ({ setMobileProfileStatus }) => () => {
-            setMobileProfileStatus(false);
-        }
+        toggleMobileProfile: ({ state, setState }) => () => setState({
+            ...state,
+            mobileProfileIsOpen: state.mobileProfileIsOpen,
+            mobileNavOpen: false,
+            mobileNotificationIsOpen: false
+        }),
+        closeMobileProfile: ({ state, setState }) => () => setState({
+            ...state,
+            mobileProfileIsOpen: false
+        })
     }),
     pure
 );

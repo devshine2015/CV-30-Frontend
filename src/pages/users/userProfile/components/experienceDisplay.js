@@ -67,7 +67,7 @@ const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, clos
                     <Grid container className='experienceGrid'>
                         <Grid item xs={7}>
                             <h4>{job.position}</h4>
-                            <p>{(job.i18n && job.i18n.length === 1) ? job.i18n[0].description : ''}</p>
+                            <p>{job.description}</p>
                         </Grid>
                         <Grid item xs={4}>
                             <div className='media'>

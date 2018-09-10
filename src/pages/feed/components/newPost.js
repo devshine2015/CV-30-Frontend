@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Icon, Avatar, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, Menu, MenuItem, IconButton } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
-import { compose, withState, withHandlers, pure } from 'recompose';
+import { compose, withState, withHandlers, pure, withProps } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuidv4';
@@ -17,14 +17,8 @@ const NewPostHOC = compose(
     withRouter,
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', {
-        id: uuid()
-    }),
-    withState('isArticle', 'updateIsArticle', false),
-    withState('mediaUploadAnchor', 'setMediaUploadAnchor', null),
-    withState('postAsAnchor', 'setPostAsAnchor', null),
-    withState('postOptions', null, ({ profile }) => {
-        let options = [
+    withProps(({ profile }) => {
+        let postOptions = [
             {
                 label: (profile.firstName && profile.lastName) ? `${profile.firstName} ${profile.lastName}` : profile.email,
                 id: profile.id,
@@ -34,7 +28,7 @@ const NewPostHOC = compose(
         ];
         if (profile.ownedCompanies && profile.ownedCompanies.length > 0) {
             profile.ownedCompanies.forEach(company => {
-                options.push({
+                postOptions.push({
                     label: company.name,
                     id: company.id,
                     avatar: company.logoPath ? `${s3BucketURL}${company.logoPath}` : defaultCompanyLogo,
@@ -42,7 +36,7 @@ const NewPostHOC = compose(
                 });
                 if (company.teams && company.teams.length > 0) {
                     company.teams.forEach(team => {
-                        options.push({
+                        postOptions.push({
                             label: team.name,
                             id: team.id,
                             avatar: team.coverPath ? `${s3BucketURL}${team.coverPath}` : defaultCompanyLogo,
@@ -52,32 +46,38 @@ const NewPostHOC = compose(
                 }
             })
         }
-        return options;
+        return { postOptions };
     }),
-    withState('selectedPostOption', 'setSelectedPostOption', 0),
+    withState('state', 'setState', {
+        formData: {
+            id: uuid()
+        },
+        isArticle: false,
+        mediaUploadAnchor: null,
+        postAsAnchor: null,
+        selectedPostOption: 0
+    }),
     withHandlers({
-        handleFormChange: props => event => {
+        handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            props.setFormData(state => ({ ...state, [name]: value }));
+            setState({ ...state, formData: { ...state.formData, [name]: value } });
         },
-        switchIsArticle: ({ isArticle, updateIsArticle }) => () => {
-            updateIsArticle(!isArticle);
-        },
-        addPost: ({ handleArticle, match: { params: { lang: language } }, formData, setFeedbackMessage, setFormData, postOptions, selectedPostOption }) => async () => {
-            let selectedPostAs = postOptions[selectedPostOption];
+        switchIsArticle: ({ state, setState }) => () => setState({ ...state, isArticle: !state.isArticle }),
+        addPost: ({ handleArticle, match: { params: { lang: language } }, state, setState, setFeedbackMessage, postOptions }) => async () => {
+            let selectedPostAs = postOptions[state.selectedPostOption];
 
             const article = {
                 id: uuid(),
                 isPost: true,
                 title: 'Post',
-                images: formData.images,
-                videos: formData.videos,
-                description: formData.postBody,
+                images: state.formData.images,
+                videos: state.formData.videos,
+                description: state.formData.postBody,
                 postAs: selectedPostAs.type
             };
 
@@ -103,7 +103,7 @@ const NewPostHOC = compose(
                         message: 'Changes saved successfully.'
                     }
                 });
-                setFormData({ id: uuid(), postBody: '' });
+                setState({ ...state, formData: { id: uuid(), postBody: '' } });
             }
             catch (err) {
                 await setFeedbackMessage({
@@ -115,37 +115,40 @@ const NewPostHOC = compose(
                 console.log(err);
             }
         },
-        openMediaUpload: ({ setMediaUploadAnchor }) => target => setMediaUploadAnchor(target),
-        closeMediaUpload: ({ setMediaUploadAnchor, setFormData }) => (data) => {
+        openMediaUpload: ({ state, setState }) => mediaUploadAnchor => setState({ ...state, mediaUploadAnchor }),
+        closeMediaUpload: ({ state, setState }) => (data) => {
             let { imgParams, video } = data;
+            let newState = { mediaUploadAnchor: null };
 
-            if (imgParams)
-                setFormData(state => ({ ...state, 'images': [imgParams] }));
-            if (video)
-                setFormData(state => ({ ...state, 'videos': [video] }));
+            if (imgParams) newState.images = [imgParams];
+            if (video) newState.videos = [video];
 
-            setMediaUploadAnchor(null);
+            setState({ ...state, ...newState });
         },
-        openPostAs: ({ setPostAsAnchor }) => target => setPostAsAnchor(target),
-        closePostAs: ({ setPostAsAnchor }) => () => setPostAsAnchor(null),
-        handlePostAsMenu: ({ setSelectedPostOption, setPostAsAnchor }) => index => {
-            setSelectedPostOption(index);
-            setPostAsAnchor(null);
-        },
-        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, 'images': [] })),
-        removeVideo: ({ setFormData }) => () => setFormData(state => ({ ...state, 'videos': [] }))
+        openPostAs: ({ state, setState }) => postAsAnchor => setState({ ...state, postAsAnchor }),
+        closePostAs: ({ state, setState }) => () => setState({ ...state, postAsAnchor: null }),
+        handlePostAsMenu: ({ state, setState }) => selectedPostOption => setState({ ...state, selectedPostOption, postAsAnchor: null }),
+        removeImage: ({ state, setState }) => () => setState({ ...state, formData: { ...state.formData, images: [] } }),
+        removeVideo: ({ state, setState }) => () => setState({ ...state, formData: { ...state.formData, videos: [] } })
     }),
     pure
 );
 
 const NewPost = props => {
     const {
-        formData: { id: postId, postBody, images, videos }, handleFormChange, switchIsArticle, isArticle,
-        openMediaUpload, closeMediaUpload, mediaUploadAnchor,
-        openPostAs, closePostAs, postAsAnchor,
+        state: {
+            formData: { id: postId, postBody, images, videos },
+            isArticle,
+            mediaUploadAnchor,
+            postAsAnchor,
+            selectedPostOption
+        },
+        handleFormChange, switchIsArticle,
+        openMediaUpload, closeMediaUpload,
+        openPostAs, closePostAs,
         addPost,
         match: { params: { lang } },
-        postOptions, handlePostAsMenu, selectedPostOption,
+        postOptions, handlePostAsMenu,
         removeImage, removeVideo
     } = props;
 

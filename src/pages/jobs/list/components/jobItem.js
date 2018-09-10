@@ -11,8 +11,7 @@ import { FormattedMessage } from 'react-intl';
 
 const JobItem = props => {
     const { job, lang } = props;
-    const { i18n, videoUrl, imagePath, appliedDate, jobTypes, jobBenefits, location } = job;
-    const { title, description } = i18n[0];
+    const { title, description, videoUrl, imagePath, appliedDate, jobTypes, jobBenefits, location } = job;
 
     return (
         <div className='listItem jobListItem'>
@@ -77,7 +76,7 @@ const JobItem = props => {
                 <div className='details'>
                     <h2 className='jobTitle'>{title}</h2>
                     <div className='levels'>
-                        {jobTypes && jobTypes.map(item => <Chip className='jobLevel' label={item.i18n[0].title} key={item.id} />)}
+                        {jobTypes && jobTypes.map(item => <Chip className='jobLevel' label={item.title} key={item.id} />)}
                     </div>
                     <div className='benefits'>
                         {jobBenefits && jobBenefits.map(item => (

@@ -28,21 +28,18 @@ const ShowHOC = compose(
     graphql(handleFAQ, { name: 'handleFAQ' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     graphql(handleArticle, { name: 'handleArticle' }),
-    withState('expanded', 'updateExpanded', null),
-    withState('edited', 'updateEdited', null),
-    withState('editedStory', 'editStory', null),
-    withState('newQA', 'addNewQA', false),
-    withState('description', 'setDescription', props => {
-        let { companyQuery: { company: { i18n } } } = props;
-        if (!i18n || !i18n[0] || !i18n[0].description)
-            return '';
-        return i18n[0].description;
-    }),
-    withState('articlePopupOpen', 'setArticlePopupOpen', false),
-    withState('articleType', 'setArticleType', null),
+    withState('state', 'setState', ({ companyQuery: { company: { description } } }) => ({
+        expanded: false,
+        edited: null,
+        editedStory: null,
+        newQA: false,
+        description,
+        articlePopupOpen: false,
+        articleType: null
+    })),
     withHandlers({
-        updateDescription: ({ setDescription }) => text => setDescription(text),
-        submitDescription: ({ companyQuery: { company }, handleCompany, description, match, setFeedbackMessage }) => async () => {
+        updateDescription: ({ state, setState }) => description => setState({ ...state, description }),
+        submitDescription: ({ companyQuery: { company }, handleCompany, state: { description }, match, setFeedbackMessage }) => async () => {
             try {
                 await handleCompany({
                     variables: {
@@ -73,25 +70,23 @@ const ShowHOC = compose(
                 });
             }
         },
-        expandPanel: ({ updateExpanded, edited, updateEdited }) => (panel) => (ev, expanded) => {
-            if (edited === panel) {
-                updateExpanded(panel);
+        expandPanel: ({ state, setState }) => (panel) => (ev, expanded) => {
+            if (state.edited === panel) {
+                setState({ ...state, expanded: panel });
             } else {
-                if (edited)
-                    updateEdited(null);
-                updateExpanded(expanded ? panel : false);
-
+                if (state.edited) setState({ ...state, edited: null });
+                setState({ ...state, expanded: expanded ? panel : false });
             }
         },
-        editPanel: ({ updateEdited, updateExpanded, edited }) => (e, panel) => {
-            updateEdited(panel || false);
-            if (panel !== edited) {
-                updateExpanded(panel);
+        editPanel: ({ state, setState }) => (e, panel) => {
+            setState({ ...state, edited: panel || false });
+            if (panel !== state.edited) {
+                setState({ ...state, expanded: panel });
                 e.stopPropagation();
             }
         },
-        addQA: ({ addNewQA }) => () => {
-            addNewQA(true);
+        addQA: ({ state, setState }) => () => {
+            setState({ ...state, newQA: true });
         },
         deleteQA: props => async (e, id) => {
             e.stopPropagation();
@@ -128,11 +123,8 @@ const ShowHOC = compose(
                 });
             }
         },
-        openArticlePopup: ({ setArticlePopupOpen, setArticleType }) => type => {
-            setArticleType(type);
-            setArticlePopupOpen(true)
-        },
-        closeArticlePopup: ({ setArticlePopupOpen }) => () => setArticlePopupOpen(false),
+        openArticlePopup: ({ state, setState }) => articleType => setState({ ...state, articleType, articlePopupOpen: true }),
+        closeArticlePopup: ({ state, setState }) => () => setState({ ...state, articlePopupOpen: false }),
         deleteOfficeArticle: ({ handleArticle, setFeedbackMessage, match: { params: { companyId, lang: language } } }) => async id => {
             try {
                 await handleArticle({
@@ -174,15 +166,22 @@ const ShowHOC = compose(
 
 const Show = (props) => {
     const {
-        expanded, expandPanel,
-        getEditMode,
+        state: {
+            expanded,
+            edited,
+            newQA,
+            description,
+            articlePopupOpen,
+            articleType
+        },
+        expandPanel, getEditMode,
         companyQuery: { company: { name, faqs, officeArticles, storiesArticles, jobs } },
         isEditAllowed, deleteOfficeArticle,
-        edited, editPanel, addQA, newQA,
+        editPanel, addQA,
         match: { params: { lang, companyId } },
-        description, updateDescription, submitDescription,
+        updateDescription, submitDescription,
         deleteQA,
-        openArticlePopup, closeArticlePopup, articlePopupOpen, articleType
+        openArticlePopup, closeArticlePopup
     } = props;
 
     const editMode = isEditAllowed && getEditMode.editMode.status;
@@ -266,7 +265,7 @@ const Show = (props) => {
                                             expandIcon: 'qaHeaderIcon',
                                             content: 'qaPanelHeaderContent'
                                         }}>
-                                            {item.i18n[0].question}
+                                            {item.question}
                                             {editMode &&
                                                 <IconButton onClick={(e) => editPanel(e, panelId)} className='editBtn'>
                                                     <Icon>edit</Icon>
@@ -279,7 +278,7 @@ const Show = (props) => {
                                             }
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-                                            {item.i18n[0].answer}
+                                            {item.answer}
                                         </ExpansionPanelDetails>
                                     </ExpansionPanel>
                                 )
@@ -340,7 +339,7 @@ const Show = (props) => {
                                         </div>
                                         <div className='info'>
                                             <Link to={`/${lang}/job/${job.id}`}>
-                                                <h5 className='jobTitle'>{job.i18n[0].title}</h5>
+                                                <h5 className='jobTitle'>{job.title}</h5>
                                                 <p className='details'>
                                                     <FormattedDate value={job.expireDate} month='short' day='2-digit'                >
                                                         {(text) => (<span>{text}</span>)}

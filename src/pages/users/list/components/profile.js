@@ -58,7 +58,7 @@ const Profile = props => {
                 <div className='chipContainer'>
                     <span className='chipTitle skills'>Hard skills:</span>
                     {(skills && skills.length > 0) ?
-                        skills.map(item => <Chip label={item.i18n[0].title} key={item.id} className='chip' />)
+                        skills.map(item => <Chip label={item.title} key={item.id} className='chip' />)
                         : <span className='empty'>No skills.</span>
                     }
                 </div>
@@ -66,7 +66,7 @@ const Profile = props => {
                 <div className='chipContainer'>
                     <span className='chipTitle values'>Soft skills & values:</span>
                     {(values && values.length > 0) ?
-                        values.map(item => <Chip label={item.i18n[0].title} key={item.id} className='chip' />)
+                        values.map(item => <Chip label={item.title} key={item.id} className='chip' />)
                         : <span className='empty'>No values.</span>
                     }
                 </div>

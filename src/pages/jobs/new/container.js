@@ -79,15 +79,17 @@ const NewJobHOC = compose(
         }
 
     }),
-    withState('anchorEl', 'setAnchorEl', null),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
-    withState('videoShareAnchor', 'setVideoShareAnchor', null),
+    withState('state', 'setState', {
+        anchorEl: null,
+        imageUploadOpen: false,
+        videoShareAnchor: null
+    }),
     withHandlers({
-        handleClick: ({ setAnchorEl }) => event => setAnchorEl(event.currentTarget),
-        handleClose: ({ setAnchorEl }) => () => setAnchorEl(null),
-        addField: ({ setAnchorEl, setFieldValue }) => fieldId => {
+        handleClick: ({ state, setState }) => event => setState({ ...state, anchorEl: event.currentTarget }),
+        handleClose: ({ state, setState }) => () => setState({ ...state, anchorEl: null }),
+        addField: ({ state, setState, setFieldValue }) => fieldId => {
             setFieldValue(fieldId, '');
-            setAnchorEl(null);
+            setState({ ...state, anchorEl: null });
         },
         removeTextField: ({ setFieldValue }) => key => setFieldValue(key, null),
         updateDescription: ({ setFieldValue }) => text => setFieldValue('description', text),
@@ -100,8 +102,8 @@ const NewJobHOC = compose(
             });
         },
         onSkillsChange: ({ setFieldValue }) => skills => setFieldValue('skills', skills),
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
@@ -111,12 +113,11 @@ const NewJobHOC = compose(
                 }
             });
         },
-        handleSuccess: ({ setFieldValue, values: { id } }) => ({ path, filename }) =>
-            setFieldValue('imagePath', path ? path : `/${jobsFolder}/${id}/${filename}`),
+        handleSuccess: ({ setFieldValue, values: { id } }) => ({ path, filename }) => setFieldValue('imagePath', path ? path : `/${jobsFolder}/${id}/${filename}`),
         removeImage: ({ setFieldValue }) => () => setFieldValue('imagePath', null),
         removeVideo: ({ setFieldValue }) => () => setFieldValue('videoUrl', null),
-        openVideoShare: ({ setVideoShareAnchor }) => ev => setVideoShareAnchor(ev.target),
-        closeVideoShare: ({ setVideoShareAnchor }) => () => setVideoShareAnchor(null)
+        openVideoShare: ({ state, setState }) => ev => setState({ ...state, videoShareAnchor: ev.target }),
+        closeVideoShare: ({ state, setState }) => () => setState({ ...state, videoShareAnchor: null })
     }),
     pure
 );

@@ -64,8 +64,8 @@ const ArticleSlider = props => {
                                     }
                                 </div>
                                 <div className='textContents'>
-                                    <h4>{article.i18n[0].title}</h4>
-                                    <p>{stripHtmlTags(article.i18n[0].description)}</p>
+                                    <h4>{article.title}</h4>
+                                    <p>{stripHtmlTags(article.description)}</p>
                                 </div>
                                 {editMode &&
                                     <React.Fragment>

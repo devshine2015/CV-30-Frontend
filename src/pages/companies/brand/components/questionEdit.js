@@ -15,8 +15,8 @@ const QuestionEditHOC = compose(
         if (question)
             return {
                 id: question.id,
-                question: question.i18n[0].question,
-                answer: question.i18n[0].answer
+                question: question.question,
+                answer: question.answer
             }
         else
             return {}

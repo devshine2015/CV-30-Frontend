@@ -15,9 +15,7 @@ const profileFollowingData = gql`
             name
             industry {
                 id
-                i18n {
-                    title
-                }
+                title
             }
             logoPath
         }
@@ -27,9 +25,7 @@ const profileFollowingData = gql`
         }
         followingJobs {
             id
-            i18n {
-                title
-            }
+            title
         }
     }
 `;
@@ -39,9 +35,7 @@ const profileAppliedJobsData = gql`
         appliedJobs {
             id
             location
-            i18n {
-                title
-            }
+            title
             company {
                 id
                 name
@@ -55,145 +49,131 @@ const profileAppliedJobsData = gql`
 
 export const profileQuery = gql`
 query profile($id: String, $language: LanguageCodeType!) {
-  profile(id: $id, language: $language) {
-    id
-    email
-    firstName
-    lastName
-    position
-    featuredArticles {
-      id
-      author {
+    profile(id: $id, language: $language) {
         id
         email
         firstName
         lastName
-      }
-      images {
+        position
+        featuredArticles {
         id
-        path
-      }
-      videos {
-        id
-        path
-      }
-      i18n {
+        author {
+            id
+            email
+            firstName
+            lastName
+        }
+        images {
+            id
+            path
+        }
+        videos {
+            id
+            path
+        }
         title
         description
-      }
     }
     aboutMeArticles {
-      id
-      author {
         id
-        email
-        firstName
-        lastName
-      }
-      images {
-        id
-        path
-      }
-      videos {
-        id
-        path
-      }
-      i18n {
+        author {
+            id
+            email
+            firstName
+            lastName
+        }
+        images {
+            id
+            path
+        }
+        videos {
+            id
+            path
+        }
         title
         description
-      }
     }
     skills {
-      id
-      i18n {
+        id
         title
-      }
     }
     values {
-      id
-      i18n {
+        id
         title
-      }
     }
     experience {
-      id
-      position
-      company
-      location
-      startDate
-      endDate
-      isCurrent
-      i18n {
+        id
+        position
+        company
+        location
+        startDate
+        endDate
+        isCurrent
         title
         description
-      }
-      videos {
-        id
-        path
-      }
-      images {
-        id
-        path
-      }
+        videos {
+            id
+            path
+        }
+        images {
+            id
+            path
+        }
     }
     projects {
-      id
-      position
-      company
-      location
-      i18n {
+        id
+        position
+        company
+        location
         title
         description
-      }
-      startDate
-      endDate
-      isCurrent
-      videos {
-        id
-        path
-      }
-      images {
-        id
-        path
-      }
+        startDate
+        endDate
+        isCurrent
+        videos {
+            id
+            path
+        }
+        images {
+            id
+            path
+        }
     }
     contact {
-      phone
-      email
-      facebook
-      linkedin
+        phone
+        email
+        facebook
+        linkedin
     }
     avatarPath
     coverPath
     coverBackground
     story {
-      i18n {
         title
         description
-      }
     }
     salary {
-      amount
-      currency
-      isPublic
+        amount
+        currency
+        isPublic
     }
     errors {
-      name
-      value
-      statusCode
+        name
+        value
+        statusCode
     }
     followers {
-      id
+        id
     }
     ownedCompanies {
-      id
-      name
-      logoPath
-      teams {
         id
         name
-        coverPath
-      }
+        logoPath
+        teams {
+            id
+            name
+            coverPath
+        }
     }
     ...profileFollowingData
     ...profileAppliedJobsData
@@ -295,21 +275,15 @@ export const profilesQuery = gql`
             position
             skills {
                 id
-                i18n {
-                    title
-                }
+                title
             }
             values {
                 id
-                i18n {
-                    title
-                }
+                title
             }
             aboutMeArticles {
                 id
-                i18n {
-                    title
-                }
+                title
                 images {
                     id
                     path

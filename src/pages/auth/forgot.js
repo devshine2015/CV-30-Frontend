@@ -96,18 +96,21 @@ const ForgotPasswordHOC = compose(
     graphql(ForgotPasswordMutation, {
         name: 'forgotMutation'
     }),
-    withState('email', 'setEmail', ''),
-    withState('emailError', 'setEmailError', null),
-    withState('forgotError', 'setForgotError', null),
-    withState('loading', 'setLoadingState', false),
+    withState('state', 'setState', {
+        email: '',
+        loading: false,
+        emailError: null,
+        forgotError: null
+    }),
     withHandlers({
-        updateEmail: ({ setEmail, setEmailError }) => (email) => {
-            setEmail(email);
-            setEmailError(!isValidEmail(email));
-        },
+        updateEmail: ({ state, setState }) => (email) => setState({
+            email,
+            emailError: !isValidEmail(email)
+        }),
         sendMail: (props) => async () => {
-            const { email, forgotMutation, setForgotError, match, history, setLoadingState } = props;
-            setLoadingState(true);
+            const { state, setState, forgotMutation, match, history } = props;
+            const { email } = state;
+            setState({ ...state, loading: true });
             try {
                 let response = await forgotMutation({
                     variables: {
@@ -115,23 +118,25 @@ const ForgotPasswordHOC = compose(
                     }
                 });
 
-                setLoadingState(false);
+                setState({ ...state, loading: false });
                 let { error, status } = response.data.forgotPassword;
 
                 if (error) {
-                    setForgotError(error || error.message || 'Something went wrong.');
+                    setState({ ...state, forgotError: error || error.message || 'Something went wrong.' });
                     return false;
                 }
                 if (!status) {
-                    setForgotError('Something went wrong.');
+                    setState({ ...state, forgotError: 'Something went wrong.' });
                     return false;
                 }
                 history.push(`/${match.params.lang}/login`);
-
             }
             catch (error) {
-                setForgotError(error || error.message || 'Something went wrong.');
-                setLoadingState(false);
+                setState({
+                    ...state,
+                    loading: false,
+                    forgotError: error || error.message || 'Something went wrong.'
+                });
             }
         }
     }),

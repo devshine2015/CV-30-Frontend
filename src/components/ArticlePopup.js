@@ -154,9 +154,7 @@ const ArticlePopUp = props => {
                         <div className='articlesContainer'>
                             {
                                 (articles && articles.length > 0) ? articles.map(article => {
-                                    let { id, i18n, images, videos } = article;
-                                    let { title, description } = i18n[0];
-
+                                    let { id, title, description, images, videos } = article;
                                     let image, video;
                                     if (images && images.length > 0) {
                                         image = `${s3BucketURL}${images[0].path}`;

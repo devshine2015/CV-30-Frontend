@@ -13,10 +13,10 @@ const NewsFeedSearchHoc = compose(
     withHandlers({
         getSearchFormData: ({ searchFormData, setSearchData }) => () => {
             setSearchData(state => ({ ...state, ...searchFormData}))
-        }
+        } 
     }),
-    withState('debouncedSetSearchData', '', ({ getSearchFormData }) => {
-        return debounce(getSearchFormData, 2000);
+    withHandlers({
+        debouncedSetSearchData: ({ getSearchFormData }) => () => debounce(getSearchFormData, 2000)
     }),
     withHandlers({
         handleSearchFormChange: props => event => {

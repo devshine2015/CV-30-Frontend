@@ -13,15 +13,12 @@ const ColorPickerHOC = compose(
     withRouter,
     graphql(handleLandingPage, { name: 'handleLandingPage' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('activeTab', 'setActiveTab', 'colors'),
-    withState('isUploading', 'setIsUploading', false),
-    withState('uploadProgress', 'setUploadProgress', 0),
-    withState('fileParams', 'setFileParams', {}),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('state', 'setState', {
+        activeTab: 'colors',
+        imageUploadOpen: false
+    }),
     withHandlers({
-        handleTabChange: ({ setActiveTab }) => (event, value) => {
-            setActiveTab(value);
-        },
+        handleTabChange: ({ state, setState }) => (_, activeTab) => setState({ ...state, activeTab }) ,
         setBackgroundColor: ({ handleLandingPage, setFeedbackMessage, match: { params: { lang: language } }, type }) => async color => {
             let details = {};
             switch (type) {
@@ -65,8 +62,8 @@ const ColorPickerHOC = compose(
                 });
             }
         },
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             await setFeedbackMessage({
                 variables: {
@@ -76,7 +73,7 @@ const ColorPickerHOC = compose(
             });
         },
         handleSuccess: ({
-            setFeedbackMessage, setIsUploading,
+            setFeedbackMessage, state, setState,
             handleLandingPage, refetchBgImage,
             match: { params: { lang: language } }, type
         }) => async ({ path, filename }) => {
@@ -124,7 +121,7 @@ const ColorPickerHOC = compose(
                 });
             }
 
-            setIsUploading(false);
+            // setState({ ...state, isUploading: false });
             refetchBgImage();
         }
     }),
@@ -132,10 +129,14 @@ const ColorPickerHOC = compose(
 );
 
 const ColorPicker = ({
+    state: {
+        activeTab,
+        imageUploadOpen
+    },
     colorPickerAnchor, onClose,
     setBackgroundColor,
-    activeTab, handleTabChange,
-    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess, type
+    handleTabChange,
+    openImageUpload, closeImageUpload, handleError, handleSuccess, type
 }) => (
         <Popover
             anchorOrigin={{

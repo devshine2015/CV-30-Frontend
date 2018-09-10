@@ -68,13 +68,10 @@ const Show = props => {
 
     } else {
         const { expanded, expandPanel, setApplyToJob } = props;
-        const { i18n, company: { name: companyName, i18n: companyText, faqs, officeArticles, jobs },
+        const { title, description, idealCandidate, company: { name: companyName, description: companyDescription, faqs, officeArticles, jobs },
             expireDate, createdAt, activityField, salary, skills, jobTypes, videoUrl, imagePath, jobBenefits,
             phone, email, facebook, linkedin
         } = job;
-
-        const { title, description, idealCandidate } = i18n[0];
-        const { description: companyDescription } = companyText[0];
 
         let isApplyAllowed = !!currentUser;
         let didApply = false;
@@ -159,7 +156,7 @@ const Show = props => {
                         {activityField &&
                             <section className='activityType'>
                                 <h2 className='sectionTitle'>Activity <b>field</b></h2>
-                                <p className='detailedDescription'>{activityField.i18n[0].title}</p>
+                                <p className='detailedDescription'>{activityField.title}</p>
                             </section>
                         }
                         {skills &&
@@ -168,7 +165,7 @@ const Show = props => {
                                 {skills && skills.map(item =>
                                     <Chip
                                         key={item.id}
-                                        label={item.i18n[0].title}
+                                        label={item.title}
                                         className='chip'
                                         clickable={false}
                                     />
@@ -180,7 +177,7 @@ const Show = props => {
                             {jobTypes && jobTypes.map(item => (
                                 <Chip
                                     key={item.id}
-                                    label={item.i18n[0].title}
+                                    label={item.title}
                                     className='chip'
                                     clickable={false}
                                 />
@@ -223,10 +220,10 @@ const Show = props => {
                                                     expandIcon: 'qaHeaderIcon',
                                                     content: 'qaPanelHeaderContent'
                                                 }}>
-                                                    {item.i18n[0].question}
+                                                    {item.question}
                                                 </ExpansionPanelSummary>
                                                 <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
-                                                    {item.i18n[0].answer}
+                                                    {item.answer}
                                                 </ExpansionPanelDetails>
                                             </ExpansionPanel>
                                         )

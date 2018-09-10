@@ -27,20 +27,15 @@ const PromoEditHOC = compose(
     }),
     graphql(handleAd, { name: 'handleAd' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('formData', 'setFormData', ({ getAds: { ads } }) => {
-        if (ads && ads.length > 0) {
-            let { id, url, image } = ads[0];
-            let { path, id: imageId } = image;
-            return { id, url, image: { id: imageId, path } };
-        }
-        else
-            return {
-                id: uuid(),
-                url: ''
-            }
-    }),
-    withState('promoAnchor', 'setPromoAnchor', null),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('state', 'setState', ({ getAds: { ads } }) => ({
+        formData: {
+            id: (ads && ads[0] && ads[0].id) || uuid(),
+            url: (ads && ads[0] && ads[0].url) || null,
+            image: (ads && ads[0] && ads[0].image) || null
+        },
+        promoAnchor: null,
+        imageUploadOpen: false
+    })),
     withHandlers({
         handleFormChange: ({ setFormData }) => event => {
             const target = event.currentTarget;
@@ -51,10 +46,10 @@ const PromoEditHOC = compose(
             }
             setFormData(state => ({ ...state, [name]: value }));
         },
-        openPromoEditor: ({ setPromoAnchor }) => ev => setPromoAnchor(ev.target),
-        closePromoEditor: ({ setPromoAnchor }) => () => setPromoAnchor(null),
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openPromoEditor: ({ state, setState }) => ev => setState({ ...state, promoAnchor: ev.target }),
+        closePromoEditor: ({ state, setState }) => () => setState({ ...state, promoAnchor: null }),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             await setFeedbackMessage({
                 variables: {
@@ -63,23 +58,34 @@ const PromoEditHOC = compose(
                 }
             });
         },
-        handleSuccess: ({ formData: { id }, setFormData }) => async ({ path, filename }) => {
-            const imgPath = path ? path : `/${adsFolder}/${id}/${filename}`;
+        handleSuccess: ({ state, setState }) => async ({ path, filename }) => {
+            const imgPath = path ? path : `/${adsFolder}/${state.formData.id}/${filename}`;
             const image = {
                 id: uuid(),
                 sourceType: 'ad',
                 path: imgPath
             };
-            setFormData(state => ({ ...state, image }));
+            setState({
+                ...state,
+                formData: {
+                    ...state.formData,
+                    image
+                }
+            });
         },
-        removeImage: ({ setFormData }) => () => setFormData(state => ({ ...state, 'image': null })),
-        saveData: ({ formData, handleAd, setFeedbackMessage, match: { params: { lang: language } }, setPromoAnchor }) => async () => {
-            console.log(formData);
+        removeImage: ({ state, setState }) => () => setState({
+            ...state,
+            formData: {
+                ...state.formData,
+                image: null
+            }
+        }),
+        saveData: ({ state, setState, handleAd, setFeedbackMessage, match: { params: { lang: language } } }) => async () => {
             try {
                 await handleAd({
                     variables: {
                         language,
-                        details: formData
+                        details: state.formData
                     },
                     refetchQueries: [
                         adsRefetch(language)
@@ -91,7 +97,10 @@ const PromoEditHOC = compose(
                         message: 'Changes saved successfully.'
                     }
                 });
-                setPromoAnchor(null);
+                setState({
+                    ...state,
+                    promoAnchor: null
+                });
             }
             catch (err) {
                 console.log(err);
@@ -108,10 +117,10 @@ const PromoEditHOC = compose(
 );
 
 const Promo = ({
-    promoAnchor, openPromoEditor, closePromoEditor, handleFormChange, removeImage,
-    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-    formData: { id, url, image }, saveData,
-    getAds: { loading: adsLoading, ads },
+    state: { formData: { id, url, image }, promoAnchor, imageUploadOpen },
+    openPromoEditor, closePromoEditor, handleFormChange, removeImage,
+    openImageUpload, closeImageUpload, handleError, handleSuccess,
+    saveData, getAds: { loading: adsLoading, ads },
     currentUser: { loading: userLoading, auth: { currentUser } }
 }) => {
     if (adsLoading || userLoading)

@@ -14,12 +14,15 @@ const ColorPickerHOC = compose(
     withRouter,
     graphql(handleCompany, { name: 'handleCompany' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('activeTab', 'setActiveTab', 'colors'),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('state', 'setState', {
+        activeTab: 'colors',
+        imageUploadOpen: false
+    }),
     withHandlers({
-        handleTabChange: ({ setActiveTab }) => (event, value) => {
-            setActiveTab(value);
-        },
+        handleTabChange: ({ state, setState }) => (_, activeTab) => setState({
+            ...state,
+            activeTab
+        }),
         setBackgroundColor: ({ handleCompany, match: { params: { lang: language, companyId } }, setFeedbackMessage }) => async color => {
             try {
                 await handleCompany({
@@ -51,8 +54,8 @@ const ColorPickerHOC = compose(
                 });
             }
         },
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
@@ -107,8 +110,8 @@ const ColorPickerHOC = compose(
 const ColorPicker = (props) => {
     const { colorPickerAnchor, onClose,
         setBackgroundColor,
-        activeTab, handleTabChange,
-        openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        state: { activeTab, imageUploadOpen }, handleTabChange,
+        openImageUpload, closeImageUpload, handleError, handleSuccess,
         match: { params: { companyId } }
     } = props;
     return (

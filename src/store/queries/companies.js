@@ -5,10 +5,8 @@ const companyJobData = gql`
     id    
     expireDate
     location
-    i18n {
-      title
-      description
-    }
+    title
+    description
     imagePath
     videoUrl
   }
@@ -20,16 +18,12 @@ const minimumCompanyData = gql`
     name
     location
     noOfEmployees
-    i18n {
-      headline
-      description
-    }
+    headline
+    description
     logoPath
     industry {
       id 
-      i18n {
-        title
-      }
+      title
     }
     jobs {
       ...companyJobData
@@ -51,10 +45,8 @@ query company($id: String!, $language: LanguageCodeType!) {
     ...minimumCompanyData
     featuredArticles {
       id
-      i18n {
-        title
-        description
-      }
+      title
+      description
       images {
         id
         path
@@ -66,10 +58,8 @@ query company($id: String!, $language: LanguageCodeType!) {
     }
     officeArticles {
       id
-      i18n {
-        title
-        description
-      }
+      title
+      description
       images {
         id
         path
@@ -81,10 +71,8 @@ query company($id: String!, $language: LanguageCodeType!) {
     }
     storiesArticles {
       id
-      i18n {
-        title
-        description
-      }
+      title
+      description
       images {
         id
         path
@@ -96,10 +84,8 @@ query company($id: String!, $language: LanguageCodeType!) {
     }
     faqs {
       id
-      i18n {
-        question
-        answer
-      }
+      question
+      answer
     }
     owner {
       id
@@ -124,9 +110,7 @@ export const industriesQuery = gql`
   query industries($language: LanguageCodeType!) {
     industries(language: $language) {
       id
-      i18n {
-        title
-      }
+      title
     }
   }
 `;

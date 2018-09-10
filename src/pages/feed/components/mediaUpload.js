@@ -10,32 +10,30 @@ import { articlesFolder } from '../../../constants/s3';
 
 const MediaUploadPopUpHOC = compose(
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('isVideoUrl', 'changeMediaType', true),
-    withState('videoURL', 'setVideoURL', ''),
-    withState('isSaving', 'setIsSaving', false),
-    withState('imgParams', 'setImgParams', null),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('state', 'setState', {
+        isVideoUrl: true,
+        videoURL: '',
+        isSaving: false,
+        imageUploadOpen: false
+    }),
     withHandlers({
-        switchMediaType: ({ isVideoUrl, changeMediaType }) => () => {
-            changeMediaType(!isVideoUrl);
-        },
-        handleFormChange: ({ setVideoURL }) => url => setVideoURL(url),
-        handleKeyPress: ({ onClose, videoURL, setVideoURL }) => event => {
+        switchMediaType: ({ state, setState }) => () => setState({ ...state, isVideoUrl: !state.isVideoUrl }),
+        handleFormChange: ({ state, setState }) => videoURL => setState({ ...state, videoURL }),
+        handleKeyPress: ({ onClose, state, setState }) => event => {
             if (event.key !== 'Enter')
                 return;
-
             onClose({
                 video: {
                     id: uuid(),
-                    title: videoURL,
+                    title: state.videoURL,
                     sourceType: 'article',
-                    path: videoURL
+                    path: state.videoURL
                 }
             });
-            setVideoURL('');
+            setState({ ...state, videoURL: '' })
         },
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: ({ setFeedbackMessage }) => async error => {
             await setFeedbackMessage({
                 variables: {
@@ -63,10 +61,16 @@ const MediaUploadPopUpHOC = compose(
 );
 
 const MediaUploadPopUp = ({
+    state: {
+        isVideoUrl,
+        videoURL,
+        isSaving,
+        imageUploadOpen
+    },
     anchor, onClose, postId,
-    isVideoUrl, switchMediaType,
-    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-    videoURL, handleFormChange, handleKeyPress, isSaving
+    switchMediaType,
+    openImageUpload, closeImageUpload, handleError, handleSuccess,
+    handleFormChange, handleKeyPress
 }) => (
         <Popover
             anchorOrigin={{

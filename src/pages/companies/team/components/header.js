@@ -23,16 +23,14 @@ const HeaderHOC = compose(
         }),
     }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('colorPickerAnchor', 'setColorPickerAnchor', null),
-    withState('forceCoverRender', 'setForceCoverRender', 0),
+    withState('state', 'setState', {
+        colorPickerAnchor: null,
+        forceCoverRender: 0
+    }),
     withHandlers({
-        toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
-            setColorPickerAnchor(event.target);
-        },
-        closeColorPicker: ({ setColorPickerAnchor }) => () => {
-            setColorPickerAnchor(null);
-        },
-        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
+        toggleColorPicker: ({ state, setState }) => (event) => setState({ ...state, colorPickerAnchor: event.target }),
+        closeColorPicker: ({ state, setState }) => () => setState({ ...state, colorPickerAnchor: null }),
+        refetchBgImage: ({ state, setState }) => () => setState({ ...state, forceCoverRender: Date.now() }),
         toggleFollow: props => async isFollowing => {
             let {
                 queryTeam: { team }, handleFollow, match, setFeedbackMessage
@@ -74,10 +72,14 @@ const HeaderHOC = compose(
 
 const Header = props => {
     const {
+        state: {
+            colorPickerAnchor,
+            forceCoverRender
+        },
         getEditMode: { editMode: { status: editMode } },
         match: { params: { lang, teamId } },
         queryTeam: { team: { company, coverPath, coverBackground, name } },
-        colorPickerAnchor, toggleColorPicker, closeColorPicker, refetchBgImage, forceCoverRender,
+        toggleColorPicker, closeColorPicker, refetchBgImage,
         toggleFollow, currentProfileQuery
     } = props;
 

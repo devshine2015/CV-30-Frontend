@@ -21,7 +21,7 @@ const JobsSlider = ({ jobs }) => {
                     classNameTrayWrap="slidesContainer"
                 >
                     {jobs.map((job, index) => {
-                        const { id, level, location, expireDate, i18n } = job;
+                        const { id, level, location, expireDate, title } = job;
                         return (
                             <Slide index={index} key={id}
                                 className='jobItem'
@@ -34,7 +34,7 @@ const JobsSlider = ({ jobs }) => {
                                     <span className='role'>{level}</span>
                                 </div>
                                 <div className='info'>
-                                    <h5>{i18n[0].title}</h5>
+                                    <h5>{title}</h5>
                                     <FormattedDate value={expireDate} month='short' day='2-digit'                >
                                         {(text) => (<span>{text}</span>)}
                                     </FormattedDate>

@@ -41,34 +41,30 @@ const HeaderHOC = compose(
         }),
     }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('isPopUpOpen', 'setIsPopUpOpen', false),
-    withState('expanded', 'updateExpanded', null),
-    withState('headline', 'setHeadline', props => {
-        let { companyQuery: { company: { i18n } } } = props;
-        if (!i18n || !i18n[0] || !i18n[0].headline)
-            return '';
-        return i18n[0].headline;
-
-    }),
-    withState('colorPickerAnchor', 'setColorPickerAnchor', null),
-    withState('forceCoverRender', 'setForceCoverRender', 0),
-    withState('forceLogoRender', 'setForceLogoRender', 0),
-    withState('imageUploadOpen', 'setImageUploadOpen', false),
+    withState('state', 'setState', ({ companyQuery: { company: { headline } } }) => ({
+        headline,
+        isPopUpOpen: false,
+        expanded: null,
+        colorPickerAnchor: null,
+        forceCoverRender: 0,
+        forceLogoRender: 0,
+        imageUploadOpen: false
+    })),
     withHandlers({
-        toggleColorPicker: ({ setColorPickerAnchor }) => (event) => {
-            setColorPickerAnchor(event.target);
+        toggleColorPicker: ({ state, setState }) => (event) => {
+            setState({ ...state, colorPickerAnchor: event.target });
         },
-        closeColorPicker: ({ setColorPickerAnchor }) => () => {
-            setColorPickerAnchor(null);
+        closeColorPicker: ({ state, setState }) => () => {
+            setState({ ...state, colorPickerAnchor: null });
         },
-        updateHeadline: ({ setHeadline }) => (text) => {
-            setHeadline(text)
+        updateHeadline: ({ state, setState }) => (headline) => {
+            setState({ ...state, headline })
         },
         submitHeadline: props => async () => {
             let {
                 companyQuery: { company },
                 match: { params: { lang: language } },
-                handleCompany, headline,
+                handleCompany, state: { headline },
                 setFeedbackMessage
             } = props;
 
@@ -102,8 +98,8 @@ const HeaderHOC = compose(
                 });
             }
         },
-        expandPanel: ({ updateExpanded }) => (panel) => (ev, expanded) => {
-            updateExpanded(expanded ? panel : false);
+        expandPanel: ({ state, setState }) => (panel) => (_, expanded) => {
+            setState({ ...state, expanded: expanded ? panel : false });
         },
         removeStory: ({ handleArticle, match: { params: { lang: language, companyId } }, setFeedbackMessage }) => async article => {
             try {
@@ -141,11 +137,11 @@ const HeaderHOC = compose(
             }
 
         },
-        toggleStoryEditor: ({ setIsPopUpOpen }) => () => {
-            setIsPopUpOpen(true);
+        toggleStoryEditor: ({ state, setState }) => () => {
+            setState({ ...state, isPopUpOpen: true });
         },
-        closeStoryEditor: ({ setIsPopUpOpen }) => () => {
-            setIsPopUpOpen(false);
+        closeStoryEditor: ({ state, setState }) => () => {
+            setState({ ...state, isPopUpOpen: false });
         },
         toggleFollow: ({ companyQuery: { company }, handleFollow, match: { params: { lang: language } }, setFeedbackMessage }) => async isFollowing => {
             try {
@@ -189,7 +185,7 @@ const HeaderHOC = compose(
         },
         handleSuccess: ({
             handleCompany, match: { params: { lang: language, companyId } },
-            setForceLogoRender, setFeedbackMessage }) =>
+            state, setState, setFeedbackMessage }) =>
             async ({ path, filename }) => {
                 const logoPath = path ? path : `/${companiesFolder}/${companyId}/${filename}`;
                 try {
@@ -221,24 +217,25 @@ const HeaderHOC = compose(
                         }
                     });
                 }
-                setForceLogoRender(Date.now());
+                setState({ ...state, forceLogoRender: Date.now() });
             },
-        refetchBgImage: ({ setForceCoverRender }) => () => setForceCoverRender(Date.now()),
-        openImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(true),
-        closeImageUpload: ({ setImageUploadOpen }) => () => setImageUploadOpen(false),
+        refetchBgImage: ({ state, setState }) => () => setState({ ...state, forceCoverRender: Date.now() }),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false })
     }),
     pure
 )
 
 const Header = props => {
     const {
+        state: {
+            headline, isPopUpOpen, colorPickerAnchor, forceCoverRender, forceLogoRender, imageUploadOpen },
         getEditMode, isEditAllowed,
-        headline, updateHeadline, submitHeadline, match, removeStory, toggleStoryEditor, closeStoryEditor, isPopUpOpen,
+        updateHeadline, submitHeadline, match, removeStory, toggleStoryEditor, closeStoryEditor,
         companyQuery: { company: { name, featuredArticles, location, noOfEmployees, industry, teams, logoPath, coverPath, coverBackground } },
-        toggleColorPicker, colorPickerAnchor, closeColorPicker,
-        forceLogoRender, forceCoverRender,
+        toggleColorPicker, closeColorPicker,
         toggleFollow, currentProfileQuery,
-        refetchBgImage, openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
+        refetchBgImage, openImageUpload, closeImageUpload, handleError, handleSuccess,
     } = props;
     const editMode = isEditAllowed && getEditMode.editMode.status;
 
@@ -275,7 +272,7 @@ const Header = props => {
                     <Avatar alt={avatar} src={avatar} className='avatar' />
                     <div className='avatarTexts'>
                         <h3>{name}</h3>
-                        <h4>{industry && industry.i18n[0].title}</h4>
+                        <h4>{industry && industry.title}</h4>
                     </div>
 
                     {editMode &&
@@ -394,7 +391,7 @@ const Header = props => {
                                         }}
                                         playing={false} />
                                 }
-                                <span className='storyTitle'>{story.i18n[0].title}</span>
+                                <span className='storyTitle'>{story.title}</span>
                                 {
                                     editMode &&
                                     <Button
@@ -426,7 +423,7 @@ const Header = props => {
                 />
             </Grid>
             <Grid container className='activityFields'>
-                <Chip label={industry && industry.i18n[0].title} className='chip activity' />
+                <Chip label={industry && industry.title} className='chip activity' />
                 <Chip label={location} className='chip activity' />
                 <Chip label={noOfEmployees} className='chip activity' />
             </Grid>

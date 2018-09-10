@@ -31,11 +31,16 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
 const NewJob = ({
+    state: {
+        anchorEl,
+        imageUploadOpen,
+        videoShareAnchor
+    },
     jobDependencies: { loading, jobBenefits, jobTypes, teams },
     updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
-    anchorEl, handleClick, handleClose, addField, removeTextField,
-    openImageUpload, closeImageUpload, imageUploadOpen, handleError, handleSuccess,
-    openVideoShare, closeVideoShare, videoShareAnchor,
+    handleClick, handleClose, addField, removeTextField,
+    openImageUpload, closeImageUpload, handleError, handleSuccess,
+    openVideoShare, closeVideoShare,
     removeImage, removeVideo,
     values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid }) => {
 
@@ -300,13 +305,13 @@ const NewJob = ({
                                     value={values.jobTypes}
                                     onChange={handleChange}
                                     input={<Input name="jobTypes" />}
-                                    renderValue={selected => selected.map(item => jobTypes.find(jt => jt.id === item).i18n[0].title).join(', ')}
+                                    renderValue={selected => selected.map(item => jobTypes.find(jt => jt.id === item).title).join(', ')}
                                     className='jobSelect'
                                 >
                                     {jobTypes.map(jobType => (
                                         <MenuItem key={jobType.id} value={jobType.id}>
                                             <Checkbox checked={values.jobTypes.indexOf(jobType.id) > -1} />
-                                            <ListItemText primary={jobType.i18n[0].title} />
+                                            <ListItemText primary={jobType.title} />
                                         </MenuItem>
                                     ))}
                                 </Select>

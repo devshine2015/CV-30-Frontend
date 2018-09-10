@@ -12,9 +12,10 @@ const MobileNav = (props) => {
         localUserData: { loading: localUserLoading, localUser: { timestamp } },
         currentUser: { loading: currentUserLoading, auth },
         match: { params: { lang } }, doLogout,
-        toggleMobileNav, mobileNavOpen, closeMobileNav,
-        toggleMobileNotifications, mobileNotificationIsOpen, closeMobileNotifications, notifications,
-        toggleMobileProfile, mobileProfileIsOpen, closeMobileProfile
+        state: { mobileNavOpen, mobileNotificationIsOpen, notifications, mobileProfileIsOpen },
+        toggleMobileNav, closeMobileNav,
+        toggleMobileNotifications, closeMobileNotifications,
+        toggleMobileProfile, closeMobileProfile
     } = props;
 
     if (localUserLoading || currentUserLoading)
