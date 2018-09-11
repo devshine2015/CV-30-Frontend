@@ -9,10 +9,10 @@ export const LoginMutation = gql`
             id
             email
             firstName
-            lastName            
+            lastName
             avatarPath
             god
-        }        
+        }
     }
 `;
 
@@ -22,8 +22,6 @@ export const LogoutMutation = gql`
             status
             error
         }
-        setAuthenticated(status: false, currentUser: null) @client
-        resetEditMode @client
     }
 `;
 

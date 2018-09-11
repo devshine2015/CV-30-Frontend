@@ -6,7 +6,7 @@ import ApolloClient from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { withClientState } from 'apollo-link-state';
-import { ApolloLink, } from 'apollo-link';
+import { ApolloLink } from 'apollo-link';
 import { defaults, resolvers } from './store';
 import { persistCache } from 'apollo-cache-persist';
 import localForage from 'localforage';
@@ -31,7 +31,7 @@ window.$ = $;
 
     const httpLink = createHttpLink({
         uri: process.env.NODE_ENV === 'production' ? 'https://api.cv30.co/graphql' : 'http://localhost/graphql',
-        credentials: 'same-origin'
+        credentials: 'include'
     });
 
     const client = new ApolloClient({

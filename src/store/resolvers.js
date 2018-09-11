@@ -11,11 +11,10 @@ export default {
             cache.writeData({ data });
             return null;
         },
-        setAuthenticated: (_, { status, user }, { cache }) => {
+        setAuthenticated: (_, { user }, { cache }) => {
             const data = {
                 auth: {
                     __typename: "Authentication",
-                    loggedIn: status,
                     currentUser: user
                 }
             };

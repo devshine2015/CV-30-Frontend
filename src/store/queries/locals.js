@@ -4,7 +4,6 @@ export const IS_AUTHENTICATED = gql`
     query {
         auth @client {
             __typename
-            loggedIn
             currentUser
         }
     }
@@ -12,7 +11,7 @@ export const IS_AUTHENTICATED = gql`
 
 export const AuthenticateLocal = gql`
     mutation setAuthenticated($user: User) {
-        setAuthenticated(status: true, user: $user) @client
+        setAuthenticated(user: $user) @client
     }
 `;
 

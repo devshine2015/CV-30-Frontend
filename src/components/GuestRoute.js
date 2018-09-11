@@ -7,6 +7,6 @@ export default (props) =>
     <Query query={IS_AUTHENTICATED}>
         {({ data: { auth } }) => {
             const { from } = props.location.state || { from: { pathname: '/dashboard' } };
-            return !auth.loggedIn ? <Route {...props} /> : <Redirect to={from} />;
+            return !auth.currentUser ? <Route {...props} /> : <Redirect to={from} />;
         }}
     </Query>
