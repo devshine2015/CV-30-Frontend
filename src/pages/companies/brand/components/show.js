@@ -46,7 +46,7 @@ const ShowHOC = compose(
                         language: match.params.lang,
                         details: {
                             id: company.id,
-                            description
+                            description: description || ''
                         }
                     },
                     refetchQueries: [

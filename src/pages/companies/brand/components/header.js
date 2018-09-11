@@ -74,7 +74,7 @@ const HeaderHOC = compose(
                         language,
                         details: {
                             id: company.id,
-                            headline
+                            headline: headline || ''
                         }
                     },
                     refetchQueries: [
