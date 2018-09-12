@@ -443,6 +443,9 @@ const NewJob = ({
                                     <Button
                                         className='saveBtn'
                                         onClick={handleSubmit}
+                                        style={{
+                                            opacity: !isValid || isSubmitting ? 0.5 : 1
+                                        }}
                                         disabled={!isValid || isSubmitting}
                                     >
                                         {text}
