@@ -130,7 +130,7 @@ const ImageUpload = ({ image, onChange, handleUploadFile, type }) => {
                 allowedFileTypes={allowedFileTypes}
                 instructions={instructions}
             />
-            <Button onClick={handleUploadFile} className='uploadBtn' disabled={!image || !image.filename}>Upload</Button>
+            <Button onClick={handleUploadFile} className='uploadBtn' style={{opacity: !image || !image.filename ? 0.5 : 1}} disabled={!image || !image.filename}>Upload</Button>
         </div>
     )
 };
