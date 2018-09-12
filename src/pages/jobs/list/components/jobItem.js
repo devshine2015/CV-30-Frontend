@@ -1,5 +1,5 @@
 import React from 'react';
-import { Chip } from '@material-ui/core';
+import { Chip, IconButton, Icon } from '@material-ui/core';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import ReactPlayer from 'react-player';
@@ -10,7 +10,7 @@ import { s3BucketURL } from '../../../../constants/s3';
 import { FormattedMessage } from 'react-intl';
 
 const JobItem = props => {
-    const { job, lang } = props;
+    const { job, lang, editJob } = props;
     const { title, description, videoUrl, imagePath, appliedDate, jobTypes, jobBenefits, location } = job;
 
     return (
@@ -48,6 +48,11 @@ const JobItem = props => {
                 <span className='appliedDate'>Applied:&nbsp;<b>{appliedDate}</b></span>
             }
             <div className='itemBody'>
+                {!!editJob &&
+                    <IconButton className='editBtn' onClick={() => editJob(job.id)}>
+                        <Icon>edit</Icon>
+                    </IconButton>
+                }
                 {
                     (videoUrl || imagePath) &&
                     <div className='media'>

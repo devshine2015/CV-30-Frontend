@@ -1,32 +1,28 @@
 import React from 'react';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import { Icon } from '@material-ui/core';
-import 'pure-react-carousel/dist/react-carousel.es.css';
 import { FormattedDate } from 'react-intl';
+
+import 'pure-react-carousel/dist/react-carousel.es.css';
 
 const JobsSlider = ({ jobs }) => {
     return (
         <div className="jobs">
-
             <CarouselProvider
                 // dragEnabled={false}
-                visibleSlides={2}
+                visibleSlides={1}
                 naturalSlideWidth={400}
                 naturalSlideHeight={200}
                 totalSlides={jobs.length}
                 className="teamSliderMain"
             >
-                <Slider
-                    className="slidesContainer"
-                    classNameTrayWrap="slidesContainer"
-                >
+                <ButtonBack>Back</ButtonBack>
+                <ButtonNext>Next</ButtonNext>
+                <Slider>
                     {jobs.map((job, index) => {
                         const { id, level, location, expireDate, title } = job;
                         return (
-                            <Slide index={index} key={id}
-                                className='jobItem'
-                            >
-
+                            <Slide index={index} key={id} className='jobItem'>
                                 <div className='media'>
                                     <div className='mediaFake'>
                                         <i className="fas fa-play fa-3x"></i>
@@ -40,7 +36,6 @@ const JobsSlider = ({ jobs }) => {
                                     </FormattedDate>
                                     <span>&nbsp;-&nbsp;{location}</span>
                                 </div>
-
                             </Slide>
                         )
                     })}

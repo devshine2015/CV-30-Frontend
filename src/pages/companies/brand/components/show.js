@@ -17,7 +17,7 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import QuestionEdit from './questionEdit';
 import ArticleDisplay from './articleDisplay';
 import ArticleSlider from '../../../../components/articleSlider';
-import { handleCompany, handleFAQ, setFeedbackMessage, handleArticle } from '../../../../store/queries';
+import { handleCompany, handleFAQ, setFeedbackMessage, handleArticle, setEditMode } from '../../../../store/queries';
 import { companyRefetch } from '../../../../store/refetch';
 import { graphql } from 'react-apollo';
 import { s3BucketURL } from '../../../../constants/s3';
@@ -28,6 +28,7 @@ const ShowHOC = compose(
     graphql(handleFAQ, { name: 'handleFAQ' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     graphql(handleArticle, { name: 'handleArticle' }),
+    graphql(setEditMode, { name: 'setEditMode' }),
     withState('state', 'setState', ({ companyQuery: { company: { description } } }) => ({
         expanded: false,
         edited: null,
@@ -159,12 +160,20 @@ const ShowHOC = compose(
                     }
                 });
             }
+        },
+        editJob: ({ setEditMode, history, match: { params: { lang } } }) => async jobId => {
+            await setEditMode({
+                variables: {
+                    status: true
+                }
+            });
+            return history.push(`/${lang}/job/${jobId}`);
         }
     }),
     pure
 );
 
-const Show = (props) => {
+const Show = props => {
     const {
         state: {
             expanded,
@@ -177,11 +186,11 @@ const Show = (props) => {
         expandPanel, getEditMode,
         companyQuery: { company: { name, faqs, officeArticles, storiesArticles, jobs } },
         isEditAllowed, deleteOfficeArticle,
-        editPanel, addQA,
+        editPanel, addQA, deleteQA,
         match: { params: { lang, companyId } },
         updateDescription, submitDescription,
-        deleteQA,
-        openArticlePopup, closeArticlePopup
+        openArticlePopup, closeArticlePopup,
+        editJob
     } = props;
 
     const editMode = isEditAllowed && getEditMode.editMode.status;
@@ -283,7 +292,7 @@ const Show = (props) => {
                                     </ExpansionPanel>
                                 )
                             else
-                                return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} />
+                                return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} key={panelId} />
                         })
                     }
                     {
@@ -348,7 +357,11 @@ const Show = (props) => {
                                                 </p>
                                             </Link>
                                         </div>
-
+                                        {editMode &&
+                                            <IconButton className='floatingEditBtn' onClick={() => editJob(job.id)}>
+                                                <Icon>edit</Icon>
+                                            </IconButton>
+                                        }
                                     </div>
                                 )
                             })
