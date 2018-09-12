@@ -21,12 +21,11 @@ const NewArticleHOC = compose(
             description: ''
         },
         isVideoUrl: true,
-        // isSaving: false,
         editor: null,
         imageUploadOpen: false
     }),
     withHandlers({
-        setTags: ({ state, setState }) => tags => setState({ ...state, tags }),
+        setTags: ({ state, setState }) => tags => setState({ ...state, formData: { ...state.formData, tags } }),
         openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
         closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: () => error => { console.log(error) },
@@ -41,11 +40,9 @@ const NewArticleHOC = compose(
             if (!name) {
                 throw Error('Field must have a name attribute!');
             }
-            setState({ ...state, [name]: value });
-            // props.setFormData(state => ());
+            setState({ ...state, formData: { ...state.formData, [name]: value } });
         },
-        // updateDescription: props => text => props.setFormData(state => ({ ...state, 'description': text })),
-        updateDescription: ({ state, setState }) => text => setState({ ...state, 'description': text }),
+        updateDescription: ({ state, setState }) => description => setState({ ...state, formData: { ...state.formData, description } }),
         switchMediaType: ({ state, setState }) => () => setState({ ...state, isVideoUrl: !state.isVideoUrl }),
         saveArticle: props => async () => {
             const { handleArticle, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state } } = props;
@@ -160,7 +157,6 @@ const NewArticleHOC = compose(
                 return history.push(`/${match.params.lang}/article/${id}`);
             }
             catch (err) {
-                // setState({ ...state, isSaving: true });
                 await setFeedbackMessage({
                     variables: {
                         status: 'error',
@@ -191,9 +187,8 @@ const NewArticleHOC = compose(
                 editor.opts.imageUploadMethod = 'PUT';
                 editor.opts.imageUploadURL = responseJson.signedUrl;
                 editor.image.upload(images);
-                return true;
             } catch (error) {
-                console.error(error);
+                console.log(error);
                 await setFeedbackMessage({
                     variables: {
                         status: 'error',
@@ -202,10 +197,10 @@ const NewArticleHOC = compose(
                 });
                 return false;
             }
-
+            return true;
         },
-        handleFroalaSuccess: () => () => console.log('success'),
-        handleFroalaError: () => () => console.log('error'),
+        handleFroalaSuccess: () => (e, editor, response) => console.log(e, editor, response),
+        handleFroalaError: () => (e, editor, error, response) => console.error(e, editor, error, response)
     }),
     pure
 );

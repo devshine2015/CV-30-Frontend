@@ -13,7 +13,6 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import ImageUploader from '../../../components/imageUploader';
 import TagsInput from '../../../components/TagsInput';
 
-
 const NewArticle = ({
     handleFormChange, state: { formData: { id, title, description, videoURL, tags }, isVideoUrl, imageUploadOpen },
     updateDescription, saveArticle, switchMediaType,
@@ -53,9 +52,9 @@ const NewArticle = ({
                             imageUploadRemoteUrls: false,
                             toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo'],
                             events: {
-                                'froalaEditor.image.beforeUpload': (e, editor, images) => getSignedURL(e, editor, images),
-                                'froalaEditor.image.uploaded': (e, editor, response) => handleFroalaSuccess(e, editor, response),
-                                'froalaEditor.image.error': (e, editor, error, response) => handleFroalaError(e, editor, error, response)
+                                'froalaEditor.image.beforeUpload': getSignedURL,
+                                'froalaEditor.image.uploaded': handleFroalaSuccess,
+                                'froalaEditor.image.error': handleFroalaError
                             }
                         }}
                         model={description}
