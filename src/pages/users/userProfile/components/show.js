@@ -78,8 +78,8 @@ const ShowHOC = compose(
                 await setSalary({
                     variables: {
                         salary: {
-                            amount: desiredSalary,
-                            isPublic: isSalaryPublic,
+                            amount: desiredSalary ? parseFloat(desiredSalary) : 0,
+                            isPublic: !!isSalaryPublic,
                             currency: 'ron'
                         }
                     },
