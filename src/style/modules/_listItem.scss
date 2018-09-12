@@ -684,6 +684,18 @@
             flex-wrap: nowrap;
             align-items: center;
             flex-direction: row;
+            position: relative;
+
+            .editBtn {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                width: 35px;
+                height: 35px;
+                background: #397db9;
+                color: #fff;
+                box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+            }
 
             .media {
                 display: flex;

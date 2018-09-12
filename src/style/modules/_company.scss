@@ -380,6 +380,7 @@
                         border-bottom: 1px solid #ebebeb;
                         padding: 15px 0;
                         align-items: center;
+                        position: relative;
 
                         .media {
                             display: flex;
@@ -397,6 +398,7 @@
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
+                                flex: 1;
 
                                 i {
                                     color: #fff;
@@ -454,6 +456,17 @@
                                     margin: 5px 0;
                                 }
                             }
+                        }
+
+                        .floatingEditBtn {
+                            position: absolute;
+                            top: 15px;
+                            right: 5px;
+                            width: 30px;
+                            height: 30px;
+                            background: #397db9;
+                            color: #fff;
+                            box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
                         }
                     }
 

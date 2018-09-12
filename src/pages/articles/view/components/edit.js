@@ -21,10 +21,12 @@ import TagsInput from '../../../../components/TagsInput';
 const ArticleEditHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('state', 'setState', ({ getArticle: { article: { title, description, tags } } }) => ({
-        title,
-        description,
-        tags,
+    withState('state', 'setState', ({ getArticle: { article: { id: articleId, title, description, tags, videoURL } } }) => ({
+        articleId,
+        title: title || '',
+        description: description || '',
+        tags: tags || [],
+        videoURL: videoURL || '',
         isVideoUrl: true,
         isSaving: false
     })),
@@ -40,10 +42,11 @@ const ArticleEditHOC = compose(
             setState({ ...state, [name]: value });
         },
         updateDescription: ({ state, setState }) => text => setState({ ...state, 'description': text }),
-        switchMediaType: ({ state, setState }) => text => setState({ ...state, 'isVideoUrl': !state.isVideoUrl }),
+        switchMediaType: ({ state, setState }) => () => setState({ ...state, 'isVideoUrl': !state.isVideoUrl }),
         saveArticle: props => async () => {
-            const { handleArticle, state, setState, match, setFeedbackMessage } = props;
-            const { formData: { title, description, videoURL, images, tags } } = state;
+            const { handleArticle, state, setState, match, setFeedbackMessage } = props,
+                { title, description, videoURL, images, tags } = state;
+
             const article = {
                 id: match.params.articleId,
                 title,
@@ -91,11 +94,11 @@ const ArticleEditHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ state: { formData: { id } }, setFeedbackMessage }) => async (file, callback) => {
+        getSignedUrl: ({ state: { articleId }, setFeedbackMessage }) => async (file, callback) => {
             const params = {
                 fileName: file.name,
                 contentType: file.type,
-                id,
+                id: articleId,
                 type: 'article'
             };
 
@@ -166,7 +169,7 @@ const ArticleEdit = props => {
         state, handleFormChange, updateDescription, saveArticle, switchMediaType,
         getSignedUrl, onUploadStart, onError, onFinishUpload, setTags
     } = props;
-    const { formData: { title, description, tags, videoURL }, isVideoUrl, isSaving } = state;
+    const { title, description, tags, videoURL, isVideoUrl, isSaving } = state;
     return (
         <Grid container className='mainBody articleEdit'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
