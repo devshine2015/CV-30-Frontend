@@ -51,3 +51,21 @@ export const ActivateAccountMutation = gql`
         }
     }
 `;
+
+export const SignatureQuery = gql`
+    query signature($id: String!) {
+        signature(id: $id) {
+            bucket
+            region
+            keyStart
+            params {
+                acl
+        		policy
+	        	x_amz_algorithm
+		        x_amz_credential
+    		    x_amz_date
+	        	x_amz_signature
+            }
+        }
+    }
+`;
