@@ -1,8 +1,8 @@
 import React from 'react';
-import { Grid, TextField, Button, FormGroup, FormLabel, Switch as ToggleSwitch, } from '@material-ui/core';
+import { Grid, TextField, Button, Checkbox } from '@material-ui/core';
 import { graphql } from 'react-apollo';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import S3Uploader from 'react-s3-uploader';
+import ReactPlayer from 'react-player';
 import uuid from 'uuidv4';
 
 // Require Editor JS files.
@@ -17,6 +17,8 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import { handleArticle, setFeedbackMessage } from '../../../../store/queries';
 import { articleRefetch } from '../../../../store/refetch';
 import TagsInput from '../../../../components/TagsInput';
+import ImageUploader from '../../../../components/imageUploader';
+import { s3BucketURL, articlesFolder } from '../../../../constants/s3';
 
 const ArticleEditHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
@@ -28,9 +30,52 @@ const ArticleEditHOC = compose(
         tags: tags || [],
         videoURL: videoURL || '',
         isVideoUrl: true,
-        isSaving: false
+        isSaving: false,
+        imageUploadOpen: false,
+        editor: null
     })),
+    withState('images', 'setImages', ({ getArticle: { article: { images } } }) =>
+        images.map(({ id, path, isFeatured }) => ({ id, path, isFeatured }))),
+    withState('videos', 'setVideos', ({ getArticle: { article: { videos } } }) => videos),
     withHandlers({
+        bindEditor: ({ state, setState }) => (e, editor) => setState({ ...state, editor }),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
+        handleError: () => error => { console.log(error) },
+        handleSuccess: ({ images, setImages, state: { editor, articleId } }) => ({ path, filename }) => {
+            setImages([...images, {
+                id: uuid(),
+                path: path ? path : `/${articlesFolder}/${articleId}/${filename}`,
+                isFeatured: false
+            }]);
+            editor.image.insert(path ? `${s3BucketURL}${path}` : `${s3BucketURL}/${articlesFolder}/${articleId}/${filename}`);
+        },
+        selectFeaturedImage: ({ images, setImages, videos, setVideos }) => imageId => {
+            setVideos(videos.map(video => ({
+                ...video,
+                isFeatured: false
+            })));
+
+            setImages(images.map(image => ({
+                ...image,
+                isFeatured: image.id === imageId
+            })))
+        },
+        removeImage: ({ images, setImages }) => (e, editor, $img) => {
+            const path = $img[0].src.replace(s3BucketURL, '');
+            setImages(images.filter(image => image.path !== path));
+        },
+        selectFeaturedVideo: ({ images, setImages, videos, setVideos }) => videoId => {
+            setVideos(videos.map(video => ({
+                ...video,
+                isFeatured: video.id === videoId
+            })));
+
+            setImages(images.map(image => ({
+                ...image,
+                isFeatured: false
+            })))
+        },
         setTags: ({ state, setState }) => tags => setState({ ...state, tags }),
         handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
@@ -42,10 +87,9 @@ const ArticleEditHOC = compose(
             setState({ ...state, [name]: value });
         },
         updateDescription: ({ state, setState }) => text => setState({ ...state, 'description': text }),
-        switchMediaType: ({ state, setState }) => () => setState({ ...state, 'isVideoUrl': !state.isVideoUrl }),
         saveArticle: props => async () => {
-            const { handleArticle, state, setState, match, setFeedbackMessage } = props,
-                { title, description, videoURL, images, tags } = state;
+            const { handleArticle, state, setState, match, setFeedbackMessage, images, videos } = props,
+                { title, description, tags } = state;
 
             const article = {
                 id: match.params.articleId,
@@ -55,16 +99,16 @@ const ArticleEditHOC = compose(
                 tags
             };
 
-            if (videoURL) {
-                article.videos = [
-                    {
-                        id: uuid(),
-                        title: videoURL,
-                        sourceType: 'article',
-                        path: videoURL
-                    }
-                ];
-            }
+            // if (videoURL) {
+            //     article.videos = [
+            //         {
+            //             id: uuid(),
+            //             title: videoURL,
+            //             sourceType: 'article',
+            //             path: videoURL
+            //         }
+            //     ];
+            // }
 
             try {
                 await handleArticle({
@@ -94,89 +138,22 @@ const ArticleEditHOC = compose(
                 });
             }
         },
-        getSignedUrl: ({ state: { articleId }, setFeedbackMessage }) => async (file, callback) => {
-            const params = {
-                fileName: file.name,
-                contentType: file.type,
-                id: articleId,
-                type: 'article'
-            };
-
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                callback(responseJson);
-            } catch (error) {
-                console.error(error);
-                callback(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error || error.message
-                    }
-                });
-            }
-        },
-        onUploadStart: ({ state, setState }) => (file, next) => {
-            let size = file.size;
-            if (size > 1024 * 1024) {
-                alert('File is too big!');
-            } else {
-                let newFormData = Object.assign({}, state.formData);
-
-                newFormData.images = [{
-                    id: uuid(),
-                    title: file.name,
-                    sourceType: 'article',
-                    source: state.formData.id,
-                    path: `/articles/${state.formData.id}/${file.name}`
-                }];
-                setState({ ...state, formData: newFormData, isSaving: true });
-                next(file);
-            }
-        },
-        onError: ({ setFeedbackMessage }) => async error => {
-            console.log(error);
-            await setFeedbackMessage({
-                variables: {
-                    status: 'error',
-                    message: error || error.message
-                }
-            });
-        },
-        onFinishUpload: ({ state, setState, setFeedbackMessage }) => async data => {
-            setState({ ...state, isSaving: false });
-            await setFeedbackMessage({
-                variables: {
-                    status: 'success',
-                    message: 'File uploaded successfully.'
-                }
-            });
-        }
     }),
     pure
 );
 
 const ArticleEdit = props => {
     const {
-        state, handleFormChange, updateDescription, saveArticle, switchMediaType,
-        getSignedUrl, onUploadStart, onError, onFinishUpload, setTags
+        state, handleFormChange, updateDescription, saveArticle, setTags,
+        openImageUpload, closeImageUpload, handleError, handleSuccess,
+        images, videos, selectFeaturedImage, selectFeaturedVideo, bindEditor, removeImage
     } = props;
-    const { title, description, tags, videoURL, isVideoUrl, isSaving } = state;
+    const { articleId, title, description, tags, videoURL, isVideoUrl, isSaving, imageUploadOpen } = state;
     return (
         <Grid container className='mainBody articleEdit'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <section className='titleSection'>
                     <TextField
-                        // error={touched.name && errors.name}
-                        // helperText={errors.name}
                         name="title"
                         label="Title"
                         placeholder="Add title..."
@@ -191,6 +168,71 @@ const ArticleEdit = props => {
                         }}
                     />
                 </section>
+                <section className='mediaUpload'>
+                    <p className='helperText'>
+                        Add/Edit images or embed video links.
+                        </p>
+
+                    <Button className='mediaBtn' onClick={openImageUpload}>
+                        Add image
+                        </Button>
+
+                    <ImageUploader
+                        type='article'
+                        open={imageUploadOpen}
+                        onClose={closeImageUpload}
+                        onError={handleError}
+                        onSuccess={handleSuccess}
+                        id={articleId}
+                    />
+                    {/*
+                        <Button className='mediaBtn' onClick={openVideoShare}>
+                            Share video
+                        </Button>
+
+                        <Popover
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                            open={Boolean(videoShareAnchor)}
+                            anchorEl={videoShareAnchor}
+                            onClose={closeVideoShare}
+                            classes={{
+                                paper: 'promoEditPaper'
+                            }}
+                            disableBackdropClick
+                        >
+                            <div className='popupBody'>
+                                <TextField
+                                    name="videoUrl"
+                                    label="Video URL"
+                                    placeholder="Enter video link..."
+                                    className='textField'
+                                    fullWidth
+                                    onChange={updateVideoUrl}
+                                    value={videoURL}
+                                    helperText={(!!videoURL && !isVideoUrlValid && 'Invalid video URL')}
+                                    error={!!videoURL && !isVideoUrlValid}
+                                />
+                            </div>
+                            <div className='popupFooter'>
+                                <IconButton
+                                    onClick={closeVideoShare}
+                                    className='footerCheck'
+                                    disabled={!!videoURL && !isVideoUrlValid}
+                                >
+                                    <Icon>done</Icon>
+                                </IconButton>
+                            </div>
+                        </Popover>
+*/}
+
+                </section>
                 <section className='articleBodySection'>
                     <p className='infoMsg'>Write your article below.</p>
                     <FroalaEditor
@@ -199,7 +241,11 @@ const ArticleEdit = props => {
                             iconsTemplate: 'font_awesome_5',
                             toolbarInline: true,
                             charCounterCount: false,
-                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo'],
+                            events: {
+                                'froalaEditor.initialized': bindEditor,
+                                'froalaEditor.image.removed': removeImage
+                            }
                         }}
                         model={description}
                         onModelChange={updateDescription}
@@ -215,63 +261,60 @@ const ArticleEdit = props => {
                         <p className='helperText'>Tag your article</p>
                         <TagsInput value={tags} onChange={setTags} helpTagName='tag' />
                     </section>
-                    <hr />
 
-                    <FormGroup row className='mediaToggle'>
-                        <span className='mediaToggleLabel'>Upload visuals</span>
-                        <FormLabel className={!isVideoUrl ? 'active' : ''}>Photo</FormLabel>
-                        <ToggleSwitch
-                            checked={isVideoUrl}
-                            onChange={switchMediaType}
-                            classes={{
-                                switchBase: 'colorSwitchBase',
-                                checked: 'colorChecked',
-                                bar: 'colorBar',
-                            }}
-                            color="primary" />
-                        <FormLabel className={isVideoUrl ? 'active' : ''}>Video Url</FormLabel>
-                    </FormGroup>
-
-                    <section className='mediaUpload'>
-                        {isVideoUrl ?
-                            <TextField
-                                name="videoURL"
-                                label="Add video URL"
-                                placeholder="Video URL..."
-                                className='textField'
-                                onChange={handleFormChange}
-                                value={videoURL || ''}
-                                fullWidth
-                                InputProps={{
-                                    classes: {
-                                        input: 'textFieldInput',
-                                        underline: 'textFieldUnderline'
-                                    },
-                                }}
-                                InputLabelProps={{
-                                    className: 'textFieldLabel'
-                                }}
-                            /> :
-                            <label htmlFor="uploadArticleImage">
-                                <S3Uploader
-                                    id="uploadArticleImage"
-                                    name="uploadArticleImage"
-                                    className='hiddenInput'
-                                    getSignedUrl={getSignedUrl}
-                                    accept="image/*"
-                                    preprocess={onUploadStart}
-                                    onError={onError}
-                                    onFinish={onFinishUpload}
-                                    uploadRequestHeaders={{
-                                        'x-amz-acl': 'public-read'
-                                    }}
-                                />
-                                <Button component='span' className='imgUpload' disabled={isSaving}>
-                                    Upload
-                                </Button>
-                            </label>
-                        }
-                    </section>
+                    {((images && images.length > 0) || (videos && videos.length > 0)) &&
+                        <section className='featuredMedia'>
+                            <p className='helperText'>
+                                Select a cover image for your article.
+                                </p>
+                            {(images && images.length > 0) &&
+                                <div className='images'>
+                                    {images.map(image => (
+                                        <label key={image.id} className={image.isFeatured ? 'selected' : null}>
+                                            <Checkbox
+                                                checked={image.isFeatured}
+                                                onChange={() => selectFeaturedImage(image.id)}
+                                                className='hiddenInput'
+                                            />
+                                            <img src={`${s3BucketURL}${image.path}`} className='featuredImg' alt={image.id} />
+                                            {image.isFeatured && <i className='fas fa-check fa-3x' />}
+                                        </label>
+                                    ))}
+                                </div>
+                            }
+                            {(videos && videos.length > 0) &&
+                                <div className='videos'>
+                                    {videos.map(video => (
+                                        <label key={video.id} className={video.isFeatured ? 'selected' : null}>
+                                            <Checkbox
+                                                checked={video.isFeatured}
+                                                onChange={() => selectFeaturedVideo(video.id)}
+                                                className='hiddenInput'
+                                            />
+                                            <ReactPlayer
+                                                url={video.path}
+                                                width='100%'
+                                                height='100%'
+                                                config={{
+                                                    youtube: {
+                                                        playerVars: {
+                                                            showinfo: 0,
+                                                            controls: 0,
+                                                            modestbranding: 1,
+                                                            loop: 1
+                                                        }
+                                                    }
+                                                }}
+                                                playing={false}
+                                                style={{ pointerEvents: 'none' }}
+                                            />
+                                            {video.isFeatured && <i className='fas fa-check fa-3x' />}
+                                        </label>
+                                    ))}
+                                </div>
+                            }
+                        </section>
+                    }
 
                     <Button className='publishBtn' onClick={saveArticle}>
                         Publish article
