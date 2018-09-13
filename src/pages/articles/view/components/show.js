@@ -1,11 +1,9 @@
 import React from 'react';
 import { Grid, Button, Icon, IconButton } from '@material-ui/core';
-import ReactPlayer from 'react-player';
 import { FormattedDate, FormattedMessage } from 'react-intl';
 import { DiscussionEmbed } from 'disqus-react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 
-import { s3BucketURL } from '../../../../constants/s3';
 import AuthorAvatarHeader from '../../../../components/AvatarHeader/AuthorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../../constants/disqus';
 import AddTags from './addTags';
