@@ -81,7 +81,6 @@ const ShowHOC = compose(
             }
         },
         editPanel: ({ state, setState }) => (e, panel) => {
-            debugger;
             setState({ ...state, edited: panel, expanded: panel !== state.edited ? panel : null });
             if (panel !== state.edited)
                 e.stopPropagation();
