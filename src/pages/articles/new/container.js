@@ -71,6 +71,15 @@ const NewArticleHOC = compose(
             const path = $img[0].src.replace(s3BucketURL, '');
             setImages(images.filter(image => image.path !== path));
         },
+        removeVideo: ({ videos, setVideos }) => (e, editor, $video) => {
+            let iframe = $video.find('iframe'), src, url;
+            if (iframe)
+                src = iframe.attr('src');
+            if (src)
+                url = src.replace("embed/", "watch?v=");
+            if (url)
+                setVideos(videos.filter(video => video.path !== url));
+        },
         selectFeaturedVideo: ({ images, setImages, videos, setVideos }) => videoId => {
             setVideos(videos.map(video => ({
                 ...video,
@@ -92,23 +101,25 @@ const NewArticleHOC = compose(
             setState({ ...state, formData: { ...state.formData, [name]: value } });
         },
         updateDescription: ({ state, setState }) => description => setState({ ...state, formData: { ...state.formData, description } }),
-        switchMediaType: ({ state, setState }) => () => setState({ ...state, isVideoUrl: !state.isVideoUrl }),
         openVideoShare: ({ state, setState }) => ev => setState({ ...state, videoShareAnchor: ev.target }),
-        closeVideoShare: ({ state, setState, setVideos }) => () => {
+        closeVideoShare: ({ state, setState, setVideos, videos }) => () => {
             if (state.isVideoUrlValid) {
-                setVideos([{
-                    id: uuid(),
-                    path: state.videoURL,
-                    isFeatured: false
-                }]);
-                setState({ ...state, videoShareAnchor: null });
-                state.editor.video.insert(state.videoURL);
+                setVideos([
+                    ...videos,
+                    {
+                        id: uuid(),
+                        path: state.videoURL,
+                        isFeatured: false
+                    }
+                ]);
+                setState({ ...state, videoShareAnchor: null, videoURL: '' });
+                state.editor.video.insert(`<iframe width="560" height="315" src="${state.videoURL.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe>`);
             }
             else
                 return false;
         },
         saveArticle: props => async () => {
-            const { handleArticle, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state }, images } = props;
+            const { handleArticle, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state }, images, videos } = props;
             const { formData: { id, title, description, tags } } = appState;
             let { type, companyId, teamId } = state || {};
             let options = {};
@@ -126,6 +137,7 @@ const NewArticleHOC = compose(
                 title,
                 description,
                 images,
+                videos,
                 tags,
                 postAs
             };
@@ -134,18 +146,6 @@ const NewArticleHOC = compose(
                 article.postingCompanyId = companyId;
             if (teamId)
                 article.postingTeamId = teamId;
-
-            // if (videoURL) {
-            //     article.videos = [
-            //         {
-            //             id: uuid(),
-            //             title: videoURL,
-            //             sourceType: 'article',
-            //             path: videoURL
-
-            //         }
-            //     ];
-            // }
 
             switch (type) {
                 case 'profile_isFeatured':

@@ -29,16 +29,8 @@ const ArticleShow = props => {
 
     const {
         id: articleId,
-        images, videos, title, description: articleBody, createdAt, tags
+        title, description: articleBody, createdAt, tags
     } = article;
-
-    let image, video;
-    if (images && images.length > 0) {
-        image = `${s3BucketURL}${images[0].path}`;
-    }
-    if (videos && videos.length > 0) {
-        video = videos[0].path;
-    }
 
     let likes = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;
     const isAddTagAllowed = !!currentUser;
@@ -54,28 +46,6 @@ const ArticleShow = props => {
         <Grid container className='mainBody articleShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <h1 className='acticleTitle'>{title}</h1>
-                <div className='media'>
-                    {image &&
-                        <img src={image} alt={articleId} className='storyImg' />
-                    }
-                    {(video && !image) &&
-                        <ReactPlayer
-                            url={video}
-                            width='200'
-                            height='140'
-                            config={{
-                                youtube: {
-                                    playerVars: {
-                                        showinfo: 0,
-                                        controls: 0,
-                                        modestbranding: 1,
-                                        loop: 1
-                                    }
-                                }
-                            }}
-                            playing={false} />
-                    }
-                </div>
                 <div className='articleBody' dangerouslySetInnerHTML={{ __html: articleBody }} />
                 <div className='disqusThread'>
                     <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
@@ -84,7 +54,7 @@ const ArticleShow = props => {
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
                     <div className='authorAvatar'>
-                        <AuthorAvatarHeader article={article} lang={lang} /> 
+                        <AuthorAvatarHeader article={article} lang={lang} />
                     </div>
                     <FormattedDate value={createdAt}>
                         {(text) => (<p className='articleDate'>{text}</p>)}

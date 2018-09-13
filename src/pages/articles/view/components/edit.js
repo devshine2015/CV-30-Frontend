@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, TextField, Button, Checkbox } from '@material-ui/core';
+import { Grid, TextField, Button, Checkbox, Popover, IconButton, Icon } from '@material-ui/core';
 import { graphql } from 'react-apollo';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import ReactPlayer from 'react-player';
@@ -23,24 +23,50 @@ import { s3BucketURL, articlesFolder } from '../../../../constants/s3';
 const ArticleEditHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('state', 'setState', ({ getArticle: { article: { id: articleId, title, description, tags, videoURL } } }) => ({
+    withState('state', 'setState', ({ getArticle: { article: { id: articleId, title, description, tags } } }) => ({
         articleId,
         title: title || '',
         description: description || '',
         tags: tags || [],
-        videoURL: videoURL || '',
-        isVideoUrl: true,
+        videoURL: '',
         isSaving: false,
         imageUploadOpen: false,
-        editor: null
+        editor: null,
+        videoShareAnchor: null,
+        isVideoUrlValid: false
     })),
     withState('images', 'setImages', ({ getArticle: { article: { images } } }) =>
         images.map(({ id, path, isFeatured }) => ({ id, path, isFeatured }))),
-    withState('videos', 'setVideos', ({ getArticle: { article: { videos } } }) => videos),
+    withState('videos', 'setVideos', ({ getArticle: { article: { videos } } }) =>
+        videos.map(({ id, path, isFeatured }) => ({ id, path, isFeatured }))),
     withHandlers({
         bindEditor: ({ state, setState }) => (e, editor) => setState({ ...state, editor }),
         openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
         closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
+        openVideoShare: ({ state, setState }) => ev => setState({ ...state, videoShareAnchor: ev.target }),
+        closeVideoShare: ({ state, setState, setVideos }) => () => {
+            if (state.isVideoUrlValid) {
+                setVideos([{
+                    id: uuid(),
+                    path: state.videoURL,
+                    isFeatured: false
+                }]);
+                setState({ ...state, videoShareAnchor: null });
+                state.editor.video.insert(`<iframe width="560" height="315" src="${state.videoURL.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe>`);
+            }
+            else
+                return false;
+        },
+        updateVideoUrl: ({ state, setState }) => event => {
+            const target = event.currentTarget;
+            const videoURL = target.type === 'checkbox' ? target.checked : target.value;
+            let isVideoUrlValid = !!videoURL.match(/^(http(s)??:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+/);
+            setState({
+                ...state,
+                videoURL,
+                isVideoUrlValid
+            })
+        },
         handleError: () => error => { console.log(error) },
         handleSuccess: ({ images, setImages, state: { editor, articleId } }) => ({ path, filename }) => {
             setImages([...images, {
@@ -64,6 +90,15 @@ const ArticleEditHOC = compose(
         removeImage: ({ images, setImages }) => (e, editor, $img) => {
             const path = $img[0].src.replace(s3BucketURL, '');
             setImages(images.filter(image => image.path !== path));
+        },
+        removeVideo: ({ videos, setVideos }) => (e, editor, $video) => {
+            let iframe = $video.find('iframe'), src, url;
+            if (iframe)
+                src = iframe.attr('src');
+            if (src)
+                url = src.replace("embed/", "watch?v=");
+            if (url)
+                setVideos(videos.filter(video => video.path !== url));
         },
         selectFeaturedVideo: ({ images, setImages, videos, setVideos }) => videoId => {
             setVideos(videos.map(video => ({
@@ -96,19 +131,9 @@ const ArticleEditHOC = compose(
                 title,
                 description,
                 images,
+                videos,
                 tags
             };
-
-            // if (videoURL) {
-            //     article.videos = [
-            //         {
-            //             id: uuid(),
-            //             title: videoURL,
-            //             sourceType: 'article',
-            //             path: videoURL
-            //         }
-            //     ];
-            // }
 
             try {
                 await handleArticle({
@@ -146,9 +171,10 @@ const ArticleEdit = props => {
     const {
         state, handleFormChange, updateDescription, saveArticle, setTags,
         openImageUpload, closeImageUpload, handleError, handleSuccess,
-        images, videos, selectFeaturedImage, selectFeaturedVideo, bindEditor, removeImage
+        images, videos, selectFeaturedImage, selectFeaturedVideo, bindEditor, removeImage,
+        openVideoShare, closeVideoShare, updateVideoUrl, removeVideo
     } = props;
-    const { articleId, title, description, tags, videoURL, isVideoUrl, isSaving, imageUploadOpen } = state;
+    const { articleId, title, description, tags, videoURL, videoShareAnchor, imageUploadOpen, isVideoUrlValid } = state;
     return (
         <Grid container className='mainBody articleEdit'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -185,53 +211,51 @@ const ArticleEdit = props => {
                         onSuccess={handleSuccess}
                         id={articleId}
                     />
-                    {/*
-                        <Button className='mediaBtn' onClick={openVideoShare}>
-                            Share video
+
+                    <Button className='mediaBtn' onClick={openVideoShare}>
+                        Share video
                         </Button>
 
-                        <Popover
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'center',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
-                            }}
-                            open={Boolean(videoShareAnchor)}
-                            anchorEl={videoShareAnchor}
-                            onClose={closeVideoShare}
-                            classes={{
-                                paper: 'promoEditPaper'
-                            }}
-                            disableBackdropClick
-                        >
-                            <div className='popupBody'>
-                                <TextField
-                                    name="videoUrl"
-                                    label="Video URL"
-                                    placeholder="Enter video link..."
-                                    className='textField'
-                                    fullWidth
-                                    onChange={updateVideoUrl}
-                                    value={videoURL}
-                                    helperText={(!!videoURL && !isVideoUrlValid && 'Invalid video URL')}
-                                    error={!!videoURL && !isVideoUrlValid}
-                                />
-                            </div>
-                            <div className='popupFooter'>
-                                <IconButton
-                                    onClick={closeVideoShare}
-                                    className='footerCheck'
-                                    disabled={!!videoURL && !isVideoUrlValid}
-                                >
-                                    <Icon>done</Icon>
-                                </IconButton>
-                            </div>
-                        </Popover>
-*/}
-
+                    <Popover
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        open={Boolean(videoShareAnchor)}
+                        anchorEl={videoShareAnchor}
+                        onClose={closeVideoShare}
+                        classes={{
+                            paper: 'promoEditPaper'
+                        }}
+                        disableBackdropClick
+                    >
+                        <div className='popupBody'>
+                            <TextField
+                                name="videoUrl"
+                                label="Video URL"
+                                placeholder="Enter video link..."
+                                className='textField'
+                                fullWidth
+                                onChange={updateVideoUrl}
+                                value={videoURL}
+                                helperText={(!!videoURL && !isVideoUrlValid && 'Invalid video URL')}
+                                error={!!videoURL && !isVideoUrlValid}
+                            />
+                        </div>
+                        <div className='popupFooter'>
+                            <IconButton
+                                onClick={closeVideoShare}
+                                className='footerCheck'
+                                disabled={!!videoURL && !isVideoUrlValid}
+                            >
+                                <Icon>done</Icon>
+                            </IconButton>
+                        </div>
+                    </Popover>
                 </section>
                 <section className='articleBodySection'>
                     <p className='infoMsg'>Write your article below.</p>
@@ -242,9 +266,11 @@ const ArticleEdit = props => {
                             toolbarInline: true,
                             charCounterCount: false,
                             toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo'],
+                            quickInsertTags: null,
                             events: {
                                 'froalaEditor.initialized': bindEditor,
-                                'froalaEditor.image.removed': removeImage
+                                'froalaEditor.image.removed': removeImage,
+                                'froalaEditor.video.removed': removeVideo
                             }
                         }}
                         model={description}

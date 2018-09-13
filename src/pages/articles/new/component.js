@@ -20,7 +20,7 @@ const NewArticle = (props) => {
         updateDescription, saveArticle,
         openImageUpload, closeImageUpload, handleError, handleSuccess,
         setTags, bindEditor, removeImage,
-        openVideoShare, closeVideoShare, updateVideoUrl,
+        openVideoShare, closeVideoShare, updateVideoUrl, removeVideo,
         images, selectFeaturedImage, videos, selectFeaturedVideo
     } = props;
 
@@ -61,7 +61,7 @@ const NewArticle = (props) => {
                             onSuccess={handleSuccess}
                             id={id}
                         />
-                        {/*
+
                         <Button className='mediaBtn' onClick={openVideoShare}>
                             Share video
                         </Button>
@@ -106,7 +106,7 @@ const NewArticle = (props) => {
                                 </IconButton>
                             </div>
                         </Popover>
-*/}
+
 
                     </section>
                     <section className='articleBodySection'>
@@ -119,9 +119,11 @@ const NewArticle = (props) => {
                                 charCounterCount: false,
                                 imageUploadRemoteUrls: false,
                                 toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo'],
+                                quickInsertTags: null,
                                 events: {
                                     'froalaEditor.initialized': bindEditor,
-                                    'froalaEditor.image.removed': removeImage
+                                    'froalaEditor.image.removed': removeImage,
+                                    'froalaEditor.video.removed': removeVideo
                                 }
                             }}
                             model={description}
