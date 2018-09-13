@@ -3,26 +3,31 @@
     background: #fff;
     flex: 1;
     margin-top: 65px;
+
     .header {
         background: #f4f4f4;
         box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
         padding: 50px 0;
         justify-content: center;
+
         .settingsTitle {
             font-size: 2rem;
             font-weight: 100;
             color: #277dba;
             margin: 0;
         }
+
         .settingsMessage {
             color: #a5a5a5;
             font-size: 1rem;
             font-weight: normal;
         }
     }
+
     .userSettings,
     .companySettings {
         justify-content: center;
+
         .tabsContainer {
             .tabItemRoot {
                 font-size: 1rem;
@@ -31,22 +36,27 @@
                 text-transform: none;
                 min-width: auto;
                 transition: all .5s;
+
                 &.tabItemSelected {
                     color: #414141;
                     font-weight: bold;
                 }
             }
+
             .tabIndicator {
                 height: 4px;
                 background: #414141;
             }
         }
     }
+
     .settingsTab {
         padding: 30px 0;
+
         .profilePicture {
             display: flex;
             align-items: center;
+
             .settingsAvatar {
                 width: 80px;
                 height: 80px;
@@ -54,77 +64,106 @@
                 border: 1px solid #eaeaea;
                 margin-right: 15px;
             }
+
             .settingsUploadBtn {
                 color: #277dba;
                 text-transform: capitalize;
+
                 &:hover,
                 &:active {
                     background: none;
                 }
+
                 &:hover {
                     padding-top: 1px;
                 }
             }
         }
+
         .infoFields {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
+
             .textField {
                 width: 49%;
                 box-sizing: border-box;
                 margin-top: 30px;
             }
         }
+
         .passwordFields,
         .tagFields {
             display: flex;
             justify-content: space-between;
+
             .textField {
                 width: 31%;
                 box-sizing: border-box;
                 margin-top: 30px;
             }
         }
+
         .actions {
             margin-top: 30px;
             display: flex;
             justify-content: flex-end;
+
             .successMessage {
                 display: flex;
                 align-items: center;
                 padding: 0 15px;
                 color: #0a0;
             }
+
             .errorMessage {
                 display: flex;
                 align-items: center;
                 padding: 0 15px;
                 color: #F00;
             }
+
             .cancelBtn,
             .saveBtn {
                 color: #fff;
                 text-transform: capitalize;
             }
+
             .saveBtn {
                 background: #277dba;
             }
+
             .cancelBtn {
                 background: red;
                 margin-right: 15px;
             }
         }
+
         .companyName {
             margin: 20px 0 50px;
+
             .titleInput {
                 font-size: 2rem;
                 color: #565656;
             }
         }
     }
+
     .jobsList {
-        padding-top: 95px;
+        padding-top: 35px;
+
+        .helperText {
+            color: #ccc;
+            font-size: .85rem;
+            font-weight: 500;
+            margin: 0 0 50px 15px;
+            padding: 5px 0;
+
+            i {
+                margin-right: 5px;
+                color: #277dba;
+            }
+        }
     }
 }
 
@@ -135,12 +174,14 @@
                 width: 32%;
             }
         }
+
         .textArea {
             .fr-box {
                 padding: 10px;
                 background-color: #56565650;
                 border: 2px dashed #277dba;
             }
+
             .label {
                 margin: 30px 0 10px;
                 color: rgba(0, 0, 0, 0.54);
