@@ -34,8 +34,8 @@ const SkillsEditHOC = compose(
         },
         saveData: ({ setFeedbackMessage, skillsModalData: { type }, state: { initialSkills, tagsInputSkills }, setSkills, setValues, closeSkillsModal, match }) => async () => {
             // Diff current with initial
-            const toAdd = tagsInputSkills.filter(item => initialSkills.findIndex(el => el === item) === -1);
-            const toRemove = initialSkills.filter(item => tagsInputSkills.findIndex(el => el === item) === -1);
+            // const toAdd = tagsInputSkills.filter(item => initialSkills.findIndex(el => el === item) === -1);
+            // const toRemove = initialSkills.filter(item => tagsInputSkills.findIndex(el => el === item) === -1);
 
             switch (type) {
                 case 'skills':
@@ -43,8 +43,7 @@ const SkillsEditHOC = compose(
                         await setSkills({
                             variables: {
                                 language: match.params.lang,
-                                addSkills: toAdd,
-                                removeSkills: toRemove
+                                skills: tagsInputSkills
                             },
                             refetchQueries: [
                                 currentProfileRefetch(match.params.lang)
@@ -72,8 +71,7 @@ const SkillsEditHOC = compose(
                         await setValues({
                             variables: {
                                 language: match.params.lang,
-                                addValues: toAdd,
-                                removeValues: toRemove
+                                values: tagsInputSkills
                             },
                             refetchQueries: [
                                 currentProfileRefetch(match.params.lang)
