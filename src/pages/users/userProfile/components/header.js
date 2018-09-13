@@ -482,7 +482,7 @@ const Header = props => {
                         }
                     </div>
                 </Grid>
-                <SkillsEditor skillsModalData={skillsModalData} skillsAnchor={skillsAnchor} closeSkillsModal={closeSkillsModal} key={skillsModalData} />
+                <SkillsEditor refetchProfile={currentProfileQuery && currentProfileQuery.refetch} skillsModalData={skillsModalData} skillsAnchor={skillsAnchor} closeSkillsModal={closeSkillsModal} key={skillsModalData} />
             </Grid>
         </div>
     )
