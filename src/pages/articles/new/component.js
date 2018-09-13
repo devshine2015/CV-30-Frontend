@@ -24,7 +24,6 @@ const NewArticle = (props) => {
         images, selectFeaturedImage, videos, selectFeaturedVideo
     } = props;
 
-    // debugger;
     return (
         <div className='newArticleRoot'>
             <Grid container className='mainBody articleEdit'>
