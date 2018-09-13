@@ -25,7 +25,7 @@ const NewsFeed = props => {
         <div className='newsFeedRoot'>
             <Grid container className='mainBody brandShow'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    {(profile && profile.id) && <NewPost profile={profile} />}
+                    {(profile && profile.id) && <NewPost refetch={newsFeedArticlesQuery.refetch} profile={profile} />}
                     {(profile && profile.id) &&
                         <section className='profileActions'>
                             <div className='profileAction company'>

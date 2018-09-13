@@ -221,8 +221,8 @@ const NewJob = ({
                                                 let benefit = jobBenefits.find(benefit => benefit.id === id);
                                                 if (benefit)
                                                     return (
-                                                        <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key}>
-                                                            {(text) => <Chip key={benefit.key} label={text} className='chip' />}
+                                                        <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key} key={benefit.key}>
+                                                            {(text) => <Chip label={text} className='chip' />}
                                                         </FormattedMessage>
                                                     )
                                                 else
@@ -443,6 +443,9 @@ const NewJob = ({
                                     <Button
                                         className='saveBtn'
                                         onClick={handleSubmit}
+                                        style={{
+                                            opacity: !isValid || isSubmitting ? 0.5 : 1
+                                        }}
                                         disabled={!isValid || isSubmitting}
                                     >
                                         {text}

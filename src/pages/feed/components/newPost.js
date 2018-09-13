@@ -68,7 +68,7 @@ const NewPostHOC = compose(
             setState({ ...state, formData: { ...state.formData, [name]: value } });
         },
         switchIsArticle: ({ state, setState }) => () => setState({ ...state, isArticle: !state.isArticle }),
-        addPost: ({ handleArticle, match: { params: { lang: language } }, state, setState, setFeedbackMessage, postOptions }) => async () => {
+        addPost: ({ handleArticle, match: { params: { lang: language } }, state, setState, setFeedbackMessage, postOptions, refetch }) => async () => {
             let selectedPostAs = postOptions[state.selectedPostOption];
 
             const article = {
@@ -92,11 +92,12 @@ const NewPostHOC = compose(
                     variables: {
                         article,
                         language
-                    },
-                    refetchQueries: [
-                        newsFeedArticlesRefetch(language)
-                    ]
+                    }
+                    // refetchQueries: [
+                    //     newsFeedArticlesRefetch(language)
+                    // ]
                 });
+                await refetch();
                 await setFeedbackMessage({
                     variables: {
                         status: 'success',

@@ -4,6 +4,7 @@ import '@synapsestudios/react-drop-n-crop/lib/react-drop-n-crop.min.css';
 import { compose, withState, withHandlers } from 'recompose';
 import { Button } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
+import uuid from 'uuidv4';
 
 const uploadFile = async (image, signedUrl) => {
     let block = image.result.split(";");
@@ -44,10 +45,8 @@ const ImageUploadHOC = compose(
         error: null,
     }),
     withHandlers({
-        onChange: ({ setImage }) => value => {
-            setImage(value);
-            console.log(value);
-        },
+        onChange: ({ setImage }) => image =>
+            setImage({ ...image, filename: image.filename ? `${uuid()}.${image.filetype.replace('image/', '')}` : null }),
 
         handleUploadFile: ({ image, id, onSuccess, onError, onClose, type }) => async () => {
             const params = {
@@ -56,8 +55,6 @@ const ImageUploadHOC = compose(
                 id,
                 type
             };
-
-            console.log(JSON.stringify(params, null, 2));
 
             try {
                 let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
@@ -133,7 +130,7 @@ const ImageUpload = ({ image, onChange, handleUploadFile, type }) => {
                 allowedFileTypes={allowedFileTypes}
                 instructions={instructions}
             />
-            <Button onClick={handleUploadFile} className='uploadBtn' disabled={!image || !image.filename}>Upload</Button>
+            <Button onClick={handleUploadFile} className='uploadBtn' style={{opacity: !image || !image.filename ? 0.5 : 1}} disabled={!image || !image.filename}>Upload</Button>
         </div>
     )
 };
