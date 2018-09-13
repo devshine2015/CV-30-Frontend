@@ -71,20 +71,20 @@ const ShowHOC = compose(
                 });
             }
         },
-        expandPanel: ({ state, setState }) => (panel) => (ev, expanded) => {
+        expandPanel: ({ state, setState }) => panel => (ev, expanded) => {
             if (state.edited === panel) {
                 setState({ ...state, expanded: panel });
             } else {
-                if (state.edited) setState({ ...state, edited: null });
+                if (state.edited)
+                    setState({ ...state, edited: null });
                 setState({ ...state, expanded: expanded ? panel : false });
             }
         },
         editPanel: ({ state, setState }) => (e, panel) => {
-            setState({ ...state, edited: panel || false });
-            if (panel !== state.edited) {
-                setState({ ...state, expanded: panel });
+            debugger;
+            setState({ ...state, edited: panel, expanded: panel !== state.edited ? panel : null });
+            if (panel !== state.edited)
                 e.stopPropagation();
-            }
         },
         addQA: ({ state, setState }) => () => {
             setState({ ...state, newQA: true });
@@ -257,17 +257,16 @@ const Show = props => {
                 <section className='qaSection'>
                     <h2 className='titleHeading'>Q &amp; A</h2>
                     {
-                        faqs.map((item, index) => {
-                            const panelId = 'panel-' + index;
-                            if (edited !== panelId)
+                        faqs.map(item => {
+                            if (!editMode && edited !== item.id)
                                 return (
                                     <ExpansionPanel
-                                        expanded={expanded === panelId}
-                                        onChange={expandPanel(panelId)}
+                                        expanded={expanded === item.id}
+                                        onChange={expandPanel(item.id)}
                                         classes={{
                                             root: 'qaPanelRoot'
                                         }}
-                                        key={`QAitem-${index}`}
+                                        key={item.id}
                                     >
                                         <ExpansionPanelSummary expandIcon={<Icon>arrow_drop_down_circle</Icon>} classes={{
                                             root: 'qaPanelHeader',
@@ -276,14 +275,14 @@ const Show = props => {
                                         }}>
                                             {item.question}
                                             {editMode &&
-                                                <IconButton onClick={(e) => editPanel(e, panelId)} className='editBtn'>
-                                                    <Icon>edit</Icon>
-                                                </IconButton>
-                                            }
-                                            {editMode &&
-                                                <IconButton onClick={(e) => deleteQA(e, item.id)} className='editBtn'>
-                                                    <Icon>delete</Icon>
-                                                </IconButton>
+                                                <React.Fragment>
+                                                    <IconButton onClick={(e) => editPanel(e, item.id)} className='editBtn'>
+                                                        <Icon>edit</Icon>
+                                                    </IconButton>
+                                                    <IconButton onClick={(e) => deleteQA(e, item.id)} className='editBtn'>
+                                                        <Icon>delete</Icon>
+                                                    </IconButton>
+                                                </React.Fragment>
                                             }
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
@@ -292,7 +291,7 @@ const Show = props => {
                                     </ExpansionPanel>
                                 )
                             else
-                                return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={panelId} key={panelId} />
+                                return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={item.id} key={item.id} />
                         })
                     }
                     {
