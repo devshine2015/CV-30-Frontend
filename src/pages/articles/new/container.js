@@ -18,20 +18,69 @@ const NewArticleHOC = compose(
         formData: {
             id: uuid(),
             tags: [],
+            title: '',
             description: ''
         },
         isVideoUrl: true,
+        isVideoUrlValid: false,
+        videoURL: '',
         editor: null,
-        imageUploadOpen: false
+        imageUploadOpen: false,
+        anchorEl: null,
+        videoShareAnchor: null
     }),
+    withState('images', 'setImages', []),
+    withState('videos', 'setVideos', []),
     withHandlers({
+        bindEditor: ({ state, setState }) => (e, editor) => setState({ ...state, editor }),
         setTags: ({ state, setState }) => tags => setState({ ...state, formData: { ...state.formData, tags } }),
+        updateVideoUrl: ({ state, setState }) => event => {
+            const target = event.currentTarget;
+            const videoURL = target.type === 'checkbox' ? target.checked : target.value;
+            let isVideoUrlValid = !!videoURL.match(/^(http(s)??:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+/);
+            setState({
+                ...state,
+                videoURL,
+                isVideoUrlValid
+            })
+        },
         openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
         closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: () => error => { console.log(error) },
-        handleSuccess: ({ state: { editor, formData: { id } } }) => file => {
-            let imageURL = `${s3BucketURL}/${articlesFolder}/${id}/${file.filename}`;
-            editor.image.insert(imageURL);
+        handleSuccess: ({ images, setImages, state: { editor, formData: { id } } }) => ({ path, filename }) => {
+            setImages([...images, {
+                id: uuid(),
+                path: path ? path : `/${articlesFolder}/${id}/${filename}`,
+                isFeatured: false
+            }]);
+            editor.image.insert(path ? `${s3BucketURL}${path}` : `${s3BucketURL}/${articlesFolder}/${id}/${filename}`);
+        },
+        selectFeaturedImage: ({ images, setImages, videos, setVideos }) => imageId => {
+            setVideos(videos.map(video => ({
+                ...video,
+                isFeatured: false
+            })));
+
+            setImages(images.map(image => ({
+                ...image,
+                isFeatured: image.id === imageId
+            })))
+        },
+        removeImage: ({ images, setImages }) => (e, editor, $img) => {
+            console.log($img);
+            const path = $img[0].src.replace(s3BucketURL, '');
+            setImages(images.filter(image => image.path !== path));
+        },
+        selectFeaturedVideo: ({ images, setImages, videos, setVideos }) => videoId => {
+            setVideos(videos.map(video => ({
+                ...video,
+                isFeatured: video.id === videoId
+            })));
+
+            setImages(images.map(image => ({
+                ...image,
+                isFeatured: false
+            })))
         },
         handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
@@ -44,9 +93,23 @@ const NewArticleHOC = compose(
         },
         updateDescription: ({ state, setState }) => description => setState({ ...state, formData: { ...state.formData, description } }),
         switchMediaType: ({ state, setState }) => () => setState({ ...state, isVideoUrl: !state.isVideoUrl }),
+        openVideoShare: ({ state, setState }) => ev => setState({ ...state, videoShareAnchor: ev.target }),
+        closeVideoShare: ({ state, setState, setVideos }) => () => {
+            if (state.isVideoUrlValid) {
+                setVideos([{
+                    id: uuid(),
+                    path: state.videoURL,
+                    isFeatured: false
+                }]);
+                setState({ ...state, videoShareAnchor: null });
+                state.editor.video.insert(state.videoURL);
+            }
+            else
+                return false;
+        },
         saveArticle: props => async () => {
-            const { handleArticle, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state } } = props;
-            const { formData: { id, title, description, videoURL, images, tags } } = appState;
+            const { handleArticle, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state }, images } = props;
+            const { formData: { id, title, description, tags } } = appState;
             let { type, companyId, teamId } = state || {};
             let options = {};
             let postAs = 'profile';
@@ -72,17 +135,17 @@ const NewArticleHOC = compose(
             if (teamId)
                 article.postingTeamId = teamId;
 
-            if (videoURL) {
-                article.videos = [
-                    {
-                        id: uuid(),
-                        title: videoURL,
-                        sourceType: 'article',
-                        path: videoURL
+            // if (videoURL) {
+            //     article.videos = [
+            //         {
+            //             id: uuid(),
+            //             title: videoURL,
+            //             sourceType: 'article',
+            //             path: videoURL
 
-                    }
-                ];
-            }
+            //         }
+            //     ];
+            // }
 
             switch (type) {
                 case 'profile_isFeatured':
@@ -165,42 +228,7 @@ const NewArticleHOC = compose(
                 });
             }
         },
-        getSignedURL: ({ state: { formData: { id }, setFeedbackMessage } }) => async (e, editor, images) => {
-            let file = images[0];
-            const params = {
-                fileName: file.name,
-                contentType: file.type,
-                id,
-                type: 'article'
-            };
 
-            try {
-                let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(params)
-                });
-                let responseJson = await response.json();
-                editor.opts.imageUploadMethod = 'PUT';
-                editor.opts.imageUploadURL = responseJson.signedUrl;
-                editor.image.upload(images);
-            } catch (error) {
-                console.log(error);
-                await setFeedbackMessage({
-                    variables: {
-                        status: 'error',
-                        message: error.message
-                    }
-                });
-                return false;
-            }
-            return true;
-        },
-        handleFroalaSuccess: () => (e, editor, response) => console.log(e, editor, response),
-        handleFroalaError: () => (e, editor, error, response) => console.error(e, editor, error, response)
     }),
     pure
 );
