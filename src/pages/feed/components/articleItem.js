@@ -97,7 +97,10 @@ const ArticleItem = props => {
 
     let image, video;
     if (images && images.length > 0) {
-        image = `${s3BucketURL}${images[0].path}`;
+        images.forEach(img => {
+            if (img.isFeatured)
+                image = `${s3BucketURL}${img.path}`;
+        });
     }
     if (videos && videos.length > 0) {
         video = videos[0].path;

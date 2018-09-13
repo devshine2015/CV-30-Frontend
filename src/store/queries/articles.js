@@ -26,10 +26,12 @@ const standardArticleResult = gql`
         images {
             id
             path
+            isFeatured
         }
         videos {
             id
             path
+            isFeatured
         }
         title
         description
