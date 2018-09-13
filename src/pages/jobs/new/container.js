@@ -85,6 +85,7 @@ const NewJobHOC = compose(
         videoShareAnchor: null
     }),
     withHandlers({
+        handleDateChange: ({ setFieldValue }) => expireDate => setFieldValue('expireDate', expireDate),
         handleClick: ({ state, setState }) => event => setState({ ...state, anchorEl: event.currentTarget }),
         handleClose: ({ state, setState }) => () => setState({ ...state, anchorEl: null }),
         addField: ({ state, setState, setFieldValue }) => fieldId => {

@@ -8,6 +8,7 @@ import { graphql } from 'react-apollo';
 import ReactPlayer from 'react-player';
 import { withFormik } from 'formik';
 import { FormattedMessage } from 'react-intl';
+import { DatePicker } from 'material-ui-pickers';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -124,6 +125,7 @@ const EditHOC = compose(
         }
     }),
     withHandlers({
+        handleDateChange: ({ setFieldValue }) => expireDate => setFieldValue('expireDate', expireDate),
         updateDescription: ({ setFieldValue }) => text => setFieldValue('description', text),
         updateIdealCandidate: ({ setFieldValue }) => text => setFieldValue('idealCandidate', text),
         handleSliderChange: ({ setFieldValue, values }) => value => {
@@ -173,6 +175,7 @@ const Edit = ({
     openImageUpload, closeImageUpload, handleError, handleSuccess,
     openVideoShare, closeVideoShare,
     removeImage, removeVideo,
+    handleDateChange,
     values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid }) => {
 
     if (loading) return <Loader />
@@ -322,7 +325,15 @@ const Edit = ({
                             <p className='helperText'>
                                 Select expiration date.
                             </p>
-                            <TextField
+                            <DatePicker
+                                format="DD/MM/YYYY"
+                                disablePast={true}
+                                value={values.expireDate}
+                                onBlur={handleBlur}
+                                onChange={handleDateChange}
+                                animateYearScrolling
+                            />
+                            {/* <TextField
                                 name="expireDate"
                                 type="date"
                                 className='jobSelect'
@@ -331,7 +342,7 @@ const Edit = ({
                                 value={values.expireDate}
                                 error={!!(touched.expireDate && errors.expireDate)}
                                 helperText={touched.expireDate && errors.expireDate}
-                            />
+                            /> */}
                         </section>
                         <section className='benefits'>
                             <h2 className='sectionTitle'>Job <b>benefits</b></h2>

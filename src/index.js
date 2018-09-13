@@ -9,6 +9,10 @@ import { withClientState } from 'apollo-link-state';
 import { ApolloLink } from 'apollo-link';
 import { defaults, resolvers } from './store';
 import { persistCache } from 'apollo-cache-persist';
+/* eslint-disable */
+import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+// pick utils
+import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import localForage from 'localforage';
 import $ from 'jquery';
 window.$ = $;
@@ -45,7 +49,9 @@ window.$ = $;
 
     ReactDOM.render(
         <ApolloProvider client={client}>
-            <App />
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+                <App />
+            </MuiPickersUtilsProvider>
         </ApolloProvider>,
         document.getElementById('root')
     );

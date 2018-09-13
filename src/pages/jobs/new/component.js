@@ -5,6 +5,7 @@ import {
 } from '@material-ui/core';
 import ReactPlayer from 'react-player';
 import { FormattedMessage } from 'react-intl';
+import { DatePicker } from 'material-ui-pickers';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -42,6 +43,7 @@ const NewJob = ({
     openImageUpload, closeImageUpload, handleError, handleSuccess,
     openVideoShare, closeVideoShare,
     removeImage, removeVideo,
+    handleDateChange,
     values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid }) => {
 
     if (loading)
@@ -193,7 +195,15 @@ const NewJob = ({
                             <p className='helperText'>
                                 Select expiration date.
                             </p>
-                            <TextField
+                            <DatePicker
+                                format="DD/MM/YYYY"
+                                disablePast={true}
+                                value={values.expireDate}
+                                onBlur={handleBlur}
+                                onChange={handleDateChange}
+                                animateYearScrolling
+                            />
+                            {/* <TextField
                                 name="expireDate"
                                 type="date"
                                 className='jobSelect'
@@ -202,7 +212,7 @@ const NewJob = ({
                                 value={values.expireDate}
                                 error={!!(touched.expireDate && errors.expireDate)}
                                 helperText={touched.expireDate && errors.expireDate}
-                            />
+                            /> */}
                         </section>
                         <section className='benefits'>
                             <h2 className='sectionTitle'>Job <b>benefits</b></h2>

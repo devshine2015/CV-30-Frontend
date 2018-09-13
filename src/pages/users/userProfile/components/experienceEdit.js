@@ -4,6 +4,8 @@ import { compose, pure, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid/v4';
+import { DatePicker } from 'material-ui-pickers';
+import moment from 'moment';
 
 import { setExperience, setProject, setFeedbackMessage } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
@@ -182,7 +184,9 @@ const ExperienceEditHOC = compose(
             };
             setState({ ...state, formData: { ...state.formData, image } });
         },
-        removeImage: ({ state, setState }) => () => setState({ ...state, formData: { ...state.formData, image: null } })
+        removeImage: ({ state, setState }) => () => setState({ ...state, formData: { ...state.formData, image: null } }),
+        handleStartDateChange: ({ state, setState }) => startDate => setState({ ...state, formData: { ...state.formData, startDate } }),
+        handleEndDateChange: ({ state, setState }) => endDate => setState({ ...state, formData: { ...state.formData, endDate } }),
     }),
     pure
 );
@@ -192,6 +196,8 @@ const ExperienceEdit = props => {
         state: { formData, isVideoUrl, imageUploadOpen, isSaving },
         switchMediaType,
         handleFormChange,
+        handleStartDateChange,
+        handleEndDateChange,
         closeEditor,
         submitForm,
         type,
@@ -231,18 +237,36 @@ const ExperienceEdit = props => {
                 />
                 <div className='datePickers'>
                     <p>Date</p>
-                    <TextField
+                    {/* <TextField
                         name="startDate"
                         type="date"
                         value={startDate ? (new Date(startDate)).toISOString().split("T")[0] : ''}
                         onChange={handleFormChange}
+                    /> */}
+                    <DatePicker
+                        label="Start Date"
+                        format="DD/MM/YYYY"
+                        maxDate={endDate || new Date()}
+                        value={startDate || moment().subtract(1, 'days')}
+                        onChange={handleStartDateChange}
+                        animateYearScrolling
                     />
-                    <TextField
+                    {/* <TextField
                         name="endDate"
                         type="date"
                         disabled={isCurrent}
                         value={endDate ? (new Date(endDate)).toISOString().split("T")[0] : ''}
                         onChange={handleFormChange}
+                    /> */}
+                    <DatePicker
+                        label="End Date"
+                        format="DD/MM/YYYY"
+                        disabled={isCurrent}
+                        disableFuture={true}
+                        minDate={startDate || ''}
+                        value={endDate || moment().subtract(1, 'days')}
+                        onChange={handleEndDateChange}
+                        animateYearScrolling
                     />
                     <FormControlLabel
                         control={
