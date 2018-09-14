@@ -137,14 +137,14 @@ class Promo extends Component {
         if (!name) {
             throw Error('Field must have a name attribute!');
         }
-        this.setState(state => ({ ...state, [name]: value }));
+        this.setState({ [name]: value });
     };
 
-    openPromoEditor = ev => this.setState({ ...this.state, promoAnchor: ev.target });
-    closePromoEditor = () => this.setState({ ...this.state, promoAnchor: null });
+    openPromoEditor = ev => this.setState({ promoAnchor: ev.target });
+    closePromoEditor = () => this.setState({ promoAnchor: null });
 
-    openImageUpload = () => this.setState({ ...this.state, imageUploadOpen: true });
-    closeImageUpload = () => this.setState({ ...this.state, imageUploadOpen: false });
+    openImageUpload = () => this.setState({ imageUploadOpen: true });
+    closeImageUpload = () => this.setState({ imageUploadOpen: false });
 
     handleError = async error => {
         await this.props.setFeedbackMessage({
@@ -157,13 +157,13 @@ class Promo extends Component {
     handleSuccess = ({ path, filename, id }) => {
         let imgPath = path ? path : `/${adsFolder}/${this.state.id}/${filename}`;
         let image = {
-            id: uuid(),
+            id: id || uuid(),
             sourceType: 'ad',
             path: imgPath
         };
-        this.setState({ image });
+        this.setState({ image }, () => console.log(this.state));
     };
-    removeImage = () => this.setState({ ...this.state, image: null });
+    removeImage = () => this.setState({ image: null });
     saveData = async () => {
         const { handleAd, setFeedbackMessage, match: { params: { lang: language } } } = this.props;
         const { id, url, image } = this.state;
