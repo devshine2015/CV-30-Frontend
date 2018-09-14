@@ -124,7 +124,7 @@ class Promo extends Component {
         this.state = {
             id: uuid(),
             url: null,
-            tralala: null,
+            image: null,
             promoAnchor: null,
             imageUploadOpen: false
         };
@@ -154,49 +154,49 @@ class Promo extends Component {
             }
         });
     };
-    handleSuccess = ({ path, filename }) => {
-        let imgPath = path ? path : `/${adsFolder}/${this.state.formData.id}/${filename}`;
+    handleSuccess = ({ path, filename, id }) => {
+        let imgPath = path ? path : `/${adsFolder}/${this.state.id}/${filename}`;
         let image = {
-            id: 1234,
+            id: uuid(),
             sourceType: 'ad',
             path: imgPath
         };
-        this.setState({ tralala: image });
+        this.setState({ image });
     };
-    removeImage = () => this.setState({ ...this.state, tralala: null });
-    // saveData: ({ state, setState, handleAd, setFeedbackMessage, match: { params: { lang: language } } }) => async () => {
-    //     const { id, url, image } = state;
-    //     try {
-    //         await handleAd({
-    //             variables: {
-    //                 language,
-    //                 details: { id, url, image }
-    //             },
-    //             refetchQueries: [
-    //                 adsRefetch(language)
-    //             ]
-    //         });
-    //         await setFeedbackMessage({
-    //             variables: {
-    //                 status: 'success',
-    //                 message: 'Changes saved successfully.'
-    //             }
-    //         });
-    //         setState({
-    //             ...state,
-    //             promoAnchor: null
-    //         });
-    //     }
-    //     catch (err) {
-    //         console.log(err);
-    //         await setFeedbackMessage({
-    //             variables: {
-    //                 status: 'error',
-    //                 message: err.message
-    //             }
-    //         });
-    //     }
-    // }
+    removeImage = () => this.setState({ ...this.state, image: null });
+    saveData = async () => {
+        const { handleAd, setFeedbackMessage, match: { params: { lang: language } } } = this.props;
+        const { id, url, image } = this.state;
+        try {
+            await handleAd({
+                variables: {
+                    language,
+                    details: { id, url, image }
+                },
+                refetchQueries: [
+                    adsRefetch(language)
+                ]
+            });
+            await setFeedbackMessage({
+                variables: {
+                    status: 'success',
+                    message: 'Changes saved successfully.'
+                }
+            });
+            this.setState({
+                promoAnchor: null
+            });
+        }
+        catch (err) {
+            console.log(err);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: err.message
+                }
+            });
+        }
+    }
 
 
 
@@ -206,7 +206,7 @@ class Promo extends Component {
             currentUser: { loading: userLoading, auth: { currentUser } }
         } = this.props;
 
-        const { id, url, tralala, promoAnchor, imageUploadOpen } = this.state;
+        const { id, url, image, promoAnchor, imageUploadOpen } = this.state;
 
         if (adsLoading || userLoading)
             return <Loader />
@@ -246,9 +246,9 @@ class Promo extends Component {
                     }}
                 >
                     <div className='popupBody'>
-                        {tralala &&
+                        {image &&
                             <div className='media'>
-                                <img src={`${s3BucketURL}${tralala.path}`} alt='ad' />
+                                <img src={`${s3BucketURL}${image.path}`} alt='ad' />
                                 <IconButton className='deleteBtn' onClick={this.removeImage}>
                                     <Icon>close</Icon>
                                 </IconButton>
@@ -264,9 +264,9 @@ class Promo extends Component {
                             value={url || ''}
                         />
 
-                        <Button className='imgUpload' onClick={this.openImageUpload}>
+                        { !image && <Button className='imgUpload' onClick={this.openImageUpload}>
                             Upload Image
-                        </Button>
+                        </Button> }
 
                     </div>
                     <div className='popupFooter'>
