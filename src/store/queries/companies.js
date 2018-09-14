@@ -9,6 +9,7 @@ const companyJobData = gql`
     description
     imagePath
     videoUrl
+    status
   }
 `;
 

@@ -102,8 +102,12 @@ const ArticleItem = props => {
                 image = `${s3BucketURL}${img.path}`;
         });
     }
+
     if (videos && videos.length > 0) {
-        video = videos[0].path;
+        videos.forEach(vid => {
+            if (vid.isFeatured)
+                video = vid.path;
+        });
     }
 
     const appreciatedCount = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;

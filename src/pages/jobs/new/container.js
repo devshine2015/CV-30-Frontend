@@ -5,7 +5,7 @@ import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
 import { withFormik } from 'formik';
 
-import { jobDependencies, handleJob, setFeedbackMessage } from '../../../store/queries';
+import { jobDependencies, handleJob, setFeedbackMessage, setEditMode } from '../../../store/queries';
 import { jobsFolder } from '../../../constants/s3';
 import { jobValidation } from './validations';
 
@@ -22,6 +22,7 @@ const NewJobHOC = compose(
     }),
     graphql(handleJob, { name: 'handleJob' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
+    graphql(setEditMode, { name: 'setEditMode' }),
     withFormik({
         mapPropsToValues: ({ location: { state: { companyId, teamId } } }) => ({
             id: uuid(),
@@ -48,7 +49,7 @@ const NewJobHOC = compose(
         }),
         validationSchema: jobValidation,
         displayName: 'NewJobForm',
-        handleSubmit: async (values, { props: { handleJob, match: { params: { lang: language } }, history, setFeedbackMessage }, setSubmitting }) => {
+        handleSubmit: async (values, { props: { handleJob, match: { params: { lang: language } }, history, setFeedbackMessage, setEditMode }, setSubmitting }) => {
             setSubmitting(true);
             try {
                 await handleJob({
@@ -64,6 +65,11 @@ const NewJobHOC = compose(
                     }
                 });
                 setSubmitting(false);
+                await setEditMode({
+                    variables: {
+                        status: false
+                    }
+                });
                 history.push(`/${language}/job/${values.id}`);
             }
             catch (err) {
