@@ -11,9 +11,11 @@
             font-size: 1rem;
             color: #565656;
             font-weight: 100;
+
             .articleTitle {
                 font-weight: bold;
             }
+
             .readMoreLink {
                 font-weight: bold;
                 text-decoration: none;
@@ -21,25 +23,33 @@
                 color: #277dba;
             }
         }
+
         .articleMedia {
             height: 480px;
             background: #d3dce2;
             margin: 0 -15px;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
             img {
-                width: 100%;
-                height: 100%;
+                max-width: 100%;
+                max-height: 100%;
                 object-fit: fill;
             }
         }
+
         .itemFooter {
             margin: 0;
             position: reltive;
         }
+
         .socialSection {
             display: flex;
             position: relative;
             flex-direction: column;
+
             .comments {
                 position: relative;
                 background: #fff;
@@ -47,39 +57,48 @@
                 border: 1px solid #ebebeb;
                 padding: 5px 12px;
                 margin-left: auto;
+
                 .counter {
                     font-size: 1rem;
                     color: #565656;
                     font-weight: 100;
                 }
+
                 .commentBtn {
                     margin-left: 30px;
                     color: #277dba;
+
                     &,
                     &:hover,
                     &:active {
                         background: none;
                     }
+
                     &:hover {
                         font-weight: bold;
                     }
+
                     &:active {
                         color: #1b5e8e;
                     }
+
                     .fa-stack {
                         margin-right: 10px;
                     }
                 }
             }
+
             .likes {
                 color: #565656;
                 font-weight: 100;
                 font-size: .75rem;
             }
+
             .tags {
                 display: flex;
                 align-items: center;
                 flex-wrap: wrap;
+
                 .addTagBtn {
                     width: 35px;
                     height: 35px;
@@ -87,6 +106,7 @@
                     color: #fff;
                     margin-right: 15px;
                 }
+
                 .tag {
                     font-size: 1rem;
                     color: #277dba;
@@ -98,16 +118,19 @@
                     padding: inherit;
                     background-color: inherit;
                     border-radius: inherit;
+
                     .votes {
                         font-weight: bold;
                         margin-right: 5px;
                     }
+
                     .voteBtn {
                         color: #277dba;
                         width: 24px;
                         height: 24px;
                         margin-right: 5px;
                         background: rgba(39, 125, 186, 0.3);
+
                         &:hover {
                             background: rgba(39, 125, 186, 0.6);
                         }
@@ -115,10 +138,12 @@
                 }
             }
         }
+
         .articleMedia+.socialSection {
             .comments {
                 top: -29px;
             }
+
             .likes {
                 margin: -20px 0 20px;
             }
