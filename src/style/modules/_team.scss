@@ -106,7 +106,8 @@
                     .avatar {
                         width: 80px;
                         height: 80px;
-                        background: #565656;
+                        // background-color: #565656;
+                        background: #ffffff;
                     }
 
                     .teamMemberName {
@@ -270,7 +271,8 @@
                         min-height: 140px;
 
                         .mediaFake {
-                            background: #989898;
+                            // background: #989898;
+                            background: #ffffff;
                             display: flex;
                             align-items: center;
                             justify-content: center;
