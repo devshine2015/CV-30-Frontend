@@ -30,7 +30,7 @@ const ColorPickerHOC = compose(
                         language,
                         details: {
                             id: companyId,
-                            coverBackground: color.style
+                            coverBackground: color ? color.style : 'none'
                         }
                     },
                     refetchQueries: [
