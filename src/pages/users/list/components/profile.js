@@ -52,7 +52,7 @@ const Profile = props => {
                 </Link>
             </div>
             <div className='rightOverlay'>
-                Works at&nbsp;<span className='highlight'>CV30</span>&nbsp;-&nbsp;<span className='highlight'>Marketing team</span>
+                Works at&nbsp;<span className='highlight'>THEIR</span>&nbsp;-&nbsp;<span className='highlight'>FUTURE</span>
             </div>
             <div className='itemBody'>
                 <div className='chipContainer'>

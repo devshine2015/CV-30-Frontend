@@ -124,7 +124,7 @@ const ArticleItem = props => {
             </div>
             <span className={canEdit ? 'articleDate editable' : 'articleDate'}>{new Date(createdAt).toLocaleDateString()}</span>
             <div className={canEdit ? 'rightOverlay editable' : 'rightOverlay'}>
-                Works at&nbsp;<span className='highlight'>CV30</span>&nbsp;-&nbsp;<span className='highlight'>Marketing team</span>
+                Works at&nbsp;<span className='highlight'>THEIR</span>&nbsp;-&nbsp;<span className='highlight'>FUTURE</span>
             </div>
             {(canEdit && !editPost) &&
                 <IconButton className='floatingEditBtn' onClick={handleEditBtnClick}>
