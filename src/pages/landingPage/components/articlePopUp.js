@@ -168,7 +168,7 @@ const ArticlePopUp = ({
                                     iconsTemplate: 'font_awesome_5',
                                     toolbarInline: true,
                                     charCounterCount: false,
-                                    quickInsertTags: [''],
+                                    // quickInsertTags: [''],
                                     toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
                                 }}
                                 model={description}

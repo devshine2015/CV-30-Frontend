@@ -28,7 +28,6 @@ const NewArticle = (props) => {
         <div className='newArticleRoot'>
             <Grid container className='mainBody articleEdit'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    {id}
                     <section className='titleSection'>
                         <TextField
                             name="title"
@@ -120,7 +119,7 @@ const NewArticle = (props) => {
                                 charCounterCount: false,
                                 imageUploadRemoteUrls: false,
                                 toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo'],
-                                quickInsertTags: null,
+                                quickInsertButtons: [ 'table', 'ul', 'ol', 'hr' ],
                                 events: {
                                     'froalaEditor.initialized': bindEditor,
                                     'froalaEditor.image.removed': removeImage,

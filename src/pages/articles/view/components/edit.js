@@ -265,8 +265,8 @@ const ArticleEdit = props => {
                             iconsTemplate: 'font_awesome_5',
                             toolbarInline: true,
                             charCounterCount: false,
-                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo'],
-                            quickInsertTags: null,
+                            toolbarButtons: [ 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo' ],
+                            quickInsertButtons: [ 'table', 'ul', 'ol', 'hr' ],
                             events: {
                                 'froalaEditor.initialized': bindEditor,
                                 'froalaEditor.image.removed': removeImage,

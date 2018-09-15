@@ -142,13 +142,13 @@ class Promo extends Component {
 
     openPromoEditor = ev => {
         const { getAds: {  ads: [ ad ] = [] } } = this.props;
-        const adImage = ad && ad.image || null;
+        const adImage = (ad && ad.image) || null;
         let image = null;
         if (adImage) image = {
             id: adImage.id,
             path: adImage.path
         };
-        this.setState({ promoAnchor: ev.target, url: ad && ad.url || '', image });
+        this.setState({ promoAnchor: ev.target, url: (ad && ad.url) || '', image });
     }
     closePromoEditor = () => this.setState({ promoAnchor: null });
 

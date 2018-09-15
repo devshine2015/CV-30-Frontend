@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Chip, TextField } from '@material-ui/core';
+import { compose } from 'react-apollo';
+import { withHandlers, pure } from 'recompose';
 
 class TagsInput extends Component {
     state = {
@@ -28,10 +30,15 @@ class TagsInput extends Component {
         }
     }
 
-    handleRemoveTag = (e) => {
-        const tag = e.target.parentNode.textContent.trim();
-        this.setState({ newTag: '' })
-        this.props.onChange(this.props.value.filter(item => item !== tag));
+    // handleRemoveTag = (e) => {
+    //     const tag = e.target.parentNode.textContent.trim();
+    //     console.log(this.props.value);
+    //     this.setState({ newTag: '' })
+    //     this.props.onChange(this.props.value.filter(item => item.title.trim().toLoweCare() !== tag.toLoweCare()));
+    // }
+    onChange = (items) => {
+        this.setState({ newTag: '' });
+        this.props.onChange(items);
     }
 
     render() {
@@ -49,14 +56,8 @@ class TagsInput extends Component {
                     classes: { root: 'inputHelperText' }
                 }}
                 InputProps={{
-                    startAdornment: this.props.value.map(item => (
-                        <Chip
-                            key={item}
-                            label={item}
-                            onDelete={this.handleRemoveTag}
-                            className='chip'
-                            clickable={false}
-                        />
+                    startAdornment: this.props.value.map(({ id, title }) => (
+                        <InnerTag key={id} title={title} id={id} onChange={this.onChange} items={this.props.value} />
                     )),
                     classes: {
                         root: 'inputRoot',
@@ -72,5 +73,20 @@ class TagsInput extends Component {
         )
     }
 }
+const InnerTag = compose(
+    withHandlers({
+        handleRemoveTag: ({ id, onChange, items }) => () => {
+            onChange(items.filter(item => item.id !== id));
+        }
+    }),
+    pure
+)(({ title, handleRemoveTag }) => (
+    <Chip
+        label={title}
+        onDelete={handleRemoveTag}
+        className='chip'
+        clickable={false}
+    />
+))
 
 export default TagsInput;

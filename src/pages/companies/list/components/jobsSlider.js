@@ -1,6 +1,6 @@
 import React from 'react';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
-import { Icon } from '@material-ui/core';
+// import { Icon } from '@material-ui/core';
 import { FormattedDate } from 'react-intl';
 
 import 'pure-react-carousel/dist/react-carousel.es.css';

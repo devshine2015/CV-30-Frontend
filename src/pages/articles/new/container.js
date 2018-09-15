@@ -119,7 +119,7 @@ const NewArticleHOC = compose(
                 return false;
         },
         saveArticle: props => async () => {
-            const { handleArticle, setState, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state }, images, videos } = props;
+            const { handleArticle, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state }, images, videos } = props;
             const { formData: { id, title, description, tags } } = appState;
             let { type, companyId, teamId } = state || {};
             let options = {};
