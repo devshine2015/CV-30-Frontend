@@ -28,6 +28,7 @@ const NewArticle = (props) => {
         <div className='newArticleRoot'>
             <Grid container className='mainBody articleEdit'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
+                    {id}
                     <section className='titleSection'>
                         <TextField
                             name="title"

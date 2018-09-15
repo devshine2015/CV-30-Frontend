@@ -14,9 +14,9 @@ const NewArticleHOC = compose(
     }),
     graphql(setEditMode, { name: 'setEditMode' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('state', 'setState', {
+    withState('state', 'setState', ({ articleId }) => ({
         formData: {
-            id: uuid(),
+            id: articleId || uuid(),
             tags: [],
             title: '',
             description: ''
@@ -28,7 +28,7 @@ const NewArticleHOC = compose(
         imageUploadOpen: false,
         anchorEl: null,
         videoShareAnchor: null
-    }),
+    })),
     withState('images', 'setImages', []),
     withState('videos', 'setVideos', []),
     withHandlers({
@@ -119,7 +119,7 @@ const NewArticleHOC = compose(
                 return false;
         },
         saveArticle: props => async () => {
-            const { handleArticle, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state }, images, videos } = props;
+            const { handleArticle, setState, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state }, images, videos } = props;
             const { formData: { id, title, description, tags } } = appState;
             let { type, companyId, teamId } = state || {};
             let options = {};
@@ -216,10 +216,12 @@ const NewArticleHOC = compose(
                     return history.push(`/${match.params.lang}/company/${companyId}`)
                 else if (postAs === 'team' && teamId)
                     return history.push(`/${match.params.lang}/team/${teamId}`)
-
-                return history.push(`/${match.params.lang}/article/${id}`);
+                
+                return history.push(`/${match.params.lang}/article/${id}`)
+                
             }
             catch (err) {
+                console.log(err);   
                 await setFeedbackMessage({
                     variables: {
                         status: 'error',
@@ -228,7 +230,6 @@ const NewArticleHOC = compose(
                 });
             }
         },
-
     }),
     pure
 );

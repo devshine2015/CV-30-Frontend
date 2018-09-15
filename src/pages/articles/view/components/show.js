@@ -3,16 +3,36 @@ import { Grid, Button, Icon, IconButton } from '@material-ui/core';
 import { FormattedDate, FormattedMessage } from 'react-intl';
 import { DiscussionEmbed } from 'disqus-react';
 import { compose, withState, withHandlers, pure } from 'recompose';
+import { graphql } from 'react-apollo';
 
 import AuthorAvatarHeader from '../../../../components/AvatarHeader/AuthorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../../constants/disqus';
 import AddTags from './addTags';
+import { appreciateMutation } from '../../../../store/queries';
+import { newsFeedArticlesRefetch } from '../../../../store/refetch';
 
 const ArticleShowHOC = compose(
     withState('tagAnchor', 'setTagAnchor', null),
+    graphql(appreciateMutation, { name: 'appreciate' }),
     withHandlers({
         openTagEditor: ({ setTagAnchor }) => target => setTagAnchor(target),
         closeTagEditor: ({ setTagAnchor }) => () => setTagAnchor(null),
+        addVote: ({ appreciate, getArticle: { article: { id: articleId } }, match: { params: { lang: language } } }) => async tagId => {
+            try {
+                await appreciate({
+                    variables: {
+                        tagId,
+                        articleId
+                    },
+                    refetchQueries: [
+                        newsFeedArticlesRefetch(language)
+                    ]
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
+        },
     }),
     pure
 );
@@ -30,7 +50,7 @@ const ArticleShow = props => {
         title, description: articleBody, createdAt, tags
     } = article;
 
-    let likes = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;
+    let likes = tags ? tags.reduce((acc, cur) => acc + cur.votes, 0) : 0;
     const isAddTagAllowed = !!currentUser;
 
     const disqusConfig = {
@@ -39,7 +59,7 @@ const ArticleShow = props => {
         title: title,
     };
     const { lang } = match.params;
-
+    console.log('xxxxxx');
     return (
         <Grid container className='mainBody articleShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -86,23 +106,18 @@ const ArticleShow = props => {
                     {(tags && tags.length > 0) &&
                         <section className='tags'>
                             {
-                                tags.map(tag => {
-                                    const { id, title, users } = tag;
-                                    const result = users.find(user => user.id === currentUser.id);
-                                    let userHasVoted = !!result;
-                                    return (
-                                        <span className='tag' key={id}>
-                                            {
-                                                userHasVoted ?
-                                                    <span className='votes'>{tag.users.length}</span>
-                                                    : <IconButton className='voteBtn' onClick={() => addVote(tag)}>
-                                                        <Icon>add</Icon>
-                                                    </IconButton>
-                                            }
-                                            <span className='title'>{title}</span>
-                                        </span>
-                                    )
-                                })
+                                tags.map(({ id, title, votes, canVote }) => (
+                                    <span className='tag' key={id}>
+                                        {
+                                            !canVote ?
+                                                <span className='votes'>{votes}</span>
+                                                : <IconButton className='voteBtn' onClick={() => addVote(id)}>
+                                                    <Icon>add</Icon>
+                                                </IconButton>
+                                        }
+                                        <span className='title'>{title}</span>
+                                    </span>
+                                ))
                             }
                         </section>
                     }

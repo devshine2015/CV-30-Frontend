@@ -14,13 +14,13 @@ const NewProfileHOC = compose(
     withRouter,
     graphql(handleShallowUser, { name: 'handleShallowUserMutation' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('state', 'setState', {
+    withState('state', 'setState', () => ({
         formData: {
             id: uuid()
         },
         isSaving: false,
         imageUploadOpen: false
-    }),
+    })),
     withHandlers({
         handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;

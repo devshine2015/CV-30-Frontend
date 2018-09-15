@@ -10,7 +10,7 @@ import AuthorAvatarHeader from '../../../components/AvatarHeader/AuthorAvatarHea
 import { disqusShortname, disqusUrlPrefix } from '../../../constants/disqus';
 import { stripHtmlTags } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
-import { getCurrentUser, handleArticleTags, setEditMode } from '../../../store/queries';
+import { getCurrentUser, appreciateMutation, setEditMode } from '../../../store/queries';
 import { newsFeedArticlesRefetch } from '../../../store/refetch';
 import AddTag from './addTag';
 import Loader from '../../../components/Loader';
@@ -19,7 +19,7 @@ import EditPost from './editPost';
 const ArticleItemHOC = compose(
     withRouter,
     graphql(getCurrentUser, { name: 'getCurrentUser' }),
-    graphql(handleArticleTags, { name: 'handleArticleTags' }),
+    graphql(appreciateMutation, { name: 'appreciate' }),
     graphql(setEditMode, { name: 'setEditMode' }),
     withState('state', 'setState', {
         editPost: false,
@@ -28,16 +28,12 @@ const ArticleItemHOC = compose(
     withHandlers({
         openTagEditor: ({ state, setState }) => tagAnchor => setState({ ...state, tagAnchor }),
         closeTagEditor: ({ state, setState }) => () => setState({ ...state, tagAnchor: null }),
-        addVote: ({ handleArticleTags, match: { params: { lang: language } }, article }) => async tag => {
+        addVote: ({ appreciate, article: { id: articleId }, match: { params: { lang: language } } }) => async tagId => {
             try {
-                await handleArticleTags({
+                await appreciate({
                     variables: {
-                        language,
-                        details: {
-                            titles: [tag.title],
-                            articleId: article.id,
-                            isSet: true
-                        }
+                        tagId,
+                        articleId
                     },
                     refetchQueries: [
                         newsFeedArticlesRefetch(language)
@@ -110,7 +106,7 @@ const ArticleItem = props => {
         });
     }
 
-    const appreciatedCount = tags ? tags.reduce((acc, cur) => acc + cur.users.length, 0) : 0;
+    const appreciatedCount = tags ? tags.reduce((acc, cur) => acc + cur.votes, 0) : 0;
 
     const canEdit = currentUser && currentUser.id === author.id;
 
@@ -198,14 +194,13 @@ const ArticleItem = props => {
                         }
                         {
                             (tags && tags.length > 0) && tags.map(tag => {
-                                const { id, title, users } = tag;
-                                const userHasVoted = currentUser && users.findIndex(user => user.id === currentUser.id) > -1;
+                                const { id, title, votes, canVote } = tag;
                                 return (
                                     <span className='tag' key={id}>
                                         {
-                                            userHasVoted || !currentUser ?
-                                                <span className='votes'>{tag.users.length}</span>
-                                                : <IconButton className='voteBtn' onClick={() => addVote(tag)}>
+                                            !canVote || !currentUser ?
+                                                <span className='votes'>{votes}</span>
+                                                : <IconButton className='voteBtn' onClick={() => addVote(id)}>
                                                     <Icon>add</Icon>
                                                 </IconButton>
                                         }

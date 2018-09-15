@@ -24,13 +24,13 @@ const ArticlePopUpHOC = compose(
         name: 'handleArticle'
     }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('state', 'setState', {
+    withState('state', 'setState', () => ({
         formData: {
             id: uuid()
         },
         isVideoUrl: true,
         imageUploadOpen: false
-    }),
+    })),
     withHandlers({
         handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;

@@ -38,10 +38,8 @@ const standardArticleResult = gql`
         tags {
             id
             title
-            users {
-                id
-                email
-            }
+            votes
+            canVote
         }
         createdAt
         updatedAt
@@ -111,6 +109,14 @@ export const handleArticleTags = gql`
         handleArticleTags(language: $language, details: $details) {
             status
             error
+        }
+    }
+`;
+
+export const appreciateMutation = gql`
+    mutation appreciate($tagId: Int!, $articleId: String!) {
+        appreciate(tagId: $tagId, articleId: $articleId) {
+            status
         }
     }
 `;

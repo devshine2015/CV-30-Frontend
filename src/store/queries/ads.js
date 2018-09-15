@@ -5,8 +5,8 @@ export const getAds = gql`
         ads(language: $language) {
             id
             image {
-            id
-            path
+                id
+                path
             }
             url
         }

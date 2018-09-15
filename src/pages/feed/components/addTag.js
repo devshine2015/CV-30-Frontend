@@ -26,8 +26,7 @@ const AddTagHOC = compose(
                         language,
                         details: {
                             titles: [...currentTags, newTag],
-                            articleId,
-                            isSet: true
+                            articleId
                         }
                     },
                     refetchQueries: [

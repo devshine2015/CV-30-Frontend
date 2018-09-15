@@ -48,7 +48,7 @@ const NewPostHOC = compose(
         }
         return { postOptions };
     }),
-    withState('state', 'setState', {
+    withState('state', 'setState', () => ({
         formData: {
             id: uuid()
         },
@@ -56,7 +56,7 @@ const NewPostHOC = compose(
         mediaUploadAnchor: null,
         postAsAnchor: null,
         selectedPostOption: 0
-    }),
+    })),
     withHandlers({
         handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
