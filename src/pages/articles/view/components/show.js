@@ -4,6 +4,8 @@ import { FormattedDate, FormattedMessage } from 'react-intl';
 import { DiscussionEmbed } from 'disqus-react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
+import { Sentry } from 'react-activity';
+import 'react-activity/dist/react-activity.css';
 
 import AuthorAvatarHeader from '../../../../components/AvatarHeader/AuthorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../../constants/disqus';
@@ -12,26 +14,32 @@ import { appreciateMutation } from '../../../../store/queries';
 import { newsFeedArticlesRefetch } from '../../../../store/refetch';
 
 const ArticleShowHOC = compose(
-    withState('tagAnchor', 'setTagAnchor', null),
+    withState('state', 'set', {
+        tagAnchor: null,
+        fetching: false
+    }),
     graphql(appreciateMutation, { name: 'appreciate' }),
     withHandlers({
-        openTagEditor: ({ setTagAnchor }) => target => setTagAnchor(target),
-        closeTagEditor: ({ setTagAnchor }) => () => setTagAnchor(null),
-        addVote: ({ appreciate, getArticle: { article: { id: articleId } }, match: { params: { lang: language } } }) => async tagId => {
-            try {
-                await appreciate({
-                    variables: {
-                        tagId,
-                        articleId
-                    },
-                    refetchQueries: [
-                        newsFeedArticlesRefetch(language)
-                    ]
-                });
-            }
-            catch (err) {
-                console.log(err);
-            }
+        openTagEditor: ({ set }) => target => set(state => ({ ...state, target })),
+        closeTagEditor: ({ set }) => () => set(state => ({ ...state, target: null })),
+        addVote: ({ set, appreciate, getArticle: { article: { id: articleId } }, match: { params: { lang: language } } }) => tagId => {
+            set(state => ({ ...state, fetching: true }), async () => {
+                try {
+                    await appreciate({
+                        variables: {
+                            tagId,
+                            articleId
+                        },
+                        refetchQueries: [
+                            newsFeedArticlesRefetch(language)
+                        ]
+                    });
+                }
+                catch (err) {
+                    console.log(err);
+                }
+                set(state => ({ ...state, fetching: false }));
+            })
         },
     }),
     pure
@@ -42,7 +50,7 @@ const ArticleShow = props => {
         match,
         getArticle: { article },
         currentUser: { auth: { currentUser } },
-        openTagEditor, closeTagEditor, tagAnchor, addVote
+        openTagEditor, closeTagEditor, state: { tagAnchor, fetching }, addVote
     } = props;
 
     const {
@@ -111,9 +119,13 @@ const ArticleShow = props => {
                                         {
                                             !canVote ?
                                                 <span className='votes'>{votes}</span>
-                                                : <IconButton className='voteBtn' onClick={() => addVote(id)}>
-                                                    <Icon>add</Icon>
-                                                </IconButton>
+                                                : (
+                                                    fetching
+                                                    ? <Sentry color="#727981" size={14} speed={1} animating={true} />
+                                                    : <IconButton className='voteBtn' onClick={() => addVote(id)}>
+                                                        <Icon>add</Icon>
+                                                    </IconButton>
+                                                )
                                         }
                                         <span className='title'>{title}</span>
                                     </span>

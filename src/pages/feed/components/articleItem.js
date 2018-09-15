@@ -5,6 +5,8 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { CommentCount } from 'disqus-react';
 import ReactPlayer from 'react-player';
 import { graphql } from 'react-apollo';
+import { Sentry } from 'react-activity';
+import 'react-activity/dist/react-activity.css';
 
 import AuthorAvatarHeader from '../../../components/AvatarHeader/AuthorAvatarHeader';
 import { disqusShortname, disqusUrlPrefix } from '../../../constants/disqus';
@@ -21,32 +23,36 @@ const ArticleItemHOC = compose(
     graphql(getCurrentUser, { name: 'getCurrentUser' }),
     graphql(appreciateMutation, { name: 'appreciate' }),
     graphql(setEditMode, { name: 'setEditMode' }),
-    withState('state', 'setState', {
+    withState('state', 'set', {
         editPost: false,
-        tagAnchor: null
+        tagAnchor: null,
+        fetching: false
     }),
     withHandlers({
-        openTagEditor: ({ state, setState }) => tagAnchor => setState({ ...state, tagAnchor }),
-        closeTagEditor: ({ state, setState }) => () => setState({ ...state, tagAnchor: null }),
-        addVote: ({ appreciate, article: { id: articleId }, match: { params: { lang: language } } }) => async tagId => {
-            try {
-                await appreciate({
-                    variables: {
-                        tagId,
-                        articleId
-                    },
-                    refetchQueries: [
-                        newsFeedArticlesRefetch(language)
-                    ]
-                });
-            }
-            catch (err) {
-                console.log(err);
-            }
+        openTagEditor: ({ set }) => tagAnchor => set(state => ({ ...state, tagAnchor })),
+        closeTagEditor: ({ set }) => () => set(state => ({ ...state, tagAnchor: null })),
+        addVote: ({ set, appreciate, article: { id: articleId }, match: { params: { lang: language } } }) => tagId => {
+            set(state => ({ ...state, fetching: true }), async () => {
+                try {
+                    await appreciate({
+                        variables: {
+                            tagId,
+                            articleId
+                        },
+                        refetchQueries: [
+                            newsFeedArticlesRefetch(language)
+                        ]
+                    });
+                }
+                catch (err) {
+                    console.log(err);
+                }
+                set(state => ({ ...state, fetching: false }));
+            });
         },
         handleEditBtnClick: props => async () => {
-            const { state, setState, article: { id, isPost }, history, setEditMode, match: { params: { lang } } } = props;
-            if (isPost) setState({ ...state, editPost: true });
+            const { state, set, article: { id, isPost }, history, setEditMode, match: { params: { lang } } } = props;
+            if (isPost) set(state => ({ ...state, editPost: true }));
             else {
                 await setEditMode({
                     variables: {
@@ -56,7 +62,7 @@ const ArticleItemHOC = compose(
                 return history.push(`/${lang}/article/${id}`);
             }
         },
-        closeEditPost: ({ state, setState }) => () => setState({ ...state, editPost: false })
+        closeEditPost: ({ set }) => () => set(state => ({ ...state, editPost: false }))
     }),
     pure
 );
@@ -65,7 +71,8 @@ const ArticleItem = props => {
     const {
         state: {
             editPost,
-            tagAnchor
+            tagAnchor,
+            fetching
         },
         match, getCurrentUser,
         article,
@@ -200,9 +207,13 @@ const ArticleItem = props => {
                                         {
                                             !canVote || !currentUser ?
                                                 <span className='votes'>{votes}</span>
-                                                : <IconButton className='voteBtn' onClick={() => addVote(id)}>
-                                                    <Icon>add</Icon>
-                                                </IconButton>
+                                                : (
+                                                    fetching
+                                                    ? <Sentry color="#727981" size={14} speed={1} animating={true} />
+                                                    : <IconButton className='voteBtn' onClick={() => addVote(id)}>
+                                                        <Icon>add</Icon>
+                                                    </IconButton>
+                                                )
                                         }
                                         <span className='title'>{title}</span>
                                     </span>
