@@ -1,4 +1,4 @@
-import { compose, pure, withHandlers, lifecycle } from 'recompose';
+import { compose, pure, withHandlers, lifecycle, withState } from 'recompose';
 import LandingPage from './component';
 import { graphql } from 'react-apollo';
 import { landingPage, getCurrentUser } from '../../store/queries';
@@ -16,39 +16,35 @@ const LandingPageHOC = compose(
         }),
     }),
     graphql(getCurrentUser, { name: 'currentUserQuery' }),
-    // withState('state', 'setState', {
-    //     isEditAllowed: false,
-    //     editMode: false,
-    //     userWantsEditSwitch: false
-    // }),
+    withState('editMode', 'set', false),
     lifecycle({
         // componentDidUpdate(prevProps, prevState, snapshot) {
-        //     const {currentUserQuery: { auth }, isEditAllowed, editMode, updateIsEditAllowed, updateEditMode, userWantsEditSwitch, updateUserWantsEditSwitch } = props;
+        //     const {currentUserQuery: { auth }, isEditAllowed, editMode, updateIsEditAllowed, updateEditMode, userWantsEditSwitch, set } = this.props;
         //     const { currentUser } = auth || {};
         //     const newIsEditAllowed = currentUser && currentUser.god ? true : false;
 
         //     // isEditAllowed is the master flag
         //     if (newIsEditAllowed !== isEditAllowed) {
-        //         updateIsEditAllowed(newIsEditAllowed);
+        //         set(state => ({ ...state, userWantsEditSwitch: newIsEditAllowed }));
                 
         //         // Mandatory modeEdit change in this case
         //         const newEditMode = newIsEditAllowed ? true : false;
         //         if (newEditMode !== editMode) {
-        //             updateEditMode(newEditMode);
+        //             set(state => ({ ...state, editMode: newEditMode }));
         //         }
         //     } else if (userWantsEditSwitch) {
         //         // User read/edit toggle
-        //         updateUserWantsEditSwitch(false);
+        //         set(state => ({ ...state, userWantsEditSwitch: false }));
         //         if (newIsEditAllowed) {
-        //             updateEditMode(!editMode);
+        //             set(state => ({ ...state, editMode: !editMode }));
         //         }
         //     }
         // },
     }),
     withHandlers({
-        // switchEditMode: ({ updateUserWantsEditSwitch }) => () => {
-        //     updateUserWantsEditSwitch(true);
-        // }
+        switchEditMode: ({ editMode, set }) => () => {
+            set(!editMode);
+        }
     }),
     pure
 );
