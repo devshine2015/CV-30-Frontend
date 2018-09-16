@@ -132,7 +132,7 @@ const ArticleEditHOC = compose(
                 description,
                 images,
                 videos,
-                tags
+                tags: tags.map(tag => tag.title)
             };
 
             try {
