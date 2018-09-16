@@ -118,6 +118,7 @@ const NewArticleHOC = compose(
             else
                 return false;
         },
+        cancelVideoPopover: ({ state, setState }) => () => setState({ ...state, videoShareAnchor: null, videoURL: '' }),
         saveArticle: props => async () => {
             const { handleArticle, state: appState, setEditMode, match, setFeedbackMessage, history, location: { state }, images, videos } = props;
             const { formData: { id, title, description, tags } } = appState;

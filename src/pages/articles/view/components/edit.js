@@ -57,6 +57,7 @@ const ArticleEditHOC = compose(
             else
                 return false;
         },
+        cancelVideoPopover: ({ state, setState }) => () => setState({ ...state, videoShareAnchor: null, videoURL: '' }),
         updateVideoUrl: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const videoURL = target.type === 'checkbox' ? target.checked : target.value;
@@ -172,7 +173,7 @@ const ArticleEdit = props => {
         state, handleFormChange, updateDescription, saveArticle, setTags,
         openImageUpload, closeImageUpload, handleError, handleSuccess,
         images, videos, selectFeaturedImage, selectFeaturedVideo, bindEditor, removeImage,
-        openVideoShare, closeVideoShare, updateVideoUrl, removeVideo
+        openVideoShare, closeVideoShare, updateVideoUrl, removeVideo, cancelVideoPopover
     } = props;
     const { articleId, title, description, tags, videoURL, videoShareAnchor, imageUploadOpen, isVideoUrlValid } = state;
     return (
@@ -248,9 +249,16 @@ const ArticleEdit = props => {
                         </div>
                         <div className='popupFooter'>
                             <IconButton
+                                onClick={cancelVideoPopover}
+                                className='footerCancel'
+                            >
+                                <Icon>close</Icon>
+                            </IconButton>
+                            <IconButton
+                                style={ !videoURL || !isVideoUrlValid ? { background: '#fff', color: '#aaa', border: '1px solid #aaa' } : {} }
                                 onClick={closeVideoShare}
                                 className='footerCheck'
-                                disabled={!!videoURL && !isVideoUrlValid}
+                                disabled={!videoURL || !isVideoUrlValid}
                             >
                                 <Icon>done</Icon>
                             </IconButton>

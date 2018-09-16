@@ -71,7 +71,7 @@ const NamePopUpHOC = compose(
     pure
 );
 
-const NamePopUp = ({ anchor, onClose, handleFormChange, formData: { firstName, lastName, position }, saveData }) => {
+const NamePopUp = ({ anchor, onClose, handleFormChange, formData: { firstName, lastName, position }, saveData, onClose: cancel }) => {
     return (
         <Popover
             anchorOrigin={{
@@ -117,6 +117,12 @@ const NamePopUp = ({ anchor, onClose, handleFormChange, formData: { firstName, l
                 />
             </div>
             <div className='popupFooter'>
+                <IconButton
+                    onClick={cancel}
+                    className='footerCancel'
+                >
+                    <Icon>close</Icon>
+                </IconButton>
                 <IconButton className='footerCheck' onClick={saveData}>
                     <Icon>done</Icon>
                 </IconButton>

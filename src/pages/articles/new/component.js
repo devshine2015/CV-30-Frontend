@@ -20,7 +20,7 @@ const NewArticle = (props) => {
         updateDescription, saveArticle,
         openImageUpload, closeImageUpload, handleError, handleSuccess,
         setTags, bindEditor, removeImage,
-        openVideoShare, closeVideoShare, updateVideoUrl, removeVideo,
+        openVideoShare, closeVideoShare, updateVideoUrl, removeVideo, cancelVideoPopover,
         images, selectFeaturedImage, videos, selectFeaturedVideo
     } = props;
 
@@ -98,9 +98,16 @@ const NewArticle = (props) => {
                             </div>
                             <div className='popupFooter'>
                                 <IconButton
+                                    onClick={cancelVideoPopover}
+                                    className='footerCancel'
+                                >
+                                    <Icon>close</Icon>
+                                </IconButton>
+                                <IconButton
+                                    style={ !videoURL || !isVideoUrlValid ? { background: '#fff', color: '#aaa', border: '1px solid #aaa' } : {} }
                                     onClick={closeVideoShare}
                                     className='footerCheck'
-                                    disabled={!!videoURL && !isVideoUrlValid}
+                                    disabled={!videoURL || !isVideoUrlValid}
                                 >
                                     <Icon>done</Icon>
                                 </IconButton>

@@ -142,6 +142,12 @@ const SkillsEdit = props => {
                 </FormControl>
             </div>
             <div className='popupFooter'>
+                <IconButton
+                    onClick={closeSkillsModal}
+                    className='footerCancel'
+                >
+                    <Icon>close</Icon>
+                </IconButton>
                 <IconButton className='footerCheck' onClick={saveData}>
                     <Icon>done</Icon>
                 </IconButton>

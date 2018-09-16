@@ -166,8 +166,15 @@ const NewJob = ({
                                         <div className='popupFooter'>
                                             <IconButton
                                                 onClick={closeVideoShare}
+                                                className='footerCancel'
+                                            >
+                                                <Icon>close</Icon>
+                                            </IconButton>
+                                            <IconButton
+                                                style={ !values.videoUrl || (touched.videoUrl && errors.videoUrl) ? { background: '#fff', color: '#aaa', border: '1px solid #aaa' } : {} }
+                                                onClick={closeVideoShare}
                                                 className='footerCheck'
-                                                disabled={(!!values.videoUrl && touched.videoUrl && errors.videoUrl)}
+                                                disabled={!values.videoUrl || (touched.videoUrl && errors.videoUrl)}
                                             >
                                                 <Icon>done</Icon>
                                             </IconButton>
