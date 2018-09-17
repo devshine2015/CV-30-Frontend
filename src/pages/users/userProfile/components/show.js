@@ -26,7 +26,6 @@ const ShowHOC = compose(
         newProj: false,
         isPopUpOpen: false,
         story: profile.story && profile.story.description,
-        editContactDetails: false,
         contactExpanded: true,
         isSalaryPublic: profile.salary && profile.salary.isPublic,
         desiredSalary: (profile.salary && profile.salary.amount) || 0
@@ -36,8 +35,6 @@ const ShowHOC = compose(
         closeNewExperience: ({ state, setState }) => () => setState({ ...state, newXP: false }),
         addNewProject: ({ state, setState }) => () => setState({ ...state, newProj: !state.newProj }),
         closeNewProject: ({ state, setState }) => () => setState({ ...state, newProj: false }),
-        toggleEditContact: ({ state, setState }) => () => setState({ ...state, editContactDetails: !state.editContactDetails, contactExpanded: state.editContactDetails === false }),
-        closeContactEdit: ({ state, setState }) => () => setState({ ...state, editContactDetails: false }),
         toggleContactExpanded: ({ state, setState }) => () => setState({ ...state, contactExpanded: !state.contactExpanded }),
         toggleSalaryPrivate: ({ state, setState }) => () => setState({ ...state, isSalaryPublic: !state.isSalaryPublic }),
         updateStory: ({ state, setState }) => story => setState({ ...state, story }),
@@ -117,7 +114,6 @@ const Show = props => {
             newProj,
             isPopUpOpen,
             story,
-            editContactDetails,
             contactExpanded,
             isSalaryPublic,
             desiredSalary
@@ -202,7 +198,7 @@ const Show = props => {
                             }
                         </h2>
                         {
-                            !editContactDetails &&
+                            !editMode &&
                             <div className={contactExpanded ? 'contactDetails open' : 'contactDetails'}>
                                 {contact && Object.keys(contact).map((key) => {
                                     const result = fields.find(field => field.id === key);
@@ -223,7 +219,7 @@ const Show = props => {
                                 })}
                             </div>
                         }
-                        {editContactDetails && <EditContactDetails contact={contact} closeContactEdit={closeContactEdit} open={contactExpanded} />}
+                        {editMode && <EditContactDetails contact={contact} closeContactEdit={closeContactEdit} open={contactExpanded} />}
 
                     </div>
                     {(aboutMeArticles && aboutMeArticles.length > 0) &&
