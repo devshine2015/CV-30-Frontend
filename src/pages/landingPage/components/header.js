@@ -71,14 +71,15 @@ const HeaderHOC = compose(
 const Header = props => {
     const {
         state: { headline, colorPickerAnchor, forceCoverRender },
-        switchEditMode, editMode, currentUserQuery: { auth: { currentUser: { god: isEditAllowed } = { god: false } } },
+        switchEditMode, editMode, currentUserQuery: { auth },
         updateHeadline, submitHeadline,
         toggleColorPicker, closeColorPicker, refetchBgImage,
         landingPageQuery: { landingPage },
     } = props;
 
     const { coverBackground, coverPath } = landingPage || {};
-
+    const isEditAllowed = (auth && auth.currentUser && auth.currentUser.god) || false;
+    
     let headerStyle = null;
 
     if (coverBackground) {
