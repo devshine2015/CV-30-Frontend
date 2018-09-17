@@ -29,17 +29,15 @@ const NewCompanyHOC = compose(
                     },
                     refetchQueries: [companiesRefetch(match.params.lang), currentProfileRefetch(match.params.lang)]
                 });
-
                 await setFeedbackMessage({
                     variables: {
                         status: 'success',
                         message: 'Changes saved successfully.'
                     }
                 });
-
                 history.push(`/${match.params.lang}/companies`);
-
             } catch (err) {
+                setSubmitting(false);
                 await setFeedbackMessage({
                     variables: {
                         status: 'error',
@@ -47,7 +45,6 @@ const NewCompanyHOC = compose(
                     }
                 });
             }
-            setSubmitting(false);
         },
         displayName: 'AddCompanyForm', // helps with React DevTools
     }),
