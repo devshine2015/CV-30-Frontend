@@ -363,12 +363,13 @@
         }
 
         .cancelBtn {
-            width: 25px;
-            height: 25px;
+            // width: 25px;
+            // height: 25px;
             min-width: auto;
             min-height: auto;
-            background: #fff;
-            color: #ff0000;
+            border: 1px solid #aaa;
+            background: #fff;;
+            color: #aaa;
             margin-left: auto;
         }
 

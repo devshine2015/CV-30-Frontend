@@ -238,7 +238,7 @@ export const setValues = gql`
     }
 `;
 
-export const setExperience = gql`
+export const setExperienceMutation = gql`
     mutation setExperience($experience: ExperienceInput!, $language: LanguageCodeType!) {
         setExperience(experience: $experience, language: $language) {
             status
@@ -247,7 +247,7 @@ export const setExperience = gql`
     }
 `;
 
-export const setProject = gql`
+export const setProjectMutation = gql`
     mutation setProject($project: ProjectInput!, $language: LanguageCodeType!) {
         setProject(project: $project, language: $language) {
             status
