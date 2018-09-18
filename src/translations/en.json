@@ -40,6 +40,8 @@
     "userProfile.desiredSalaryMessage": "Even when set to private, it can help with job matching.",
     "userProfile.salaryPrivate": "Private",
     "userProfile.salaryPublic": "Public",
+    "userProfile.deleteAccount": "Delete Account",
+    "userProfile.deleteAccountConfrimationText": "We do hope you \"touched\" the DELETE button by mistake. If not and if you trully want to proceed, please confirm you intent. Write the word delete with capital letter to confirm your account termination",
 
     "benefits.event-tickets": "Event Tickets",
     "benefits.children-care": "Children Care",
