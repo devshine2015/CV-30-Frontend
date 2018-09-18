@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo';
 import { FormattedDate, FormattedMessage } from 'react-intl';
 import { FacebookShareButton, GooglePlusShareButton, TwitterShareButton, LinkedinShareButton } from 'react-share';
 import ReactPlayer from 'react-player';
+import * as benefits from '../../../../assets/benefits';
 
 import ArticleSlider from '../../../../components/articleSlider';
 import Loader from '../../../../components/Loader';
@@ -140,7 +141,7 @@ const Show = props => {
                                 <FormattedMessage id={`benefits.${item.key}`} defaultMessage={item.key} key={item.key}>
                                     {(text) => (
                                         <span className='benefit'>
-                                            <i className={item.icon} />
+                                            <img style={{ marginRight: '10px', width: '20px' }} src={benefits[item.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() })]} alt={item.key} />
                                             {text}
                                         </span>
                                     )}

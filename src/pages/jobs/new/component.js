@@ -6,6 +6,7 @@ import {
 import ReactPlayer from 'react-player';
 import { FormattedMessage } from 'react-intl';
 import { DatePicker } from 'material-ui-pickers';
+import * as benefits from '../../../assets/benefits';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -252,7 +253,7 @@ const NewJob = ({
                                     {jobBenefits.map(benefit => (
                                         <MenuItem key={benefit.id} value={benefit.id}>
                                             <Checkbox checked={values.jobBenefits.indexOf(benefit.id) > -1} />
-                                            <i className={benefit.icon} />
+                                            <img style={{ marginRight: '10px', width: '20px' }} src={benefits[benefit.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() })]} alt={benefit.key} />
                                             <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key}>
                                                 {(text) => <ListItemText primary={text} />}
                                             </FormattedMessage>

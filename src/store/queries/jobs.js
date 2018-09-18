@@ -28,7 +28,6 @@ query jobs($language: LanguageCodeType!) {
     jobBenefits {
       id
       key
-      icon
     }
   }
 }
@@ -108,7 +107,6 @@ query job($id: String!, $language: LanguageCodeType!) {
     jobBenefits {
       id
       key
-      icon
     }
   }
 }
@@ -127,7 +125,6 @@ export const jobDependencies = gql`
 		jobBenefits {
 			id
 			key
-			icon
 		}
 	}
 `;

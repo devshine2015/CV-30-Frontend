@@ -3,11 +3,12 @@ import { Chip, IconButton, Icon } from '@material-ui/core';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import ReactPlayer from 'react-player';
+import { FormattedMessage } from 'react-intl';
 
 import { stripHtmlTags } from '../../../../constants/utils';
 import JobAvatarHeader from '../../../../components/AvatarHeader/JobAvatarHeader'
 import { s3BucketURL } from '../../../../constants/s3';
-import { FormattedMessage } from 'react-intl';
+import * as benefits from '../../../../assets/benefits';
 
 const JobItem = props => {
     const { job, lang, editJob } = props;
@@ -88,7 +89,7 @@ const JobItem = props => {
                             <FormattedMessage id={`benefits.${item.key}`} key={item.key}>
                                 {(text) => (
                                     <div className='benefit' >
-                                        <i className={item.icon} />
+                                        <img style={{ marginRight: '10px', width: '20px' }} src={benefits[item.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() })]} alt={item.key} />
                                         {text}
                                     </div>
                                 )}
