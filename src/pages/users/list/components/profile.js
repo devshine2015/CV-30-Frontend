@@ -31,10 +31,10 @@ const Article = props => {
 const Profile = props => {
     const { activeTab, handleTabChange, user } = props;
 
-    let { id, firstName, lastName, email, position, avatarPath, skills, values, aboutMeArticles } = user;
+    let { id, firstName, lastName, email, position, avatarPath, skills, values, aboutMeArticles, currentPosition } = user;
     let avatar = avatarPath ? `${s3BucketURL}${avatarPath}` : defaultUserAvatar;
     let fullName = (firstName && lastName) ? `${firstName} ${lastName}` : email;
-
+    
     return (
         <div className='listItem userListItem'>
             <div className='leftOverlay'>
@@ -51,9 +51,13 @@ const Profile = props => {
                     </div>
                 </Link>
             </div>
+            { (currentPosition.experience || currentPosition.project) && 
             <div className='rightOverlay'>
-                Works at&nbsp;<span className='highlight'>THEIR</span>&nbsp;-&nbsp;<span className='highlight'>FUTURE</span>
-            </div>
+                Works at&nbsp;<span className='highlight'>
+                    { (currentPosition.experience && currentPosition.experience.company) || '' }
+                    { (currentPosition.experience && currentPosition.experience.company && currentPosition.project && currentPosition.project.company && ' &amp; ') || '' }
+                    { (currentPosition.project && currentPosition.project.company) || '' }</span>
+            </div> }
             <div className='itemBody'>
                 <div className='chipContainer'>
                     <span className='chipTitle skills'>Hard skills:</span>

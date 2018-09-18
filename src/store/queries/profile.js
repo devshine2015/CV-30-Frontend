@@ -301,6 +301,14 @@ export const profilesQuery = gql`
                 value
                 statusCode
             }
+            currentPosition {
+                experience {
+                    company
+                }
+                project {
+                    company
+                }
+            }
         }
     }
 `;

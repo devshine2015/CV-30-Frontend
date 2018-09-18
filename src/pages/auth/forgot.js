@@ -7,7 +7,7 @@ import { ForgotPasswordMutation } from '../../store/queries';
 import { Link, withRouter } from 'react-router-dom';
 import { isValidEmail } from '../../constants/utils';
 
-const ForgotPasswordComponent = ({ match, email, updateEmail, emailError, loading, sendMail, forgotError }) => {
+const ForgotPasswordComponent = ({ match, updateEmail, sendMail, state: { email, emailError, loading, forgotError } }) => {
     const OrSeparator = () => (
         <div className='divSeparator'>
             <hr className='separatorHR' />
