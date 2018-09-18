@@ -108,6 +108,8 @@
             margin-top: 30px;
             display: flex;
             justify-content: flex-end;
+            align-items: center;
+            flex-direction: 'row';
 
             .successMessage {
                 display: flex;
@@ -121,6 +123,16 @@
                 align-items: center;
                 padding: 0 15px;
                 color: #F00;
+            }
+
+            .deleteAccount {
+                margin-left: 0;
+                margin-right: auto;
+                color: #aaa;
+                cursor: pointer;
+            }
+            .deleteAccount:hover {
+                text-decoration: underline;
             }
 
             .cancelBtn,

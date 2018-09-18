@@ -17,3 +17,11 @@ export const handleApplyToJob = gql`
         }
     }
 `;
+
+export const deleteAccountMutation = gql`
+    mutation deleteProfile {
+        deleteProfile {
+            status
+        }
+    }
+`;

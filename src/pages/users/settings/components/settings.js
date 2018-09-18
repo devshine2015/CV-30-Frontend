@@ -2,9 +2,17 @@ import React from 'react';
 import { Avatar, Button, TextField } from '@material-ui/core';
 import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
-import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
+import { graphql, withApollo } from 'react-apollo';
+import { FormattedMessage } from 'react-intl';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
-import { updateAvatar, localUserQuery, updateAvatarTimestampMutation, updateUserSettingsMutation, setFeedbackMessage } from '../../../../store/queries';
+import { updateAvatar, localUserQuery, deleteAccountMutation, updateAvatarTimestampMutation, updateUserSettingsMutation, setFeedbackMessage } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
 
 const SettingsHOC = compose(
@@ -14,6 +22,7 @@ const SettingsHOC = compose(
     graphql(updateUserSettingsMutation, { name: 'updateUserSettings' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('state', 'setState', ({ currentProfileQuery: { profile: { firstName, lastName, email } } }) => ({
+        isTerminatingAccount: false,
         isUploading: false,
         uploadProgress: 0,
         uploadError: null,
@@ -23,6 +32,7 @@ const SettingsHOC = compose(
         formData: { firstName, lastName, email }
     })),
     withHandlers({
+        toggleClose: ({ setState }) => () => setState(state => ({ ...state, isTerminatingAccount: !state.isTerminatingAccount })),
         getSignedUrl: ({ currentProfileQuery, state, setState, setFeedbackMessage }) => async (file, callback) => {
             const fileParams = {
                 fileName: `avatar.${file.type.replace('image/', '')}`,
@@ -161,9 +171,10 @@ const Settings = props => {
         isUploading,
         settingsFormError,
         settingsFormSuccess,
+        isTerminatingAccount,
         formData: { firstName, lastName, email, oldPassword, newPassword, newPasswordConfirm }
     } = props.state
-    const { getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, localUserData, currentProfileQuery, handleFormChange, saveUserDetails } = props;
+    const { toggleClose, getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, localUserData, currentProfileQuery, handleFormChange, saveUserDetails } = props;
 
     const { profile } = currentProfileQuery;
     let avatar =
@@ -254,13 +265,66 @@ const Settings = props => {
                 />
             </div>
             <div className='actions'>
-                {/* <Button className='cancelBtn'>Cancel</Button> */}
+                <FormattedMessage id="userProfile.deleteAccount" defaultMessage="Delete Account" description="Click here to terminate your account">
+                    {(text) => <a className='deleteAccount' onClick={toggleClose}>{text}</a>}
+                </FormattedMessage>
                 {settingsFormError && <div className="errorMessage">{settingsFormError}</div>}
                 {settingsFormSuccess && <div className="successMessage">Your details have been successfully saved</div>}
                 <Button className='saveBtn' onClick={saveUserDetails}>Save</Button>
             </div>
+            <AccountTermination handleClose={toggleClose} open={isTerminatingAccount} />
         </div>
     );
 }
+
+const AccountTermination = compose(
+    withRouter,
+    withApollo,
+    withState('confirmation', 'set', ''),
+    graphql(deleteAccountMutation, { name: 'deleteAccount' }),
+    withHandlers({
+        onClose: ({ handleClose }) => () => handleClose(),
+        handleChange: ({ set }) => event => set(event.target.value),
+        closeAccount: ({ deleteAccount, client, history }) => async () => {
+            try {
+                const { data: { deleteProfile: { status } } } = await deleteAccount();
+                if (status) { 
+                    client.resetStore();
+                    history.push("/");
+                }
+            } catch(error) { console.log(error); }
+        }
+    }),
+    pure
+)(({ open, onClose, confirmation, handleChange, closeAccount }) => (
+    <Dialog
+        open={open}
+        onClose={onClose}
+        aria-labelledby="form-dialog-title"
+        >
+        <FormattedMessage id="userProfile.deleteAccount" defaultMessage="Delete Account" description="Click here to terminate your account">
+            {(text) => <DialogTitle id="form-dialog-title">{text}</DialogTitle>}
+        </FormattedMessage>
+        <DialogContent>
+            <FormattedMessage id="userProfile.deleteAccountConfrimationText" defaultMessage="Delete Account Confirmation" description="Please confirm you want to delete your account">
+                {(text) => <DialogContentText>{text}</DialogContentText>}
+            </FormattedMessage>
+            <TextField margin="dense" id="confirmation" value={confirmation} onChange={handleChange} label="confirmation" type="text" fullWidth />
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={onClose} color="primary">
+                Cancel
+            </Button>
+            <FormattedMessage id="userProfile.deleteAccount" defaultMessage="Delete Account" description="Click here to terminate your account">
+                {(text) => (
+                    <Button onClick={closeAccount} color="default" disabled={confirmation !== "DELETE"}>
+                        {text}
+                    </Button>
+                )}
+            </FormattedMessage>
+            
+        </DialogActions>
+    </Dialog>
+))
 
 export default SettingsHOC(Settings);
