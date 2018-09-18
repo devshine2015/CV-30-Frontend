@@ -139,7 +139,8 @@ const NewArticleHOC = compose(
                 description,
                 images,
                 videos,
-                tags: tags.map(tag => tag.title),
+                tags,
+                // tags: tags.map(tag => tag.title),
                 postAs
             };
 

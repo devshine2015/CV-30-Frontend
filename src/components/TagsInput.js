@@ -15,9 +15,7 @@ class TagsInput extends Component {
     handleKeyDown = (e) => {
         if ((e.keyCode === 13 || e.keyCode === 9 || e.keyCode === 188) && e.target.value !== '') {
             e.preventDefault();
-
             const newTag = this.state.newTag.trim()
-
             if (this.props.value.indexOf(newTag) === -1) {
                 this.setState({ newTag: '' })
                 this.props.onChange([...this.props.value, newTag]);
@@ -56,9 +54,7 @@ class TagsInput extends Component {
                     classes: { root: 'inputHelperText' }
                 }}
                 InputProps={{
-                    startAdornment: this.props.value.map(({ id, title }) => (
-                        <InnerTag key={id} title={title} id={id} onChange={this.onChange} items={this.props.value} />
-                    )),
+                    startAdornment: this.props.value.map((title, index) => <InnerTag key={index} title={title} id={index} onChange={this.onChange} items={this.props.value} />),
                     classes: {
                         root: 'inputRoot',
                         input: 'tagInput',
@@ -76,7 +72,7 @@ class TagsInput extends Component {
 const InnerTag = compose(
     withHandlers({
         handleRemoveTag: ({ id, onChange, items }) => () => {
-            onChange(items.filter(item => item.id !== id));
+            onChange(items.splice(id, 1) && items);
         }
     }),
     pure

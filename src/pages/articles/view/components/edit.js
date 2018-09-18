@@ -27,7 +27,7 @@ const ArticleEditHOC = compose(
         articleId,
         title: title || '',
         description: description || '',
-        tags: tags || [],
+        tags: (tags && tags.map(tag => tag.title)) || [],
         videoURL: '',
         isSaving: false,
         imageUploadOpen: false,
@@ -133,7 +133,8 @@ const ArticleEditHOC = compose(
                 description,
                 images,
                 videos,
-                tags: tags.map(tag => tag.title)
+                tags
+                // tags: tags.map(tag => tag.title)
             };
 
             try {

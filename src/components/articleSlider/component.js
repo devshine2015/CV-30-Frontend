@@ -73,7 +73,7 @@ const ArticleSlider = props => {
                                             <Icon>edit</Icon>
                                         </IconButton>
                                         <IconButton className='floatingDeleteBtn' onClick={() => deleteArticle(article.id)}>
-                                            <Icon>cancel</Icon>
+                                            <Icon>close</Icon>
                                         </IconButton>
                                     </React.Fragment>
                                 }

@@ -42,7 +42,7 @@
         .floatingEditBtn {
             position: absolute;
             top: 10px;
-            right: 40px;
+            right: 45px;
             width: 30px;
             height: 30px;
             background: #397db9;
@@ -54,10 +54,11 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            width: 25px;
-            height: 25px;
-            background: red;
-            color: #fff;
+            width: 30px;
+            height: 30px;
+            border: 1px solid #aaa;
+            background: #fff;
+            color: #aaa;
             box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
         }
     }
