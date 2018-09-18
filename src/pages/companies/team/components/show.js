@@ -209,7 +209,7 @@ const Show = props => {
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
                     <h2 className="columnTitle">
-                        <b>Joburile</b> echipei de inovatii
+                        <b>Joburile</b> echipei
                     </h2>
                     <div className='jobs'>
                         {
