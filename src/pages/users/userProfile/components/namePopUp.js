@@ -33,6 +33,7 @@ const NamePopUpHOC = compose(
             props.setFormData(state => ({ ...state, [name]: value }));
         },
         saveData: ({ formData: { firstName, lastName, position }, updateUserSettings, match: { params: { lang: language } }, setFeedbackMessage, onClose }) => async () => {
+            if (!firstName || !lastName) return;
             try {
                 const { data: { updateUserSettings: { status } } } = await updateUserSettings({
                     variables: {
@@ -123,7 +124,7 @@ const NamePopUp = ({ anchor, onClose, handleFormChange, formData: { firstName, l
                 >
                     <Icon>close</Icon>
                 </IconButton>
-                <IconButton className='footerCheck' onClick={saveData}>
+                <IconButton className='footerCheck' onClick={saveData} style={(firstName && lastName && {}) || { color: '#aaa', border: '1px solid #aaa', background: '#fff' }  }>
                     <Icon>done</Icon>
                 </IconButton>
             </div>
