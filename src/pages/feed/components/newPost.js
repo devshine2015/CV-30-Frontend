@@ -118,13 +118,17 @@ const NewPostHOC = compose(
         },
         openMediaUpload: ({ state, setState }) => mediaUploadAnchor => setState({ ...state, mediaUploadAnchor }),
         closeMediaUpload: ({ state, setState }) => (data) => {
-            let { imgParams, video } = data;
-            let newState = { mediaUploadAnchor: null };
-
-            if (imgParams) newState.images = [imgParams];
-            if (video) newState.videos = [video];
-
-            setState({ ...state, ...newState });
+            const { imgParams, video } = data;
+            const newState = { 
+                ...state,
+                formData: {
+                    ...state.formData,
+                    images: imgParams ? [imgParams] : state.formData.images,
+                    videos: video ? [video] : state.formData.videos
+                },
+                mediaUploadAnchor: null
+            };
+            setState(newState);
         },
         openPostAs: ({ state, setState }) => postAsAnchor => setState({ ...state, postAsAnchor }),
         closePostAs: ({ state, setState }) => () => setState({ ...state, postAsAnchor: null }),
