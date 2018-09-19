@@ -44,7 +44,8 @@ const EditHOC = compose(
         options: props => ({
             fetchPolicy: 'network-only',
             variables: {
-                language: props.match.params.lang
+                language: props.match.params.lang,
+                companyId: props.getJobQuery.job.company.id
             }
         })
     }),
@@ -73,7 +74,7 @@ const EditHOC = compose(
                 jobBenefits: jobBenefits ? jobBenefits.map(benefit => benefit.id) : [],
                 jobTypes: jobTypes ? jobTypes.map(jobType => jobType.id) : [],
                 salary: { amountMax, amountMin, currency, isPublic },
-                activityField: activityField.title || '',
+                activityField: (activityField && activityField.title) || '',
                 skills: skills ? skills.map(skill => skill.title) : [],
                 expireDate: new Date(expireDate).toISOString().split("T")[0],
                 location,
@@ -164,20 +165,22 @@ const EditHOC = compose(
     }),
     pure
 );
-const Edit = ({
-    state: {
-        anchorEl,
-        imageUploadOpen,
-        videoShareAnchor
-    },
-    jobDependencies: { loading, jobBenefits, jobTypes, teams },
-    updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
-    handleClick, handleClose, addField, removeTextField,
-    openImageUpload, closeImageUpload, handleError, handleSuccess,
-    openVideoShare, closeVideoShare,
-    removeImage, removeVideo,
-    handleDateChange,
-    values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid }) => {
+const Edit = props => {
+    const {
+        state: {
+            anchorEl,
+            imageUploadOpen,
+            videoShareAnchor
+        },
+        jobDependencies: { loading, jobBenefits, jobTypes, company },
+        updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
+        handleClick, handleClose, addField, removeTextField,
+        openImageUpload, closeImageUpload, handleError, handleSuccess,
+        openVideoShare, closeVideoShare,
+        removeImage, removeVideo,
+        handleDateChange,
+        values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid
+    } = props;
 
     if (loading) return <Loader />
     return (
@@ -380,7 +383,7 @@ const Edit = ({
                                     )}
                                     className='jobSelect'
                                 >
-                                    {jobBenefits.map(benefit => (
+                                    {jobBenefits && jobBenefits.map(benefit => (
                                         <MenuItem key={benefit.id} value={benefit.id}>
                                             <Checkbox checked={values.jobBenefits.indexOf(benefit.id) > -1} />
                                             <img style={{ marginRight: '10px', width: '20px' }} src={benefits[benefit.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() })]} alt={benefit.key} />
@@ -408,7 +411,7 @@ const Edit = ({
                                     <em>Select a team</em>
                                 </MenuItem>
                                 {
-                                    teams && teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
+                                    company && company.teams && company.teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
                                 }
 
                             </Select>
@@ -456,7 +459,7 @@ const Edit = ({
                                     renderValue={selected => selected.map(item => jobTypes.find(jt => jt.id === item).title).join(', ')}
                                     className='jobSelect'
                                 >
-                                    {jobTypes.map(jobType => (
+                                    {jobTypes && jobTypes.map(jobType => (
                                         <MenuItem key={jobType.id} value={jobType.id}>
                                             <Checkbox checked={values.jobTypes.indexOf(jobType.id) > -1} />
                                             <ListItemText primary={jobType.title} />
