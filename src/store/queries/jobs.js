@@ -113,11 +113,14 @@ query job($id: String!, $language: LanguageCodeType!) {
 `;
 
 export const jobDependencies = gql`
-	query jobDependencies($language: LanguageCodeType!) {
-		teams(language: $language) {
-			id
-			name
-		}
+	query jobDependencies($language: LanguageCodeType!, $companyId: String!) {
+    company(id: $companyId, language: $language) {
+      id
+      teams {
+        id
+			  name
+      }
+    }
 		jobTypes(language: $language) {
 			id
 			title

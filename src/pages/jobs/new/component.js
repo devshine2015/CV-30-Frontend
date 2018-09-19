@@ -32,22 +32,24 @@ import { s3BucketURL } from '../../../constants/s3';
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
-const NewJob = ({
-    state: {
-        anchorEl,
-        imageUploadOpen,
-        videoShareAnchor
-    },
-    jobDependencies: { loading, jobBenefits, jobTypes, teams },
-    updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
-    handleClick, handleClose, addField, removeTextField,
-    openImageUpload, closeImageUpload, handleError, handleSuccess,
-    openVideoShare, closeVideoShare,
-    removeImage, removeVideo,
-    handleDateChange,
-    values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid }) => {
+const NewJob = props => {
+    const {
+        state: {
+            anchorEl,
+            imageUploadOpen,
+            videoShareAnchor
+        },
+        jobDependencies: { loading, jobBenefits, jobTypes, company },
+        updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
+        handleClick, handleClose, addField, removeTextField,
+        openImageUpload, closeImageUpload, handleError, handleSuccess,
+        openVideoShare, closeVideoShare,
+        removeImage, removeVideo,
+        handleDateChange,
+        values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid
+    } = props;
 
-    if (loading)
+    if (loading || !company)
         return <Loader />
 
     return (
@@ -278,7 +280,7 @@ const NewJob = ({
                                     <em>Select a team</em>
                                 </MenuItem>
                                 {
-                                    teams && teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
+                                    company && company.teams && company.teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
                                 }
 
                             </Select>
