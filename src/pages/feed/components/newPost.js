@@ -123,8 +123,8 @@ const NewPostHOC = compose(
                 ...state,
                 formData: {
                     ...state.formData,
-                    images: imgParams ? [imgParams] : state.formData.images,
-                    videos: video ? [video] : state.formData.videos
+                    images: imgParams ? [{ ...imgParams, isFeatured: true }] : state.formData.images,
+                    videos: video ? [{ ...video, isFeatured: true}] : state.formData.videos
                 },
                 mediaUploadAnchor: null
             };
