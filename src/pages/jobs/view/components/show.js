@@ -164,12 +164,15 @@ const Show = props => {
                             <section className='skills'>
                                 <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
                                 {skills && skills.map(item =>
-                                    <Chip
-                                        key={item.id}
-                                        label={item.title}
-                                        className='chip'
-                                        clickable={false}
-                                    />
+                                    <FormattedMessage id={`skills.${item.key}`} defaultMessage={item.key} key={item.key}>
+                                         {text => (
+                                            <Chip
+                                                label={text}
+                                                className='chip'
+                                                clickable={false}
+                                            />
+                                        )}
+                                    </FormattedMessage>
                                 )}
                             </section>
                         }

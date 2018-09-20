@@ -95,7 +95,7 @@ query profile($id: String, $language: LanguageCodeType!) {
     }
     skills {
         id
-        title
+        key
     }
     values {
         id
@@ -220,8 +220,17 @@ export const updateCoverMutation = gql`
     }
 `;
 
+export const skillsQuery = gql`
+    query skillsQuery {
+        skills {
+            id
+            key
+        }
+    }
+`;
+
 export const setSkills = gql`
-    mutation setSkills($skills: [String!]!, $language: LanguageCodeType!) {
+    mutation setSkills($skills: [Int!]!, $language: LanguageCodeType!) {
         setSkills(skills: $skills, language: $language) {
             status
             error
@@ -275,7 +284,7 @@ export const profilesQuery = gql`
             position
             skills {
                 id
-                title
+                key
             }
             values {
                 id

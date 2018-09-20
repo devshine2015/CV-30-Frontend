@@ -88,7 +88,7 @@ query job($id: String!, $language: LanguageCodeType!) {
     location
     skills {
       id
-      title
+      key
     }
     activityField {
       id
@@ -128,7 +128,7 @@ export const jobDependencies = gql`
 		jobBenefits {
 			id
 			key
-		}
+    }
 	}
 `;
 

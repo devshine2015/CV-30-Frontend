@@ -25,9 +25,7 @@ export const jobValidation = yup.object().shape({
     videoUrl: yup.string().trim().max(1024).nullable()
         .matches(/^(http(s)??:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+/, 'Video URL does not match YouTube.'),
     skills: yup.array().of(
-        yup.string().trim()
-            .required('Skill needs a title')
-            .max(100, 'Skill title cannot be longer than 100 chars')
+        yup.number().positive().integer()
     ),
     status: yup.string().matches(/(draft|active|archived)/, { excludeEmptyString: true })
 });

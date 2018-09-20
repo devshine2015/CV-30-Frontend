@@ -22,12 +22,12 @@ import Loader from '../../../components/Loader';
 
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import TagsInput from '../../../components/TagsInput';
 import { formatCurrency } from '../../../constants/utils';
 
 import LocationInput from '../../../components/LocationInput';
 import ImageUploader from '../../../components/imageUploader';
 import { s3BucketURL } from '../../../constants/s3';
+import SkillsInput from '../../../components/SkillsInput';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
@@ -312,7 +312,7 @@ const NewJob = props => {
                         </section>
                         <section className='skills'>
                             <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
-                            <TagsInput value={values.skills} onChange={onSkillsChange} helpTagName='skill' className='textField jobSelect' />
+                            <SkillsInput className='textField jobSelect' value={values.skills} onChange={onSkillsChange}/>
                         </section>
                         <section className='jobType'>
                             <h2 className='sectionTitle'>Job <b>type</b></h2>

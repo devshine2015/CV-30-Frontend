@@ -8,17 +8,32 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import TagsInput from '../../../../components/TagsInput';
+import SkillsInput from '../../../../components/SkillsInput';
 
 const SkillsEditHOC = compose(
     withRouter,
     graphql(setSkills, { name: 'setSkills' }),
     graphql(setValues, { name: 'setValues' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
-    withState('state', 'setState', ({ skillsModalData }) =>({
-        maxSkillCount: 25,
-        initialSkills: (skillsModalData && skillsModalData.data && skillsModalData.data.map(item => item.title)) || [],
-        tagsInputSkills: (skillsModalData && skillsModalData.data && skillsModalData.data.map(item => item.title)) || []
-    })),
+    withState('state', 'setState', ({ skillsModalData }) => {
+        let tagsInputSkills = [];
+        if (skillsModalData && skillsModalData.data) {
+            switch (skillsModalData.type) {
+                case 'values':
+                    tagsInputSkills = skillsModalData.data.map(item => item.title);
+                    break;
+                case 'skills':
+                    tagsInputSkills = skillsModalData.data.map(item => item.id);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return {
+            maxSkillCount: 25,
+            tagsInputSkills
+        }
+    }),
     withHandlers({
         updateTagsInputSkills: ({ state, setState, setFeedbackMessage }) => (tagsInputSkills) => {
             if (tagsInputSkills.length > state.maxSkillCount) {
@@ -32,11 +47,7 @@ const SkillsEditHOC = compose(
             }
             setState({ ...state, tagsInputSkills });
         },
-        saveData: ({ setFeedbackMessage, skillsModalData: { type }, state: { initialSkills, tagsInputSkills }, setSkills, setValues, closeSkillsModal, match }) => async () => {
-            // Diff current with initial
-            // const toAdd = tagsInputSkills.filter(item => initialSkills.findIndex(el => el === item) === -1);
-            // const toRemove = initialSkills.filter(item => tagsInputSkills.findIndex(el => el === item) === -1);
-
+        saveData: ({ setFeedbackMessage, skillsModalData: { type }, state: { tagsInputSkills }, setSkills, setValues, closeSkillsModal, match }) => async () => {
             switch (type) {
                 case 'skills':
                     try {
@@ -134,8 +145,10 @@ const SkillsEdit = props => {
                         {(text) => <span className='title'>{text}</span>}
                     </FormattedMessage>
 
-                    <TagsInput value={tagsInputSkills} onChange={updateTagsInputSkills} helpTagName={type} />
-
+                    { type === 'skills'
+                        ? <SkillsInput value={tagsInputSkills} onChange={updateTagsInputSkills}/>
+                        : <TagsInput value={tagsInputSkills} onChange={updateTagsInputSkills} helpTagName={type} />
+                    }
                     <FormattedMessage id={`userProfile.remaining${(type === 'values') ? "Values" : "Skills"}`} values={{ count: maxSkillCount - tagsInputSkills.length }}>
                         {(text) => <small className='helperText'>{text}</small>}
                     </FormattedMessage>

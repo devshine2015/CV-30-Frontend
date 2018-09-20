@@ -27,7 +27,7 @@ import { jobValidation } from '../../new/validations';
 import { jobDependencies, handleJob, setFeedbackMessage, setEditMode } from '../../../../store/queries';
 import { jobRefetch } from '../../../../store/refetch';
 import Loader from '../../../../components/Loader';
-import TagsInput from '../../../../components/TagsInput';
+import SkillsInput from '../../../../components/SkillsInput';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
@@ -75,7 +75,7 @@ const EditHOC = compose(
                 jobTypes: jobTypes ? jobTypes.map(jobType => jobType.id) : [],
                 salary: { amountMax, amountMin, currency, isPublic },
                 activityField: (activityField && activityField.title) || '',
-                skills: skills ? skills.map(skill => skill.title) : [],
+                skills: skills ? skills.map(skill => skill.id) : [],
                 expireDate: new Date(expireDate).toISOString().split("T")[0],
                 location,
                 imagePath,
@@ -443,7 +443,7 @@ const Edit = props => {
                         </section>
                         <section className='skills'>
                             <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
-                            <TagsInput value={values.skills} onChange={onSkillsChange} helpTagName='skill' className='textField jobSelect' />
+                            <SkillsInput className='textField jobSelect' value={values.skills} onChange={onSkillsChange}/>
                         </section>
                         <section className='jobType'>
                             <h2 className='sectionTitle'>Job <b>type</b></h2>

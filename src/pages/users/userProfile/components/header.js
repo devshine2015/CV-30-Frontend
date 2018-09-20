@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Avatar, Button, Icon, Hidden, Chip, IconButton } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from "recompose";
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { NavLink, withRouter, Link } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 import ReactPlayer from 'react-player';
@@ -174,6 +174,7 @@ const HeaderHOC = compose(
             }
         }
     }),
+    injectIntl,
     pure
 );
 
@@ -195,6 +196,7 @@ const Header = props => {
         toggleFollow, currentProfileQuery,
         toggleNameEditor, closeNameEditor,
         openImageUpload, closeImageUpload, handleError, handleSuccess,
+        intl
     } = props;
     let editMode = false;
     try {
@@ -211,12 +213,7 @@ const Header = props => {
         coverBackground, coverPath
     } = profile;
 
-    const skills = profile.skills ? profile.skills.map(item => {
-        return {
-            id: item.id,
-            title: item.title
-        }
-    }) : [];
+    const skills = profile.skills || [];
 
     const values = profile.values ? profile.values.map(item => {
         return {
@@ -431,12 +428,14 @@ const Header = props => {
                         <FormattedMessage id="userProfile.softSkills" defaultMessage="Soft skills" description="User header soft skills">
                             {(text) => (<span className='headerSkillsTitle softSkills'>{text}:</span>)}
                         </FormattedMessage>
-                        {!editMode && skills &&
-                            skills.map((item, index) => <Chip label={item.title} className='chip skills' key={`softSkill - ${index}`} />)
-                        }
+                        {!editMode && skills && skills.map(item =>
+                            <FormattedMessage id={`skills.${item.key}`} defaultMessage={item.key} key={item.key}>
+                                {text => <Chip label={text} className='chip skills' />}
+                            </FormattedMessage>
+                        )}
                         {
                             editMode && skills &&
-                            <span>{skills.map(item => item.title).join(', ')}</span>
+                            <span>{skills.map(item => intl.formatMessage({ id: `skills.${item.key}` })).join(', ')}</span>
                         }
                         {
                             editMode &&

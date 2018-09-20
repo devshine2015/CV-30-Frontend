@@ -2,6 +2,7 @@ import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { Avatar, Chip, Tabs, Tab } from '@material-ui/core';
 import { Link, withRouter } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 import { s3BucketURL } from '../../../../constants/s3';
 import { defaultUserAvatar } from '../../../../constants/utils';
@@ -62,8 +63,11 @@ const Profile = props => {
                 <div className='chipContainer'>
                     <span className='chipTitle skills'>Hard skills:</span>
                     {(skills && skills.length > 0) ?
-                        skills.map(item => <Chip label={item.title} key={item.id} className='chip' />)
-                        : <span className='empty'>No skills.</span>
+                        skills.map(item =>
+                            <FormattedMessage id={`skills.${item.key}`} defaultMessage={item.key} key={item.key}>
+                                {text => <Chip label={text} className='chip' />}
+                            </FormattedMessage>
+                        ) : <span className='empty'>No skills.</span>
                     }
                 </div>
 
