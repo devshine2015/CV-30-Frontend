@@ -80,13 +80,14 @@ const NewCompany = ({ cancel, values, touched, errors, isSubmitting, handleBlur,
                     </section> */}
                 <section className='details'>
                     <IndustryInput
+                        name='industryId'
                         className='textField'
                         fullWidth
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        value={values.industry}
-                        error={!!(touched.industry && errors.industry)}
-                        helperText={touched.industry && errors.industry}
+                        value={values.industryId}
+                        error={!!(touched.industryId && errors.industryId)}
+                        //helperText={touched.industryId && errors.industryId}
                     />
 
                     <TextField

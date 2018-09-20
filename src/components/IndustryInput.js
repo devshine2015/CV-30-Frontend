@@ -1,10 +1,12 @@
 import React from 'react';
+import { Select, MenuItem, ListItemText } from '@material-ui/core';
 import { compose, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
+import { FormattedMessage } from 'react-intl';
 import { industriesQuery } from '../store/queries';
 
-import SuggestionsInput from './SuggestionsInput';
+//import SuggestionsInput from './SuggestionsInput';
 
 const IndustryInputHOC = compose(
     withRouter,
@@ -20,22 +22,45 @@ const IndustryInputHOC = compose(
     pure
 )
 
+// const IndustryInput = props => {
+//     const { value, industriesQuery, ...other} = props;
+//     if (industriesQuery.loading)
+//         return <div>Industry...</div>;
+//     return (
+//         <SuggestionsInput
+//             suggestions={industriesQuery.industries}
+//             name='industry'
+//             label='Industry'
+//             placeholder='Enter industry...'
+//             className='textField'
+//             value={value || ''}
+//             getSuggestionValue={s => s ? s.title : ''}
+//             fullWidth
+//             {...other}
+//         />
+//     );
+// }
+
 const IndustryInput = props => {
-    const { value, industriesQuery, ...other} = props;
-    if (industriesQuery.loading)
+    const { value, industriesQuery, staticContext, ...other} = props;
+    if (industriesQuery.loading || !industriesQuery.industries)
         return <div>Industry...</div>;
     return (
-        <SuggestionsInput
-            suggestions={industriesQuery.industries}
-            name='industry'
+        <Select
             label='Industry'
             placeholder='Enter industry...'
             className='textField'
-            value={value || ''}
-            getSuggestionValue={s => s ? s.title : ''}
-            fullWidth
+            value={value || -1}
             {...other}
-        />
+        >
+            {industriesQuery.industries && industriesQuery.industries.map(item => (
+                <MenuItem key={item.id} value={item.id}>
+                    <FormattedMessage id={`industries.${item.key}`} defaultMessage={item.key}>
+                        {(text) => <ListItemText primary={text} />}
+                    </FormattedMessage>
+                </MenuItem>
+            ))}
+        </Select>
     );
 }
 

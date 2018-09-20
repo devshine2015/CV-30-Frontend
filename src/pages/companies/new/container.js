@@ -15,7 +15,7 @@ const NewCompanyHOC = compose(
     withFormik({
         mapPropsToValues: () => ({
             name: '',
-            industry: '',
+            industryId: undefined,
             noOfEmployees: '',
             location: ''
         }),

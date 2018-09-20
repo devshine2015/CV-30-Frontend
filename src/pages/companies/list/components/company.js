@@ -2,6 +2,7 @@ import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { Avatar, Tabs, Tab } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
 import { s3BucketURL } from '../../../../constants/s3';
@@ -31,7 +32,13 @@ const Company = ({ activeTab, handleTabChange,
                             {name}
                             <i className='fas fa-caret-down' />
                         </h6>
-                        <p className='userTitle'>{industry && industry.title}</p>
+                        { industry &&
+                        (<FormattedMessage id={`industries.${industry.key}`} defaultMessage={industry.key}>
+                            {(text) => (
+                                <p className='userTitle'>{text}</p>
+                            )}
+                        </FormattedMessage>)
+                        }
                     </div>
                 </Link>
             </div>

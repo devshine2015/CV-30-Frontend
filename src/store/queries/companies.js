@@ -24,7 +24,7 @@ const minimumCompanyData = gql`
     logoPath
     industry {
       id 
-      title
+      key
     }
     jobs {
       ...companyJobData
@@ -111,7 +111,7 @@ export const industriesQuery = gql`
   query industries($language: LanguageCodeType!) {
     industries(language: $language) {
       id
-      title
+      key
     }
   }
 `;

@@ -28,11 +28,11 @@ const SettingsHOC = compose(
         settingsFormSuccess: false,
         headline,
         description,
-        formData: { id, industry: industry ? industry.title : '', location, noOfEmployees, name }
+        formData: { id, industryId: industry ? industry.id : undefined, location, noOfEmployees, name }
     })),
     withHandlers({
         handleFormChange: props => event => {
-            const target = event.currentTarget;
+            const target = event.target;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
             
@@ -53,7 +53,7 @@ const SettingsHOC = compose(
             const {
                 handleCompany, state, setState, match, setFeedbackMessage
             } = props;
-            const { headline, description, formData: { id, industry, location, noOfEmployees, name } } = state;
+            const { headline, description, formData: { id, industryId, location, noOfEmployees, name } } = state;
             setState({ ...state, isSaving: true });
 
             try {
@@ -61,7 +61,7 @@ const SettingsHOC = compose(
                     variables: {
                         language: match.params.lang,
                         details: {
-                            id, industry, location, noOfEmployees, name, headline, description
+                            id, industryId, location, noOfEmployees, name, headline, description
                         }
                     },
                     refetchQueries: [
@@ -97,7 +97,7 @@ const Settings = props => {
             settingsFormSuccess,
             headline,
             description,
-            formData: { name, location, industry, noOfEmployees }
+            formData: { name, location, industryId, noOfEmployees }
         },
         handleFormChange,
         saveUserDetails,
@@ -126,8 +126,9 @@ const Settings = props => {
             </div>
             <div className='infoFields'>
                 <IndustryInput
+                    name='industryId'
                     onChange={handleFormChange}
-                    value={industry}
+                    value={industryId}
                 />
 
                 <LocationInput

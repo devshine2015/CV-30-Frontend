@@ -15,7 +15,7 @@ const profileFollowingData = gql`
             name
             industry {
                 id
-                title
+                key
             }
             logoPath
         }

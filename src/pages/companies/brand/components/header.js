@@ -272,7 +272,13 @@ const Header = props => {
                     <Avatar alt={avatar} src={avatar} className='avatar' />
                     <div className='avatarTexts'>
                         <h3>{name}</h3>
-                        <h4>{industry && industry.title}</h4>
+                        { industry &&
+                        (<FormattedMessage id={`industries.${industry.key}`} defaultMessage={industry.key}>
+                            {(text) => (
+                                <h4>{text}</h4>
+                            )}
+                        </FormattedMessage>)
+                        }
                     </div>
 
                     {editMode &&
@@ -423,7 +429,14 @@ const Header = props => {
                 />
             </Grid>
             <Grid container className='activityFields'>
-                <Chip label={industry && industry.title} className='chip activity' />
+                <Chip label={
+                    industry && <FormattedMessage id={`industries.${industry.key}`} defaultMessage={industry.key}>
+                        {(text) => (
+                            <span>{text}</span>
+                        )}
+                    </FormattedMessage>}
+                    className='chip activity'
+                />
                 <Chip label={location} className='chip activity' />
                 <Chip label={noOfEmployees} className='chip activity' />
             </Grid>

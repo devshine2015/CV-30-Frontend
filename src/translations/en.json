@@ -99,7 +99,7 @@
     "industries.construction": "Construction",
     "industries.retail": "Retail",
     "industries.hardware": "Hardware",
-    "industries.software-": "Software ",
+    "industries.software": "Software",
     "industries.telecommunications": "Telecommunications",
     "industries.transportation": "Transportation",
     "industries.storage": "Storage",
@@ -345,14 +345,12 @@
     "skills.persuasive": "Persuasive",
     "skills.predict-the-future-of-the-business-or-department": "Predict the future of the business or department",
     "skills.presentation": "Presentation",
-    "skills.prioritization": "Prioritization",
     "skills.question-the-connection-between-new-initiatives-and-the-strategic-plan": "Question the connection between new initiatives and the strategic plan",
     "skills.recognize-opportunities-for-improvement": "Recognize opportunities for improvement",
     "skills.resolve-industry-problems": "Resolve industry problems",
     "skills.see-the-key-elements-in-any-situation": "See the key elements in any situation",
     "skills.select-important-information-from-large-amounts-of-data": "Select important information from large amounts of data",
     "skills.stability": "Stability",
-    "skills.strategic-planning": "Strategic planning",
     "skills.task-implementation": "Task implementation",
     "skills.understand-relationships-between-departments": "Understand relationships between departments",
     "skills.understand-relationships-between-ideas-concepts-and-patterns": "Understand relationships between ideas, concepts, and patterns",
@@ -407,5 +405,5 @@
     "skills.performing-repetitive-activities": "Performing repetitive activities",
     "skills.power": "Power",
     "skills.precision": "Precision",
-    "skills.tactics": "Tactics&`"
+    "skills.tactics": "Tactics"
 }
