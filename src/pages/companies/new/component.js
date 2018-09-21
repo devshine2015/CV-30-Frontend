@@ -80,8 +80,6 @@ const NewCompany = ({ cancel, values, touched, errors, isSubmitting, handleBlur,
                     </section> */}
                 <section className='details'>
                     <IndustryInput
-                        name='industryId'
-                        className='textField'
                         fullWidth
                         onBlur={handleBlur}
                         onChange={handleChange}

@@ -21,7 +21,7 @@ const SkillsInputHOC = compose(
 const SkillsInput = props => {
     const { skillsQuery } = props;
 
-    if (skillsQuery.loading || !skillsQuery.skills) return null;
+    if (skillsQuery.loading || !skillsQuery.skills) return <div>Skills...</div>;
 
     const { value, onChange, intl } = props;
 
@@ -32,6 +32,7 @@ const SkillsInput = props => {
 
     return (
         <AutoCompleteSelectInput
+            isMulti
             value={value.map(item => suggestions.find(el => el.value === item))}
             onChange={val => onChange(val.map(item => item.value))}
             suggestions={suggestions}

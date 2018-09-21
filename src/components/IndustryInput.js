@@ -1,12 +1,11 @@
 import React from 'react';
-import { Select, MenuItem, ListItemText } from '@material-ui/core';
 import { compose, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { industriesQuery } from '../store/queries';
 
-//import SuggestionsInput from './SuggestionsInput';
+import AutoCompleteSelectInput from './AutoCompleteSelectInput';
 
 const IndustryInputHOC = compose(
     withRouter,
@@ -19,49 +18,38 @@ const IndustryInputHOC = compose(
             fetchPolicy: 'network-only'
         }),
     }),
+    injectIntl,
     pure
 )
 
-// const IndustryInput = props => {
-//     const { value, industriesQuery, ...other} = props;
-//     if (industriesQuery.loading)
-//         return <div>Industry...</div>;
-//     return (
-//         <SuggestionsInput
-//             suggestions={industriesQuery.industries}
-//             name='industry'
-//             label='Industry'
-//             placeholder='Enter industry...'
-//             className='textField'
-//             value={value || ''}
-//             getSuggestionValue={s => s ? s.title : ''}
-//             fullWidth
-//             {...other}
-//         />
-//     );
-// }
-
 const IndustryInput = props => {
-    const { value, industriesQuery, staticContext, ...other} = props;
-    if (industriesQuery.loading || !industriesQuery.industries)
-        return <div>Industry...</div>;
+    const { industriesQuery } = props;
+
+    if (industriesQuery.loading || !industriesQuery.industries) return <div>Industry...</div>;
+
+    const name = props.name || 'industryId';
+    const { value, onChange, intl } = props;
+
+    const suggestions = industriesQuery.industries.map(industry => ({
+        value: industry.id,
+        label: intl.formatMessage({ id: `industries.${industry.key}` })
+    }));
+    
     return (
-        <Select
-            label='Industry'
+        <AutoCompleteSelectInput
+            value={suggestions.find(el => el.value === value)}
+            onChange={val => onChange({
+                target: {
+                    value: val.value,
+                    name
+                }
+            })}
+            suggestions={suggestions}
             placeholder='Enter industry...'
-            className='textField'
-            value={value || -1}
-            {...other}
-        >
-            {industriesQuery.industries && industriesQuery.industries.map(item => (
-                <MenuItem key={item.id} value={item.id}>
-                    <FormattedMessage id={`industries.${item.key}`} defaultMessage={item.key}>
-                        {(text) => <ListItemText primary={text} />}
-                    </FormattedMessage>
-                </MenuItem>
-            ))}
-        </Select>
-    );
+            label='Industry'
+        />
+    )
 }
+
 
 export default IndustryInputHOC(IndustryInput);

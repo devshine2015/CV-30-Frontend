@@ -2,9 +2,10 @@ import React from 'react';
 import classNames from 'classnames';
 import Select from 'react-select';
 import { withStyles } from '@material-ui/core/styles';
-import { Typography,  TextField, MenuItem, Chip, Paper} from '@material-ui/core';
+import { Typography, TextField, MenuItem, Chip, Paper } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { emphasize } from '@material-ui/core/styles/colorManipulator';
+import { List } from 'react-virtualized';
 
 const styles = theme => ({
     input: {
@@ -122,17 +123,32 @@ const MultiValue = props => (
     />
 );
 
-function Menu(props) {
-    return (
-        <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
-            {props.children}
-        </Paper>
-    );
-}
+const Menu = props => (
+    <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
+        {props.children}
+    </Paper>
+);
+
+const MenuList = props => (
+    <List
+        style={{ width: '100%' }}
+        width={300}
+        height={350}
+        rowHeight={50}
+        rowCount={props.children.length || 0}
+        rowRenderer={({ key, index, style }) => (
+            <div key={key} style={style}>
+                {props.children[index]}
+            </div>
+        )}
+    >
+    </List>
+);
 
 const components = {
     Control,
     Menu,
+    MenuList,
     MultiValue,
     NoOptionsMessage,
     Option,
@@ -142,7 +158,7 @@ const components = {
 };
 
 const IntegrationReactSelect = props => {
-    const { classes, theme, suggestions, placeholder, onChange, value } = props;
+    const { classes, theme, suggestions, label, placeholder, onChange, value, isMulti } = props;
 
     const selectStyles = {
         input: base => ({
@@ -159,16 +175,17 @@ const IntegrationReactSelect = props => {
             classes={classes}
             styles={selectStyles}
             textFieldProps={{
-            InputLabelProps: {
-                shrink: true,
-            },
+                label,
+                InputLabelProps: {
+                    shrink: true,
+                },
             }}
             options={suggestions}
             components={components}
             value={value}
             onChange={onChange}
             placeholder={placeholder}
-            isMulti
+            isMulti={!!isMulti}
         />
     );
 }

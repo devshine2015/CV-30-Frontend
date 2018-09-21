@@ -1,22 +1,43 @@
 import React from 'react';
 
-import SuggestionsInput from './SuggestionsInput';
+//import SuggestionsInput from './SuggestionsInput';
+import AutoCompleteSelectInput from './AutoCompleteSelectInput';
 import locations from '../constants/locations';
 
 const LocationInput = props => {
-    const { value, ...other} = props;
+    const name = props.name || 'location';
+    const { value, onChange } = props;
+
+    const suggestions = locations.map(item => ({
+        value: item,
+        label: item
+    }));
+    //console.log(props, suggestions, suggestions.find(el => el.value === value));
+
     return (
-        <SuggestionsInput
-            suggestions={locations}
-            name='location'
-            label='Location'
+        <AutoCompleteSelectInput
+            value={suggestions.find(el => el.value === value) || ''}
+            onChange={val => onChange({
+                target: {
+                    value: val.value,
+                    name
+                }
+            })}
+            suggestions={suggestions}
             placeholder='Enter location...'
-            className='textField'
-            value={value || ''}
-            getSuggestionValue={s => s}
-            fullWidth
-            {...other}
+            label='Location'
         />
+        // <SuggestionsInput
+        //     suggestions={locations}
+        //     name='location'
+        //     label='Location'
+        //     placeholder='Enter location...'
+        //     className='textField'
+        //     value={value || ''}
+        //     getSuggestionValue={s => s}
+        //     fullWidth
+        //     {...other}
+        // />
     );
 }
 
