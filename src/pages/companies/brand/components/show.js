@@ -85,8 +85,11 @@ const ShowHOC = compose(
             if (panel !== state.edited)
                 e.stopPropagation();
         },
-        addQA: ({ state, setState }) => () => {
-            setState({ ...state, newQA: true });
+        addQA: ({ state, setState, companyQuery }) => () => {
+            setState({ ...state, newQA: true, expanded: `panel-${companyQuery.company.faqs.length}` });
+        },
+        endAddQA: ({ state, setState }) => () => {
+            setState({ ...state, newQA: false });
         },
         deleteQA: props => async (e, id) => {
             e.stopPropagation();
@@ -189,7 +192,7 @@ const Show = props => {
         match: { params: { lang, companyId } },
         updateDescription, submitDescription,
         openArticlePopup, closeArticlePopup,
-        editJob
+        editJob, endAddQA
     } = props;
 
     const editMode = isEditAllowed && getEditMode.editMode.status;
@@ -299,7 +302,7 @@ const Show = props => {
                             + Add
                         </div>
                     }
-                    {editMode && newQA && <QuestionEdit onChange={expandPanel} expanded={expanded} panelId={`panel-${faqs.length}`} />}
+                    {editMode && newQA && <QuestionEdit onChange={expandPanel} expanded={expanded} panelId={`panel-${faqs.length}`} onClose={endAddQA}/>}
                 </section>
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>

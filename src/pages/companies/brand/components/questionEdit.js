@@ -33,9 +33,9 @@ const QuestionEditHOC = compose(
             props.setFormData(state => ({ ...state, [name]: value }));
         },
         cancel: props => () => {
-            console.log('cancel!');
+            props.onClose();
         },
-        save: ({ formData, match: { params: { lang, companyId } }, handleFAQ, setFeedbackMessage }) => async () => {
+        save: ({ formData, match: { params: { lang, companyId } }, handleFAQ, setFeedbackMessage, onClose }) => async () => {
             let { id, question, answer } = formData;
             try {
                 await handleFAQ({
@@ -57,6 +57,7 @@ const QuestionEditHOC = compose(
                         message: 'Changes saved successfully.'
                     }
                 });
+                onClose();
             }
             catch (err) {
                 console.log(err);
@@ -83,6 +84,8 @@ const QuestionEdit = props => {
                 root: 'qaPanelHeader',
                 expandIcon: 'qaHeaderIcon',
                 content: 'qaPanelHeaderContent'
+            }} onClick={e => {
+                e.stopPropagation();
             }}>
                 <TextField
                     name="question"
@@ -92,6 +95,9 @@ const QuestionEdit = props => {
                     className='textField'
                     onChange={handleFormChange}
                     value={question || ''}
+                    onClick={e =>{
+                        e.stopPropagation();
+                    }}
                 />
             </ExpansionPanelSummary>
             <ExpansionPanelDetails classes={{ root: 'qaPanelDetailRoot' }}>
