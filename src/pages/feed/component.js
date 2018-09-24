@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 
 import Loader from '../../components/Loader';
 import ArticlesList from './components/articlesList';
@@ -19,8 +19,8 @@ const NewsFeed = props => {
     if (loading || newsFeedArticlesQuery.loading)
         return <Loader />
 
-    const newsFeedArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles : [];
-
+    const newsFeedArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.edges.map(edge => edge.node) : [];
+    
     return (
         <div className='newsFeedRoot'>
             <Grid container className='mainBody brandShow'>
@@ -65,6 +65,27 @@ const NewsFeed = props => {
                     }
                     <section className='articlesList'>
                         <ArticlesList articles={newsFeedArticles} />
+                    </section>
+                    <section>
+                        { newsFeedArticlesQuery.newsFeedArticles.pageInfo.hasNextPage && <Button onClick={() =>
+                            newsFeedArticlesQuery.fetchMore({
+                                variables: {
+                                    after: newsFeedArticlesQuery.newsFeedArticles.edges[newsFeedArticlesQuery.newsFeedArticles.edges.length - 1].cursor
+                                },
+                                updateQuery: (previousResult, { fetchMoreResult: { newsFeedArticles: { edges: newEdges, pageInfo} } }) => {
+                                    return newEdges.length
+                                        ? {
+                                            // Put the new articles at the end of the list and update `pageInfo`
+                                            newsFeedArticles: {
+                                                __typename: previousResult.newsFeedArticles.__typename,
+                                                edges: [...previousResult.newsFeedArticles.edges, ...newEdges],
+                                                pageInfo
+                                            }
+                                        }
+                                        : previousResult;
+                                }
+                            })
+                        }>MORE</Button> }
                     </section>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
