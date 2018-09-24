@@ -1,10 +1,5 @@
 import gql from 'graphql-tag';
-
-const pageInfoResult = gql`
-    fragment pageInfoResult on PageInfo {
-        hasNextPage
-    }
-`;
+import { pageInfoData } from './common';
 
 const standardArticleResult = gql`
     fragment standardArticleResult on Article {
@@ -86,12 +81,12 @@ export const getNewsFeedArticles = gql`
                 cursor
             }
             pageInfo {
-                ...pageInfoResult
+                ...pageInfoData
             }
         }
     }
     ${standardArticleResult}
-    ${pageInfoResult}
+    ${pageInfoData}
 `;
 
 export const getFeedArticles = gql`

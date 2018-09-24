@@ -20,7 +20,8 @@ const NewsFeed = props => {
         return <Loader />
 
     const newsFeedArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.edges.map(edge => edge.node) : [];
-    
+    const hasNextPage = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.pageInfo.hasNextPage : false;
+
     return (
         <div className='newsFeedRoot'>
             <Grid container className='mainBody brandShow'>
@@ -67,7 +68,7 @@ const NewsFeed = props => {
                         <ArticlesList articles={newsFeedArticles} />
                     </section>
                     <section>
-                        { newsFeedArticlesQuery.newsFeedArticles.pageInfo.hasNextPage && <Button onClick={() =>
+                        { hasNextPage && <Button onClick={() =>
                             newsFeedArticlesQuery.fetchMore({
                                 variables: {
                                     after: newsFeedArticlesQuery.newsFeedArticles.edges[newsFeedArticlesQuery.newsFeedArticles.edges.length - 1].cursor

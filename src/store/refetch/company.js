@@ -15,6 +15,7 @@ export const companiesRefetch = (language) => ({
     name: 'companiesQuery',
     fetchPolicy: 'network-only',
     variables: {
-        language
+        language,
+        first: 10
     }
 });
