@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
+import { pageInfoData } from './common';
 
-export const getJobsQuery = gql`
-query jobs($language: LanguageCodeType!) {
-  jobs(language: $language) {
+export const jobsData = gql`
+  fragment jobsData on Job {
     id
     expireDate
     title
@@ -30,7 +30,29 @@ query jobs($language: LanguageCodeType!) {
       key
     }
   }
+`;
+
+export const getJobsQuery = gql`
+query jobs(
+  $language: LanguageCodeType!
+  $first: Int!
+  $after: String
+) {
+  jobs(language: $language, first: $first, after: $after) {
+    edges {
+      node {
+          ...jobsData
+      }
+      cursor
+    }
+    pageInfo {
+      ...pageInfoData
+    }
+    
+  }
 }
+${jobsData}
+${pageInfoData}
 `;
 
 export const getJobQuery = gql`

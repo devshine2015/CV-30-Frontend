@@ -11,7 +11,8 @@ const JobsListHOC = compose(
         options: props => ({
             fetchPolicy: 'network-only',
             variables: {
-                language: props.match.params.lang
+                language: props.match.params.lang,
+                first: 10
             },
         }),
     }),

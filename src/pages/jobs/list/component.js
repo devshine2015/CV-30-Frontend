@@ -9,12 +9,15 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
 const JobsList = props => {
-    const { loading, jobs } = props.getJobsQuery;
+    const { getJobsQuery } = props;
+    const { loading } = getJobsQuery;
 
     if (loading) {
         return <Loader />
-
     } else {
+        const jobs = getJobsQuery.jobs ? getJobsQuery.jobs.edges.map(edge => edge.node) : [];
+        const hasNextPage = getJobsQuery.jobs ? getJobsQuery.jobs.pageInfo.hasNextPage : false;
+
         const { formData, handleFormChange, handleSearchJobs, match: { params: { lang }} } = props;
         const { jobName, company, location, isPartTime, isFullTime, isProjectBased, isRemote, isStartup, isCorporation, isBoutique, isMultinational, handleSliderChange } = formData;
         return (
@@ -56,7 +59,26 @@ const JobsList = props => {
                 </Grid>
                 <Grid container className='mainBody jobsList'>
                     <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                        {jobs && jobs.map((job, index) => (<JobItem job={job} lang={lang} key={`job-${index}`} />))}
+                        {jobs.map((job, index) => (<JobItem job={job} lang={lang} key={`job-${index}`} />))}
+                        { hasNextPage && <Button onClick={() =>
+                            getJobsQuery.fetchMore({
+                                variables: {
+                                    after: getJobsQuery.jobs.edges[getJobsQuery.jobs.edges.length - 1].cursor
+                                },
+                                updateQuery: (previousResult, { fetchMoreResult: { jobs: { edges: newEdges, pageInfo} } }) => {
+                                    return newEdges.length
+                                        ? {
+                                            // Put the new jobs at the end of the list and update `pageInfo`
+                                            jobs: {
+                                                __typename: previousResult.jobs.__typename,
+                                                edges: [...previousResult.jobs.edges, ...newEdges],
+                                                pageInfo
+                                            }
+                                        }
+                                        : previousResult;
+                                }
+                            })
+                        }>MORE</Button> }
                     </Grid>
                     <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                         <div className='columnRightContent'>
