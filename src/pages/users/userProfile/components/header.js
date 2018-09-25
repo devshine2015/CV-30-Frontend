@@ -239,7 +239,7 @@ const Header = props => {
         (!localUserData.loading && profile.avatarPath) ?
             `${s3BucketURL}${profile.avatarPath}?${localUserData.localUser.timestamp}` : defaultUserAvatar;
 
-    let isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile && profileId;
+    let isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile && currentProfileQuery.profile.id;
     let isFollowing = false;
 
     if (isFollowAllowed) {
