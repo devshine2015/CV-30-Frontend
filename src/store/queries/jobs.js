@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { pageInfoData } from './common';
 
-export const jobsData = gql`
+const jobsData = gql`
   fragment jobsData on Job {
     id
     expireDate
