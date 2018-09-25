@@ -1,8 +1,9 @@
 import React from 'react';
 import { Grid, Button, TextField, Hidden, InputAdornment, Checkbox } from '@material-ui/core';
-import JobItem from './components/jobItem';
+import InfiniteScroll from 'react-infinite-scroller';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import JobItem from './components/jobItem';
 import Loader from '../../../components/Loader';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -59,26 +60,32 @@ const JobsList = props => {
                 </Grid>
                 <Grid container className='mainBody jobsList'>
                     <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                        {jobs.map((job, index) => (<JobItem job={job} lang={lang} key={`job-${index}`} />))}
-                        { hasNextPage && <Button onClick={() =>
-                            getJobsQuery.fetchMore({
-                                variables: {
-                                    after: getJobsQuery.jobs.edges[getJobsQuery.jobs.edges.length - 1].cursor
-                                },
-                                updateQuery: (previousResult, { fetchMoreResult: { jobs: { edges: newEdges, pageInfo} } }) => {
-                                    return newEdges.length
-                                        ? {
-                                            // Put the new jobs at the end of the list and update `pageInfo`
-                                            jobs: {
-                                                __typename: previousResult.jobs.__typename,
-                                                edges: [...previousResult.jobs.edges, ...newEdges],
-                                                pageInfo
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() =>
+                                getJobsQuery.fetchMore({
+                                    variables: {
+                                        after: getJobsQuery.jobs.edges[getJobsQuery.jobs.edges.length - 1].cursor
+                                    },
+                                    updateQuery: (previousResult, { fetchMoreResult: { jobs: { edges: newEdges, pageInfo} } }) => {
+                                        return newEdges.length
+                                            ? {
+                                                // Put the new jobs at the end of the list and update `pageInfo`
+                                                jobs: {
+                                                    __typename: previousResult.jobs.__typename,
+                                                    edges: [...previousResult.jobs.edges, ...newEdges],
+                                                    pageInfo
+                                                }
                                             }
-                                        }
-                                        : previousResult;
-                                }
-                            })
-                        }>MORE</Button> }
+                                            : previousResult;
+                                    }
+                                })}
+                            hasMore={hasNextPage}
+                            loader={<Loader />}
+                            useWindow={true}
+                        >
+                            {jobs.map((job, index) => (<JobItem job={job} lang={lang} key={`job-${index}`} />))}
+                        </InfiniteScroll>
                     </Grid>
                     <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                         <div className='columnRightContent'>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, TextField, Checkbox, Button } from '@material-ui/core';
+import InfiniteScroll from 'react-infinite-scroller';
 import Company from './components/company';
 import Loader from '../../../components/Loader';
 
@@ -16,8 +17,9 @@ const CompaniesList = props => {
         return (
             <Grid container className='mainBody companiesListRoot'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    {companies.map(company => (<Company company={company} key={company.id} {...props} />))}
-                    { hasNextPage && <Button onClick={() =>
+                    <InfiniteScroll
+                        pageStart={0}
+                        loadMore={() =>
                             companiesQuery.fetchMore({
                                 variables: {
                                     after: companiesQuery.companies.edges[companiesQuery.companies.edges.length - 1].cursor
@@ -34,8 +36,13 @@ const CompaniesList = props => {
                                         }
                                         : previousResult;
                                 }
-                            })
-                        }>MORE</Button> }
+                            })}
+                        hasMore={hasNextPage}
+                        loader={<Loader />}
+                        useWindow={true}
+                    >
+                        {companies.map(company => (<Company company={company} key={company.id} {...props} />))}
+                    </InfiniteScroll>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>
