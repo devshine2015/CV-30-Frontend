@@ -17,7 +17,7 @@ const NewsFeed = props => {
         setSearchData, searchData
     } = props;
 
-    if (loading || newsFeedArticlesQuery.loading)
+    if (loading)
         return <Loader />
 
     const newsFeedArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.edges.map(edge => edge.node) : [];
@@ -66,6 +66,8 @@ const NewsFeed = props => {
                         </section>
                     }
                     <section className='articlesList'>
+                    {
+                        !newsFeedArticlesQuery.loading ?
                         <InfiniteScroll
                             pageStart={0}
                             loadMore={() =>
@@ -92,6 +94,8 @@ const NewsFeed = props => {
                         >
                             <ArticlesList articles={newsFeedArticles} />
                         </InfiniteScroll>
+                        : <Loader />
+                    }
                     </section>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
