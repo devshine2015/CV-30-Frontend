@@ -28,7 +28,8 @@ const NewsFeedHOC = compose(
             variables: {
                 language: match.params.lang,
                 peopleOrCompany,
-                tags
+                tags,
+                first: 10
             }
         }),
     }),

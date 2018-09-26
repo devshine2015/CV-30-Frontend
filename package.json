@@ -33,6 +33,7 @@
     "react-dom": "^16.5.2",
     "react-dropzone": "^5.1.0",
     "react-froala-wysiwyg": "^2.8.5",
+    "react-infinite-scroller": "^1.2.1",
     "react-intl": "^2.6.0",
     "react-player": "^1.6.4",
     "react-popper": "^0.10.2",

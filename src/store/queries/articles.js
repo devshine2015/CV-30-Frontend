@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { pageInfoData } from './common';
 
 const standardArticleResult = gql`
     fragment standardArticleResult on Article {
@@ -69,12 +70,23 @@ export const getNewsFeedArticles = gql`
         $language: LanguageCodeType!, 
         $peopleOrCompany: String
         $tags: [String]
+        $first: Int!
+        $after: String
     ) {
-        newsFeedArticles(language: $language, peopleOrCompany: $peopleOrCompany, tags: $tags) {
-            ...standardArticleResult
+        newsFeedArticles(language: $language, peopleOrCompany: $peopleOrCompany, tags: $tags, first: $first, after: $after) {
+            edges {
+                node {
+                    ...standardArticleResult
+                }
+                cursor
+            }
+            pageInfo {
+                ...pageInfoData
+            }
         }
     }
     ${standardArticleResult}
+    ${pageInfoData}
 `;
 
 export const getFeedArticles = gql`

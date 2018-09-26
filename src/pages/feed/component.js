@@ -1,9 +1,10 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
+import InfiniteScroll from 'react-infinite-scroller';
+import { Link } from 'react-router-dom';
 
 import Loader from '../../components/Loader';
 import ArticlesList from './components/articlesList';
-import { Link } from 'react-router-dom';
 import NewPost from './components/newPost';
 import NewsFeedSearch from './components/newsFeedSearch';
 import Promo from './components/promo';
@@ -16,10 +17,11 @@ const NewsFeed = props => {
         setSearchData, searchData
     } = props;
 
-    if (loading || newsFeedArticlesQuery.loading)
+    if (loading)
         return <Loader />
 
-    const newsFeedArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles : [];
+    const newsFeedArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.edges.map(edge => edge.node) : [];
+    const hasNextPage = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.pageInfo.hasNextPage : false;
 
     return (
         <div className='newsFeedRoot'>
@@ -64,7 +66,36 @@ const NewsFeed = props => {
                         </section>
                     }
                     <section className='articlesList'>
-                        <ArticlesList articles={newsFeedArticles} />
+                    {
+                        !newsFeedArticlesQuery.loading ?
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={() =>
+                                newsFeedArticlesQuery.fetchMore({
+                                    variables: {
+                                        after: newsFeedArticlesQuery.newsFeedArticles.edges[newsFeedArticlesQuery.newsFeedArticles.edges.length - 1].cursor
+                                    },
+                                    updateQuery: (previousResult, { fetchMoreResult: { newsFeedArticles: { edges: newEdges, pageInfo} } }) => {
+                                        return newEdges.length
+                                            ? {
+                                                // Put the new articles at the end of the list and update `pageInfo`
+                                                newsFeedArticles: {
+                                                    __typename: previousResult.newsFeedArticles.__typename,
+                                                    edges: [...previousResult.newsFeedArticles.edges, ...newEdges],
+                                                    pageInfo
+                                                }
+                                            }
+                                            : previousResult;
+                                    }
+                                })}
+                            hasMore={hasNextPage}
+                            loader={<Loader />}
+                            useWindow={true}
+                        >
+                            <ArticlesList articles={newsFeedArticles} />
+                        </InfiniteScroll>
+                        : <Loader />
+                    }
                     </section>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>

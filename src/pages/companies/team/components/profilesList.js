@@ -3,6 +3,7 @@ import { Avatar } from '@material-ui/core';
 import { compose, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroller';
 
 import { s3BucketURL } from '../../../../constants/s3';
 import { profilesQuery, handleTeamMember, setFeedbackMessage } from '../../../../store/queries';
@@ -17,7 +18,8 @@ const ProfilesListHOC = compose(
         options: props => ({
             fetchPolicy: 'network-only',
             variables: {
-                language: props.match.params.lang
+                language: props.match.params.lang,
+                first: 10
             },
         }),
     }),
@@ -59,15 +61,41 @@ const ProfilesListHOC = compose(
 )
 const ProfilesList = props => {
     const {
-        profilesQuery: { loading, profiles },
+        profilesQuery,
         addTeamMember
     } = props;
 
-    if (loading)
-        return <Loader />
+    const profiles = profilesQuery.profiles ? profilesQuery.profiles.edges.map(edge => edge.node) : [];
+    const hasNextPage = profilesQuery.profiles ? profilesQuery.profiles.pageInfo.hasNextPage : false;
 
     return (
         <div className='membersContainer'>
+        {
+            !profilesQuery.loading
+            ? <InfiniteScroll
+                pageStart={0}
+                loadMore={() =>
+                    profilesQuery.fetchMore({
+                        variables: {
+                            after: profilesQuery.profiles.edges[profilesQuery.profiles.edges.length - 1].cursor
+                        },
+                        updateQuery: (previousResult, { fetchMoreResult: { profiles: { edges: newEdges, pageInfo} } }) => {
+                            return newEdges.length
+                                ? {
+                                    // Put the new profiles at the end of the list and update `pageInfo`
+                                    profiles: {
+                                        __typename: previousResult.profiles.__typename,
+                                        edges: [...previousResult.profiles.edges, ...newEdges],
+                                        pageInfo
+                                    }
+                                }
+                                : previousResult;
+                        }
+                    })}
+                hasMore={hasNextPage}
+                loader={<Loader />}
+                useWindow={false}
+            >
             {profiles.map(profile => {
                 const { id, avatarPath, firstName, lastName, email, position } = profile;
                 let avatar = avatarPath ? `${s3BucketURL}${avatarPath}` : defaultUserAvatar;
@@ -82,6 +110,9 @@ const ProfilesList = props => {
                     </div>
                 )
             })}
+            </InfiniteScroll>
+            : <Loader />
+        }
         </div>
     )
 };

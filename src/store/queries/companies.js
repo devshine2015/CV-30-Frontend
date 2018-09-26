@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { pageInfoData } from './common';
 
 const companyJobData = gql`
   fragment companyJobData on Job {
@@ -99,12 +100,25 @@ ${minimumCompanyData}
 `;
 
 export const companiesQuery = gql`
-  query companies($language: LanguageCodeType!) {
-    companies(language: $language) {
-      ...minimumCompanyData
+  query companies(
+    $language: LanguageCodeType!
+    $first: Int!
+    $after: String
+  ) {
+    companies(language: $language, first: $first, after: $after) {
+      edges {
+        node {
+            ...minimumCompanyData
+        }
+        cursor
+      }
+      pageInfo {
+        ...pageInfoData
+      }
     }
   }
   ${minimumCompanyData}
+  ${pageInfoData}
 `;
 
 export const industriesQuery = gql`

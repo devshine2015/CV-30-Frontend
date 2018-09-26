@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { pageInfoData } from './common';
 
 const profileFollowingData = gql`
     fragment profileFollowingData on Profile {
@@ -331,52 +332,72 @@ export const setContact = gql`
     }
 `;
 
-export const profilesQuery = gql`
-    query profiles($language: LanguageCodeType!) {
-        profiles(language: $language) {
+const profilesData = gql`
+    fragment profilesData on Profile {
+        id
+        email
+        firstName
+        lastName
+        position
+        skills {
             id
-            email
-            firstName
-            lastName
-            position
-            skills {
+            key
+        }
+        values {
+            id
+            title
+        }
+        aboutMeArticles {
+            id
+            title
+            images {
                 id
-                key
+                path
             }
-            values {
+            videos {
                 id
-                title
+                path
             }
-            aboutMeArticles {
-                id
-                title
-                images {
-                    id
-                    path
-                }
-                videos {
-                    id
-                    path
-                }
+        }
+        hasAvatar
+        avatarContentType
+        avatarPath
+        errors {
+            name
+            value
+            statusCode
+        }
+        currentPosition {
+            experience {
+                company
             }
-            hasAvatar
-            avatarContentType
-            avatarPath
-            errors {
-                name
-                value
-                statusCode
-            }
-            currentPosition {
-                experience {
-                    company
-                }
-                project {
-                    company
-                }
+            project {
+                company
             }
         }
     }
+`;
+
+export const profilesQuery = gql`
+    query profiles(
+        $language: LanguageCodeType!
+        $first: Int!
+        $after: String
+    ) {
+        profiles(language: $language, first: $first, after: $after) {
+            edges {
+                node {
+                    ...profilesData
+                }
+                cursor
+            }
+                pageInfo {
+                ...pageInfoData
+            }
+        }
+    }
+    ${profilesData}
+    ${pageInfoData}
 `;
 
 export const setStory = gql`

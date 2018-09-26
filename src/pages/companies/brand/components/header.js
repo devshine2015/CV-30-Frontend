@@ -241,7 +241,7 @@ const Header = props => {
 
     const { lang, companyId } = match.params;
 
-    const isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile;
+    const isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile && currentProfileQuery.profile.id;
     let isFollowing = false;
 
     if (isFollowAllowed) {

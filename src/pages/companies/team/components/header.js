@@ -83,7 +83,7 @@ const Header = props => {
         toggleFollow, currentProfileQuery
     } = props;
 
-    const isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile;
+    const isFollowAllowed = !currentProfileQuery.loading && currentProfileQuery.profile && currentProfileQuery.profile.id;
     let isFollowing = false;
     if (isFollowAllowed) {
         const { profile: { followingTeams } } = currentProfileQuery;
