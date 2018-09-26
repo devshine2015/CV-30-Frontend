@@ -139,6 +139,44 @@ query profile($id: String, $language: LanguageCodeType!) {
             path
         }
     }
+    educations {
+        id
+        position
+        company
+        location
+        title
+        description
+        startDate
+        endDate
+        isCurrent
+        videos {
+            id
+            path
+        }
+        images {
+            id
+            path
+        }
+    }
+    hobbies {
+        id
+        position
+        company
+        location
+        title
+        description
+        startDate
+        endDate
+        isCurrent
+        videos {
+            id
+            path
+        }
+        images {
+            id
+            path
+        }
+    }
     contact {
         phone
         email
@@ -264,7 +302,26 @@ export const setProjectMutation = gql`
         }
     }
 `;
+//Add Hobbie and education
 
+export const setEducationMutation = gql`
+    mutation setEducation($education: EducationInput!, $language: LanguageCodeType!) {
+        setEducation(education: $education, language: $language) {
+            status
+            error
+        }
+    }
+`;
+export const setHobbieMutation = gql`
+    mutation setHobbie($hobbie: HobbieInput!, $language: LanguageCodeType!) {
+        setHobbie(hobbie: $hobbie, language: $language) {
+            status
+            error
+        }
+    }
+`;
+
+//End 
 export const setContact = gql`
     mutation setContact($contact: ContactInput) {
         setContact(contact: $contact) {
@@ -343,6 +400,15 @@ export const setSalary = gql`
 export const setPosition = gql`
 mutation setPosition($position: String) {
     setPosition(position: $position) {
+        status
+        error
+    }
+}
+`;
+
+export const setCVFile = gql`
+mutation setCVFile($cvFile: String) {
+    setCVFile(cvFile: $cvFile) {
         status
         error
     }

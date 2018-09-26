@@ -29,8 +29,6 @@ import NewArticle from './pages/articles/new';
 import ProtectedRoute from './components/ProtectedRoute';
 import Feedback from './components/Feedback';
 
-
-
 //translation stuff
 import romanian from 'react-intl/locale-data/ro';
 

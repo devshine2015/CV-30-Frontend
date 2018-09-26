@@ -9,7 +9,7 @@ import moment from 'moment';
 import { withFormik } from 'formik';
 import * as yup from 'yup';
 
-import { setExperienceMutation, setProjectMutation, setFeedbackMessage } from '../../../../store/queries';
+import { setExperienceMutation, setProjectMutation, setFeedbackMessage, setHobbieMutation, setEducationMutation } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
 import ImageUploader from '../../../../components/imageUploader';
 import LocationInput from '../../../../components/LocationInput';
@@ -47,6 +47,9 @@ class ExperienceEdit extends React.Component {
         };
         this.props.setFieldValue('images', images.concat([image]));
     }
+    renderSubTitle = (type) => {
+        return 'Add / edit ' + type
+    }
     render() {
         const { imageUploadOpen } = this.state;
         const {
@@ -62,7 +65,7 @@ class ExperienceEdit extends React.Component {
         return (
             <div className='experienceForm'>
                 <h4>
-                    {type === 'experience' ? 'Add / edit experience' : 'Add / edit project'}
+                    {this.renderSubTitle(type)}
                 </h4>
                 <section className='infoSection'>
                     <TextField
@@ -258,10 +261,11 @@ export default compose(
                     sourceType: type
                 });
             }
-
+           
+            
             try {
                 await client.mutate({
-                    mutation: type === 'experience' ? setExperienceMutation : setProjectMutation,
+                    mutation : type === 'experience'? setExperienceMutation : type === 'project'? setProjectMutation : type === 'education'?  setEducationMutation : setHobbieMutation,
                     variables: {
                         [type]: {
                             id,

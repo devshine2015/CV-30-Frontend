@@ -26,8 +26,9 @@ const ImageUploader = ({
                             flexContainer: 'tabsFlexContainer',
                             indicator: 'tabIndicator'
                         }}
-                    >
-                        <Tab
+                    >   {
+                            type !== 'document' && 
+                            <Tab
                             label="Choose from gallery"
                             value='gallery'
                             classes={{
@@ -38,9 +39,13 @@ const ImageUploader = ({
                                 labelContainer: 'tabItemLabelContainer'
                             }}
                         />
-                        <Tab disabled label=' OR ' />
+                        }
+                        {
+                            type !== 'document' && 
+                            <Tab disabled label=' OR ' />
+                        }
                         <Tab
-                            label="Upload a new picture"
+                            label={ type === 'document'? "Upload a new document" : "Upload a new picture"}
                             value='upload'
                             classes={{
                                 root: 'tabItemRoot',

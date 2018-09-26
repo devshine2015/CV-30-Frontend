@@ -1,11 +1,11 @@
 import React from 'react';
 import { Grid, Icon, IconButton, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, FormControl, InputLabel, Input } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
-import { setStory, setSalary, setFeedbackMessage } from '../../../../store/queries';
+import { setStory, setSalary, setFeedbackMessage, setCVFile } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
 import { withRouter } from 'react-router-dom';
 
-
+import ImageUploader from '../../../../components/imageUploader';
 import ExperienceEdit from './experienceEdit';
 import ExperienceDisplay from './experienceDisplay';
 import EditContactDetails from './editContactDetails';
@@ -19,11 +19,15 @@ import ArticleSlider from '../../../../components/articleSlider';
 const ShowHOC = compose(
     withRouter,
     graphql(setStory, { name: 'setStory' }),
+    graphql(setCVFile, { name: 'setCVFile' }),
     graphql(setSalary, { name: 'setSalary' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('state', 'setState', ({ profileQuery: { profile } }) => ({
+        imageUploadOpen: false,
         newXP: false,
         newProj: false,
+        newEduc: false,
+        newHobbie: false,
         isPopUpOpen: false,
         story: profile.story && profile.story.description,
         contactExpanded: true,
@@ -31,10 +35,48 @@ const ShowHOC = compose(
         desiredSalary: (profile.salary && profile.salary.amount) || 0
     })),
     withHandlers({
+        // Add Image upload
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
+        handleError: () => error => { console.log("an error occured") },
+        handleSuccess: ({setCVFile, match, client, setFeedbackMessage}) => async ({filename}) => {
+            console.log('document upload success')
+            try {
+                await setCVFile({
+                    variables: {
+                        cvFile: 'profile' + filename
+                    },
+                    refetchQueries: [
+                        currentProfileRefetch(match.params.lang)
+                    ]
+                });
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'success',
+                        message: 'Changes saved successfully.'
+                    }
+                });
+            }
+            catch (err) {
+                console.log(err);
+                await setFeedbackMessage({
+                    variables: {
+                        status: 'error',
+                        message: err.message
+                    }
+                });
+            }
+            
+        },
+        //
         addNewExperience: ({ state, setState }) => () => setState({ ...state, newXP: !state.newXP }),
         closeNewExperience: ({ state, setState }) => () => setState({ ...state, newXP: false }),
         addNewProject: ({ state, setState }) => () => setState({ ...state, newProj: !state.newProj }),
+        addNewEducation: ({ state, setState }) => () => setState({ ...state, newEduc: !state.newEduc }),
+        addNewHobbie: ({ state, setState }) => () => setState({ ...state, newHobbie: !state.newHobbie }),
         closeNewProject: ({ state, setState }) => () => setState({ ...state, newProj: false }),
+        closeNewEducation: ({ state, setState }) => () => setState({ ...state, newEduc: false }),
+        closeNewHobbie: ({ state, setState }) => () => setState({ ...state, newHobbie: false }),
         toggleContactExpanded: ({ state, setState }) => () => setState({ ...state, contactExpanded: !state.contactExpanded }),
         toggleSalaryPrivate: ({ state, setState }) => () => setState({ ...state, isSalaryPublic: !state.isSalaryPublic }),
         updateStory: ({ state, setState }) => story => setState({ ...state, story }),
@@ -112,6 +154,9 @@ const Show = props => {
         state: {
             newXP,
             newProj,
+            newHobbie,
+            imageUploadOpen,
+            newEduc,
             isPopUpOpen,
             story,
             contactExpanded,
@@ -120,11 +165,11 @@ const Show = props => {
         },
         getEditMode, isEditAllowed,
         profileQuery: { profile },
-        addNewExperience, closeNewExperience, addNewProject, closeNewProject,
-        toggleEditContact, closeContactEdit, toggleContactExpanded,
+        addNewExperience, closeNewExperience, addNewProject, closeNewProject, addNewEducation, addNewHobbie,
+        toggleEditContact, closeContactEdit, toggleContactExpanded, closeNewEducation, closeNewHobbie,
         openArticlePopUp, closeArticlePopUp,
-        toggleSalaryPrivate,
-        updateStory, saveStory,
+        toggleSalaryPrivate, handleError, handleSuccess,
+        updateStory, saveStory,openImageUpload,closeImageUpload, // Add Image Upload
         updateDesiredSalary, saveDesiredSalary
     } = props;
 
@@ -133,8 +178,8 @@ const Show = props => {
         editMode = isEditAllowed && getEditMode.editMode.status;
     } catch(error) {}
 
-    const { contact, experience, projects, aboutMeArticles, salary } = profile;
-
+    const { contact, experience, projects, aboutMeArticles, salary, educations, hobbies } = profile;
+    console.log("*****************", profile)
     return (
         <Grid container className='mainBody userProfileShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -173,6 +218,44 @@ const Show = props => {
                         }
                         {
                             (editMode && newProj) && <ExperienceEdit type={'project'} closeEditor={closeNewProject} />
+                        }
+
+                    </section>
+                }
+                {
+                    ((educations && educations.length > 0) || editMode) &&
+
+                    <section className='experienceSection'>
+                        <h2 className='sectionTitle'>My <b>educations</b></h2>
+                        {
+                            educations.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'education'} key={`educationItem-${index}`} />)
+                        }
+                        {editMode && !newEduc &&
+                            <div className='experienceAdd' onClick={addNewEducation}>
+                                + Add education
+                            </div>
+                        }
+                        {
+                            (editMode && newEduc) && <ExperienceEdit type={'education'} closeEditor={closeNewEducation} />
+                        }
+
+                    </section>
+                }
+                {
+                    ((hobbies && hobbies.length > 0) || editMode) &&
+
+                    <section className='experienceSection'>
+                        <h2 className='sectionTitle'>My <b>hobbies</b></h2>
+                        {
+                            hobbies.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'hobbie'} key={`hobbieItem-${index}`} />)
+                        }
+                        {editMode && !newHobbie &&
+                            <div className='experienceAdd' onClick={addNewHobbie}>
+                                + Add hobbie
+                            </div>
+                        }
+                        {
+                            (editMode && newHobbie) && <ExperienceEdit type={'hobbie'} closeEditor={closeNewHobbie} />
                         }
 
                     </section>
@@ -241,6 +324,22 @@ const Show = props => {
                                 onClose={closeArticlePopUp}
                             />
                         </React.Fragment>
+                    }
+                    {editMode &&
+                        <React.Fragment>
+                            <div className='addArticle' onClick={openImageUpload}>
+                                + Upload document
+                            </div>
+                            <ImageUploader
+                                type='document'
+                                open={imageUploadOpen}
+                                onClose={closeImageUpload}
+                                onError={handleError}
+                                onSuccess={handleSuccess}
+                                // id={articleId}
+                            />
+                        </React.Fragment>
+                        
                     }
                     {(aboutMeArticles && aboutMeArticles.length > 0) &&
                         <hr />

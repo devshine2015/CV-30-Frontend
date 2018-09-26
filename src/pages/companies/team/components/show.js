@@ -198,6 +198,7 @@ const Show = props => {
                             />
                         </React.Fragment>
                     }
+                    
                 </section>
                 <FormattedMessage id="headerLinks.backTo" defaultMessage="Back to" description="User header back to link">
                     {(text) => (

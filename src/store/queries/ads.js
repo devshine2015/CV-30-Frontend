@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-
+// import { gql } from 'react-apollo'
 export const getAds = gql`
     query ads($language: LanguageCodeType!) {
         ads(language: $language) {

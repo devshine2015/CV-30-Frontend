@@ -154,7 +154,7 @@ const RegisterComponent = ({ values, touched, errors, isSubmitting, handleChange
                             />
 
                             {registerError &&
-                                <p className='errorMessage'>{registerError}</p>
+                                <p className='errorMessage'>{JSON.stringify(registerError)}</p>
                             }
 
                             <FormattedMessage id="actions.register" defaultMessage="Log in" description="Register action">
