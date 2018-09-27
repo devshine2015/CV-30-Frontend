@@ -47,6 +47,22 @@ const standardArticleResult = gql`
     }
 `;
 
+const articleConnectionData = gql`
+    fragment articleConnectionData on ArticlesConnection {
+        edges {
+            node {
+                ...standardArticleResult
+            }
+            cursor
+        }
+        pageInfo {
+            ...pageInfoData
+        }
+    }
+    ${standardArticleResult}
+    ${pageInfoData}
+`;
+
 export const getArticles = gql`
     query articles($language: LanguageCodeType!) {
         articles(language: $language) {
@@ -68,34 +84,32 @@ export const getArticle = gql`
 export const getNewsFeedArticles = gql`
     query newsFeedArticles(
         $language: LanguageCodeType!, 
-        $peopleOrCompany: String
-        $tags: [String]
-        $first: Int!
+        $peopleOrCompany: String,
+        $tags: [String],
+        $first: Int!,
         $after: String
     ) {
         newsFeedArticles(language: $language, peopleOrCompany: $peopleOrCompany, tags: $tags, first: $first, after: $after) {
-            edges {
-                node {
-                    ...standardArticleResult
-                }
-                cursor
-            }
-            pageInfo {
-                ...pageInfoData
-            }
+            ...articleConnectionData
         }
     }
-    ${standardArticleResult}
-    ${pageInfoData}
+    ${articleConnectionData}
 `;
 
 export const getFeedArticles = gql`
-    query feedArticles($language: LanguageCodeType!, $userId: String, $companyId: String, $teamId: String) {
-        feedArticles(language: $language, userId: $userId, companyId: $companyId, teamId: $teamId) {
-            ...standardArticleResult
+    query feedArticles(
+        $language: LanguageCodeType!,
+        $userId: String,
+        $companyId: String,
+        $teamId: String,
+        $first: Int!,
+        $after: String
+    ) {
+        feedArticles(language: $language, userId: $userId, companyId: $companyId, teamId: $teamId, first: $first, after: $after) {
+            ...articleConnectionData
         }
     }
-    ${standardArticleResult}
+    ${articleConnectionData}
 `;
 
 export const handleArticle = gql`
