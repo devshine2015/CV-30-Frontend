@@ -27,7 +27,7 @@ const ShowHOC = compose(
         newXP: false,
         newProj: false,
         newEduc: false,
-        newHobbie: false,
+        newHobby: false,
         isPopUpOpen: false,
         story: profile.story && profile.story.description,
         contactExpanded: true,
@@ -73,10 +73,10 @@ const ShowHOC = compose(
         closeNewExperience: ({ state, setState }) => () => setState({ ...state, newXP: false }),
         addNewProject: ({ state, setState }) => () => setState({ ...state, newProj: !state.newProj }),
         addNewEducation: ({ state, setState }) => () => setState({ ...state, newEduc: !state.newEduc }),
-        addNewHobbie: ({ state, setState }) => () => setState({ ...state, newHobbie: !state.newHobbie }),
+        addNewHobby: ({ state, setState }) => () => setState({ ...state, newHobby: !state.newHobby }),
         closeNewProject: ({ state, setState }) => () => setState({ ...state, newProj: false }),
         closeNewEducation: ({ state, setState }) => () => setState({ ...state, newEduc: false }),
-        closeNewHobbie: ({ state, setState }) => () => setState({ ...state, newHobbie: false }),
+        closeNewHobby: ({ state, setState }) => () => setState({ ...state, newHobby: false }),
         toggleContactExpanded: ({ state, setState }) => () => setState({ ...state, contactExpanded: !state.contactExpanded }),
         toggleSalaryPrivate: ({ state, setState }) => () => setState({ ...state, isSalaryPublic: !state.isSalaryPublic }),
         updateStory: ({ state, setState }) => story => setState({ ...state, story }),
@@ -154,7 +154,7 @@ const Show = props => {
         state: {
             newXP,
             newProj,
-            newHobbie,
+            newHobby,
             imageUploadOpen,
             newEduc,
             isPopUpOpen,
@@ -165,8 +165,8 @@ const Show = props => {
         },
         getEditMode, isEditAllowed,
         profileQuery: { profile },
-        addNewExperience, closeNewExperience, addNewProject, closeNewProject, addNewEducation, addNewHobbie,
-        toggleEditContact, closeContactEdit, toggleContactExpanded, closeNewEducation, closeNewHobbie,
+        addNewExperience, closeNewExperience, addNewProject, closeNewProject, addNewEducation, addNewHobby,
+        toggleEditContact, closeContactEdit, toggleContactExpanded, closeNewEducation, closeNewHobby,
         openArticlePopUp, closeArticlePopUp,
         toggleSalaryPrivate, handleError, handleSuccess,
         updateStory, saveStory,openImageUpload,closeImageUpload, // Add Image Upload
@@ -247,15 +247,15 @@ const Show = props => {
                     <section className='experienceSection'>
                         <h2 className='sectionTitle'>My <b>hobbies</b></h2>
                         {
-                            hobbies.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'hobbie'} key={`hobbieItem-${index}`} />)
+                            hobbies.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'hobby'} key={`hobbyItem-${index}`} />)
                         }
-                        {editMode && !newHobbie &&
-                            <div className='experienceAdd' onClick={addNewHobbie}>
-                                + Add hobbie
+                        {editMode && !newHobby &&
+                            <div className='experienceAdd' onClick={addNewHobby}>
+                                + Add hobby
                             </div>
                         }
                         {
-                            (editMode && newHobbie) && <ExperienceEdit type={'hobbie'} closeEditor={closeNewHobbie} />
+                            (editMode && newHobby) && <ExperienceEdit type={'hobby'} closeEditor={closeNewHobby} />
                         }
 
                     </section>

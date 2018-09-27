@@ -3,8 +3,8 @@ import DropNCrop from '@synapsestudios/react-drop-n-crop';
 import Dropzone from 'react-dropzone';
 import '@synapsestudios/react-drop-n-crop/lib/react-drop-n-crop.min.css';
 import { compose, withState, withHandlers } from 'recompose';
-import { upload } from 'superagent'
-import axios from 'axios' 
+// import { upload } from 'superagent'
+// import axios from 'axios' 
 import { Button } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import uuid from 'uuidv4';

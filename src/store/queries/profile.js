@@ -313,9 +313,9 @@ export const setEducationMutation = gql`
         }
     }
 `;
-export const setHobbieMutation = gql`
-    mutation setHobbie($hobbie: HobbieInput!, $language: LanguageCodeType!) {
-        setHobbie(hobbie: $hobbie, language: $language) {
+export const setHobbyMutation = gql`
+    mutation setHobby($hobby: HobbyInput!, $language: LanguageCodeType!) {
+        setHobby(hobby: $hobby, language: $language) {
             status
             error
         }

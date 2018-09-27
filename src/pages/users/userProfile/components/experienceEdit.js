@@ -9,7 +9,7 @@ import moment from 'moment';
 import { withFormik } from 'formik';
 import * as yup from 'yup';
 
-import { setExperienceMutation, setProjectMutation, setFeedbackMessage, setHobbieMutation, setEducationMutation } from '../../../../store/queries';
+import { setExperienceMutation, setProjectMutation, setFeedbackMessage, setHobbyMutation, setEducationMutation } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
 import ImageUploader from '../../../../components/imageUploader';
 import LocationInput from '../../../../components/LocationInput';
@@ -265,7 +265,7 @@ export default compose(
             
             try {
                 await client.mutate({
-                    mutation : type === 'experience'? setExperienceMutation : type === 'project'? setProjectMutation : type === 'education'?  setEducationMutation : setHobbieMutation,
+                    mutation : type === 'experience'? setExperienceMutation : type === 'project'? setProjectMutation : type === 'education'?  setEducationMutation : setHobbyMutation,
                     variables: {
                         [type]: {
                             id,
