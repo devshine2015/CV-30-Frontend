@@ -27,15 +27,15 @@ const minimumCompanyData = gql`
       id 
       key
     }
-    jobs {
-      ...companyJobData
-    }
     teams {
       id
       name
       hasProfileCover
       coverContentType
       coverBackground
+    }
+    recentJobs {
+      ...companyJobData
     }
   }
   ${companyJobData}
@@ -91,7 +91,7 @@ query company($id: String!, $language: LanguageCodeType!) {
     }
     owner {
       id
-    }    
+    }  
     coverPath
     coverBackground
   }

@@ -19,7 +19,7 @@ const CompanyHOC = compose(
 
 
 const Company = ({ activeTab, handleTabChange,
-    company: { id, name, industry, location, noOfEmployees, description, jobs, teams, logoPath },
+    company: { id, name, industry, location, noOfEmployees, description, recentJobs, teams, logoPath },
     match: { params: { lang } } }) => (
         <div className='listItem companyListItem'>
             <div className='leftOverlay'>
@@ -71,7 +71,7 @@ const Company = ({ activeTab, handleTabChange,
                         disableRipple
                         disableTouchRipple
                         focusRipple
-                        disabled={!jobs || jobs.length === 0}
+                        disabled={!recentJobs || recentJobs.length === 0}
                     />
                     <Tab
                         label="Teams"
@@ -93,7 +93,7 @@ const Company = ({ activeTab, handleTabChange,
             </div>
             <div className={activeTab ? 'itemFooter open' : 'itemFooter'}>
                 {activeTab === 'jobs' &&
-                    <JobsSlider jobs={jobs} />
+                    <JobsSlider jobs={recentJobs} />
                 }
                 {
                     activeTab === 'team' &&
