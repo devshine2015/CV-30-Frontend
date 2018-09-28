@@ -36,18 +36,20 @@ const IndustryInput = props => {
     }));
     
     return (
-        <AutoCompleteSelectInput
-            value={suggestions.find(el => el.value === value)}
-            onChange={val => onChange({
-                target: {
-                    value: val.value,
-                    name
-                }
-            })}
-            suggestions={suggestions}
-            placeholder='Enter industry...'
-            label='Industry'
-        />
+        <div className={props.className}>
+            <AutoCompleteSelectInput
+                value={suggestions.find(el => el.value === value)}
+                onChange={val => onChange({
+                    target: {
+                        value: val.value,
+                        name
+                    }
+                })}
+                suggestions={suggestions}
+                placeholder='Enter industry...'
+                label='Industry'
+            />
+        </div>
     )
 }
 

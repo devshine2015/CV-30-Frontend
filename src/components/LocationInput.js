@@ -15,18 +15,20 @@ const LocationInput = props => {
     //console.log(props, suggestions, suggestions.find(el => el.value === value));
 
     return (
-        <AutoCompleteSelectInput
-            value={suggestions.find(el => el.value === value) || ''}
-            onChange={val => onChange({
-                target: {
-                    value: val.value,
-                    name
-                }
-            })}
-            suggestions={suggestions}
-            placeholder='Enter location...'
-            label='Location'
-        />
+        <div className={props.className}>
+            <AutoCompleteSelectInput
+                value={suggestions.find(el => el.value === value) || ''}
+                onChange={val => onChange({
+                    target: {
+                        value: val.value,
+                        name
+                    }
+                })}
+                suggestions={suggestions}
+                placeholder='Enter location...'
+                label='Location'
+            />
+        </div>
         // <SuggestionsInput
         //     suggestions={locations}
         //     name='location'

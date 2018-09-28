@@ -133,7 +133,7 @@ const MenuList = props => (
     <List
         style={{ width: '100%' }}
         width={300}
-        height={350}
+        height={Math.min(350, props.children.length*50)}
         rowHeight={50}
         rowCount={props.children.length || 0}
         rowRenderer={({ key, index, style }) => (
@@ -141,8 +141,7 @@ const MenuList = props => (
                 {props.children[index]}
             </div>
         )}
-    >
-    </List>
+    />
 );
 
 const components = {

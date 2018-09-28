@@ -81,7 +81,7 @@ const JobsList = props => {
                                     }
                                 })}
                             hasMore={hasNextPage}
-                            loader={<Loader />}
+                            loader={<Loader key='loader'/>}
                             useWindow={true}
                         >
                             {jobs.map((job, index) => (<JobItem job={job} lang={lang} key={`job-${index}`} />))}

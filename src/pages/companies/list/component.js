@@ -38,7 +38,7 @@ const CompaniesList = props => {
                                 }
                             })}
                         hasMore={hasNextPage}
-                        loader={<Loader />}
+                        loader={<Loader key='loader'/>}
                         useWindow={true}
                     >
                         {companies.map(company => (<Company company={company} key={company.id} {...props} />))}
