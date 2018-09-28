@@ -27,6 +27,7 @@ const LocationInput = props => {
                 suggestions={suggestions}
                 placeholder='Enter location...'
                 label='Location'
+                async
             />
         </div>
         // <SuggestionsInput
