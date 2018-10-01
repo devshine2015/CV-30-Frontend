@@ -11,7 +11,6 @@ import AuthorAvatarHeader from '../../../../components/AvatarHeader/AuthorAvatar
 import { disqusShortname, disqusUrlPrefix } from '../../../../constants/disqus';
 import AddTags from './addTags';
 import { appreciateMutation } from '../../../../store/queries';
-import { newsFeedArticlesRefetch } from '../../../../store/refetch';
 
 const ArticleShowHOC = compose(
     withState('state', 'set', {
@@ -29,10 +28,7 @@ const ArticleShowHOC = compose(
                         variables: {
                             tagId,
                             articleId
-                        },
-                        refetchQueries: [
-                            newsFeedArticlesRefetch(language)
-                        ]
+                        }
                     });
                 }
                 catch (err) {

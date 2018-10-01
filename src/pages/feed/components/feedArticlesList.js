@@ -2,7 +2,7 @@ import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import Loader from '../../../components/Loader';
-import ArticlesList from './articlesList';
+import ArticleItem from './articleItem';
 
 const FeedArticlesList = ({ feedArticlesQuery, feedArticlesKey }) => {
     const actualFeedArticlesKey = feedArticlesKey || 'feedArticles';
@@ -39,7 +39,7 @@ const FeedArticlesList = ({ feedArticlesQuery, feedArticlesKey }) => {
                 loader={<Loader key='loader'/>}
                 useWindow={true}
             >
-                <ArticlesList articles={articles} />
+                {articles.map((article) => <ArticleItem article={article} key={article.id} refetch={feedArticlesQuery.refetch} />)}
             </InfiniteScroll>
         </section>
         : <Loader />

@@ -5,7 +5,6 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
 import { handleArticleTags, setFeedbackMessage } from '../../../store/queries';
-import { newsFeedArticlesRefetch } from '../../../store/refetch';
 
 const AddTagHOC = compose(
     withRouter,
@@ -14,7 +13,7 @@ const AddTagHOC = compose(
     withState('newTag', 'setNewTag', ''),
     withHandlers({
         updateNewTag: ({ setNewTag }) => text => setNewTag(text),
-        handleKeyPress: ({ handleArticleTags, articleId, tags, newTag, setNewTag, match: { params: { lang: language } }, setFeedbackMessage, closeTagEditor }) => async event => {
+        handleKeyPress: ({ handleArticleTags, articleId, tags, newTag, setNewTag, match: { params: { lang: language } }, setFeedbackMessage, closeTagEditor, refetch }) => async event => {
             if (event.key !== 'Enter')
                 return;
 
@@ -28,11 +27,9 @@ const AddTagHOC = compose(
                             titles: [...currentTags, newTag],
                             articleId
                         }
-                    },
-                    refetchQueries: [
-                        newsFeedArticlesRefetch(language)
-                    ]
+                    }
                 });
+                await refetch();
                 await setFeedbackMessage({
                     variables: {
                         status: 'success',

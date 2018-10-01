@@ -13,7 +13,6 @@ import { disqusShortname, disqusUrlPrefix } from '../../../constants/disqus';
 import { stripHtmlTags } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
 import { getCurrentUser, appreciateMutation, setEditMode } from '../../../store/queries';
-import { newsFeedArticlesRefetch } from '../../../store/refetch';
 import AddTag from './addTag';
 import Loader from '../../../components/Loader';
 import EditPost from './editPost';
@@ -31,18 +30,16 @@ const ArticleItemHOC = compose(
     withHandlers({
         openTagEditor: ({ set }) => tagAnchor => set(state => ({ ...state, tagAnchor })),
         closeTagEditor: ({ set }) => () => set(state => ({ ...state, tagAnchor: null })),
-        addVote: ({ set, appreciate, article: { id: articleId }, match: { params: { lang: language } } }) => tagId => {
+        addVote: ({ set, appreciate, article: { id: articleId }, refetch }) => tagId => {
             set(state => ({ ...state, fetching: true }), async () => {
                 try {
                     await appreciate({
                         variables: {
                             tagId,
                             articleId
-                        },
-                        refetchQueries: [
-                            newsFeedArticlesRefetch(language)
-                        ]
+                        }
                     });
+                    await refetch();
                 }
                 catch (err) {
                     console.log(err);
@@ -77,7 +74,8 @@ const ArticleItem = props => {
         match, getCurrentUser,
         article,
         openTagEditor, closeTagEditor, addVote,
-        handleEditBtnClick, closeEditPost
+        handleEditBtnClick, closeEditPost,
+        refetch
     } = props;
 
     if (getCurrentUser.loading)
@@ -146,6 +144,7 @@ const ArticleItem = props => {
                     <EditPost
                         article={props.article}
                         closeEditor={closeEditPost}
+                        refetch={refetch}
                     />
                 }
                 {(image || video) &&
@@ -228,6 +227,7 @@ const ArticleItem = props => {
                 closeTagEditor={closeTagEditor}
                 articleId={id}
                 tags={tags}
+                refetch={refetch}
             />
         </div>
     );

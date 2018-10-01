@@ -11,7 +11,6 @@ import MediaUploadPopUp from './mediaUpload';
 import { defaultUserAvatar, defaultCompanyLogo } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
 import { handleArticle, setFeedbackMessage } from '../../../store/queries';
-// import { newsFeedArticlesRefetch } from '../../../store/refetch';
 
 const NewPostHOC = compose(
     withRouter,
@@ -93,9 +92,6 @@ const NewPostHOC = compose(
                         article,
                         language
                     }
-                    // refetchQueries: [
-                    //     newsFeedArticlesRefetch(language)
-                    // ]
                 });
                 await refetch();
                 await setFeedbackMessage({

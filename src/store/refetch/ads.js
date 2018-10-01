@@ -3,7 +3,7 @@ import { getAds } from '../queries';
 export const adsRefetch = (language) => ({
     query: getAds,
     fetchPolicy: 'network-only',
-    name: 'newsFeedArticlesQuery',
+    name: 'getAdsQuery',
     variables: {
         language
     }

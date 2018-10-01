@@ -1,13 +1,4 @@
-import { getNewsFeedArticles, getArticle } from '../queries';
-
-export const newsFeedArticlesRefetch = (language) => ({
-    query: getNewsFeedArticles,
-    fetchPolicy: 'network-only',
-    name: 'newsFeedArticlesQuery',
-    variables: {
-        language
-    }
-});
+import { getArticle } from '../queries';
 
 export const articleRefetch = (id, language) => ({
     query: getArticle,
