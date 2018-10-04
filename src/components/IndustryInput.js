@@ -40,7 +40,6 @@ const IndustryInput = props => {
     }));
     
     return (
-<<<<<<< HEAD
         <FormattedMessage id="industry.placeHolder" defaultMessage="Enter industry..." description="Enter industry">
             {(text) => (
                 <AutoCompleteSelectInput
@@ -58,22 +57,6 @@ const IndustryInput = props => {
             )}
         </FormattedMessage>
         
-=======
-        <div className={props.className}>
-            <AutoCompleteSelectInput
-                value={suggestions.find(el => el.value === value)}
-                onChange={val => onChange({
-                    target: {
-                        value: val.value,
-                        name
-                    }
-                })}
-                suggestions={suggestions}
-                placeholder='Enter industry...'
-                label='Industry'
-            />
-        </div>
->>>>>>> f2ecd3fffbdd21dd7d63f95ca82fb2d7f97224b9
     )
 }
 

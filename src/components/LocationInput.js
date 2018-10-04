@@ -15,7 +15,6 @@ const LocationInput = props => {
     //console.log(props, suggestions, suggestions.find(el => el.value === value));
 
     return (
-<<<<<<< HEAD
         <FormattedMessage id="location.placeHolder" defaultMessage="Location\nEnter location..." description="Enter location">
             {(text) => (
                 <AutoCompleteSelectInput
@@ -33,23 +32,6 @@ const LocationInput = props => {
             )}
         </FormattedMessage>
         
-=======
-        <div className={props.className}>
-            <AutoCompleteSelectInput
-                value={suggestions.find(el => el.value === value) || ''}
-                onChange={val => onChange({
-                    target: {
-                        value: val.value,
-                        name
-                    }
-                })}
-                suggestions={suggestions}
-                placeholder='Enter location...'
-                label='Location'
-                async
-            />
-        </div>
->>>>>>> f2ecd3fffbdd21dd7d63f95ca82fb2d7f97224b9
         // <SuggestionsInput
         //     suggestions={locations}
         //     name='location'
