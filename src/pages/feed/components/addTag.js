@@ -3,6 +3,7 @@ import { Popover, TextField } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl'
 
 import { handleArticleTags, setFeedbackMessage } from '../../../store/queries';
 import { newsFeedArticlesRefetch } from '../../../store/refetch';
@@ -77,26 +78,33 @@ const AddTag = props => {
         >
             <div className='addTag'>
                 <p className='title'>Apreciate your own way</p>
-                <TextField
-                    name="newTag"
-                    label="Tag"
-                    placeholder="Add tag..."
-                    className='textField'
-                    onChange={event => updateNewTag(event.target.value)}
-                    onKeyPress={event => handleKeyPress(event)}
-                    value={newTag || ''}
-                    fullWidth
-                    InputProps={{
-                        classes: {
-                            input: 'textFieldInput',
-                            underline: 'textFieldUnderline'
-                        },
-                    }}
-                    InputLabelProps={{
-                        className: 'textFieldLabel'
-                    }}
-                />
-                <small className='helperText'>Search for a tag or create your own to share what did you found the most interesting about this post.</small>
+                <FormattedMessage id="feed.addNewTag" defaultMessage="Add Tag" description="Add Tag">
+                    {(text) => (
+                        <TextField
+                            name="newTag"
+                            label={text.split("\n")[0]}
+                            placeholder={text.split("\n")[1]}
+                            className='textField'
+                            onChange={event => updateNewTag(event.target.value)}
+                            onKeyPress={event => handleKeyPress(event)}
+                            value={newTag || ''}
+                            fullWidth
+                            InputProps={{
+                                classes: {
+                                    input: 'textFieldInput',
+                                    underline: 'textFieldUnderline'
+                                },
+                            }}
+                            InputLabelProps={{
+                                className: 'textFieldLabel'
+                            }}
+                        />
+                    )}
+                </FormattedMessage>
+                <FormattedMessage id="feed.helperText" defaultMessage="Search for a tag or create your own to share what did you found the most interesting about this post." description="Helper Text">
+                    {(text) => (<small className='helperText'>{text}</small>)}
+                </FormattedMessage>
+                
             </div>
         </Popover>
     );

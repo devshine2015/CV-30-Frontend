@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Menu, MenuItem, TextField, Icon, IconButton } from '@material-ui/core';
 import { compose, pure, withState, withHandlers } from 'recompose';
-
+import { FormattedMessage } from 'react-intl'
 import fields from '../../../../constants/contact';
 import { setContact, setFeedbackMessage } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
@@ -104,17 +104,27 @@ const EditContactDetails = ({
 }) => {
     return (
         <div className={open ? 'editContactDetails open' : 'editContactDetails'}>
-            <p className='message'>
-                Add section
-            </p>
+            <FormattedMessage id="jobs.new.addSection" defaultMessage="Add section" description="Add section">
+                {(text) => (
+                    <p className='message'>
+                        {text}
+                    </p>
+                )}
+            </FormattedMessage>
+            
             <div>
-                <Button className='addContactFieldBtn'
-                    aria-owns={anchorEl ? 'simple-menu' : null}
-                    aria-haspopup="true"
-                    onClick={handleClick}
-                >
-                    Select field
-                </Button>
+                <FormattedMessage id="jobs.new.selectField" defaultMessage="Select field" description="Select field">
+                    {(text) => (
+                        <Button className='addContactFieldBtn'
+                            aria-owns={anchorEl ? 'simple-menu' : null}
+                            aria-haspopup="true"
+                            onClick={handleClick}
+                        >
+                            {text}
+                        </Button>
+                    )}
+                </FormattedMessage>
+                
                 <Menu
                     id="simple-menu"
                     anchorEl={anchorEl}

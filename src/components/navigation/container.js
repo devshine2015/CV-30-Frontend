@@ -60,7 +60,7 @@ const NavigationHOC = compose(
         //mobile nav
         toggleMobileNav: ({ state, setState }) => () => setState({
             ...state,
-            mobileNavOpen: state.mobileNavOpen,
+            mobileNavOpen: !state.mobileNavOpen,
             notificationsMenuOpen: false,
             profileMenuOpen: false
         }),

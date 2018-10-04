@@ -31,6 +31,16 @@ export default {
             cache.writeData({ data });
             return null;
         },
+        setRomanianMode: (_, {status}, {cache}) => {
+            const data = {
+                romanianMode: {
+                    __typename: "RomanianMode",
+                    status
+                }
+            }
+            cache.writeData({data})
+            return null
+        },
         resetEditMode: (_, params, { cache }) => {
             const data = {
                 editMode: {

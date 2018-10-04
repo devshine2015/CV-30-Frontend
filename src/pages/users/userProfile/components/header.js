@@ -292,7 +292,12 @@ const Header = props => {
                         {editMode &&
                             <React.Fragment>
                                 <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
-                                    <span className='text'>Change Background</span>
+                                    <FormattedMessage id="company.brand.changeBackground" defaultMessage="Change Background" description="Change Background">
+                                        {(text) => (
+                                            <span className='text'>{text}</span>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                     <Icon className='icon'>brush</Icon>
                                 </Button>
                                 <IconButton className='nameEditToggle' onClick={toggleNameEditor}>
@@ -329,7 +334,7 @@ const Header = props => {
                         )}
                     </FormattedMessage>
 
-                    <FormattedMessage id="userProfile.follow" defaultMessage={isFollowing ? "Unfollow" : "Follow"} description="User header follow button">
+                    <FormattedMessage id={isFollowing? "userProfile.unFollow" : "userProfile.follow"} defaultMessage={isFollowing ? "Unfollow" : "Follow"} description="User header follow button">
                         {(text) => isFollowAllowed ? (
                             <Button className='headerButton' onClick={() => toggleFollow(isFollowing)}>
                                 {text}
@@ -397,7 +402,12 @@ const Header = props => {
                         editMode &&
                         <Grid item className='storyContainer add' onClick={(event) => toggleStoryEditor(event.target)}>
                             <span className='bigPlus'>+</span>
-                            <span className='storyTitle'>+ Add article</span>
+                            <FormattedMessage id="company.team.addArticle" defaultMessage="+ Add article" description="Add article">
+                                {(text) => (
+                                    <span className='storyTitle'>{text}</span>
+                                )}
+                            </FormattedMessage>
+                            
                         </Grid>
                     }
                     {

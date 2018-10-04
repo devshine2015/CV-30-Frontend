@@ -11,6 +11,10 @@ const companyJobData = gql`
     imagePath
     videoUrl
     status
+    jobTypes {
+      id
+      title
+    }
   }
 `;
 
@@ -36,6 +40,14 @@ const minimumCompanyData = gql`
       hasProfileCover
       coverContentType
       coverBackground
+      members {
+        id
+        firstName
+        lastName
+        email
+        avatarPath
+        position
+      }
     }
   }
   ${companyJobData}

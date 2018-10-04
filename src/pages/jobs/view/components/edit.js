@@ -187,23 +187,27 @@ const Edit = props => {
         <React.Fragment>
             <div className='header'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    <TextField
-                        name="title"
-                        label="Job title"
-                        placeholder="Job title..."
-                        className='textField'
-                        fullWidth
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.title}
-                        error={!!(touched.title && errors.title)}
-                        helperText={touched.title && errors.title}
-                        InputProps={{
-                            classes: {
-                                input: 'titleInput',
-                            },
-                        }}
-                    />
+                    <FormattedMessage id="jobs.new.jobTitle" defaultMessage="Job title\nJob title..." description="Job title">
+                        {(text) => (
+                            <TextField
+                                name="title"
+                                label={text.split("\n")[0]}
+                                placeholder={text.split("\n")[2]}
+                                className='textField'
+                                fullWidth
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.title}
+                                error={!!(touched.title && errors.title)}
+                                helperText={touched.title && errors.title}
+                                InputProps={{
+                                    classes: {
+                                        input: 'titleInput',
+                                    },
+                                }}
+                            />
+                        )}
+                    </FormattedMessage>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'></Grid>
             </div>
@@ -211,10 +215,13 @@ const Edit = props => {
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                     <form className='jobEditForm' noValidate autoComplete='off'>
                         <section className='mediaUpload'>
-                            <p className='helperText'>
-                                Add/Edit images or embed video links.
-                            </p>
-
+                            <FormattedMessage id="articles.new.helperText" defaultMessage="Add/Edit images or embed video links." description="Add/Edit images or embed video links.">
+                                {(text) => (
+                                    <p className='helperText'>
+                                       {text}
+                                    </p>
+                                )}
+                            </FormattedMessage>
                             {(values.imagePath || (values.videoUrl && !videoShareAnchor)) ?
                                 <React.Fragment>
                                     {values.imagePath &&
@@ -249,9 +256,13 @@ const Edit = props => {
                                     }
                                 </React.Fragment>
                                 : <React.Fragment>
-                                    <Button className='mediaBtn' onClick={openImageUpload}>
-                                        Add image
-                                    </Button>
+                                    <FormattedMessage id="articles.new.addImage" defaultMessage="Add image" description="Add image">
+                                        {(text) => (
+                                            <Button className='mediaBtn' onClick={openImageUpload}>
+                                                {text}
+                                            </Button>
+                                        )}
+                                    </FormattedMessage>
 
                                     <ImageUploader
                                         type='job'
@@ -262,9 +273,13 @@ const Edit = props => {
                                         id={values.id}
                                     />
 
-                                    <Button className='mediaBtn' onClick={openVideoShare}>
-                                        Share video
-                                    </Button>
+                                    <FormattedMessage id="articles.new.shareVideo" defaultMessage="Share video" description="Share video">
+                                        {(text) => (
+                                            <Button className='mediaBtn' onClick={openVideoShare}>
+                                                {text}
+                                            </Button>
+                                        )}
+                                    </FormattedMessage>
 
                                     <Popover
                                         anchorOrigin={{
@@ -284,18 +299,22 @@ const Edit = props => {
                                         disableBackdropClick
                                     >
                                         <div className='popupBody'>
-                                            <TextField
-                                                name="videoUrl"
-                                                label="Video URL"
-                                                placeholder="Enter video link..."
-                                                className='textField'
-                                                fullWidth
-                                                onBlur={handleBlur}
-                                                onChange={handleChange}
-                                                value={values.videoUrl}
-                                                error={!!(touched.videoUrl && errors.videoUrl)}
-                                                helperText={touched.videoUrl && errors.videoUrl}
-                                            />
+                                            <FormattedMessage id="articles.new.videoUrl" defaultMessage="Video URL\nEnter video link..." description="Enter video link">
+                                                {(text) => (
+                                                    <TextField
+                                                        name="videoUrl"
+                                                        label={text.split("\n")[0]}
+                                                        placeholder={text.split("\n")[1]}
+                                                        className='textField'
+                                                        fullWidth
+                                                        onBlur={handleBlur}
+                                                        onChange={handleChange}
+                                                        value={values.videoUrl}
+                                                        error={!!(touched.videoUrl && errors.videoUrl)}
+                                                        helperText={touched.videoUrl && errors.videoUrl}
+                                                    />
+                                                )}
+                                            </FormattedMessage>
                                         </div>
                                         <div className='popupFooter'>
                                             <IconButton
@@ -318,24 +337,40 @@ const Edit = props => {
                             }
                         </section>
                         <section className='jobDescription'>
-                            <h2 className='sectionTitle'>Job <b>description</b></h2>
-                            <FroalaEditor
-                                config={{
-                                    placeholderText: 'This is where the job description should be',
-                                    iconsTemplate: 'font_awesome_5',
-                                    toolbarInline: true,
-                                    charCounterCount: false,
-                                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
-                                }}
-                                model={values.description}
-                                onModelChange={updateDescription}
-                            />
+                            <FormattedMessage id="jobs.new.descriptions" defaultMessage="Job \ndescription" description="Job description">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="company.brand.froalaEditor" defaultMessage="This is where the job description should be" description="This is where the job description should be">
+                                {(text) => (
+                                    <FroalaEditor
+                                        config={{
+                                            placeholderText: text,
+                                            iconsTemplate: 'font_awesome_5',
+                                            toolbarInline: true,
+                                            charCounterCount: false,
+                                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                        }}
+                                        model={values.description}
+                                        onModelChange={updateDescription}
+                                    />
+                                )}
+                            </FormattedMessage>
                         </section>
                         <section className='expireDate'>
-                            <h2 className='sectionTitle'>Expiration <b>date</b></h2>
-                            <p className='helperText'>
-                                Select expiration date.
-                            </p>
+                            <FormattedMessage id="jobs.new.expirationData" defaultMessage="Expiration \ndate" description="Expiration date">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="jobs.new.selectData" defaultMessage="Select expiration date." description="Select expiration date.">
+                                {(text) => (
+                                    <p className='helperText'>
+                                        {text}
+                                    </p>
+                                )}
+                            </FormattedMessage>
                             <DatePicker
                                 format="DD/MM/YYYY"
                                 disablePast={true}
@@ -356,10 +391,18 @@ const Edit = props => {
                             /> */}
                         </section>
                         <section className='benefits'>
-                            <h2 className='sectionTitle'>Job <b>benefits</b></h2>
-                            <p className='helperText'>
-                                Add job benefits.
-                            </p>
+                            <FormattedMessage id="jobs.new.jobBenefits" defaultMessage="Job \nbenefits" description="Job benefits">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="jobs.new.benefitsPara" defaultMessage="Add job benefits." description="Add job benefits.">
+                                {(text) => (
+                                    <p className='helperText'>
+                                        {text}
+                                    </p>
+                                )}
+                            </FormattedMessage>
                             <FormControl className='formControl'>
                                 <Select
                                     multiple
@@ -397,19 +440,31 @@ const Edit = props => {
                             </FormControl>
                         </section>
                         <section className='team'>
-                            <h2 className='sectionTitle'>Associated <b>team</b></h2>
-                            <p className='helperText'>
-                                Add team.
-                            </p>
+                            <FormattedMessage id="jobs.new.associatedTeam" defaultMessage="Associated \nteam" description="Associated team">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[0]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="jobs.new.addTeam" defaultMessage="Add team." description="Add team.">
+                                {(text) => (
+                                    <p className='helperText'>
+                                        {text}
+                                    </p>
+                                )}
+                            </FormattedMessage>
                             <Select
                                 name='teamId'
                                 onChange={handleChange}
                                 value={values.teamId}
                                 className='jobSelect'
                             >
-                                <MenuItem value="" disabled>
-                                    <em>Select a team</em>
-                                </MenuItem>
+                                <FormattedMessage id="jobs.new.selectTeamPara" defaultMessage="Select a team" description="Select a team">
+                                    {(text) => (
+                                        <MenuItem value="" disabled>
+                                            <em>{text}</em>
+                                        </MenuItem>
+                                    )}
+                                </FormattedMessage>
                                 {
                                     company && company.teams && company.teams.map(team => <MenuItem value={team.id} key={team.id}>{team.name}</MenuItem>)
                                 }
@@ -417,39 +472,67 @@ const Edit = props => {
                             </Select>
                         </section>
                         <section className='idealCandidate'>
-                            <h2 className='sectionTitle'>Ideal <b>candidate</b></h2>
-                            <FroalaEditor
-                                config={{
-                                    placeholderText: 'Describe the ideal candidate...',
-                                    iconsTemplate: 'font_awesome_5',
-                                    toolbarInline: true,
-                                    charCounterCount: false,
-                                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
-                                }}
-                                model={values.idealCandidate}
-                                onModelChange={updateIdealCandidate}
-                            />
+                            <FormattedMessage id="jobs.new.idealCandidate" defaultMessage="Ideal \ncandidate" description="Ideal candidate">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="jobs.new.froalaCandidate" defaultMessage="Describe the ideal candidate..." description="Describe the ideal candidate">
+                                {(text) => (
+                                    <FroalaEditor
+                                        config={{
+                                            placeholderText: text,
+                                            iconsTemplate: 'font_awesome_5',
+                                            toolbarInline: true,
+                                            charCounterCount: false,
+                                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                        }}
+                                        model={values.idealCandidate}
+                                        onModelChange={updateIdealCandidate}
+                                    />
+                                )}
+                            </FormattedMessage>
                         </section>
                         <section className='activityType'>
-                            <h2 className='sectionTitle'>Activity <b>field</b></h2>
-                            <TextField
-                                name="activityField"
-                                label="Activity field"
-                                placeholder="Activity field..."
-                                className='textField jobSelect'
-                                onChange={handleChange}
-                                value={values.activityField}
-                            />
+                            <FormattedMessage id="jobs.new.activity" defaultMessage="Activity \nfield" description="Activity field">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="jobs.new.activityField" defaultMessage="Activity field\nActivity field..." description="Activity field">
+                                {(text) => (
+                                    <TextField
+                                        name="activityField"
+                                        label={text.split("\n")[0]}
+                                        placeholder={text.split("\n")[1]}
+                                        className='textField jobSelect'
+                                        onChange={handleChange}
+                                        value={values.activityField}
+                                    />
+                                )}
+                            </FormattedMessage>
                         </section>
                         <section className='skills'>
-                            <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
+                            <FormattedMessage id="jobs.new.desirableSkills" defaultMessage="Desirable \nskills" description="Desirable skills">
+                                {(text) => (    
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
                             <SkillsInput className='textField jobSelect' value={values.skills} onChange={onSkillsChange}/>
                         </section>
                         <section className='jobType'>
-                            <h2 className='sectionTitle'>Job <b>type</b></h2>
-                            <p className='helperText'>
-                                Select job type(s).
-                            </p>
+                            <FormattedMessage id="jobs.new.jobTypes" defaultMessage="Job \ntype" description="Job type">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="jobs.new.selectJobTypes" defaultMessage="Select job type(s)." description="Select job type(s).">
+                                {(text) => (
+                                    <p className='helperText'>
+                                        {text}
+                                    </p>
+                                )}
+                            </FormattedMessage>
                             <FormControl className='formControl'>
                                 <Select
                                     multiple
@@ -469,7 +552,11 @@ const Edit = props => {
                             </FormControl>
                         </section>
                         <section className='salary'>
-                            <h2 className='sectionTitle'>Salary <b>range</b></h2>
+                            <FormattedMessage id="jobs.new.salaryRange" defaultMessage="Salary \nrange" description="Salary range">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
                             <Range
                                 min={0}
                                 max={5000}
@@ -492,9 +579,13 @@ const Edit = props => {
                             />
                         </section>
                         <section className='jobStatus'>
-                            <p className='helperText'>
-                                Select job status.
-                            </p>
+                            <FormattedMessage id="jobs.new.selectStatus" defaultMessage="Select job status." description="Select job status.">
+                                {(text) => (
+                                    <p className='helperText'>
+                                        {text}
+                                    </p>
+                                )}
+                            </FormattedMessage>
                             <FormControl className='formControl'>
                                 <Select
                                     name='status'
@@ -502,9 +593,13 @@ const Edit = props => {
                                     value={values.status}
                                     className='jobStatusSelect jobSelect'
                                 >
-                                    <MenuItem value="" disabled>
-                                        <em>Set status</em>
-                                    </MenuItem>
+                                    <FormattedMessage id="jobs.new.setStatus" defaultMessage="Set status" description="Set status">
+                                        {(text) => (
+                                            <MenuItem value="" disabled>
+                                                <em>{text}</em>
+                                            </MenuItem>
+                                        )}
+                                    </FormattedMessage>
                                     {
                                         ['draft', 'active', 'archived'].map(item => <MenuItem value={item} key={item}>{item.toUpperCase()}</MenuItem>)
                                     }
@@ -517,21 +612,33 @@ const Edit = props => {
                     <div className='columnRightContent'>
                         <div className='fixed'>
                             <section className='contact'>
-                                <h2 className="columnTitle">
-                                    Contact&nbsp;<b>details</b>
-                                </h2>
-
-                                <p className='message'>
-                                    Add section
-                            </p>
+                                <FormattedMessage id="jobs.new.contactDetails" defaultMessage="Contact\ndetails" description="Contact details">
+                                    {(text) => (
+                                        <h2 className="columnTitle">
+                                            {text.split("\n")[0]}&nbsp;<b>{text.split("\n")[1]}</b>
+                                        </h2>
+                                    )}
+                                </FormattedMessage>
+                                
+                                <FormattedMessage id="jobs.new.addSection" defaultMessage="Add section" description="Add section">
+                                    {(text) => (
+                                        <p className='message'>
+                                            {text}
+                                        </p>
+                                    )}
+                                </FormattedMessage>
                                 <div>
-                                    <Button className='addContactFieldBtn'
-                                        aria-owns={anchorEl ? 'teamSelect' : null}
-                                        aria-haspopup="true"
-                                        onClick={handleClick}
-                                    >
-                                        Select field
-                                </Button>
+                                    <FormattedMessage id="jobs.new.selectField" defaultMessage="Select field" description="Select field">
+                                        {(text) => (
+                                            <Button className='addContactFieldBtn'
+                                                    aria-owns={anchorEl ? 'simple-menu' : null}
+                                                    aria-haspopup="true"
+                                                    onClick={handleClick}
+                                                >
+                                                    {text}
+                                            </Button>
+                                        )}
+                                    </FormattedMessage>
                                     <Menu
                                         id="teamSelect"
                                         anchorEl={anchorEl}

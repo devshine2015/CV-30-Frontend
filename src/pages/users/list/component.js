@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, TextField, Button, Checkbox, FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
 import InfiniteScroll from 'react-infinite-scroller';
-
+import { FormattedMessage } from 'react-intl'
 import Profile from './components/profile';
 import Loader from '../../../components/Loader';
 
@@ -56,47 +56,57 @@ const UsersList = props => {
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
-                    <h2 className="columnTitle">
-                        Find <b>people</b>
-                    </h2>
+                    <FormattedMessage id="users.findPeople" defaultMessage="Find \npeople" description="Find people">
+                        {(text) => (
+                            <h2 className="columnTitle">
+                                {text.split("\n")[0]} <b>{text.split("\n")[1]}</b>
+                            </h2>
+                        )}
+                    </FormattedMessage>
+                    
                     <div className='filters'>
-                        <section className='advanced'>
-                            <TextField
-                                name='name'
-                                label='Name'
-                                placeholder='Search by name...'
-                                type="search"
-                                className='textField'
-                            />
-                            <TextField
-                                name='city'
-                                label='City'
-                                placeholder='Search by city...'
-                                type="search"
-                                className='textField'
-                            />
-                            <TextField
-                                name='hSkill'
-                                label='Hard skills'
-                                placeholder='Search by hard skills...'
-                                type="search"
-                                className='textField'
-                            />
-                            <TextField
-                                name='sSkill'
-                                label='Soft skills'
-                                placeholder='Search by soft skills...'
-                                type="search"
-                                className='textField'
-                            />
-                            <TextField
-                                name='company'
-                                label='Company'
-                                placeholder='Search by company...'
-                                type="search"
-                                className='textField'
-                            />
-                        </section>
+                        <FormattedMessage id="users.searchFitlers" defaultMessage="Name\nSearch by name...\nCity\nSearch by city...\nHard skills\nSearch by hard skills...\nSoft skills\nSearch by soft skills...\nCompany\nSearch by company..." description="User Search Filters">
+                            {(text) => (
+                                <section className='advanced'>
+                                    <TextField
+                                        name='name'
+                                        label={text.split("\n")[0]}
+                                        placeholder={text.split("\n")[1]}
+                                        type="search"
+                                        className='textField'
+                                    />
+                                    <TextField
+                                        name='city'
+                                        label={text.split("\n")[2]}
+                                        placeholder={text.split("\n")[3]}
+                                        type="search"
+                                        className='textField'
+                                    />
+                                    <TextField
+                                        name='hSkill'
+                                        label={text.split("\n")[4]}
+                                        placeholder={text.split("\n")[5]}
+                                        type="search"
+                                        className='textField'
+                                    />
+                                    <TextField
+                                        name='sSkill'
+                                        label={text.split("\n")[6]}
+                                        placeholder={text.split("\n")[7]}
+                                        type="search"
+                                        className='textField'
+                                    />
+                                    <TextField
+                                        name='company'
+                                        label={text.split("\n")[8]}
+                                        placeholder={text.split("\n")[9]}
+                                        type="search"
+                                        className='textField'
+                                    />
+                                </section>
+                            )}
+                        </FormattedMessage>
+                        
 
                         <section className='educationType'>
                             <p className='sectionTitle'>Education</p>
@@ -108,9 +118,14 @@ const UsersList = props => {
                                     onChange={handleFormChange}
                                     className='hiddenInput'
                                 />
-                                <Button component='span' className={isHighSchool ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                    HighSchool
-                                </Button>
+                                <FormattedMessage id="users.highschool" defaultMessage="HighSchool" description="HighSchool">
+                                    {(text) => (
+                                        <Button component='span' className={isHighSchool ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                            {text}
+                                        </Button>
+                                    )}
+                                </FormattedMessage>
+                                
                             </label>
                             <label htmlFor="isUniversity">
                                 <Checkbox
@@ -120,9 +135,14 @@ const UsersList = props => {
                                     onChange={handleFormChange}
                                     className='hiddenInput'
                                 />
-                                <Button component='span' className={isUniversity ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                    University
-                                </Button>
+                                <FormattedMessage id="users.university" defaultMessage="University" description="University">
+                                    {(text) => (
+                                        <Button component='span' className={isUniversity ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                            {text}
+                                        </Button>
+                                    )}
+                                </FormattedMessage>
+                                
                             </label>
                             <label htmlFor="isMasters">
                                 <Checkbox
@@ -132,9 +152,14 @@ const UsersList = props => {
                                     onChange={handleFormChange}
                                     className='hiddenInput'
                                 />
-                                <Button component='span' className={isMasters ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                    Master's Degree
-                                </Button>
+                                <FormattedMessage id="users.master" defaultMessage="Master's Degree" description="Master's Degree">
+                                    {(text) => (
+                                        <Button component='span' className={isMasters ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                            {text}
+                                        </Button>
+                                    )}
+                                </FormattedMessage>
+                                
                             </label>
                             <label htmlFor="isDoctorate">
                                 <Checkbox
@@ -144,19 +169,39 @@ const UsersList = props => {
                                     onChange={handleFormChange}
                                     className='hiddenInput'
                                 />
-                                <Button component='span' className={isDoctorate ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                    Doctorate Degree
-                                </Button>
+                                <FormattedMessage id="users.doctor" defaultMessage="Doctorate Degree" description="Doctorate Degree">
+                                    {(text) => (
+                                        <Button component='span' className={isDoctorate ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                            {text}
+                                        </Button>
+                                    )}
+                                </FormattedMessage>
+                                
                             </label>
                         </section>
                         <section className='endorsment'>
-                            <p className='sectionTitle'>Endorsment level</p>
+                            <FormattedMessage id="users.endorsmentLevel" defaultMessage="Endorsment level" description="Endorsment level">
+                                {(text) => (
+                                    <p className='sectionTitle'>{text}</p>
+                                )}
+                            </FormattedMessage>
+                            
                             <Range min={100} max={300} defaultValue={[100, 300]} step={10} onChange={handleSliderChange} />
                         </section>
                         <section className='verifiedProfile'>
-                            <p className='sectionTitle'>Profile</p>
+                            <FormattedMessage id="nav.profile" defaultMessage="Profile" description="Profile">
+                                {(text) => (
+                                    <p className='sectionTitle'>{text}</p>
+                                )}
+                            </FormattedMessage>
+                            
                             <FormGroup row className='profileToggle'>
-                                <FormLabel className={isProfileVerified ? 'active' : ''}>Verified</FormLabel>
+                                <FormattedMessage id="users.verified" defaultMessage="Verified" description="Verified">
+                                    {(text) => (
+                                         <FormLabel className={isProfileVerified ? 'active' : ''}>{text}</FormLabel>
+                                    )}
+                                </FormattedMessage>
+                               
                                 <ToggleSwitch checked={isProfileVerified} onChange={toggleIsProfileVerified}
                                     classes={{
                                         switchBase: 'colorSwitchBase',
@@ -164,7 +209,12 @@ const UsersList = props => {
                                         bar: 'colorBar',
                                     }}
                                     color="primary" />
-                                <FormLabel className={!isProfileVerified ? 'active' : ''}>Not verified</FormLabel>
+                                <FormattedMessage id="users.notVerified" defaultMessage="Not verified" description="Not verified">
+                                    {(text) => (
+                                        <FormLabel className={!isProfileVerified ? 'active' : ''}>{text}</FormLabel>
+                                    )}
+                                </FormattedMessage>
+                                
                             </FormGroup>
                         </section>
                     </div>

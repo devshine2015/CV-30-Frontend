@@ -108,51 +108,70 @@ const RegisterComponent = ({ values, touched, errors, isSubmitting, handleChange
                             {(text) => (<h1>{text}</h1>)}
                         </FormattedMessage>
                         <FormattedMessage id="register.text" defaultMessage="Sign up text" description="Log in text">
-                            {(text) => (<p>{text}</p>)}
+                            {(text) => (
+                                <div>
+                                    {text.split("\n").map((i,key) => {
+                                        return <div key={key}>{i}</div>;
+                                    })}
+                                </div>
+                            )}
                         </FormattedMessage>
                     </Grid>
                 </Hidden>
                 <Grid item md={4} sm={12} xs={12} className='authFormContainer'>
                     <Paper className='authForm'>
                         <form autoComplete="off" noValidate>
-                            <TextField
-                                name="email"
-                                label="Email"
-                                className='textField'
-                                type="email"
-                                autoComplete="email"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.email}
-                                error={!!(touched.email && errors.email)}
-                                helperText={touched.email && errors.email}
-                            />
-                            <TextField
-                                name="password"
-                                label="Password"
-                                className='textField'
-                                type="password"
-                                autoComplete="new-password"
-                                value={values.password}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={!!(touched.password && errors.password)}
-                                helperText={touched.password && errors.password}
-                            />
-                            <TextField
-                                name="confirmPassword"
-                                label="Confirm Password"
-                                className='textField'
-                                type="password"
-                                autoComplete="off"
-                                autofill="off"
-                                value={values.confirmPassword}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={!!(touched.confirmPassword && errors.confirmPassword)}
-                                helperText={touched.confirmPassword && errors.confirmPassword}
-                            />
-
+                            <FormattedMessage id="register.email" defaultMessage="Email" description="Email">
+                                {(text) => (
+                                    <TextField
+                                        name="email"
+                                        label={text}
+                                        className='textField'
+                                        type="email"
+                                        autoComplete="email"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.email}
+                                        error={!!(touched.email && errors.email)}
+                                        helperText={touched.email && errors.email}
+                                    />
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="register.password" defaultMessage="Password" description="Password">
+                                {(text) => (
+                                    <TextField
+                                        name="password"
+                                        label={text}
+                                        className='textField'
+                                        type="password"
+                                        autoComplete="new-password"
+                                        value={values.password}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={!!(touched.password && errors.password)}
+                                        helperText={touched.password && errors.password}
+                                    />
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="register.confirmPassword" defaultMessage="Confirm Password" description="Confirm Password">
+                                {(text) => (
+                                    <TextField
+                                        name="confirmPassword"
+                                        label={text}
+                                        className='textField'
+                                        type="password"
+                                        autoComplete="off"
+                                        autofill="off"
+                                        value={values.confirmPassword}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={!!(touched.confirmPassword && errors.confirmPassword)}
+                                        helperText={touched.confirmPassword && errors.confirmPassword}
+                                    />
+    
+                                )}
+                            </FormattedMessage>
+                            
                             {registerError &&
                                 <p className='errorMessage'>{JSON.stringify(registerError)}</p>
                             }

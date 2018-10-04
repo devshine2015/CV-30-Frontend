@@ -144,7 +144,12 @@ const Show = props => {
         <Grid container className='mainBody teamShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <section className='teamMembers'>
-                    <h2 className='titleHeading'>Team<b>members</b></h2>
+                    <FormattedMessage id="company.team.teamMembers" defaultMessage="Team\nmembers" description="Team members">
+                        {(text) => (
+                            <h2 className='titleHeading'>{text.split("\n")[0]}<b>{text.split("\n")[1]}</b></h2>
+                        )}
+                    </FormattedMessage>
+                    
                     <div className='teamMembersContainer'>
                         {members && members.map(profile =>
                             <ShowMember
@@ -167,9 +172,14 @@ const Show = props => {
                     </div>
                     {editMode &&
                         <React.Fragment>
-                            <div className='addItemBtn' onClick={openMembersPopup}>
-                                + Add Team Member
-                            </div>
+                            <FormattedMessage id="company.team.addTeamMemberP" defaultMessage="+ Add Team Member" description="Add Team Member">
+                                {(text) => (
+                                    <div className='addItemBtn' onClick={openMembersPopup}>
+                                        {text}
+                                    </div>
+                                )}
+                            </FormattedMessage>
+                            
                             <MembersPopup
                                 open={isMembersPopupOpen}
                                 onClose={closeMembersPopup}
@@ -179,18 +189,28 @@ const Show = props => {
                 </section>
                 <section className='teamLife'>
                     {(officeArticles && officeArticles.length > 0) &&
-                        <ArticleSlider
-                            articles={officeArticles}
-                            editMode={editMode}
-                            deleteArticle={deleteOfficeArticle}
-                            title={(<h2 className='titleHeading'>Life <b>at the office</b></h2>)}
-                        />
+                        <FormattedMessage id="company.brand.lifeOffice" defaultMessage="Life at the office" description="Life at the office">
+                            {(text) => (
+                                <ArticleSlider
+                                    articles={officeArticles}
+                                    editMode={editMode}
+                                    deleteArticle={deleteOfficeArticle}
+                                    title={(<h2 className='titleHeading'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>)}
+                                />
+                            )}
+                        </FormattedMessage>
+                        
                     }
                     {editMode &&
                         <React.Fragment>
-                            <div className='addItemBtn' onClick={openArticlePopUp}>
-                                + Add Article
-                            </div>
+                            <FormattedMessage id="company.team.addArticle" defaultMessage="+ Add Article" description="Add Article">
+                                {(text) => (
+                                    <div className='addItemBtn' onClick={openArticlePopUp}>
+                                        {text}
+                                    </div>
+                                )}
+                            </FormattedMessage>
+                            
                             <ArticlePopUp
                                 type='job_officeLife'
                                 open={isArticlePopupOpen}
@@ -209,9 +229,14 @@ const Show = props => {
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
-                    <h2 className="columnTitle">
-                        <b>Joburile</b> echipei
-                    </h2>
+                    <FormattedMessage id="company.team.jobsTeam" defaultMessage="Jobs\n Team" description="Jobs Team">
+                        {(text) => (
+                            <h2 className="columnTitle">
+                            <b>{text.split("\n")[0]}</b> {text.split("\n")[1]}
+                        </h2>
+                        )}
+                    </FormattedMessage>
+                    
                     <div className='jobs'>
                         {
                             jobs.map(job => {
@@ -266,12 +291,16 @@ const Show = props => {
                             })
                         }
                         {editMode &&
-                            <Link className='addItemBtn' to={{
-                                pathname: `/${lang}/jobs/new`,
-                                state: { companyId: company.id, teamId }
-                            }}>
-                                + Add Job
-                            </Link>
+                            <FormattedMessage id="company.team.addJobP" defaultMessage="+ Add Job" description="Add Job">
+                                {(text) => (
+                                    <Link className='addItemBtn' to={{
+                                        pathname: `/${lang}/jobs/new`,
+                                        state: { companyId: company.id, teamId }
+                                    }}>
+                                        {text}
+                                    </Link>
+                                )}
+                            </FormattedMessage>
                         }
                     </div>
                 </div>

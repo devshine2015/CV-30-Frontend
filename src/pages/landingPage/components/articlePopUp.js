@@ -3,6 +3,7 @@ import { Modal, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, Icon, I
 import { compose, pure, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
+import { FormattedMessage } from 'react-intl'
 import uuid from 'uuidv4';
 
 // Require Editor JS files.
@@ -150,7 +151,12 @@ const ArticlePopUp = ({
             <div className='LP_storyEditPaper'>
                 <div className='popupBody'>
                     <div className='newArticleForm'>
-                        <h4>Add article</h4>
+                        <FormattedMessage id="landing.addArticle" defaultMessage="Add article" description="Add article">
+                            {(text) => (
+                                <h4>{text}</h4>
+                            )}
+                        </FormattedMessage>
+                        
                         <section className='infoSection'>
                             <TextField
                                 name="title"
@@ -161,23 +167,36 @@ const ArticlePopUp = ({
                                 value={title || ''}
                                 fullWidth
                             />
-
-                            <FroalaEditor
-                                config={{
-                                    placeholderText: 'Article body goes here',
-                                    iconsTemplate: 'font_awesome_5',
-                                    toolbarInline: true,
-                                    charCounterCount: false,
-                                    // quickInsertTags: [''],
-                                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
-                                }}
-                                model={description}
-                                onModelChange={updateDescription}
-                            />
+                            <FormattedMessage id="landing.articleBody" defaultMessage="Article body goes here" description="Article body goes here">
+                                {(text) => (
+                                    <FroalaEditor
+                                        config={{
+                                            placeholderText: text,
+                                            iconsTemplate: 'font_awesome_5',
+                                            toolbarInline: true,
+                                            charCounterCount: false,
+                                            // quickInsertTags: [''],
+                                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                        }}
+                                        model={description}
+                                        onModelChange={updateDescription}
+                                    />
+                                )}
+                            </FormattedMessage>
+                            
                             <hr />
                             <FormGroup row className='mediaToggle'>
-                                <span className='mediaToggleLabel'>Article cover</span>
-                                <FormLabel className={!isVideoUrl ? 'active' : ''}>Photo</FormLabel>
+                                <FormattedMessage id="landing.articleCover" defaultMessage="Article cover" description="Article cover">
+                                    {(text) => (
+                                        <span className='mediaToggleLabel'>{text}</span>
+                                    )}
+                                </FormattedMessage>
+                                <FormattedMessage id="feed.photo" defaultMessage="Photo" description="Photo">
+                                    {(text) => (
+                                        <FormLabel className={!isVideoUrl ? 'active' : ''}>{text}</FormLabel>
+                                    )}
+                                </FormattedMessage>
+                                
                                 <ToggleSwitch
                                     checked={isVideoUrl}
                                     onChange={switchMediaType}
@@ -187,25 +206,40 @@ const ArticlePopUp = ({
                                         bar: 'colorBar',
                                     }}
                                     color="primary" />
-                                <FormLabel className={isVideoUrl ? 'active' : ''}>Video Url</FormLabel>
+                                <FormattedMessage id="feed.videoUrl" defaultMessage="Video Url" description="Video Url">
+                                    {(text) => (
+                                        <FormLabel className={isVideoUrl ? 'active' : ''}>{text}</FormLabel>
+                                    )}
+                                </FormattedMessage>
+                                
                             </FormGroup>
 
                         </section>
                         <section className='mediaUpload'>
                             {isVideoUrl ?
-                                <TextField
-                                    name="videoURL"
-                                    label="Add video URL"
-                                    placeholder="Video URL..."
-                                    className='textField'
-                                    onChange={handleFormChange}
-                                    value={videoURL || ''}
-                                    fullWidth
-                                /> :
+                                <FormattedMessage id="feed.addVideoUrl" defaultMessage="Add video URL \n Video URL..." description="Video URL">
+                                        {(text) => (
+                                            <TextField
+                                                name="videoURL"
+                                                label={text.split("\n")[0]}
+                                                placeholder={text.split("\n")[1]}
+                                                className='textField'
+                                                onChange={handleFormChange}
+                                                value={videoURL || ''}
+                                                fullWidth
+                                            />
+                                        )}
+                                </FormattedMessage>
+                                 :
                                 <React.Fragment>
-                                    <Button className='badgeRoot' onClick={openImageUpload}>
-                                        Upload
-                                    </Button>
+                                    <FormattedMessage id="feed.imageUpload" defaultMessage="Upload" description="Upload">
+                                        {(text) => (
+                                            <Button className='badgeRoot' onClick={openImageUpload}>
+                                                {text}
+                                            </Button>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                     <ImageUploader
                                         type='article'
                                         open={imageUploadOpen}

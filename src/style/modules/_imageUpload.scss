@@ -78,7 +78,9 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-
+            &>div {
+                width: 100% !important;
+            }
             .uploadBtn {
                 background: #4893cc;
                 color: #fff;

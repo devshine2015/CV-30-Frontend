@@ -8,11 +8,12 @@ import { DatePicker } from 'material-ui-pickers';
 import moment from 'moment';
 import { withFormik } from 'formik';
 import * as yup from 'yup';
-
+import { FormattedMessage } from 'react-intl'
 import { setExperienceMutation, setProjectMutation, setFeedbackMessage, setHobbyMutation, setEducationMutation } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
 import ImageUploader from '../../../../components/imageUploader';
 import LocationInput from '../../../../components/LocationInput';
+import EducationLevelInput from '../../../../components/EducationLevelInput';
 import { s3BucketURL } from '../../../../constants/s3';
 
 class ExperienceEdit extends React.Component {
@@ -56,63 +57,96 @@ class ExperienceEdit extends React.Component {
             isSubmitting, values, handleChange, handleBlur, isValid,
             closeEditor,
             submitForm,
-            type
+            type,
+            userId
         } = this.props;
 
         const { id, position, company, location, startDate, endDate, isCurrent, description, video, images, isVideoUrl } = values;
         const image = images && !!images.length ? { id: images[0].id, path: images[0].path, sourceType: type } : null;
-
+        
         return (
             <div className='experienceForm'>
                 <h4>
                     {this.renderSubTitle(type)}
                 </h4>
                 <section className='infoSection'>
-                    <TextField
-                        name="position"
-                        label="Add position"
-                        placeholder="Position..."
-                        className='textField'
-                        fullWidth
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={position || ''}
-                    />
-                    <TextField
-                        name="company"
-                        label="Add company"
-                        placeholder="Company..."
-                        className='textField'
-                        fullWidth
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={company || ''}
-                    />
+                    {
+                        type === "education" ?
+                        <EducationLevelInput
+                            value={position}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                        />
+                        :
+                        <FormattedMessage id="users.addPositionField" defaultMessage="Add position\nPosition..." description="Position">
+                            {(text) => (
+                                <TextField
+                                    name="position"
+                                    label={text.split("\n")[0]}
+                                    placeholder={text.split("\n")[1]}
+                                    className='textField'
+                                    fullWidth
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={position || ''}
+                                />
+                            )}
+                        </FormattedMessage>
+                        
+                    }
+                    <FormattedMessage id="users.addCompanyField" defaultMessage="Add institution\nAdd company\nCompany..." description="Company">
+                        {(text) => (
+                            <TextField
+                                name="company"
+                                label={type === 'education'? text.split("\n")[0] : text.split("\n")[0]}
+                                placeholder={text.split("\n")[2]}
+                                className='textField'
+                                fullWidth
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={company || ''}
+                            />
+                        )}
+                    </FormattedMessage>
+                    
                     <LocationInput
                         value={location}
                         onChange={handleChange}
                         onBlur={handleBlur}
                     />
                     <div className='datePickers'>
-                        <p>Date</p>
-                        <DatePicker
-                            label="Start Date"
-                            format="DD/MM/YYYY"
-                            maxDate={endDate || new Date()}
-                            value={startDate}
-                            onChange={this.handleStartDateChange}
-                            animateYearScrolling
-                        />
-                        <DatePicker
-                            label="End Date"
-                            format="DD/MM/YYYY"
-                            disabled={isCurrent}
-                            disableFuture={true}
-                            minDate={startDate || ''}
-                            value={endDate}
-                            onChange={this.handleEndDateChange}
-                            animateYearScrolling
-                        />
+                        <FormattedMessage id="users.date" defaultMessage="Date" description="Date">
+                            {(text) => (
+                                 <p>{text}</p>
+                            )}
+                        </FormattedMessage>
+                        <FormattedMessage id="users.startDate" defaultMessage="Start Date" description="Start Date">
+                            {(text) => (
+                                <DatePicker
+                                    label={text}
+                                    format="DD/MM/YYYY"
+                                    maxDate={endDate || new Date()}
+                                    value={startDate}
+                                    onChange={this.handleStartDateChange}
+                                    animateYearScrolling
+                                />
+                            )}
+                        </FormattedMessage>
+                        <FormattedMessage id="users.endDate" defaultMessage="End Date" description="End Date">
+                            {(text) => (
+                                <DatePicker
+                                    label={text}
+                                    format="DD/MM/YYYY"
+                                    disabled={isCurrent}
+                                    disableFuture={true}
+                                    minDate={startDate || ''}
+                                    value={endDate}
+                                    onChange={this.handleEndDateChange}
+                                    animateYearScrolling
+                                />
+                            )}
+                        </FormattedMessage>
+                        
                         <FormControlLabel
                             control={
                                 <Checkbox
@@ -125,21 +159,35 @@ class ExperienceEdit extends React.Component {
                             label="Still work there"
                         />
                     </div>
-                    <TextField
-                        name="description"
-                        label="Add description"
-                        placeholder="Description..."
-                        fullWidth
-                        multiline
-                        className='textField'
-                        rowsMax="4"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={description || ''}
-                    />
+                    <FormattedMessage id="users.addDescriptionField" defaultMessage="Add description\nDescription..." description="Description">
+                        {(text) => (
+                             <TextField
+                                name="description"
+                                label={text.split("\n")[0]}
+                                placeholder={text.split("\n")[1]}
+                                fullWidth
+                                multiline
+                                className='textField'
+                                rowsMax="4"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={description || ''}
+                            />
+                        )}
+                    </FormattedMessage>
+                    
                     <FormGroup row className='mediaToggle'>
-                        <span className='mediaToggleLabel'>Upload visuals</span>
-                        <FormLabel className={!isVideoUrl ? 'active' : ''}>Photo</FormLabel>
+                        <FormattedMessage id="feed.mediaToggleLabel" defaultMessage="Upload visuals" description="Upload visuals">
+                            {(text) => (
+                                <span className='mediaToggleLabel'>{text}</span>
+                            )}
+                        </FormattedMessage>
+                        <FormattedMessage id="feed.photo" defaultMessage="Photo" description="Photo">
+                            {(text) => (
+                                <FormLabel className={!isVideoUrl ? 'active' : ''}>{text}</FormLabel>
+                            )}
+                        </FormattedMessage>
+                        
                         <ToggleSwitch
                             name='isVideoUrl'
                             checked={isVideoUrl}
@@ -150,21 +198,31 @@ class ExperienceEdit extends React.Component {
                                 bar: 'colorBar',
                             }}
                             color="primary" />
-                        <FormLabel className={isVideoUrl ? 'active' : ''}>Video Url</FormLabel>
+                        <FormattedMessage id="feed.videoUrl" defaultMessage="Video Url" description="Video Url">
+                            {(text) => (
+                                <FormLabel className={isVideoUrl ? 'active' : ''}>{text}</FormLabel>
+                            )}
+                        </FormattedMessage>
+                        
                     </FormGroup>
 
                 </section>
                 <section className='mediaUpload'>
                     {isVideoUrl ?
-                        <TextField
-                            name="video"
-                            label="Add video URL"
-                            placeholder="Video URL..."
-                            fullWidth
-                            className='textField'
-                            value={video}
-                            onChange={handleChange}
-                        /> :
+                        <FormattedMessage id="feed.addVideoUrl" defaultMessage="Add video URL \n Video URL..." description="Add video URL">
+                            {(text) => (
+                                <TextField
+                                    name="video"
+                                    label={text.split("\n")[0]}
+                                    placeholder={text.split("\n")[1]}
+                                    fullWidth
+                                    className='textField'
+                                    value={video}
+                                    onChange={handleChange}
+                                />
+                            )}
+                        </FormattedMessage>
+                         :
                         <React.Fragment>
                             {image ?
                                 <div className="imagePreview">
@@ -173,9 +231,14 @@ class ExperienceEdit extends React.Component {
                                         <Icon>cancel</Icon>
                                     </IconButton>
                                 </div> :
-                                <Button className='uploadBtn' onClick={this.openImageUpload}>
-                                    Upload
-                                </Button>
+                                <FormattedMessage id="feed.imageUpload" defaultMessage="Upload" description="Upload">
+                                        {(text) => (
+                                            <Button className='uploadBtn' onClick={this.openImageUpload}>
+                                                {text}
+                                            </Button>
+                                        )}
+                                </FormattedMessage>
+                                
                             }
                             <ImageUploader
                                 id={id}
@@ -184,6 +247,7 @@ class ExperienceEdit extends React.Component {
                                 onClose={this.closeImageUpload}
                                 onError={this.handleError}
                                 onSuccess={this.handleSuccess}
+                                userId={userId}
                             />
                         </React.Fragment>
 

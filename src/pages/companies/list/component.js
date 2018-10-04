@@ -1,6 +1,8 @@
 import React from 'react';
 import { Grid, TextField, Checkbox, Button } from '@material-ui/core';
 import InfiniteScroll from 'react-infinite-scroller';
+import { FormattedMessage } from 'react-intl'
+
 import Company from './components/company';
 import Loader from '../../../components/Loader';
 
@@ -45,41 +47,54 @@ const CompaniesList = props => {
                     </InfiniteScroll>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
+                            
                     <div className='columnRightContent'>
-                        <h2 className="columnTitle">
-                            Find <b>company</b>
-                        </h2>
+                        <FormattedMessage id="company.list.findCompany" defaultMessage="Find \ncompany" description="Find company">
+                            {(text) => (
+                                 <h2 className="columnTitle">
+                                    {text.split("\n")[0]} <b>{text.split("\n")[1]}</b>
+                                </h2>
+                            )}
+                        </FormattedMessage>
+                       
                         <div className='filters'>
-                            <section className='advanced'>
-                                <TextField
-                                    name='company'
-                                    label='Company'
-                                    placeholder='Search company...'
-                                    type="search"
-                                    className='textField'
-                                />
-                                <TextField
-                                    name='city'
-                                    label='City'
-                                    placeholder='Find city...'
-                                    type="search"
-                                    className='textField'
-                                />
-                                <TextField
-                                    name='industry'
-                                    label='Industry'
-                                    placeholder='Find industry...'
-                                    type="search"
-                                    className='textField'
-                                />
-                                <TextField
-                                    name='team'
-                                    label='Team'
-                                    placeholder='Find team...'
-                                    type="search"
-                                    className='textField'
-                                />
-                            </section>
+                            
+                            <FormattedMessage id="company.list.searchFilters" defaultMessage="Company\nSearch company...\nCity\nFind city...\nIndustry\nFind industry...\nTeam\nFind team..." description="Search Filters">
+                                {(text) => (
+                                    <section className='advanced'>
+                                        <TextField
+                                            name='company'
+                                            label={text.split("\n")[0]}
+                                            placeholder={text.split("\n")[1]}
+                                            type="search"
+                                            className='textField'
+                                        />
+                                        <TextField
+                                            name='city'
+                                            label={text.split("\n")[2]}
+                                            placeholder={text.split("\n")[3]}
+                                            type="search"
+                                            className='textField'
+                                        />
+                                        <TextField
+                                            name='industry'
+                                            label={text.split("\n")[4]}
+                                            placeholder={text.split("\n")[5]}
+                                            type="search"
+                                            className='textField'
+                                        />
+                                        <TextField
+                                            name='team'
+                                            label={text.split("\n")[6]}
+                                            placeholder={text.split("\n")[7]}
+                                            type="search"
+                                            className='textField'
+                                        />
+                                    </section>
+                                )}
+                            </FormattedMessage>
+                                
+                            
                             <section className='companyType'>
                                 <p className='sectionTitle'>Company type</p>
                                 <label htmlFor="isStartup">
@@ -90,9 +105,14 @@ const CompaniesList = props => {
                                         onChange={handleFormChange}
                                         className='hiddenInput'
                                     />
-                                    <Button component='span' className={isStartup ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                        Startup
-                                </Button>
+                                    <FormattedMessage id="company.list.startUp" defaultMessage="Startup" description="Startup">
+                                        {(text) => (
+                                            <Button component='span' className={isStartup ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                {text}
+                                            </Button>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                 </label>
                                 <label htmlFor="isCorporation">
                                     <Checkbox
@@ -102,9 +122,14 @@ const CompaniesList = props => {
                                         onChange={handleFormChange}
                                         className='hiddenInput'
                                     />
-                                    <Button component='span' className={isCorporation ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                        Corporation
-                                </Button>
+                                    <FormattedMessage id="company.list.corporation" defaultMessage="Corporation" description="Corporation">
+                                        {(text) => (
+                                            <Button component='span' className={isCorporation ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                {text}
+                                            </Button>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                 </label>
                                 <label htmlFor="isBoutique">
                                     <Checkbox
@@ -114,9 +139,14 @@ const CompaniesList = props => {
                                         onChange={handleFormChange}
                                         className='hiddenInput'
                                     />
-                                    <Button component='span' className={isBoutique ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                        Boutique
-                                </Button>
+                                    <FormattedMessage id="company.list.boutique" defaultMessage="Boutique" description="Boutique">
+                                        {(text) => (
+                                            <Button component='span' className={isBoutique ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                {text}
+                                            </Button>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                 </label>
                                 <label htmlFor="isMultinational">
                                     <Checkbox
@@ -126,9 +156,14 @@ const CompaniesList = props => {
                                         onChange={handleFormChange}
                                         className='hiddenInput'
                                     />
-                                    <Button component='span' className={isMultinational ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                        Multinational
-                                    </Button>
+                                    <FormattedMessage id="company.list.multinational" defaultMessage="Multinational" description="Multinational">
+                                        {(text) => (
+                                            <Button component='span' className={isMultinational ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                {text}
+                                            </Button>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                 </label>
                             </section>
                         </div>

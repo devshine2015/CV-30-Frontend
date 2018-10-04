@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid, Button, TextField, Hidden, InputAdornment, Checkbox } from '@material-ui/core';
 import InfiniteScroll from 'react-infinite-scroller';
 import Slider from 'rc-slider';
+import { FormattedMessage } from 'react-intl'
 import 'rc-slider/assets/index.css';
 import JobItem from './components/jobItem';
 import Loader from '../../../components/Loader';
@@ -18,40 +19,58 @@ const JobsList = props => {
     } else {
         const jobs = getJobsQuery.jobs ? getJobsQuery.jobs.edges.map(edge => edge.node) : [];
         const hasNextPage = getJobsQuery.jobs ? getJobsQuery.jobs.pageInfo.hasNextPage : false;
-
+        console.log("----------------- Job page jobs -----------------------", jobs)
         const { formData, handleFormChange, handleSearchJobs, match: { params: { lang }} } = props;
         const { jobName, company, location, isPartTime, isFullTime, isProjectBased, isRemote, isStartup, isCorporation, isBoutique, isMultinational, handleSliderChange } = formData;
         return (
             <div className='jobsListRoot'>
                 <Grid container className='header'>
                     <Grid item lg={6} md={12} sm={12} xs={12} className='centralColumn'>
-                        <h1 className='searchTitle'>Search <b>jobs</b></h1>
+                        <FormattedMessage id="jobs.list.searchJobs" defaultMessage="Search \njobs" description="Search jobs">
+                            {(text) => (
+                                <h1 className='searchTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h1>
+                            )}
+                        </FormattedMessage>
+                        
                         <div className='searchFields'>
-                            <TextField
-                                name='jobName'
-                                value={jobName || ''}
-                                onChange={handleFormChange}
-                                label="Job title..."
-                                type="search"
-                                className='textField'
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start"><i className='fas fa-briefcase' /></InputAdornment>,
-                                }}
-                            />
-                            <TextField
-                                name='location'
-                                value={location || ''}
-                                onChange={handleFormChange}
-                                label="Location..."
-                                type="search"
-                                className='textField'
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start"><i className='fas fa-map-marker-alt' /></InputAdornment>,
-                                }}
-                            />
-                            <Button className='searchBtn' onClick={handleSearchJobs}>
-                                Search
-                    </Button>
+                            <FormattedMessage id="jobs.list.title" defaultMessage="Job title..." description="Job title">
+                                {(text) => (
+                                    <TextField
+                                        name='jobName'
+                                        value={jobName || ''}
+                                        onChange={handleFormChange}
+                                        label={text}
+                                        type="search"
+                                        className='textField'
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start"><i className='fas fa-briefcase' /></InputAdornment>,
+                                        }}
+                                    />
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="jobs.list.location" defaultMessage="Location..." description="Location">
+                                {(text) => (
+                                    <TextField
+                                        name='location'
+                                        value={location || ''}
+                                        onChange={handleFormChange}
+                                        label={text}
+                                        type="search"
+                                        className='textField'
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start"><i className='fas fa-map-marker-alt' /></InputAdornment>,
+                                        }}
+                                    />
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="jobs.list.searchBtn" defaultMessage="Search" description="Search">
+                                {(text) => (
+                                    <Button className='searchBtn' onClick={handleSearchJobs}>
+                                        {text}
+                                    </Button>
+                                )}
+                            </FormattedMessage>
+                            
                         </div>
                     </Grid>
                     <Hidden mdDown>
@@ -89,18 +108,28 @@ const JobsList = props => {
                     </Grid>
                     <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                         <div className='columnRightContent'>
-                            <h2 className="columnTitle">
-                                Filter <b>jobs</b>
-                            </h2>
+                            <FormattedMessage id="jobs.list.filterJobs" defaultMessage="Filter \njobs" description="Filter jobs">
+                                {(text) => (
+                                    <h2 className="columnTitle">
+                                        {text.split("\n")[0]} <b>{text.split("\n")[1]}</b>
+                                    </h2>
+                                )}
+                            </FormattedMessage>
+                            
                             <div className='filters'>
-                                <TextField
-                                    name='company'
-                                    value={company || ''}
-                                    label='Company'
-                                    placeholder='Search for company...'
-                                    type="search"
-                                    className='textField'
-                                />
+                                <FormattedMessage id="jobs.list.searchCompany" defaultMessage="Company\nSearch for company..." description="Search for company">
+                                    {(text) => (
+                                        <TextField
+                                            name='company'
+                                            value={company || ''}
+                                            label={text.split("\n")[0]}
+                                            placeholder={text.split("\n")[1]}
+                                            type="search"
+                                            className='textField'
+                                        />
+                                    )}
+                                </FormattedMessage>
+                                
                                 <section className='jobType'>
                                     <p className='sectionTitle'>Job type</p>
                                     <label htmlFor="isPartTime">
@@ -111,9 +140,14 @@ const JobsList = props => {
                                             onChange={handleFormChange}
                                             className='hiddenInput'
                                         />
-                                        <Button component='span' className={isPartTime ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                            Part time
-                                        </Button>
+                                        <FormattedMessage id="jobs.partTime" defaultMessage="Part time" description="Part time">
+                                            {(text) => (
+                                                <Button component='span' className={isPartTime ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                    {text}
+                                                </Button>
+                                            )}
+                                        </FormattedMessage>
+                                        
                                     </label>
                                     <label htmlFor="isFullTime">
                                         <Checkbox
@@ -123,9 +157,14 @@ const JobsList = props => {
                                             onChange={handleFormChange}
                                             className='hiddenInput'
                                         />
-                                        <Button component='span' className={isFullTime ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                            Full time
-                                        </Button>
+                                        <FormattedMessage id="jobs.fullTime" defaultMessage="Full time" description="Full time">
+                                            {(text) => (
+                                                <Button component='span' className={isFullTime ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                    {text}
+                                                </Button>
+                                            )}
+                                        </FormattedMessage>
+                                        
                                     </label>
                                     <label htmlFor="isProjectBased">
                                         <Checkbox
@@ -135,9 +174,14 @@ const JobsList = props => {
                                             onChange={handleFormChange}
                                             className='hiddenInput'
                                         />
-                                        <Button component='span' className={isProjectBased ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                            Project based
-                                        </Button>
+                                        <FormattedMessage id="jobs.projectBased" defaultMessage="Project based" description="Project based">
+                                            {(text) => (
+                                                <Button component='span' className={isProjectBased ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                    {text}
+                                                </Button>
+                                            )}
+                                        </FormattedMessage>
+                                        
                                     </label>
                                     <label htmlFor="isRemote">
                                         <Checkbox
@@ -147,52 +191,93 @@ const JobsList = props => {
                                             onChange={handleFormChange}
                                             className='hiddenInput'
                                         />
-                                        <Button component='span' className={isRemote ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                            Remote
-                                        </Button>
+                                        <FormattedMessage id="jobs.remote" defaultMessage="Remote" description="Remote">
+                                            {(text) => (
+                                                 <Button component='span' className={isRemote ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                    {text}
+                                                </Button>
+                                            )}
+                                        </FormattedMessage>
+                                       
                                     </label>
                                 </section>
                                 <section className='compensation'>
-                                    <p className='sectionTitle'>Compensation</p>
+                                    <FormattedMessage id="jobs.list.compensation" defaultMessage="Compensation" description="Compensation">
+                                        {(text) => (
+                                            <p className='sectionTitle'>{text}</p>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                     <Range min={0} max={3000} defaultValue={[0, 1000]} tipFormatter={value => `${value}E`} step={10} onChange={handleSliderChange} />
                                 </section>
                                 <section className='matching'>
-                                    <p className='sectionTitle'>Match</p>
+                                    <FormattedMessage id="jobs.list.match" defaultMessage="Match" description="Match">
+                                        {(text) => (
+                                            <p className='sectionTitle'>{text}</p>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                     <Range min={0} max={100} defaultValue={[25, 75]} tipFormatter={value => `${value}%`} step={1} onChange={handleSliderChange} />
                                 </section>
                                 <section className='advanced'>
-                                    <p className='sectionTitle'>Advanced search</p>
-                                    <TextField
-                                        name='skills'
-                                        label='Skills'
-                                        placeholder='Search skill...'
-                                        type="search"
-                                        className='textField'
-                                    />
-                                    <TextField
-                                        name='benefits'
-                                        label='Benefits'
-                                        placeholder='Search benefits...'
-                                        type="search"
-                                        className='textField'
-                                    />
-                                    <TextField
-                                        name='team'
-                                        label='Team'
-                                        placeholder='Search teams...'
-                                        type="search"
-                                        className='textField'
-                                    />
-                                    <TextField
-                                        name='industry'
-                                        label='Industry'
-                                        placeholder='Search industries...'
-                                        type="search"
-                                        className='textField'
-                                    />
+                                    <FormattedMessage id="jobs.list.advancedSearch" defaultMessage="Advanced search" description="Advanced search">
+                                        {(text) => (
+                                            <p className='sectionTitle'>{text}</p>
+                                        )}
+                                    </FormattedMessage>
+                                    <FormattedMessage id="jobs.searchSkills" defaultMessage="Skills\nSearch skill..." description="Search skill">
+                                        {(text) => (
+                                            <TextField
+                                                name='skills'
+                                                label={text.split("\n")[0]}
+                                                placeholder={text.split("\n")[1]}
+                                                type="search"
+                                                className='textField'
+                                            />
+                                        )}
+                                    </FormattedMessage>
+                                    <FormattedMessage id="jobs.searchBenefits" defaultMessage="Benefits\nSearch benefits..." description="">
+                                        {(text) => (
+                                            <TextField
+                                                name='benefits'
+                                                label={text.split("\n")[0]}
+                                                placeholder={text.split("\n")[1]}
+                                                type="search"
+                                                className='textField'
+                                            />
+                                        )}
+                                    </FormattedMessage>
+                                    <FormattedMessage id="jobs.searchTeam" defaultMessage="Team\nSearch teams..." description="Search teams">
+                                        {(text) => (
+                                            <TextField
+                                                name='team'
+                                                label={text.split("\n")[0]}
+                                                placeholder={text.split("\n")[1]}
+                                                type="search"
+                                                className='textField'
+                                            />
+                                        )}
+                                    </FormattedMessage>
+                                    <FormattedMessage id="jobs.searchIndustry" defaultMessage="Industry\nSearch industries..." description="Search industries">
+                                        {(text) => (
+                                            <TextField
+                                                name='industry'
+                                                label={text.split("\n")[0]}
+                                                placeholder={text.split("\n")[1]}
+                                                type="search"
+                                                className='textField'
+                                            />
+                                        )}
+                                    </FormattedMessage>
+                                    
                                 </section>
                                 <section className='companyType'>
-                                    <p className='sectionTitle'>Company type</p>
+                                    <FormattedMessage id="jobs.companyType" defaultMessage="Company type" description="Company type">
+                                        {(text) => (
+                                            <p className='sectionTitle'>{text}</p>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                     <label htmlFor="isStartup">
                                         <Checkbox
                                             id='isStartup'
@@ -201,9 +286,14 @@ const JobsList = props => {
                                             onChange={handleFormChange}
                                             className='hiddenInput'
                                         />
-                                        <Button component='span' className={isStartup ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                            Startup
-                                </Button>
+                                        <FormattedMessage id="company.list.startUp" defaultMessage="Startup" description="Startup">
+                                            {(text) => (
+                                                <Button component='span' className={isStartup ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                    {text}
+                                                </Button>
+                                            )}
+                                        </FormattedMessage>
+                                        
                                     </label>
                                     <label htmlFor="isCorporation">
                                         <Checkbox
@@ -213,9 +303,14 @@ const JobsList = props => {
                                             onChange={handleFormChange}
                                             className='hiddenInput'
                                         />
-                                        <Button component='span' className={isCorporation ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                            Corporation
-                                </Button>
+                                        <FormattedMessage id="company.list.corporation" defaultMessage="Corporation" description="Corporation">
+                                            {(text) => (
+                                                <Button component='span' className={isCorporation ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                    {text}
+                                                </Button>
+                                            )}
+                                        </FormattedMessage>
+                                        
                                     </label>
                                     <label htmlFor="isBoutique">
                                         <Checkbox
@@ -225,9 +320,14 @@ const JobsList = props => {
                                             onChange={handleFormChange}
                                             className='hiddenInput'
                                         />
-                                        <Button component='span' className={isBoutique ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                            Boutique
-                                </Button>
+                                        <FormattedMessage id="company.list.boutique" defaultMessage="Boutique" description="Boutique">
+                                            {(text) => (
+                                                <Button component='span' className={isBoutique ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                    {text}
+                                                </Button>
+                                            )}
+                                        </FormattedMessage>
+                                        
                                     </label>
                                     <label htmlFor="isMultinational">
                                         <Checkbox
@@ -237,9 +337,14 @@ const JobsList = props => {
                                             onChange={handleFormChange}
                                             className='hiddenInput'
                                         />
-                                        <Button component='span' className={isMultinational ? 'checkboxBtn active' : 'checkboxBtn'}>
-                                            Multinational
-                                </Button>
+                                        <FormattedMessage id="company.list.multinational" defaultMessage="Multinational" description="Multinational">
+                                            {(text) => (
+                                                <Button component='span' className={isMultinational ? 'checkboxBtn active' : 'checkboxBtn'}>
+                                                    {text}
+                                                </Button>
+                                            )}
+                                        </FormattedMessage>
+                                        
                                     </label>
                                 </section>
                             </div>

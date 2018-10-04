@@ -3,6 +3,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { Popover, IconButton, Icon, TextField } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl'
 
 import { updateUserSettingsMutation, setFeedbackMessage } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
@@ -91,31 +92,45 @@ const NamePopUp = ({ anchor, onClose, handleFormChange, formData: { firstName, l
             }}
         >
             <div className='popupBody'>
-                <TextField
-                    name="firstName"
-                    label="First name"
-                    placeholder="Enter your first name..."
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={firstName || ''}
-                />
-                <TextField
-                    name="lastName"
-                    label="Last name"
-                    placeholder="Enter your last name..."
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={lastName || ''}
-                />
-                <TextField
-                    name="position"
-                    label="Current position"
-                    placeholder="Position..."
-                    className='textField'
-                    fullWidth
-                    onChange={handleFormChange}
-                    value={position || ''}
-                />
+                <FormattedMessage id="users.firstNameField" defaultMessage="First name\nEnter your first name..." description="Enter your first name">
+                    {(text) => (
+                        <TextField
+                            name="firstName"
+                            label={text.split("\n")[0]}
+                            placeholder={text.split("\n")[1]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={firstName || ''}
+                        />
+                    )}
+                </FormattedMessage>
+                <FormattedMessage id="users.lastNameField" defaultMessage="Last name\nEnter your last name..." description="Enter your last name">
+                    {(text) => (
+                        <TextField
+                            name="lastName"
+                            label={text.split("\n")[0]}
+                            placeholder={text.split("\n")[1]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={lastName || ''}
+                        />
+                    )}
+                </FormattedMessage>
+                <FormattedMessage id="users.currentPositionField" defaultMessage="Current position\nPosition..." description="Position">
+                    {(text) => (
+                        <TextField
+                            name="position"
+                            label={text.split("\n")[0]}
+                            placeholder={text.split("\n")[1]}
+                            className='textField'
+                            fullWidth
+                            onChange={handleFormChange}
+                            value={position || ''}
+                        />
+                    )}
+                </FormattedMessage>
+
+                
             </div>
             <div className='popupFooter'>
                 <IconButton

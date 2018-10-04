@@ -8,6 +8,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 
 import { s3BucketURL } from '../../constants/s3';
 import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
+import  LanguageToggle from '../LanguageToggle'
 
 const DesktopNav = props => {
     const {
@@ -72,6 +73,8 @@ const DesktopNav = props => {
 
                 {/* Notifications */}
                 { currentUser && <NotificationsMenu notifications={notifications} /> }
+                {/* Languae Button */}
+                <LanguageToggle />
             </Grid>
         </React.Fragment>
     );
@@ -150,7 +153,7 @@ class ProfileMenu extends React.PureComponent {
                                                         </MenuItem>
                                                         )}
                                                     </FormattedMessage>
-                                                    <FormattedMessage id="nav.companyJobs" defaultMessage="Jobs" description="Company jobs">
+                                                    <FormattedMessage id="nav.jobs" defaultMessage="Jobs" description="Company jobs">
                                                         {(text) => (<MenuItem
                                                             component={Link} to={{
                                                                 pathname: `/${this.props.lang}/company/${userCompany.id}/settings`,

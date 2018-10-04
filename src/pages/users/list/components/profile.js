@@ -67,44 +67,65 @@ const Profile = props => {
                             <FormattedMessage id={`skills.${item.key}`} defaultMessage={item.key} key={item.key}>
                                 {text => <Chip label={text} className='chip' />}
                             </FormattedMessage>
-                        ) : <span className='empty'>No skills.</span>
+                        ) :
+                        <FormattedMessage id="users.noSkills" defaultMessage="No skills." description="No skills">
+                            {(text) => (
+                                <span className='empty'>{text}</span>
+                            )}
+                        </FormattedMessage> 
+                        
                     }
                 </div>
 
                 <div className='chipContainer'>
-                    <span className='chipTitle values'>Soft skills & values:</span>
+                    <FormattedMessage id="users.softValues" defaultMessage="Soft skills & values:" description="Soft skills">
+                        {(text) => (
+                            <span className='chipTitle values'>{text}</span>
+                        )}
+                    </FormattedMessage>
+                    
                     {(values && values.length > 0) ?
                         values.map(item => <Chip label={item.title} key={item.id} className='chip' />)
-                        : <span className='empty'>No values.</span>
+                        : 
+                        <FormattedMessage id="users.noValues" defaultMessage="No values." description="No values.">
+                            {(text) => (
+                                <span className='empty'>{text}</span>
+                            )}
+                        </FormattedMessage>
+                        
                     }
                 </div>
                 {
                     (aboutMeArticles && aboutMeArticles.length > 0) ?
-                        <Tabs
-                            value={activeTab}
-                            onChange={handleTabChange}
-                            classes={{
-                                root: 'tabsContainer',
-                                indicator: 'tabsIndicator'
-                            }}
-                        >
-                            <Tab
-                                label="More about me"
-                                value='more'
-                                classes={{
-                                    root: 'tabRoot',
-                                    labelIcon: 'labelIcon',
-                                    selected: 'tabSelected',
-                                    wrapper: 'tabWrapper',
-                                    labelContainer: 'labelContainer',
-                                    label: 'label'
-                                }}
-                                disableRipple
-                                disableTouchRipple
-                                focusRipple
-                                disabled={!aboutMeArticles || aboutMeArticles.length === 0}
-                            />
-                        </Tabs>
+                        <FormattedMessage id="users.moreAbout" defaultMessage="More about me" description="More about me">
+                            {(text) => (
+                                <Tabs
+                                    value={activeTab}
+                                    onChange={handleTabChange}
+                                    classes={{
+                                        root: 'tabsContainer',
+                                        indicator: 'tabsIndicator'
+                                    }}
+                                >
+                                    <Tab
+                                        label={text}
+                                        value='more'
+                                        classes={{
+                                            root: 'tabRoot',
+                                            labelIcon: 'labelIcon',
+                                            selected: 'tabSelected',
+                                            wrapper: 'tabWrapper',
+                                            labelContainer: 'labelContainer',
+                                            label: 'label'
+                                        }}
+                                        disableRipple
+                                        disableTouchRipple
+                                        focusRipple
+                                        disabled={!aboutMeArticles || aboutMeArticles.length === 0}
+                                    />
+                                </Tabs>
+                            )}
+                          </FormattedMessage>
                         : null
                 }
             </div>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { compose, withState, withHandlers, pure, lifecycle } from 'recompose';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import { Icon } from '@material-ui/core';
+
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import { s3BucketURL, teamsFolder } from '../../../../constants/s3';
 import { defaultHeaderOverlay } from '../../../../constants/utils';

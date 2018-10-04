@@ -9,6 +9,7 @@ import Loader from '../../../components/Loader';
 import EditToggle from '../../../components/EditToggle';
 
 const Brand = props => {
+    
     const {
         companyQuery: { loading, company },
         currentUser: { auth: { currentUser } }
@@ -25,7 +26,7 @@ const Brand = props => {
             {isEditAllowed &&
                 <EditToggle />
             }
-
+            {console.log('============= props =============', props)}
             <Header {...props} isEditAllowed={isEditAllowed} />
             <React.Fragment>
                 <Switch>

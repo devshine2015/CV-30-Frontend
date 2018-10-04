@@ -200,77 +200,100 @@ const Settings = props => {
                         }}
 
                     />
-                    <Button component='span' className='settingsUploadBtn' disabled={isUploading}>
-                        Change profile picture
-                    </Button>
+                    <FormattedMessage id="users.changePicture" defaultMessage="Change profile picture" description="Change profile picture">
+                        {(text) => (
+                            <Button component='span' className='settingsUploadBtn' disabled={isUploading}>
+                                {text}
+                            </Button>
+                        )}
+                    </FormattedMessage>
+                    
                 </label>
             </div>
-            <div className='infoFields'>
-                <TextField
-                    name='firstName'
-                    label='First name'
-                    placeholder='Enter your first name...'
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={firstName || ''}
-                    type='text'
-                />
-                <TextField
-                    name='lastName'
-                    label='Last name'
-                    placeholder='Enter your last name...'
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={lastName || ''}
-                    type='text'
-                />
-                <TextField
-                    name='email'
-                    label='Email'
-                    placeholder='Enter your email...'
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={email || ''}
-                    type='email'
-                    disabled
-                />
-            </div>
-            <div className='passwordFields'>
-                <TextField
-                    name='oldPassword'
-                    label='Old password'
-                    placeholder='Enter your old password...'
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={oldPassword || ''}
-                    type='password'
-                />
-                <TextField
-                    name='newPassword'
-                    label='New password'
-                    placeholder='Enter your new password...'
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={newPassword || ''}
-                    type='password'
-                />
-                <TextField
-                    name='newPasswordConfirm'
-                    label='Confirm new password'
-                    placeholder='Confirm new password...'
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={newPasswordConfirm || ''}
-                    type='password'
-                />
-            </div>
+            <FormattedMessage id="users.infoFields" defaultMessage="First name\nEnter your first name...\nLast name\nEnter your last name...\nEmail\nEnter your email..." description="">
+                {(text) => (
+                    <div className='infoFields'>
+                        <TextField
+                            name='firstName'
+                            label={text.split("\n")[0]}
+                            placeholder={text.split("\n")[1]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={firstName || ''}
+                            type='text'
+                        />
+                        <TextField
+                            name='lastName'
+                            label={text.split("\n")[2]}
+                            placeholder={text.split("\n")[3]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={lastName || ''}
+                            type='text'
+                        />
+                        <TextField
+                            name='email'
+                            label={text.split("\n")[4]}
+                            placeholder={text.split("\n")[5]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={email || ''}
+                            type='email'
+                            disabled
+                        />
+                    </div>
+                )}
+            </FormattedMessage>
+            <FormattedMessage id="users.passwordFields" defaultMessage="Old password\nEnter your old password...\nNew password\nEnter your new password...\nConfirm new password\nConfirm new password..." description="Password Fields">
+                {(text) => (
+                    <div className='passwordFields'>
+                        <TextField
+                            name='oldPassword'
+                            label={text.split("\n")[0]}
+                            placeholder={text.split("\n")[1]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={oldPassword || ''}
+                            type='password'
+                        />
+                        <TextField
+                            name='newPassword'
+                            label={text.split("\n")[2]}
+                            placeholder={text.split("\n")[3]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={newPassword || ''}
+                            type='password'
+                        />
+                        <TextField
+                            name='newPasswordConfirm'
+                            label={text.split("\n")[4]}
+                            placeholder={text.split("\n")[5]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={newPasswordConfirm || ''}
+                            type='password'
+                        />
+                    </div>
+                )}
+            </FormattedMessage>
+            
             <div className='actions'>
                 <FormattedMessage id="userProfile.deleteAccount" defaultMessage="Delete Account" description="Click here to terminate your account">
                     {(text) => <a className='deleteAccount' onClick={toggleClose}>{text}</a>}
                 </FormattedMessage>
                 {settingsFormError && <div className="errorMessage">{settingsFormError}</div>}
-                {settingsFormSuccess && <div className="successMessage">Your details have been successfully saved</div>}
-                <Button className='saveBtn' onClick={saveUserDetails}>Save</Button>
+                <FormattedMessage id="users.saveSuccess" defaultMessage="Your details have been successfully saved" description="Your details have been successfully saved">
+                    {(text) => (
+                        settingsFormSuccess && <div className="successMessage">{text}</div>
+                    )}
+                </FormattedMessage>
+                <FormattedMessage id="users.save" defaultMessage="Save" description="Save">
+                    {(text) => (
+                        <Button className='saveBtn' onClick={saveUserDetails}>{text}</Button>
+                    )}
+                </FormattedMessage>
+                
             </div>
             <AccountTermination handleClose={toggleClose} open={isTerminatingAccount} />
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, TextField, Button, CircularProgress } from '@material-ui/core';
-
+import { FormattedMessage } from 'react-intl'
 import IndustryInput from '../../../components/IndustryInput';
 import LocationInput from '../../../components/LocationInput';
 
@@ -8,8 +8,17 @@ const NewCompany = ({ cancel, values, touched, errors, isSubmitting, handleBlur,
     <div className='newCompanyRoot'>
         <Grid container className='header'>
             <Grid item lg={6} sm={11}>
-                <h1 className='headerTitle'>Create <b>company profile</b></h1>
-                <p className='headerMessage'>Novum quando similique ei sed. Porro convenire scriptorem vim ei, an vim decore prodesset. Quem appetere delicatissimi vis ei, eos stet partem noster at, cu duo mazim utamur intellegebat. Mea no sint choro noluisse, pro duis dissentiet ea. Ea enim numquam nam.</p>
+                <FormattedMessage id="company.new.headerTitle" defaultMessage="Create \ncompany profile" description="Create company profile">
+                    {(text) => (
+                        <h1 className='headerTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h1>
+                    )}
+                </FormattedMessage>
+                <FormattedMessage id="company.new.headerMessage" defaultMessage="" description="New Company Header Message">
+                    {(text) => (
+                        <p className='headerMessage'>{text}</p>
+                    )}
+                </FormattedMessage>
+                
             </Grid>
         </Grid>
         <Grid container className='mainBody newCompany'>
@@ -24,23 +33,28 @@ const NewCompany = ({ cancel, values, touched, errors, isSubmitting, handleBlur,
                     />
                 </section>
                 <section className='titleSection'>
-                    <TextField
-                        name="name"
-                        label="Company name"
-                        placeholder="Enter company name..."
-                        className='textField'
-                        fullWidth
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.name}
-                        error={!!(touched.name && errors.name)}
-                        helperText={touched.name && errors.name}
-                        InputProps={{
-                            classes: {
-                                input: 'titleInput',
-                            }
-                        }}
-                    />
+                    <FormattedMessage id="company.new.companyName" defaultMessage="Company name\nEnter company name..." description="Company Name">
+                        {(text) => (
+                            <TextField
+                                name="name"
+                                label={text.split("\n")[0]}
+                                placeholder={text.split("\n")[1]}
+                                className='textField'
+                                fullWidth
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.name}
+                                error={!!(touched.name && errors.name)}
+                                helperText={touched.name && errors.name}
+                                InputProps={{
+                                    classes: {
+                                        input: 'titleInput',
+                                    }
+                                }}
+                            />
+                        )}
+                    </FormattedMessage>
+                    
                 </section>
                 {/* <section className='mediaSection'>
                         <div className='avatar'>
@@ -87,25 +101,38 @@ const NewCompany = ({ cancel, values, touched, errors, isSubmitting, handleBlur,
                         error={!!(touched.industryId && errors.industryId)}
                         //helperText={touched.industryId && errors.industryId}
                     />
-
-                    <TextField
-                        name="noOfEmployees"
-                        label="Number of employees"
-                        placeholder="Enter number of employees..."
-                        className='textField'
-                        fullWidth
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.noOfEmployees}
-                        error={!!(touched.noOfEmployees && errors.noOfEmployees)}
-                        helperText={touched.noOfEmployees && errors.noOfEmployees}
-                    />
+                    <FormattedMessage id="company.new.noOfEmployees" defaultMessage="Number of employees\nEnter number of employees..." description="Enter number of employees">
+                        {(text) => (
+                             <TextField
+                                name="noOfEmployees"
+                                label={text.split("\n")[0]}
+                                placeholder={text.split("\n")[1]}
+                                className='textField'
+                                fullWidth
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.noOfEmployees}
+                                error={!!(touched.noOfEmployees && errors.noOfEmployees)}
+                                helperText={touched.noOfEmployees && errors.noOfEmployees}
+                            />
+                        )}
+                    </FormattedMessage>
+                   
                 </section>
                 <section className='actions'>
                     {isSubmitting && <CircularProgress />}
                     {!isSubmitting && <React.Fragment>
-                        <Button className='cancelBtn' onClick={cancel}>Cancel</Button>
-                        <Button className={isValid ? 'submitBtn' : ''} disabled={!isValid} onClick={handleSubmit}>Create company</Button>
+                        <FormattedMessage id="company.new.cancelBtn" defaultMessage="Cancel" description="Cancel">
+                            {(text) => (
+                                <Button className='cancelBtn' onClick={cancel}>{text}</Button>
+                            )}
+                        </FormattedMessage>
+                        <FormattedMessage id="company.new.submitBtn" defaultMessage="Create company" description="Create company">
+                            {(text) => (
+                                <Button className={isValid ? 'submitBtn' : ''} disabled={!isValid} onClick={handleSubmit}>{text}</Button>
+                            )}
+                        </FormattedMessage>
+                        
                     </React.Fragment>}
                 </section>
             </Grid>

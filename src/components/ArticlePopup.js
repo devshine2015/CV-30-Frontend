@@ -126,10 +126,19 @@ const ArticlePopUp = props => {
             {loading ? <Loader /> :
                 <div className='storyEditPaper'>
                     <div className='popupHeader'>
-                        <h4>Add an article</h4>
-                        <p>
-                            Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro.
-                        </p>
+                        <FormattedMessage id="article.addArticle" defaultMessage="Add an article" description="Add an article">
+                            {(text) => (
+                                <h4>{text}</h4>
+                            )}
+                        </FormattedMessage>
+                        <FormattedMessage id="article.para" defaultMessage="Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro." description="Article Paragraph">
+                            {(text) => (
+                                <p>
+                                    {text}
+                                </p>
+                            )}
+                        </FormattedMessage>
+                        
                         <div className='headerChoices'>
                             <FormattedMessage id="article.choose" defaultMessage="Choose an existing article" description="Choose an existing article">
                                 {(text) => <span>{text}</span>}

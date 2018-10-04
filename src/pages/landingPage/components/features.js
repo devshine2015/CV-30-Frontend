@@ -3,7 +3,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { Grid, IconButton, Icon } from '@material-ui/core';
 import ReactPlayer from 'react-player';
 import { graphql } from 'react-apollo';
-
+import { FormattedMessage } from "react-intl"
 import ArticlePopUp from './articlePopUp';
 import { s3BucketURL } from '../../../constants/s3';
 import { stripHtmlTags } from '../../../constants/utils';
@@ -96,9 +96,14 @@ const Features = props => {
             })}
             {
                 editMode &&
-                <div className='addFeaturedArticle' onClick={toggleArticlePopUp}>
-                    + Add Article
-                </div>
+                <FormattedMessage id="company.team.addArticle" defaultMessage="+ Add Article" description="Add Article">
+                    {(text) => (
+                        <div className='addFeaturedArticle' onClick={toggleArticlePopUp}>
+                            {text}
+                        </div>
+                    )}
+                </FormattedMessage>
+                
             }
             {articlePopUpOpen &&
                 <ArticlePopUp open={articlePopUpOpen} onClose={closeArticlePopUp} />

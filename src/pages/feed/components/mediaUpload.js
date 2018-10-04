@@ -3,7 +3,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { Popover, TextField, FormGroup, FormLabel, Switch as ToggleSwitch, Button } from '@material-ui/core';
 import uuid from 'uuidv4';
-
+import { FormattedMessage }  from 'react-intl'
 import { setFeedbackMessage } from '../../../store/queries';
 import ImageUploader from '../../../components/imageUploader';
 import { articlesFolder } from '../../../constants/s3';
@@ -90,8 +90,17 @@ const MediaUploadPopUp = ({
         >
             <div className='mediaUploadPopup'>
                 <FormGroup row className='mediaToggle'>
-                    <span className='mediaToggleLabel'>Upload visuals</span>
-                    <FormLabel className={!isVideoUrl ? 'active' : ''}>Photo</FormLabel>
+                    <FormattedMessage id="feed.mediaToggleLabel" defaultMessage="Upload visuals" description="Upload visuals">
+                        {(text) => (
+                            <span className='mediaToggleLabel'>{text}</span>
+                        )}
+                    </FormattedMessage>
+                    <FormattedMessage id="feed.photo" defaultMessage="Photo" description="Photo">
+                        {(text) => (
+                            <FormLabel className={!isVideoUrl ? 'active' : ''}>{text}</FormLabel>
+                        )}
+                    </FormattedMessage>
+                    
                     <ToggleSwitch
                         checked={isVideoUrl}
                         onChange={switchMediaType}
@@ -101,32 +110,47 @@ const MediaUploadPopUp = ({
                             bar: 'colorBar',
                         }}
                         color="primary" />
-                    <FormLabel className={isVideoUrl ? 'active' : ''}>Video Url</FormLabel>
+                    <FormattedMessage id="feed.videoUrl" defaultMessage="Video Url" description="Video Url">
+                        {(text) => (
+                            <FormLabel className={isVideoUrl ? 'active' : ''}>{text}</FormLabel>
+                        )}
+                    </FormattedMessage>
+                    
                 </FormGroup>
                 <section className='mediaUpload'>
                     {isVideoUrl ?
-                        <TextField
-                            name="videoURL"
-                            label="Add video URL"
-                            placeholder="Video URL..."
-                            className='textField'
-                            onChange={event => handleFormChange(event.target.value)}
-                            onKeyPress={event => handleKeyPress(event)}
-                            value={videoURL || ''}
-                            fullWidth
-                            InputProps={{
-                                classes: {
-                                    input: 'textFieldInput',
-                                    underline: 'textFieldUnderline'
-                                },
-                            }}
-                            InputLabelProps={{
-                                className: 'textFieldLabel'
-                            }}
-                        /> :
-                        <Button className='imgUpload' disabled={isSaving} onClick={openImageUpload}>
-                            Upload
-                        </Button>
+                        <FormattedMessage id="feed.addVideoUrl" defaultMessage="Add video URL" description="Add video URL">
+                                {(text) => (
+                                    <TextField
+                                        name="videoURL"
+                                        label={text.split("\n")[0]}
+                                        placeholder={text.split("\n")[1]}
+                                        className='textField'
+                                        onChange={event => handleFormChange(event.target.value)}
+                                        onKeyPress={event => handleKeyPress(event)}
+                                        value={videoURL || ''}
+                                        fullWidth
+                                        InputProps={{
+                                            classes: {
+                                                input: 'textFieldInput',
+                                                underline: 'textFieldUnderline'
+                                            },
+                                        }}
+                                        InputLabelProps={{
+                                            className: 'textFieldLabel'
+                                        }}
+                                    /> 
+                                )}
+                        </FormattedMessage>
+                        :
+                        <FormattedMessage id="feed.imageUpload" defaultMessage="Upload" description="Upload">
+                            {(text) => (
+                                <Button className='imgUpload' disabled={isSaving} onClick={openImageUpload}>
+                                    {text}
+                                </Button>
+                            )}
+                        </FormattedMessage>
+                        
 
                     }
                 </section>

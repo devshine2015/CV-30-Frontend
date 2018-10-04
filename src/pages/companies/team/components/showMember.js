@@ -1,6 +1,7 @@
 import React from 'react';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { defaultUserAvatar } from '../../../../constants/utils';
+import { FormattedMessage } from 'react-intl'
 import { Avatar, IconButton, Icon, Popover } from '@material-ui/core';
 import { s3BucketURL } from '../../../../constants/s3';
 import { Link, withRouter } from 'react-router-dom';
@@ -58,8 +59,17 @@ const ShowMember = ({ profile, removeMember, editMode, detailsAnchor, showDetail
                 <p className='title'>{position}</p>
                 {type === 'user' ?
                     <React.Fragment>
-                        <Link to={`/${lang}/profile/${id}`} className='detailsLink'>Vezi profilul</Link>
-                        <Link to={`/${lang}/profile/${id}/feed`} className='detailsLink'>Articolele lui {firstName}</Link>
+                        <FormattedMessage id="company.team.viewProfile" defaultMessage="View profile" description="View profile">
+                            {(text) => (
+                                <Link to={`/${lang}/profile/${id}`} className='detailsLink'>Vezi profilul</Link>
+                            )}
+                        </FormattedMessage>
+                        <FormattedMessage id="company.team.hisArticles" defaultMessage="`s articles" description="His Articles">
+                            {(text) => (
+                                <Link to={`/${lang}/profile/${id}/feed`} className='detailsLink'>{lang === "en"? {firstName} : {text}} {lang !== "en"? {text} : {firstName}}  </Link>
+                            )}
+                        </FormattedMessage>
+                        
                     </React.Fragment>
                     : <p className='description'>{description}</p>
                 }

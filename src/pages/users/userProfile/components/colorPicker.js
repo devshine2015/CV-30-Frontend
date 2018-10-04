@@ -3,7 +3,7 @@ import { Popover, Button, Tab, Tabs } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-
+import { FormattedMessage } from 'react-intl'
 import { availableColors } from '../../../../constants/headerBackgrounds';
 import { updateCoverMutation, setFeedbackMessage } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
@@ -122,18 +122,26 @@ const ColorPicker = props => {
             }}
         >
             <div className='popupHeader'>
-                <Tabs
-                    value={activeTab}
-                    onChange={handleTabChange}
-                >
-                    <Tab label="Colors" value='colors' />
-                    <Tab label="Patterns" value='patterns' />
-                </Tabs>
+                <FormattedMessage id="company.brand.patterns" defaultMessage="Colors\nPatterns" description="Colors Patterns">
+                    {(text) => (
+                        <Tabs
+                            value={activeTab}
+                            onChange={handleTabChange}
+                        >
+                            <Tab label={text.split("\n")[0]} value='colors' />
+                            <Tab label={text.split("\n")[1]} value='patterns' />
+                        </Tabs>
+                    )}
+                </FormattedMessage>
 
 
-                <Button size='small' className='picUploadButton' onClick={openImageUpload}>
-                    Upload picture
-                    </Button>
+                <FormattedMessage id="company.brand.picUpload" defaultMessage="Upload picture" description="Upload picture">
+                    {(text) => (
+                        <Button size='small' className='picUploadButton' onClick={openImageUpload}>
+                            {text}
+                        </Button>
+                    )}
+                </FormattedMessage>
 
                 <ImageUploader
                     type='profile_cover'
@@ -166,7 +174,11 @@ const ColorPicker = props => {
                 {
                     activeTab === 'patterns' &&
                     <div className='pickerContainer patterns'>
-                        <pre>Patterns</pre>
+                        <FormattedMessage id="company.brand.patterns" defaultMessage="Patterns" description="Patterns">
+                            {(text) => (
+                                <pre>{text}</pre>
+                            )}
+                        </FormattedMessage>
                     </div>
                 }
             </div>

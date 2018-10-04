@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl'
 
 const Loader = () => (
     <div className='loaderRoot'>
@@ -13,7 +14,12 @@ const Loader = () => (
             <div className="rect2"></div>
             <div className="rect1"></div>
         </div>
-        <p className='message'>Loading data...</p>
+        <FormattedMessage id="loader.data" defaultMessage="Loading data..." description="Loading data">
+            {(text) => (
+                <p className='message'>{text}</p>
+            )}
+        </FormattedMessage>
+        
     </div>
 );
 

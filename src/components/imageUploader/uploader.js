@@ -86,14 +86,15 @@ const ImageUploadHOC = compose(
         onChange: ({ setImage }) => image =>
             setImage({ ...image, filename: image.filename ? `${uuid()}.${image.filetype.replace('image/', '')}` : null }),
         
-        handleUploadFile: ({ image, file, originFile , id, onSuccess, onError, onClose, type }) => async () => {
+        handleUploadFile: ({ image, file, originFile , id, onSuccess, onError, onClose, type, userId }) => async () => {
+            console.log("------------ userId ---------------------", userId)
             const params = {
-                fileName: type === 'document'? file.filename : image.filename,
-                contentType: type === 'document'? file.filetype : image.filetype,
-                id : type === 'document'? file.id : id,
+                userId: userId,
+                fileName: type === 'cv'? file.filename : image.filename,
+                contentType: type === 'cv'? file.filetype : image.filetype,
+                id : type === 'cv'? file.id : id,
                 type
             };
-            
             try {
                 let response = await fetch('https://k73nyttsel.execute-api.eu-west-1.amazonaws.com/production/getSignedURL', {
                     method: 'POST',
@@ -105,7 +106,7 @@ const ImageUploadHOC = compose(
                 });
                 let responseJson = await response.json();
                 let error_ = null
-                if (type === "document") {
+                if (type === "cv") {
                     let { error } = await uploadFile_(originFile, responseJson.signedUrl)
                     error_ = error
                     
@@ -118,7 +119,7 @@ const ImageUploadHOC = compose(
                 if (error_)
                     onError(error_);
                 else {
-                    if (type === 'document') {
+                    if (type === 'cv') {
                         onSuccess(file)
                     } else {
                         onSuccess(image);
@@ -140,7 +141,7 @@ const ImageUploadHOC = compose(
     })
 );
 
-const ImageUpload = ({ image, onChange, handleUploadFile, type, onDrop, file }) => {
+const ImageUpload = ({ image, onChange, handleUploadFile, type, onDrop, file, originFile }) => {
     let maxFileSize = (type === 'company_logo') || (type === 'profile_avatar') ? 204800 : 3145728;
     let allowedFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     
@@ -184,9 +185,9 @@ const ImageUpload = ({ image, onChange, handleUploadFile, type, onDrop, file }) 
     return (
         <div className='imageUpload'>
             {
-                type === 'document'? 
+                type === 'cv'? 
                 <Dropzone onDrop={(files) => onDrop(files)}>
-                    <div>Try dropping some files here, or click to select files to upload.</div>
+                    <div style={{display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', alignItems: 'center'}}>{originFile.name? originFile.name + " have been selected" : "Try dropping some files here, or click to select files to upload."}</div>
                 </Dropzone>
                 :
                 <DropNCrop
@@ -197,7 +198,12 @@ const ImageUpload = ({ image, onChange, handleUploadFile, type, onDrop, file }) 
                     instructions={instructions}
                 />
             }
-            <Button onClick={handleUploadFile} className='uploadBtn' style={type === 'document'? { opacity: !file || !file.filename ? 0.5 : 1 }  : { opacity: !image || !image.filename ? 0.5 : 1 }} disabled={type !== 'document'? !image || !image.filename : !file || !file.filename}>Upload</Button>
+            <FormattedMessage id="feed.imageUpload" defaultMessage="Upload" description="Upload">
+                {(text) => (
+                    <Button onClick={handleUploadFile} className='uploadBtn' style={type === 'cv'? { opacity: !file || !file.filename ? 0.5 : 1 }  : { opacity: !image || !image.filename ? 0.5 : 1 }} disabled={type !== 'cv'? !image || !image.filename : !file || !file.filename}>{text}</Button>
+                )}
+            </FormattedMessage>
+            
         </div>
     )
 };

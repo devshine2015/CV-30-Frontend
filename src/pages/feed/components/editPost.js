@@ -5,7 +5,7 @@ import { graphql } from 'react-apollo';
 import { handleArticle, setFeedbackMessage } from '../../../store/queries';
 import { newsFeedArticlesRefetch } from '../../../store/refetch';
 import { withRouter } from 'react-router-dom';
-
+import { FormattedMessage } from 'react-intl';
 const EditPostHOC = compose(
     withRouter,
     graphql(handleArticle, { name: 'handleArticle' }),
@@ -51,17 +51,22 @@ const EditPostHOC = compose(
 
 const EditPost = ({ post, handleFormChange, updatePost }) => (
     <div className='editPost'>
-        <TextField
-            name="post"
-            placeholder="Say something..."
-            className='textField'
-            onChange={handleFormChange}
-            value={post}
-            type='text'
-            multiline
-            rows={1}
-            rowsMax={10}
-        />
+        <FormattedMessage id="feed.saySomething" defaultMessage="Say something..." description="Say something...">
+            {(text) => (
+                <TextField
+                    name="post"
+                    placeholder={text}
+                    className='textField'
+                    onChange={handleFormChange}
+                    value={post}
+                    type='text'
+                    multiline
+                    rows={1}
+                    rowsMax={10}
+                />
+            )}
+        </FormattedMessage>
+        
         <IconButton onClick={updatePost} className='updatePostBtn'>
             <Icon>done</Icon>
         </IconButton>

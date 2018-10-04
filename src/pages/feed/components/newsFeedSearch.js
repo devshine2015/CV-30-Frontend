@@ -2,6 +2,7 @@ import React from 'react';
 import { TextField } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { debounce } from 'lodash';
+import { FormattedMessage } from 'react-intl'
 
 import TagsInput from '../../../components/TagsInput';
 
@@ -36,20 +37,29 @@ const NewsFeedSearch = props => {
 
     return (
         <section className='searchFields'>
-            <TextField
-                name='peopleOrCompany'
-                label='Keywords, people or companies'
-                placeholder='Search for keywords, people or companies...'
-                type="search"
-                className='textField'
-                value={peopleOrCompany || ''}
-                onChange={handleSearchFormChange}
-                fullWidth
-            />
-            <TagsInput 
-                label='#hashtags'
-                placeholder='Search for hastags...'
-                value={tags} onChange={setTags} helpTagName='tag' />
+            <FormattedMessage id="feed.peopleOrCompany" defaultMessage="Keywords, people or companies" description="Keywords, people or companies">
+                {(text) => (
+                    <TextField
+                        name='peopleOrCompany'
+                        label={text.split("\n")[0]}
+                        placeholder={text.split("\n")[1]}
+                        type="search"
+                        className='textField'
+                        value={peopleOrCompany || ''}
+                        onChange={handleSearchFormChange}
+                        fullWidth
+                    />
+                )}
+            </FormattedMessage>
+            <FormattedMessage id="feed.hashTags" defaultMessage="#hashtags" description="Hash Tags">
+                {(text) => (
+                    <TagsInput 
+                        label={text.split("\n")[0]}
+                        placeholder={text.split("\n")[1]}
+                        value={tags} onChange={setTags} helpTagName='tag' />
+                )}
+            </FormattedMessage>
+            
         </section>
     );
 }
