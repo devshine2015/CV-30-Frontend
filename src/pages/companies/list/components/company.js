@@ -19,7 +19,7 @@ const CompanyHOC = compose(
     pure);
 
 const Company = ({ activeTab, handleTabChange,
-    company: { id, name, industry, location, noOfEmployees, description, jobs, teams, logoPath },
+    company: { id, name, industry, location, noOfEmployees, description, recentJobs, teams, logoPath },
     match: { params: { lang } } }) => (
         <div className='listItem companyListItem'>
             <div className='leftOverlay'>
@@ -55,6 +55,7 @@ const Company = ({ activeTab, handleTabChange,
                 <p className='companyDescription'>
                     {stripHtmlTags(description)}
                 </p>
+<<<<<<< HEAD
                 <FormattedMessage id="company.list.tabs" defaultMessage="Jobs0Teams" description="Jobs Teams">
                     {(text) => (
                         <Tabs
@@ -106,6 +107,53 @@ const Company = ({ activeTab, handleTabChange,
                 
                 {   activeTab === 'jobs' &&
                     <JobsSlider jobs={jobs} />
+=======
+                <Tabs
+                    value={activeTab}
+                    onChange={handleTabChange}
+                    classes={{
+                        root: 'tabsContainer',
+                        indicator: 'tabsIndicator'
+                    }}
+                >
+                    <Tab
+                        label="Jobs"
+                        value='jobs'
+                        classes={{
+                            root: 'tabRoot',
+                            labelIcon: 'labelIcon',
+                            selected: 'tabSelected',
+                            wrapper: 'tabWrapper',
+                            labelContainer: 'labelContainer',
+                            label: 'label'
+                        }}
+                        disableRipple
+                        disableTouchRipple
+                        focusRipple
+                        disabled={!recentJobs || recentJobs.length === 0}
+                    />
+                    <Tab
+                        label="Teams"
+                        value='teams'
+                        classes={{
+                            root: 'tabRoot',
+                            labelIcon: 'labelIcon',
+                            selected: 'tabSelected',
+                            wrapper: 'tabWrapper',
+                            labelContainer: 'labelContainer',
+                            label: 'label'
+                        }}
+                        disableRipple
+                        disableTouchRipple
+                        focusRipple
+                        disabled={!teams || teams.length === 0}
+                    />
+                </Tabs>
+            </div>
+            <div className={activeTab ? 'itemFooter open' : 'itemFooter'}>
+                {activeTab === 'jobs' &&
+                    <JobsSlider jobs={recentJobs} />
+>>>>>>> f2ecd3fffbdd21dd7d63f95ca82fb2d7f97224b9
                 }
                 {
                     activeTab === 'teams' &&

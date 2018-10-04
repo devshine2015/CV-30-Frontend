@@ -186,7 +186,7 @@ const Show = props => {
             articleType
         },
         expandPanel, getEditMode,
-        companyQuery: { company: { name, faqs, officeArticles, storiesArticles, jobs } },
+        companyQuery: { company: { name, faqs, officeArticles, storiesArticles, recentJobs } },
         isEditAllowed, deleteOfficeArticle,
         editPanel, addQA, deleteQA,
         match: { params: { lang, companyId } },
@@ -343,7 +343,7 @@ const Show = props => {
 
                     <div className='jobs'>
                         {
-                            jobs && jobs.map(job => {
+                            recentJobs && recentJobs.map(job => {
                                 return (
                                     <div className='jobItem' key={job.id}>
                                         <div className='media'>

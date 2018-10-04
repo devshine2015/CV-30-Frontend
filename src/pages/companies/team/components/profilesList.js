@@ -93,7 +93,7 @@ const ProfilesList = props => {
                         }
                     })}
                 hasMore={hasNextPage}
-                loader={<Loader />}
+                loader={<Loader  key='loader'/>}
                 useWindow={false}
             >
             {profiles.map(profile => {

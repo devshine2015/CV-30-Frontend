@@ -66,6 +66,7 @@
     padding: 0 30px 0 2px;
     align-items: center;
     justify-content: space-between;
+    text-decoration: none;
 
     .avatar {
         width: 60px;
@@ -192,6 +193,7 @@
         }
 
         .floatingEditBtn {
+            padding: 0;
             position: absolute;
             top: -18px;
             right: 10px;
@@ -230,14 +232,16 @@
 
             .chipContainer {
                 display: flex;
+                flex-wrap: wrap;
                 width: 100%;
                 padding: 10px 0;
+                margin: -5px;
                 align-items: center;
 
                 .chipTitle {
                     font-size: 0.875rem;
                     font-weight: 500;
-                    margin-right: 10px;
+                    margin: 5px;
 
                     &.skills {
                         color: #5d93e2;
@@ -253,11 +257,7 @@
                     border-radius: 5px;
                     color: #565656;
                     font-size: 0.75rem;
-                    margin-right: 10px;
-
-                    &:last-child {
-                        margin-right: 0;
-                    }
+                    margin: 5px;
                 }
             }
 

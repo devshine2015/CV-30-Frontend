@@ -1,10 +1,9 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import InfiniteScroll from 'react-infinite-scroller';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl'
 import Loader from '../../components/Loader';
-import ArticlesList from './components/articlesList';
+import FeedArticlesList from './components/feedArticlesList';
 import NewPost from './components/newPost';
 import NewsFeedSearch from './components/newsFeedSearch';
 import Promo from './components/promo';
@@ -20,15 +19,12 @@ const NewsFeed = props => {
     if (loading)
         return <Loader />
 
-    const newsFeedArticles = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.edges.map(edge => edge.node) : [];
-    const hasNextPage = newsFeedArticlesQuery.newsFeedArticles ? newsFeedArticlesQuery.newsFeedArticles.pageInfo.hasNextPage : false;
-
     return (
         <div className='newsFeedRoot'>
             <Grid container className='mainBody brandShow'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
-                    {(profile && profile.id) && <NewPost refetch={newsFeedArticlesQuery.refetch} profile={profile} />}
-                    {(profile && profile.id) &&
+                    {profile && profile.id && <NewPost refetch={newsFeedArticlesQuery.refetch} profile={profile} />}
+                    {profile && profile.id &&
                         <section className='profileActions'>
                             <div className='profileAction company'>
                                 <h3>
@@ -65,38 +61,7 @@ const NewsFeed = props => {
                             </div>
                         </section>
                     }
-                    <section className='articlesList'>
-                    {
-                        !newsFeedArticlesQuery.loading ?
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() =>
-                                newsFeedArticlesQuery.fetchMore({
-                                    variables: {
-                                        after: newsFeedArticlesQuery.newsFeedArticles.edges[newsFeedArticlesQuery.newsFeedArticles.edges.length - 1].cursor
-                                    },
-                                    updateQuery: (previousResult, { fetchMoreResult: { newsFeedArticles: { edges: newEdges, pageInfo} } }) => {
-                                        return newEdges.length
-                                            ? {
-                                                // Put the new articles at the end of the list and update `pageInfo`
-                                                newsFeedArticles: {
-                                                    __typename: previousResult.newsFeedArticles.__typename,
-                                                    edges: [...previousResult.newsFeedArticles.edges, ...newEdges],
-                                                    pageInfo
-                                                }
-                                            }
-                                            : previousResult;
-                                    }
-                                })}
-                            hasMore={hasNextPage}
-                            loader={<Loader />}
-                            useWindow={true}
-                        >
-                            <ArticlesList articles={newsFeedArticles} />
-                        </InfiniteScroll>
-                        : <Loader />
-                    }
-                    </section>
+                    <FeedArticlesList feedArticlesQuery={newsFeedArticlesQuery} feedArticlesKey='newsFeedArticles'/>
                 </Grid>
                 <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                     <div className='columnRightContent'>

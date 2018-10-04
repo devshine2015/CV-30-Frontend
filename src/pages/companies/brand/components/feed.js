@@ -4,7 +4,7 @@ import { compose, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
-import ArticlesList from '../../../feed/components/articlesList';
+import FeedArticlesList from '../../../feed/components/feedArticlesList';
 
 import { getFeedArticles } from '../../../../store/queries';
 
@@ -16,23 +16,19 @@ const FeedHOC = compose(
             fetchPolicy: 'network-only',
             variables: {
                 language: props.match.params.lang,
-                companyId: props.match.params.companyId
+                companyId: props.match.params.companyId,
+                first: 10
             }
         }),
     }),
     pure
 );
 
-const Feed = props => {
-    const {
-        feedArticlesQuery,
-    } = props;
-    const articles = feedArticlesQuery.feedArticles ? feedArticlesQuery.feedArticles : [];
-
+const Feed = ({ feedArticlesQuery }) => {
     return (
         <Grid container className='mainBody brandFeed'>
             <Grid item md={8} xs={11} className='articlesContainer'>
-                <ArticlesList articles={articles} />
+                <FeedArticlesList feedArticlesQuery={feedArticlesQuery}/>
             </Grid>
         </Grid>
     );

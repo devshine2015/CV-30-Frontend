@@ -8,6 +8,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { emphasize } from '@material-ui/core/styles/colorManipulator';
 import { List } from 'react-virtualized';
 
+import AsyncSelect from 'react-select/lib/Async';
+
 const styles = theme => ({
     input: {
         display: 'flex',
@@ -41,7 +43,7 @@ const styles = theme => ({
     },
     paper: {
         position: 'absolute',
-        zIndex: 1,
+        zIndex: 10,
         marginTop: theme.spacing.unit,
         left: 0,
         right: 0,
@@ -134,7 +136,7 @@ const MenuList = props => (
     <List
         style={{ width: '100%' }}
         width={300}
-        height={350}
+        height={Math.min(350, props.children.length*50)}
         rowHeight={50}
         rowCount={props.children.length || 0}
         rowRenderer={({ key, index, style }) => (
@@ -142,8 +144,7 @@ const MenuList = props => (
                 {props.children[index]}
             </div>
         )}
-    >
-    </List>
+    />
 );
 
 const components = {
@@ -159,7 +160,7 @@ const components = {
 };
 
 const IntegrationReactSelect = props => {
-    const { classes, theme, suggestions, label, placeholder, onChange, value, isMulti } = props;
+    const { classes, theme, suggestions, label, placeholder, onChange, value, isMulti, async } = props;
 
     const selectStyles = {
         input: base => ({
@@ -172,6 +173,32 @@ const IntegrationReactSelect = props => {
     };
 
     return (
+        async ?
+        <AsyncSelect
+            classes={classes}
+            styles={selectStyles}
+            textFieldProps={{
+                label,
+                InputLabelProps: {
+                    shrink: true,
+                },
+            }}
+            loadOptions={inputValue =>
+                new Promise(resolve => {
+                    setTimeout(() => {
+                    resolve((filter => 
+                        suggestions.filter(i => i.label.toLowerCase().includes(filter.toLowerCase()))
+                    )(inputValue))
+                    }, 1000);
+                })
+            }
+            components={components}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            isMulti={!!isMulti}
+        />
+        :
         <Select
             classes={classes}
             styles={selectStyles}
@@ -187,7 +214,7 @@ const IntegrationReactSelect = props => {
             onChange={onChange}
             placeholder={placeholder}
             isMulti={!!isMulti}
-        />
+        />  
     );
 }
 

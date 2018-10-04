@@ -3,7 +3,6 @@ import { TextField, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 import { handleArticle, setFeedbackMessage } from '../../../store/queries';
-import { newsFeedArticlesRefetch } from '../../../store/refetch';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 const EditPostHOC = compose(
@@ -13,7 +12,7 @@ const EditPostHOC = compose(
     withState('post', 'setPost', ({ article: { description } }) => description),
     withHandlers({
         handleFormChange: ({ setPost }) => ev => setPost(ev.target.value),
-        updatePost: ({ handleArticle, post, setFeedbackMessage, match: { params: { lang: language } }, article: { id }, closeEditor }) => async () => {
+        updatePost: ({ handleArticle, post, setFeedbackMessage, match: { params: { lang: language } }, article: { id }, closeEditor, refetch }) => async () => {
             try {
                 await handleArticle({
                     variables: {
@@ -23,11 +22,9 @@ const EditPostHOC = compose(
                             title: 'Post',
                             description: post
                         }
-                    },
-                    refetchQueries: [
-                        newsFeedArticlesRefetch(language)
-                    ]
+                    }
                 });
+                await refetch();
                 await setFeedbackMessage({
                     variables: {
                         status: 'success',

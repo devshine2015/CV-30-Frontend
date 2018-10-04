@@ -4,7 +4,7 @@ import { compose, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 
-import ArticlesList from '../../../feed/components/articlesList';
+import FeedArticlesList from '../../../feed/components/feedArticlesList';
 
 import { getFeedArticles, getCurrentUser } from '../../../../store/queries';
 
@@ -13,28 +13,23 @@ const FeedHOC = compose(
     graphql(getCurrentUser, { name: 'currentUser' }),
     graphql(getFeedArticles, {
         name: 'feedArticlesQuery',
-        options: (props) => ({
+        options: ({ match: { params }, currentUser}) => ({
             fetchPolicy: 'network-only',
             variables: {
-                language: props.match.params.lang,
-                userId: props.match.params.profileId ? props.match.params.profileId : (props.currentUser.auth.currentUser ? props.currentUser.auth.currentUser.id : undefined)
+                language: params.lang,
+                userId: params.profileId ? params.profileId : (currentUser.auth.currentUser ? currentUser.auth.currentUser.id : undefined),
+                first: 10
             }
         }),
     }),
     pure
 );
 
-const Feed = props => {
-    const {
-        feedArticlesQuery,
-    } = props;
-    const articles = feedArticlesQuery.feedArticles ? feedArticlesQuery.feedArticles : [];
-
-
+const Feed = ({ feedArticlesQuery }) => {
     return (
         <Grid container className='mainBody profileFeed'>
             <Grid item md={8} xs={11} className='articlesContainer'>
-                <ArticlesList articles={articles} />
+                <FeedArticlesList feedArticlesQuery={feedArticlesQuery}/>
             </Grid>
         </Grid>
     );

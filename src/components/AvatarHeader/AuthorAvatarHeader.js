@@ -7,15 +7,16 @@ import TeamAvatarHeader from './TeamAvatarHeader';
 const AuthorAvatarHeader = ({ article, lang }) => {
     const { postAs, postingCompany, postingTeam, author } = article;
 
-    if (postAs === 'profile') {
-        return <UserAvatarHeader profile={author} lang={lang} />;
-    } else if (postAs === 'company') {
-        return <CompanyAvatarHeader company={postingCompany} lang={lang} />;
-    } else if (postAs === 'team') {
-        return <TeamAvatarHeader team={postingTeam} lang={lang} />;
+    switch (postAs) {
+        case 'profile':
+            return <UserAvatarHeader profile={author} lang={lang} />;
+        case 'company':
+            return <CompanyAvatarHeader company={postingCompany} lang={lang} />;
+        case 'team':
+            return <TeamAvatarHeader team={postingTeam} lang={lang} />;
+        default:
+            return null;
     }
-
-    return null;
 };
 
 export default AuthorAvatarHeader;

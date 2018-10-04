@@ -46,7 +46,7 @@ const UsersList = props => {
                                 }
                             })}
                         hasMore={hasNextPage}
-                        loader={<Loader />}
+                        loader={<Loader key='loader'/>}
                         useWindow={true}
                     >
                         {profiles.map(user => <Profile user={user} key={user.id} />)}

@@ -126,11 +126,13 @@ const Settings = props => {
             </div>
             <div className='infoFields'>
                 <IndustryInput
+                    className='textField'
                     onChange={handleFormChange}
                     value={industryId}
                 />
 
                 <LocationInput
+                    className='textField'
                     value={location}
                     onChange={handleFormChange}
                 />
