@@ -18,7 +18,6 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
 
-
 import TeamSlider from './teamSlider';
 import AddTeam from './addTeam';
 import ColorPicker from './colorPicker';
@@ -264,7 +263,7 @@ const Header = props => {
         let newCover = `${s3BucketURL}${coverPath}?${forceCoverRender}`;
         headerStyle.background += `, url(${newCover})`;
     }
-
+    
     return (
         <div className='header' style={headerStyle}>
             <Grid container className='headerLinks'>
@@ -326,7 +325,7 @@ const Header = props => {
                         )}
                     </FormattedMessage>
 
-                    <FormattedMessage id="headerLinks.follow" defaultMessage={isFollowing ? "Unfollow" : "Follow"} description="User header follow button">
+                    <FormattedMessage id={!isFollowing? "headerLinks.follow" : "headerLinks.unFollow"} defaultMessage={isFollowing ? "Unfollow" : "Follow"} description="User header follow button">
                         {(text) => isFollowAllowed ? (
                             <Button className='headerButton' onClick={() => toggleFollow(isFollowing)}>
                                 {text}
@@ -337,7 +336,12 @@ const Header = props => {
             </Grid>
             {editMode &&
                 <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
-                    <span className='text'>Change Background</span>
+                    <FormattedMessage id="company.brand.changeBackground" defaultMessage="Change Background" description="Change Background">
+                        {(text) => (
+                            <span className='text'>{text}</span>
+                        )}
+                    </FormattedMessage>
+                    
                     <Icon className='icon'>brush</Icon>
                 </Button>
             }
@@ -346,17 +350,22 @@ const Header = props => {
                     {
                         editMode ?
                             <div className='editorWrapper'>
-                                <FroalaEditor
-                                    config={{
-                                        placeholderText: 'This is where the company headline should be',
-                                        iconsTemplate: 'font_awesome_5',
-                                        toolbarInline: true,
-                                        charCounterCount: false,
-                                        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
-                                    }}
-                                    model={headline}
-                                    onModelChange={updateHeadline}
-                                />
+                                <FormattedMessage id="company.brand.froalaEditor" defaultMessage="This is where the company headline should be" description="Company Headline">
+                                    {(text) => (
+                                        <FroalaEditor
+                                            config={{
+                                                placeholderText: text,
+                                                iconsTemplate: 'font_awesome_5',
+                                                toolbarInline: true,
+                                                charCounterCount: false,
+                                                toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                            }}
+                                            model={headline}
+                                            onModelChange={updateHeadline}
+                                        />
+                                    )}
+                                </FormattedMessage>
+                                
                                 <IconButton className='submitBtn' onClick={submitHeadline}>
                                     <Icon>done</Icon>
                                 </IconButton>
@@ -419,7 +428,12 @@ const Header = props => {
                     editMode &&
                     <Grid item className='storyContainer add' onClick={toggleStoryEditor}>
                         <span className='bigPlus'>+</span>
-                        <span className='storyTitle'>+ Add featured article</span>
+                        <FormattedMessage id="company.brand.storyTitle" defaultMessage="+ Add featured article" description="Add featured article">
+                            {(text) => (
+                                <span className='storyTitle'>{text}</span>
+                            )}
+                        </FormattedMessage>
+                        
                     </Grid>
                 }
                 <ArticlePopup
@@ -444,7 +458,12 @@ const Header = props => {
             <Grid container className='teamSlider'>
                 <Grid item lg={9} md={9} sm={12} xs={12} className='slideContainer'>
                     <div className='teamSliderItem title'>
-                        <h4>Cunoaste <b>echipa</b></h4>
+                        <FormattedMessage id="company.brand.knowTeam" defaultMessage="Know the \n Team" description="Know the Team">
+                            {(text) => (
+                                <h4>{text.split("\n")[0]} <b>{text.split("\n")[2]}</b></h4>
+                            )}
+                        </FormattedMessage>
+                        
                         {editMode && <AddTeam {...props} />}
                     </div>
                     {

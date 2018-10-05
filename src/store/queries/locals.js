@@ -85,6 +85,23 @@ export const getEditMode = gql`
     }
 `;
 
+export const setRomanianMode = gql`
+    mutation setRomanianMode ($status: Boolean!) {
+        setRomanianMode (status: $status) @client {
+            __typename
+            status
+        }
+    }
+`
+
+export const getRomanianMode = gql`
+    query getRomanianMode {
+        romanianMode @client {
+            __typename
+            status
+        }
+    }
+`
 export const getFeedbackMessage = gql`
     query getFeedbackMessage {
         feedbackMessage @client {

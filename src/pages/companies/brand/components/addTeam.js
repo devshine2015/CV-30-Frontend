@@ -3,6 +3,7 @@ import { Button, FormControl, InputLabel, Input, Popover, InputAdornment } from 
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import uuid from 'uuidv4';
+import { FormattedMessage } from 'react-intl'
 
 import { handleTeam, setFeedbackMessage } from '../../../../store/queries';
 import { companyRefetch } from '../../../../store/refetch';
@@ -84,7 +85,12 @@ const AddTeam = props => {
     const { state: { teamAnchor, newTeam }, closeTeamModal, updateNewTeam, addTeam, openTeamModal } = props;
     return (
         <React.Fragment>
-            <Button className='addTeamBtn' onClick={(event) => openTeamModal(event.target)}>Add Team</Button>
+            <FormattedMessage id="company.brand.addTeamBtn" defaultMessage="Add Team" description="Add Team">
+                {(text) => (
+                    <Button className='addTeamBtn' onClick={(event) => openTeamModal(event.target)}>{text}</Button>
+                )}
+            </FormattedMessage>
+            
             <Popover
                 anchorOrigin={{
                     vertical: 'bottom',
@@ -103,7 +109,12 @@ const AddTeam = props => {
             >
                 <div className='popupHeader'>
                     <FormControl className='skillsInput' fullWidth={true}>
-                        <InputLabel>Team name</InputLabel>
+                    <FormattedMessage id="company.brand.teamName" defaultMessage="Team name" description="Team name">
+                        {(text) => (
+                            <InputLabel>{text}</InputLabel>
+                        )}
+                    </FormattedMessage>
+                        
                         <Input
                             id="newTeam"
                             type='text'
@@ -111,7 +122,12 @@ const AddTeam = props => {
                             onChange={event => updateNewTeam(event.target.value)}
                             endAdornment={
                                 <InputAdornment position="end">
-                                    <Button color='primary' size='small' variant='raised' className='addSkillButton' onClick={addTeam} disabled={!newTeam}>Add</Button>
+                                    <FormattedMessage id="company.brand.add" defaultMessage="Add" description="Add">
+                                        {(text) => (
+                                            <Button color='primary' size='small' variant='raised' className='addSkillButton' onClick={addTeam} disabled={!newTeam}>{text}</Button>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                 </InputAdornment>
                             }
                             fullWidth={true}

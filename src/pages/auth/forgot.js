@@ -54,7 +54,7 @@ const ForgotPasswordComponent = ({ match, updateEmail, sendMail, state: { email,
                                 <p className='errorMessage'>{forgotError}</p>
                             }
 
-                            <FormattedMessage id="actions.forgotPassword" defaultMessage="Reset password" description="Reset password action">
+                            <FormattedMessage id="actions.resetPassword" defaultMessage="Reset password" description="Reset password action">
                                 {(text) => (<Button variant="raised" className='loginButton' onClick={sendMail} disabled={!email || emailError || loading}>
                                     {text}
                                 </Button>)}

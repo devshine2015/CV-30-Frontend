@@ -145,7 +145,11 @@ const Header = props => {
             </Grid>
             {editMode &&
                 <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
-                    <span className='text'>Change Background</span>
+                    <FormattedMessage id="company.brand.changeBackground" defaultMessage="Change Background" description="Change Background">
+                        {(text) => (
+                            <span className='text'>{text}</span>
+                        )}
+                    </FormattedMessage>
                     <Icon className='icon'>brush</Icon>
                 </Button>
             }

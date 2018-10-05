@@ -170,7 +170,8 @@ const Show = props => {
         openArticlePopUp, closeArticlePopUp,
         toggleSalaryPrivate, handleError, handleSuccess,
         updateStory, saveStory,openImageUpload,closeImageUpload, // Add Image Upload
-        updateDesiredSalary, saveDesiredSalary
+        updateDesiredSalary, saveDesiredSalary,
+        currentUser: {  auth: { currentUser } }
     } = props;
 
     let editMode = false;
@@ -179,7 +180,8 @@ const Show = props => {
     } catch(error) {}
 
     const { contact, experience, projects, aboutMeArticles, salary, educations, hobbies } = profile;
-    console.log("*****************", profile)
+    const { id: userId } = currentUser || {};
+    console.log("*****************", currentUser)
     return (
         <Grid container className='mainBody userProfileShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
@@ -187,18 +189,28 @@ const Show = props => {
                     ((experience && experience.length > 0) || editMode) &&
 
                     <section className='experienceSection'>
-                        <h2 className='sectionTitle'>My <b>experience</b></h2>
+                        <FormattedMessage id="users.myExperience" defaultMessage="My \nexperience" description="My experience">
+                            {(text) => (
+                                <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                            )}
+                        </FormattedMessage>
+                        
                         {
                             experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'experience'} key={`xpItem-${index}`} />)
 
                         }
                         {editMode && !newXP &&
-                            <div className='experienceAdd' onClick={addNewExperience}>
-                                + Add Experience
-                            </div>
+                            <FormattedMessage id="users.addExperience" defaultMessage="+ Add Experience" description="Add Experience">
+                                    {(text) => (
+                                        <div className='experienceAdd' onClick={addNewExperience}>
+                                            {text}
+                                        </div>
+                                    )}
+                            </FormattedMessage>
+                            
                         }
                         {
-                            (editMode && newXP) && <ExperienceEdit type={'experience'} closeEditor={closeNewExperience} />
+                            (editMode && newXP) && <ExperienceEdit userId={userId} type={'experience'} closeEditor={closeNewExperience} />
                         }
 
                     </section>
@@ -207,17 +219,27 @@ const Show = props => {
                     ((projects && projects.length > 0) || editMode) &&
 
                     <section className='experienceSection'>
-                        <h2 className='sectionTitle'>My <b>projects</b></h2>
+                        <FormattedMessage id="users.myProjects" defaultMessage="My \nprojects" description="My projects">
+                            {(text) => (
+                                <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                            )}
+                        </FormattedMessage>
+                        
                         {
                             projects.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'project'} key={`projectItem-${index}`} />)
                         }
                         {editMode && !newProj &&
-                            <div className='experienceAdd' onClick={addNewProject}>
-                                + Add project
-                            </div>
+                            <FormattedMessage id="users.addProejcts" defaultMessage="+ Add project" description="Add project">
+                                    {(text) => (
+                                        <div className='experienceAdd' onClick={addNewProject}>
+                                            {text}
+                                        </div>
+                                    )}
+                            </FormattedMessage>
+                            
                         }
                         {
-                            (editMode && newProj) && <ExperienceEdit type={'project'} closeEditor={closeNewProject} />
+                            (editMode && newProj) && <ExperienceEdit userId={userId} type={'project'} closeEditor={closeNewProject} />
                         }
 
                     </section>
@@ -226,17 +248,27 @@ const Show = props => {
                     ((educations && educations.length > 0) || editMode) &&
 
                     <section className='experienceSection'>
-                        <h2 className='sectionTitle'>My <b>educations</b></h2>
+                        <FormattedMessage id="users.myEducation" defaultMessage="My \neducation" description="My education">
+                            {(text) => (
+                                <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                            )}
+                        </FormattedMessage>
+                        
                         {
                             educations.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'education'} key={`educationItem-${index}`} />)
                         }
                         {editMode && !newEduc &&
-                            <div className='experienceAdd' onClick={addNewEducation}>
-                                + Add education
-                            </div>
+                            <FormattedMessage id="users.addEducation" defaultMessage="+ Add education" description="Add education">
+                                {(text) => (
+                                    <div className='experienceAdd' onClick={addNewEducation}>
+                                        {text}
+                                    </div>
+                                )}
+                            </FormattedMessage>
+                            
                         }
                         {
-                            (editMode && newEduc) && <ExperienceEdit type={'education'} closeEditor={closeNewEducation} />
+                            (editMode && newEduc) && <ExperienceEdit userId={userId} type={'education'} closeEditor={closeNewEducation} />
                         }
 
                     </section>
@@ -245,17 +277,27 @@ const Show = props => {
                     ((hobbies && hobbies.length > 0) || editMode) &&
 
                     <section className='experienceSection'>
-                        <h2 className='sectionTitle'>My <b>hobbies</b></h2>
+                        <FormattedMessage id="users.myHobbies" defaultMessage="My \nhobbies" description="My hobbies">
+                            {(text) => (
+                                <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                            )}
+                        </FormattedMessage>
+                        
                         {
                             hobbies.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'hobby'} key={`hobbyItem-${index}`} />)
                         }
                         {editMode && !newHobby &&
-                            <div className='experienceAdd' onClick={addNewHobby}>
-                                + Add hobby
-                            </div>
+                            <FormattedMessage id="users.addHobby" defaultMessage="+ Add hobby" description="Add hobby">
+                                    {(text) => (
+                                            <div className='experienceAdd' onClick={addNewHobby}>
+                                                {text}
+                                            </div>
+                                    )}
+                            </FormattedMessage>
+                            
                         }
                         {
-                            (editMode && newHobby) && <ExperienceEdit type={'hobby'} closeEditor={closeNewHobby} />
+                            (editMode && newHobby) && <ExperienceEdit userId={userId} type={'hobby'} closeEditor={closeNewHobby} />
                         }
 
                     </section>
@@ -264,22 +306,27 @@ const Show = props => {
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
                     <div className='columnTitle'>
-                        <h2 className="columnTitle">
-                            Contact&nbsp;<b>me</b>
-                            <IconButton onClick={toggleContactExpanded} className='contactExpandToggle'>
-                                {
-                                    contactExpanded ?
-                                        <i className="fas fa-angle-up"></i> :
-                                        <i className="fas fa-angle-down"></i>
-                                }
-                            </IconButton>
-                            {
-                                editMode &&
-                                <IconButton className='contactEditBtn' onClick={toggleEditContact}>
-                                    <Icon>edit</Icon>
-                                </IconButton>
-                            }
-                        </h2>
+                        <FormattedMessage id="users.contactMe" defaultMessage="Contact\nme" description="Contact Me">
+                            {(text) => (
+                                <h2 className="columnTitle">
+                                    {text.split("\n")[0]}&nbsp;<b>{text.split("\n")[1]}</b>
+                                    <IconButton onClick={toggleContactExpanded} className='contactExpandToggle'>
+                                        {
+                                            contactExpanded ?
+                                                <i className="fas fa-angle-up"></i> :
+                                                <i className="fas fa-angle-down"></i>
+                                        }
+                                    </IconButton>
+                                    {
+                                        editMode &&
+                                        <IconButton className='contactEditBtn' onClick={toggleEditContact}>
+                                            <Icon>edit</Icon>
+                                        </IconButton>
+                                    }
+                                </h2>
+                            )}
+                        </FormattedMessage>
+                        
                         {
                             !editMode &&
                             <div className={contactExpanded ? 'contactDetails open' : 'contactDetails'}>
@@ -307,17 +354,27 @@ const Show = props => {
                     </div>
                     {(aboutMeArticles && aboutMeArticles.length > 0) &&
                         <div className='knowHowContainer'>
-                            <ArticleSlider
-                                articles={aboutMeArticles}
-                                title={(<h4>Know<b>how</b></h4>)}
-                            />
+                            <FormattedMessage id="users.knowHow" defaultMessage="Know\nhow" description="Know How">
+                                {(text) => (
+                                    <ArticleSlider
+                                        articles={aboutMeArticles}
+                                        title={(<h4>{text.split("\n")[0]}<b>{text.split("\n")[1]}</b></h4>)}
+                                    />
+                                )}
+                            </FormattedMessage>
+                            
                         </div>
                     }
                     {editMode &&
                         <React.Fragment>
-                            <div className='addArticle' onClick={openArticlePopUp}>
-                                + Add Article
-                            </div>
+                            <FormattedMessage id="company.team.addArticle" defaultMessage="+ Add Article" description="Add Article">
+                                {(text) => (
+                                    <div className='addArticle' onClick={openArticlePopUp}>
+                                        {text}
+                                    </div>
+                                )}
+                            </FormattedMessage>
+                            
                             <ArticlePopUp
                                 type='profile_isAboutMe'
                                 open={isPopUpOpen}
@@ -327,16 +384,22 @@ const Show = props => {
                     }
                     {editMode &&
                         <React.Fragment>
-                            <div className='addArticle' onClick={openImageUpload}>
-                                + Upload document
-                            </div>
+                            <FormattedMessage id="users.uploadDocument" defaultMessage="+ Upload document" description="Upload document">
+                                {(text) => (
+                                    <div className='addArticle' onClick={openImageUpload}>
+                                        {text}
+                                    </div>
+                                )}
+                            </FormattedMessage>
+                            
                             <ImageUploader
-                                type='document'
+                                type='cv'
                                 open={imageUploadOpen}
                                 onClose={closeImageUpload}
                                 onError={handleError}
                                 onSuccess={handleSuccess}
                                 // id={articleId}
+                                userId={userId} 
                             />
                         </React.Fragment>
                         
@@ -345,10 +408,20 @@ const Show = props => {
                         <hr />
                     }
                     <div className='myStoryContainer'>
-                        <h4>My&nbsp;<b>story</b></h4>
+                        <FormattedMessage id="users.myStory" defaultMessage="My\nstory" description="My Story">
+                            {(text) => (
+                                <h4>{text.split("\n")[0]}&nbsp;<b>{text.split("\n")[1]}</b></h4>
+                            )}
+                        </FormattedMessage>
+                        
                         {
                             editMode &&
-                            <p className='storyHelperText'>Write a few words about yourself.</p>
+                            <FormattedMessage id="users.writeYourself" defaultMessage="Write a few words about yourself." description="Write a few words about yourself">
+                                {(text) => (
+                                    <p className='storyHelperText'>{text}</p>
+                                )}
+                            </FormattedMessage>
+                            
                         }
                         {editMode ?
                             <React.Fragment>
@@ -375,7 +448,12 @@ const Show = props => {
                     </div>
                     {(editMode || (!editMode && isSalaryPublic)) &&
                         <div className='desiredSalaryContainer'>
-                            <h4>Desired&nbsp;<b>salary</b></h4>
+                            <FormattedMessage id="users.desiredSalary" defaultMessage="Desired\nsalary" description="Desired Salary">
+                                {(text) => (
+                                    <h4>{text.split("\n")[0]}&nbsp;<b>{text.split("\n")[1]}</b></h4>
+                                )}  
+                            </FormattedMessage>
+                            
                             {
                                 (!editMode && isSalaryPublic) &&
                                 <p className='salaryDisplay'>
@@ -405,15 +483,24 @@ const Show = props => {
                                         </FormattedMessage>
                                     </FormGroup>
                                     <FormControl>
-                                        <InputLabel htmlFor="desiredSalary">Amount</InputLabel>
-                                        <Input
-                                            id="desiredSalary"
-                                            name='desiredSalary'
-                                            placeholder='Adauga suma...'
-                                            type='number'
-                                            value={desiredSalary}
-                                            onChange={event => updateDesiredSalary(event.target.value)}
-                                        />
+                                        <FormattedMessage id="users.salaryAmount" defaultMessage="Amount" description="Amount">
+                                            {(text) => (
+                                                <InputLabel htmlFor="desiredSalary">{text}</InputLabel>
+                                            )}
+                                        </FormattedMessage>
+                                        <FormattedMessage id="users.addAmount" defaultMessage="Add amount..." description="Add amount">
+                                            {(text) => (
+                                                <Input
+                                                    id="desiredSalary"
+                                                    name='desiredSalary'
+                                                    placeholder={text}
+                                                    type='number'
+                                                    value={desiredSalary}
+                                                    onChange={event => updateDesiredSalary(event.target.value)}
+                                                />
+                                            )}
+                                        </FormattedMessage>
+                                        
                                     </FormControl>
                                     <IconButton className='submitBtn' onClick={saveDesiredSalary}>
                                         <Icon>done</Icon>

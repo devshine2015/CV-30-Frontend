@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo';
 import { handleFollow, setFeedbackMessage } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
 import { withRouter, Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl'
 
 import { s3BucketURL } from '../../../../constants/s3';
 import { defaultUserAvatar } from '../../../../constants/utils';
@@ -158,7 +159,11 @@ const Following = props => {
     return (
         <div className='following'>
             <section className='followingCompanies'>
-                <h2 className='sectionTitle'>Companies</h2>
+                <FormattedMessage id="nav.companies" defaultMessage="Companies" description="Companies">
+                    {(text) => (
+                        <h2 className='sectionTitle'>{text}</h2>
+                    )}
+                </FormattedMessage>
                 {
                     followingCompanies && followingCompanies.map(item => (
                         <ShowCompany
@@ -171,7 +176,12 @@ const Following = props => {
                 }
             </section>
             <section className='followingTeams'>
-                <h2 className='sectionTitle'>Teams</h2>
+                <FormattedMessage id="company.list.teams" defaultMessage="Teams" description="Teams">
+                    {(text) => (
+                        <h2 className='sectionTitle'>{text}</h2>
+                    )}
+                </FormattedMessage>
+                
                 {
                     followingTeams && followingTeams.map(item => (
                         <ShowTeam
@@ -184,7 +194,12 @@ const Following = props => {
                 }
             </section>
             <section className='followingJobs'>
-                <h2 className='sectionTitle'>Jobs</h2>
+                <FormattedMessage id="nav.jobs" defaultMessage="Jobs" description="Jobs">
+                    {(text) => (
+                        <h2 className='sectionTitle'>{text}</h2>
+                    )}
+                </FormattedMessage>
+                
                 {
                     followingJobs && followingJobs.map(item => (
                         <ShowJob
@@ -197,7 +212,12 @@ const Following = props => {
                 }
             </section>
             <section className='followees'>
-                <h2 className='sectionTitle'>People</h2>
+                <FormattedMessage id="nav.people" defaultMessage="People" description="People">
+                    {(text) => (
+                        <h2 className='sectionTitle'>{text}</h2>
+                    )}
+                </FormattedMessage>
+                
                 {
                     followees && followees.map(item => (
                         <ShowUser

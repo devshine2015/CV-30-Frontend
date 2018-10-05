@@ -4,7 +4,7 @@ import { graphql, compose } from 'react-apollo';
 import { Popover, IconButton, Icon, TextField, Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuidv4';
-
+import { FormattedMessage } from 'react-intl'
 import { getCurrentUser, getAds, handleAd, setFeedbackMessage } from '../../../store/queries';
 import { adsRefetch } from '../../../store/refetch';
 import Loader from '../../../components/Loader';
@@ -226,10 +226,14 @@ class Promo extends Component {
             <React.Fragment>
                 <section className='promo'>
                     {ad ?
-                        <a href={ad.url} className='promoLink' target='_blank'>
+                        <a href={ad.url} className='promoLink' target='_blank' rel="noopener noreferrer">
                             <img src={`${s3BucketURL}${ad.image.path}`} className='promoImg' alt='' />
                         </a>
-                        : <span className='noPromo'>Promo</span>
+                        :
+                        <FormattedMessage id="feed.promo" defaultMessage="Promo" description="Promo">
+                                {(text) => (<span className='noPromo'>{text}</span>)}
+                        </FormattedMessage>
+                    
                     }
                     {(currentUser && currentUser.god) &&
                         <IconButton className='floatingEditBtn' onClick={this.openPromoEditor}>
@@ -263,19 +267,31 @@ class Promo extends Component {
                                 </IconButton>
                             </div>
                         }
-                        <TextField
-                            name="url"
-                            label="Promo link"
-                            placeholder="Enter promo link..."
-                            className='textField'
-                            onChange={this.handleFormChange}
-                            fullWidth
-                            value={url || ''}
-                        />
+                        <FormattedMessage id="feed.promoLink" defaultMessage="Promo link \n Enter promo link..." description="Enter promo link">
+                            {(text) => (
+                                <TextField
+                                    name="url"
+                                    label={text.split("\n")[0]}
+                                    placeholder={text.split("\n")[1]}
+                                    className='textField'
+                                    onChange={this.handleFormChange}
+                                    fullWidth
+                                    value={url || ''}
+                                />
+                            )}
+                        </FormattedMessage>
+                        
 
-                        { !image && <Button className='imgUpload' onClick={this.openImageUpload}>
-                            Upload Image
-                        </Button> }
+                        { !image && 
+                            <FormattedMessage id="feed.imgUpload" defaultMessage="Upload Image" description="Upload Image">
+                                    {(text) => (
+                                        <Button className='imgUpload' onClick={this.openImageUpload}>
+                                            {text}
+                                        </Button> 
+                                    )}
+                            </FormattedMessage>
+                            
+                        }
 
                     </div>
                     <div className='popupFooter'>

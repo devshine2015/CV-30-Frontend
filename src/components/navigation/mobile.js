@@ -5,6 +5,7 @@ import { NavLink, Link } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import { s3BucketURL } from '../../constants/s3';
 import { cv30Logo, defaultUserAvatar } from '../../constants/utils';
+import LanguageToggle from '../LanguageToggle'
 
 const MobileNav = (props) => {
 
@@ -56,10 +57,12 @@ const MobileNav = (props) => {
                 <IconButton onClick={toggleMobileNav} className='mobileNavButton'>
                     <MenuIcon />
                 </IconButton>
-
+                
+                <LanguageToggle />
                 {/* Drawers */}
 
                 <Drawer anchor="right" open={mobileNavOpen} onClose={closeMobileNav} className='mobileNavContainer' classes={{ paperAnchorRight: 'sideDrawer' }}>
+                    {console.log("*********************************************", mobileNavOpen)}
                     <div tabIndex={0} role="button" onClick={closeMobileNav} onKeyDown={closeMobileNav} className='content'>
                         <FormattedMessage id="nav.newsFeed" defaultMessage="News feed" description="News feed menu item">
                             {(text) => (
@@ -159,7 +162,7 @@ const MobileNav = (props) => {
                                         </ListItem>
                                         )}
                                     </FormattedMessage>
-                                    <FormattedMessage id="nav.companyJobs" defaultMessage="Jobs" description="Company jobs">
+                                    <FormattedMessage id="nav.jobs" defaultMessage="Jobs" description="Company jobs">
                                         {(text) => (<ListItem button
                                             component={Link} to={{
                                                 pathname: `/${lang}/company/${userCompany.id}/settings`,

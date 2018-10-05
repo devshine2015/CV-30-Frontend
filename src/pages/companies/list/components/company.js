@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
 import { s3BucketURL } from '../../../../constants/s3';
 import JobsSlider from './jobsSlider';
+import TeamMember from './teamMember'
 
 const CompanyHOC = compose(
     withState('activeTab', 'setActiveTab', false),
@@ -16,7 +17,6 @@ const CompanyHOC = compose(
         }
     }),
     pure);
-
 
 const Company = ({ activeTab, handleTabChange,
     company: { id, name, industry, location, noOfEmployees, description, recentJobs, teams, logoPath },
@@ -42,63 +42,76 @@ const Company = ({ activeTab, handleTabChange,
                     </div>
                 </Link>
             </div>
-            <div className='rightOverlay'>
-                {location}&nbsp;|&nbsp;{noOfEmployees || 0} Employees
-            </div>
+            
+            <FormattedMessage id="company.list.employees" defaultMessage="Employees" description="Employees">
+                {(text) => (
+                    <div className='rightOverlay'>
+                        {location}&nbsp;|&nbsp;{noOfEmployees || 0} {text}
+                    </div>
+                )}
+            </FormattedMessage> 
+                
             <div className='itemBody'>
                 <p className='companyDescription'>
                     {stripHtmlTags(description)}
                 </p>
-                <Tabs
-                    value={activeTab}
-                    onChange={handleTabChange}
-                    classes={{
-                        root: 'tabsContainer',
-                        indicator: 'tabsIndicator'
-                    }}
-                >
-                    <Tab
-                        label="Jobs"
-                        value='jobs'
-                        classes={{
-                            root: 'tabRoot',
-                            labelIcon: 'labelIcon',
-                            selected: 'tabSelected',
-                            wrapper: 'tabWrapper',
-                            labelContainer: 'labelContainer',
-                            label: 'label'
-                        }}
-                        disableRipple
-                        disableTouchRipple
-                        focusRipple
-                        disabled={!recentJobs || recentJobs.length === 0}
-                    />
-                    <Tab
-                        label="Teams"
-                        value='teams'
-                        classes={{
-                            root: 'tabRoot',
-                            labelIcon: 'labelIcon',
-                            selected: 'tabSelected',
-                            wrapper: 'tabWrapper',
-                            labelContainer: 'labelContainer',
-                            label: 'label'
-                        }}
-                        disableRipple
-                        disableTouchRipple
-                        focusRipple
-                        disabled={!teams || teams.length === 0}
-                    />
-                </Tabs>
+                <FormattedMessage id="company.list.tabs" defaultMessage="Jobs0Teams" description="Jobs Teams">
+                    {(text) => (
+                        <Tabs
+                            value={activeTab}
+                            onChange={handleTabChange}
+                            classes={{
+                                root: 'tabsContainer',
+                                indicator: 'tabsIndicator'
+                            }}
+                        >   
+                            <Tab
+                                label={text.split("0")[0]}
+                                value='jobs'
+                                classes={{
+                                    root: 'tabRoot',
+                                    labelIcon: 'labelIcon',
+                                    selected: 'tabSelected',
+                                    wrapper: 'tabWrapper',
+                                    labelContainer: 'labelContainer',
+                                    label: 'label'
+                                }}
+                                disableRipple
+                                disableTouchRipple
+                                focusRipple
+                                disabled={!recentJobs || recentJobs.length === 0}
+                            />
+                            <Tab
+                                label={text.split("0")[1]}
+                                value='teams'
+                                classes={{
+                                    root: 'tabRoot',
+                                    labelIcon: 'labelIcon',
+                                    selected: 'tabSelected',
+                                    wrapper: 'tabWrapper',
+                                    labelContainer: 'labelContainer',
+                                    label: 'label'
+                                }}
+                                disableRipple
+                                disableTouchRipple
+                                focusRipple
+                                disabled={!teams || teams.length === 0}
+                            />
+                        </Tabs>
+                    )}
+                </FormattedMessage>
+                
             </div>
             <div className={activeTab ? 'itemFooter open' : 'itemFooter'}>
-                {activeTab === 'jobs' &&
+                
+                {   activeTab === 'jobs' &&
                     <JobsSlider jobs={recentJobs} />
                 }
                 {
-                    activeTab === 'team' &&
+                    activeTab === 'teams' &&
                     <div className='team'>
-                        {/*teams.map((member, index) => (<TeamMember {...member} key={`member-${index}`} />))*/}
+                        { console.log("--------------- teams ----------------", teams)}
+                        { teams[0].members.map((member, index) => (<TeamMember {...member} key={`member-${index}`} />))}
                     </div>
                 }
             </div>

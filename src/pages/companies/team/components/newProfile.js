@@ -4,7 +4,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import uuid from 'uuidv4';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-
+import { FormattedMessage } from 'react-intl'
 import { handleShallowUser, setFeedbackMessage } from '../../../../store/queries';
 import { teamRefetch } from '../../../../store/refetch';
 import { profilesFolder, s3BucketURL } from '../../../../constants/s3';
@@ -98,75 +98,89 @@ const NewProfile = props => {
 
     return (
         <div className='newMemberForm'>
-            <h4>Add member</h4>
-            <section className='infoFields'>
-                <TextField
-                    name="firstName"
-                    label="First name"
-                    placeholder="Member's first name..."
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={firstName || ''}
-                    fullWidth
-                />
-                <TextField
-                    name="lastName"
-                    label="Last name"
-                    placeholder="Member's last name..."
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={lastName || ''}
-                    fullWidth
-                />
-                <TextField
-                    name="email"
-                    label="Email"
-                    placeholder="Member's email address..."
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={email || ''}
-                    fullWidth
-                />
-                <TextField
-                    name="position"
-                    label="Position"
-                    placeholder="Member's position..."
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={position || ''}
-                    fullWidth
-                />
-                <TextField
-                    name="description"
-                    label="Description"
-                    placeholder="Short description..."
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={description || ''}
-                    fullWidth
-                />
-                {avatarPath ?
-                    <div className="imagePreview">
-                        <img src={`${s3BucketURL}${avatarPath}`} className='previewImg' alt='' />
-                        <IconButton className='removeBtn' onClick={removeImage}>
-                            <Icon>cancel</Icon>
-                        </IconButton>
-                    </div> :
-                    <React.Fragment>
-                        <Button className='uploadBtn' onClick={openImageUpload}>
-                            Upload picture
-                    </Button>
-                        <ImageUploader
-                            type='profile_avatar'
-                            open={imageUploadOpen}
-                            onClose={closeImageUpload}
-                            onError={handleError}
-                            onSuccess={handleSuccess}
-                            id={id}
+            <FormattedMessage id="company.team.addMember" defaultMessage="Add member" description="Add member">
+                {(text) => (
+                    <h4>{text}</h4>
+                )}
+            </FormattedMessage>
+            <FormattedMessage id="company.team.infoFields" defaultMessage="First name\nMember's first name...\nLast name\nMember's last name...\nEmail\nMember's email address...\nPosition\nMember's position...\nDescription\nShort description..." description="Info Fields">
+                {(text) => (
+                    <section className='infoFields'>
+                        <TextField
+                            name="firstName"
+                            label={text.split("\n")[0]}
+                            placeholder={text.split("\n")[1]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={firstName || ''}
+                            fullWidth
                         />
-                    </React.Fragment>
-                }
-            </section>
+                        <TextField
+                            name="lastName"
+                            label={text.split("\n")[2]}
+                            placeholder={text.split("\n")[3]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={lastName || ''}
+                            fullWidth
+                        />
+                        <TextField
+                            name="email"
+                            label={text.split("\n")[4]}
+                            placeholder={text.split("\n")[5]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={email || ''}
+                            fullWidth
+                        />
+                        <TextField
+                            name="position"
+                            label={text.split("\n")[6]}
+                            placeholder={text.split("\n")[7]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={position || ''}
+                            fullWidth
+                        />
+                        <TextField
+                            name="description"
+                            label={text.split("\n")[8]}
+                            placeholder={text.split("\n")[9]}
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={description || ''}
+                            fullWidth
+                        />
+                        {avatarPath ?
+                            <div className="imagePreview">
+                                <img src={`${s3BucketURL}${avatarPath}`} className='previewImg' alt='' />
+                                <IconButton className='removeBtn' onClick={removeImage}>
+                                    <Icon>cancel</Icon>
+                                </IconButton>
+                            </div> :
+                            <React.Fragment>
+                                <FormattedMessage id="company.brand.picUpload" defaultMessage="Upload picture" description="Upload picture">
+                                    {(text) => (
+                                        <Button className='uploadBtn' onClick={openImageUpload}>
+                                            {text}
+                                        </Button>
+                                    )}
+                                </FormattedMessage>
+                                
+                                <ImageUploader
+                                    type='profile_avatar'
+                                    open={imageUploadOpen}
+                                    onClose={closeImageUpload}
+                                    onError={handleError}
+                                    onSuccess={handleSuccess}
+                                    id={id}
+                                />
+                            </React.Fragment>
+                        }
+                    </section>
+                )}
+            </FormattedMessage>
+            
             <section className='editControls'>
                 <IconButton className='cancelBtn' onClick={onClose} disabled={isSaving}>
                     <Icon>close</Icon>

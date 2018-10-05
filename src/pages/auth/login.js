@@ -30,7 +30,12 @@ const LoginComponent = props => {
                             {(text) => (<h1>{text}</h1>)}
                         </FormattedMessage>
                         <FormattedMessage id="login.text" defaultMessage="Log in text" description="Log in text">
-                            {(text) => (<p>{text}</p>)}
+                            {(text) => (<div>
+                                {   
+                                    text.split("\n").map((i,key) => {
+                                    return <p key={key}>{i}</p>;
+                                })}
+                            </div>)}
                         </FormattedMessage>
                     </Grid>
                 </Hidden>
@@ -41,14 +46,14 @@ const LoginComponent = props => {
                                 {(text) => (
                                     <TextField
                                         id="email"
-                                        label="Email"
+                                        label={text.split("\n")[0]}
                                         className='textField'
                                         autoComplete="email"
                                         type="email"
                                         value={email}
                                         onChange={event => updateEmail(event.target.value.trim())}
                                         error={!!emailError}
-                                        helperText={emailError ? text : ""}
+                                        helperText={emailError ? text.split("\n")[1] : ""}
                                     />
                                 )}
                             </FormattedMessage>
@@ -57,14 +62,14 @@ const LoginComponent = props => {
                                 {(text) => (
                                     <TextField
                                         id="password"
-                                        label="Password"
+                                        label={text.split("\n")[0]}
                                         className='textField'
                                         type="password"
                                         autoComplete="current-password"
                                         value={password}
                                         onChange={event => updatePassword(event.target.value.trim())}
                                         error={!!passwordError}
-                                        helperText={passwordError ? text : ""}
+                                        helperText={passwordError ? text.split("\n")[1] : ""}
                                     />
                                 )}
                             </FormattedMessage>

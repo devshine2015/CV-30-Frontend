@@ -65,7 +65,12 @@ const Show = props => {
 
     } else if (!job) {
         //TODO
-        return <div>Job not found...</div>;
+        return <FormattedMessage id="jobs.view.notFound" defaultMessage="Job not found..." description="Job not found">
+                    {(text) => (
+                        <div>{text}</div>
+                    )}
+                </FormattedMessage>
+        
 
     } else {
         const { expanded, expandPanel, setApplyToJob } = props;
@@ -131,12 +136,22 @@ const Show = props => {
                             </section>
                         }
                         <section className='jobDescription'>
-                            <h2 className='sectionTitle'>Job <b>description</b></h2>
+                            <FormattedMessage id="jobs.new.descriptions" defaultMessage="Job \ndescription" description="Job description">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            
                             <p className='detailedDescription' dangerouslySetInnerHTML={{ __html: description }} />
                         </section>
 
                         <section className='jobBenefits'>
-                            <h2 className='sectionTitle'>Job <b>benefits</b></h2>
+                            <FormattedMessage id="jobs.new.jobBenefits" defaultMessage="Job \nbenefits" description="Job benefits">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            
                             {jobBenefits && jobBenefits.map(item => (
                                 <FormattedMessage id={`benefits.${item.key}`} defaultMessage={item.key} key={item.key}>
                                     {(text) => (
@@ -150,19 +165,31 @@ const Show = props => {
                         </section>
 
                         <section className='idealCandidate'>
-                            <h2 className='sectionTitle'>Ideal <b>candidate</b></h2>
+                            <FormattedMessage id="jobs.new.idealCandidate" defaultMessage="Ideal \ncandidate" description="Ideal candidate">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
                             <p className='detailedDescription' dangerouslySetInnerHTML={{ __html: idealCandidate }} />
                         </section>
 
                         {activityField &&
                             <section className='activityType'>
-                                <h2 className='sectionTitle'>Activity <b>field</b></h2>
+                                <FormattedMessage id="jobs.new.activity" defaultMessage="Activity \nfield" description="Activity field">
+                                    {(text) => (
+                                        <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                    )}
+                                </FormattedMessage>
                                 <p className='detailedDescription'>{activityField.title}</p>
                             </section>
                         }
                         {skills &&
                             <section className='skills'>
-                                <h2 className='sectionTitle'>Desirable <b>skills</b></h2>
+                                <FormattedMessage id="jobs.new.desirableSkills" defaultMessage="Desirable \nskills" description="Desirable skills">
+                                    {(text) => (    
+                                        <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                    )}
+                                </FormattedMessage>
                                 {skills && skills.map(item =>
                                     <FormattedMessage id={`skills.${item.key}`} defaultMessage={item.key} key={item.key}>
                                          {text => (
@@ -177,7 +204,11 @@ const Show = props => {
                             </section>
                         }
                         <section className='jobType'>
-                            <h2 className='sectionTitle'>Job <b>type</b></h2>
+                            <FormattedMessage id="jobs.new.jobTypes" defaultMessage="Job \ntype" description="Job type">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
                             {jobTypes && jobTypes.map(item => (
                                 <Chip
                                     key={item.id}
@@ -191,22 +222,36 @@ const Show = props => {
                         {/* TODO: show only if user owns the job or don't show at all?! */}
                         {(salary && salary.isPublic) &&
                             <section className='salary'>
-                                <h2 className='sectionTitle'>Salary <b>range</b></h2>
+                                <FormattedMessage id="jobs.new.salaryRange" defaultMessage="Salary \nrange" description="Salary range">
+                                    {(text) => (
+                                        <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                    )}
+                                </FormattedMessage>
                                 <p>{`${salary.amountMin} - ${salary.amountMax} ${formatCurrency(salary.currency)}`}</p>
                             </section>}
 
                         {companyDescription &&
                             <section className='companyDetails'>
-                                <h2 className='sectionTitle'>Company <b>details</b></h2>
+                                <FormattedMessage id="jobs.view.companyDetails" defaultMessage="Company \ndetails" description="Company details">
+                                    {(text) => (
+                                        <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                    )}
+                                </FormattedMessage>
+                                
                                 <p className='detailedDescription' dangerouslySetInnerHTML={{ __html: companyDescription }} />
                             </section>
                         }
                         {officeArticles &&
                             <section className='officeLife'>
-                                <ArticleSlider
-                                    articles={officeArticles || []}
-                                    title={(<h2 className='sectionTitle'>Office <b>life</b></h2>)}
-                                />
+                                <FormattedMessage id="jobs.view.officeLife" defaultMessage="Office \nlife" description="Office life">
+                                    {(text) => (
+                                        <ArticleSlider
+                                            articles={officeArticles || []}
+                                            title={(<h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>)}
+                                        />
+                                    )}
+                                </FormattedMessage>
+                                
                             </section>
                         }
                         {(faqs && faqs.length > 0) &&
@@ -239,7 +284,12 @@ const Show = props => {
                             {isApplyAllowed ? <Button className={didApply ? "appliedButton" : "applyButton"} onClick={() => setApplyToJob(!didApply)}>
                                 {didApply ? "Already applied" : "Apply Now"}
                             </Button> : null}
-                            <h2 className='sectionTitle'>Share <b>with a friend</b></h2>
+                            <FormattedMessage id="jobs.view.shareWith" defaultMessage="Share \nwith a friend" description="Share with a friend">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
+                            
                             <div className='socialLinks'>
 
                                 <FacebookShareButton url={window.location.href} quote={title} className='socialLink'>
@@ -268,9 +318,14 @@ const Show = props => {
                         <div className='columnRightContent'>
                             <div className='fixed'>
                                 <section className='contactUs'>
-                                    <h2 className="columnTitle">
-                                        Contact <b>us</b>
-                                    </h2>
+                                    <FormattedMessage id="jobs.view.contactUs" defaultMessage="Contact \nus" description="Contact us">
+                                        {(text) => (
+                                            <h2 className="columnTitle">
+                                                {text.split("\n")[0]} <b>{text.split("\n")[1]}</b>
+                                            </h2>
+                                        )}
+                                    </FormattedMessage>
+                                    
                                     {phone &&
                                         <div className='contactField'>
                                             <i className='fas fa-lg fa-phone' />
@@ -286,13 +341,13 @@ const Show = props => {
                                     {facebook &&
                                         <div className='contactField'>
                                             <i className='fab fa-lg fa-facebook' />
-                                            <a href={facebook} target="_blank">{facebook}</a>
+                                            <a href={facebook} target="_blank" rel="noopener noreferrer">{facebook}</a>
                                         </div>
                                     }
                                     {linkedin &&
                                         <div className='contactField'>
                                             <i className='fab fa-lg fa-linkedin-in' />
-                                            <a href={linkedin} target="_blank">{linkedin}</a>
+                                            <a href={linkedin} target="_blank" rel="noopener noreferrer">{linkedin}</a>
                                         </div>
                                     }
                                 </section>

@@ -11,6 +11,7 @@ const TeamMember = props => {
         <div className='member' style={style}>
             <p className='name'>{name}</p>
             <p className='title'>{title}</p>
+           
         </div>
     );
 }

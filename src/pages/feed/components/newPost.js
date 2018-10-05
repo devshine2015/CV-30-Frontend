@@ -6,7 +6,7 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuidv4';
 import ReactPlayer from 'react-player';
-
+import { FormattedMessage } from 'react-intl'
 import MediaUploadPopUp from './mediaUpload';
 import { defaultUserAvatar, defaultCompanyLogo } from '../../../constants/utils';
 import { s3BucketURL } from '../../../constants/s3';
@@ -174,7 +174,12 @@ const NewPost = props => {
                         alt='userAvatar'
                     />
                     <span className='postAs'>
-                        <span className='title'>Post as:</span>
+                        <FormattedMessage id="feed.postAs" defaultMessage="Post as:" description="Post as">
+                            {(text) => (
+                                <span className='title'>{text}</span>
+                            )}
+                        </FormattedMessage>
+                        
                         <span className='userName'>{postOptions[selectedPostOption].label}</span>
                         {(postOptions && postOptions.length > 1) &&
                             <i className='fas fa-caret-down menuOpen' onClick={event => openPostAs(event.target)} />
@@ -208,7 +213,12 @@ const NewPost = props => {
                     <Icon className='icon'>
                         camera_alt
                     </Icon>
-                    <span>+ Photo / Video</span>
+                    <FormattedMessage id="feed.addPhotoAndVideo" defaultMessage="+ Photo / Video" description="Add Photo / Video">
+                        {(text) => (
+                            <span>{text}</span>
+                        )}
+                    </FormattedMessage>
+                    
                 </Button>
                 <MediaUploadPopUp
                     anchor={mediaUploadAnchor}
@@ -247,25 +257,35 @@ const NewPost = props => {
                         </IconButton>
                     </div>
                 }
-                <TextField
-                    name="postBody"
-                    placeholder="Say something..."
-                    fullWidth
-                    className='textField'
-                    onChange={handleFormChange}
-                    value={postBody}
-                    type='text'
-                    multiline
-                    rows={1}
-                    rowsMax={10}
-                    InputProps={{
-                        disableUnderline: true
-                    }}
-                />
+                <FormattedMessage id="feed.saySomething" defaultMessage="Say something..." description="Say something">
+                    {(text) => (
+                        <TextField
+                            name="postBody"
+                            placeholder={text}
+                            fullWidth
+                            className='textField'
+                            onChange={handleFormChange}
+                            value={postBody}
+                            type='text'
+                            multiline
+                            rows={1}
+                            rowsMax={10}
+                            InputProps={{
+                                disableUnderline: true
+                            }}
+                        />
+                    )}
+                </FormattedMessage>
+                
             </div>
             <div className='postFooter'>
                 <FormGroup className='footerToggle'>
-                    <FormLabel className={!isArticle ? 'active' : ''}>Post</FormLabel>
+                    <FormattedMessage id="feed.post" defaultMessage="Post" description="Post">
+                        {(text) => (
+                            <FormLabel className={!isArticle ? 'active' : ''}>{text}</FormLabel>
+                        )}
+                    </FormattedMessage>
+                    
                     <ToggleSwitch checked={isArticle} onChange={switchIsArticle}
                         classes={{
                             switchBase: 'colorSwitchBase',
@@ -273,11 +293,21 @@ const NewPost = props => {
                             bar: 'colorBar',
                         }}
                         color="primary" />
-                    <FormLabel className={isArticle ? 'active' : ''}>Article</FormLabel>
+                    <FormattedMessage id="feed.article" defaultMessage="Article" description="Article">
+                        {(text) => (
+                            <FormLabel className={isArticle ? 'active' : ''}>{text}</FormLabel>
+                        )}
+                    </FormattedMessage>
+                    
                 </FormGroup>
-                <Button className='postBtn' onClick={addPost}>
-                    Post
-                </Button>
+                <FormattedMessage id="feed.post" defaultMessage="Post" description="Post">
+                        {(text) => (
+                            <Button className='postBtn' onClick={addPost}>
+                                {text}
+                            </Button>
+                        )}
+                    </FormattedMessage>
+                
             </div>
         </section>
     )

@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Icon, IconButton, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { Link } from 'react-router-dom';
-import { FormattedDate } from 'react-intl';
+import { FormattedMessage, FormattedDate } from 'react-intl';
 import ReactPlayer from 'react-player';
 
 // Require Editor JS files.
@@ -208,17 +208,22 @@ const Show = props => {
                     {
                         editMode ?
                             <div className='editorWrapper'>
-                                <FroalaEditor
-                                    config={{
-                                        placeholderText: 'This is where the company description should be',
-                                        iconsTemplate: 'font_awesome_5',
-                                        toolbarInline: true,
-                                        charCounterCount: false,
-                                        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
-                                    }}
-                                    model={description}
-                                    onModelChange={updateDescription}
-                                />
+                                <FormattedMessage id="company.brand.froalaEditor" defaultMessage="This is where the company headline should be" description="Company Headline">
+                                    {(text) => (
+                                        <FroalaEditor
+                                            config={{
+                                                placeholderText: text,
+                                                iconsTemplate: 'font_awesome_5',
+                                                toolbarInline: true,
+                                                charCounterCount: false,
+                                                toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                            }}
+                                            model={description}
+                                            onModelChange={updateDescription}
+                                        />
+                                    )}
+                                </FormattedMessage>
+                                
                                 <IconButton className='submitBtn' onClick={submitDescription}>
                                     <Icon>done</Icon>
                                 </IconButton>
@@ -228,16 +233,27 @@ const Show = props => {
                 </section>
 
                 <section className='officeLife'>
-                    <ArticleSlider
-                        articles={officeArticles}
-                        editMode={editMode}
-                        deleteArticle={deleteOfficeArticle}
-                        title={(<h2 className='titleHeading'>Viata <b>la birou</b></h2>)}
-                    />
+                    <FormattedMessage id="company.brand.lifeOffice" defaultMessage="Life \n at the office" description="Life at the office">
+                        {(text) => (
+                            <ArticleSlider
+                                articles={officeArticles}
+                                editMode={editMode}
+                                deleteArticle={deleteOfficeArticle}
+                                title={(<h2 className='titleHeading'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>)}
+                            />
+                        )}
+                    </FormattedMessage>
+                    
                     {editMode &&
-                        <span className='addStoryBtn' onClick={() => openArticlePopup('company_officeLife')}>
-                            + Add
-                        </span>}
+                        <FormattedMessage id="company.brand.addStoryBtn" defaultMessage="+ Add" description="Add Story Button">
+                            {(text) => (
+                                <span className='addStoryBtn' onClick={() => openArticlePopup('company_officeLife')}>
+                                    {text}
+                                </span>
+                            )}
+                        </FormattedMessage>
+                    }
+                        
                 </section>
 
                 <section className='moreStories'>
@@ -248,9 +264,14 @@ const Show = props => {
                         ))
                     }
                     {editMode &&
-                        <span className='addStoryBtn' onClick={() => openArticlePopup('company_moreStories')}>
-                            + Add
-                        </span>}
+                        <FormattedMessage id="company.brand.addStoryBtn" defaultMessage="+ Add" description="Add Story Button">
+                            {(text) => (
+                                <span className='addStoryBtn' onClick={() => openArticlePopup('company_moreStories')}>
+                                    {text}
+                                </span>
+                            )}
+                        </FormattedMessage>
+                    }
                 </section>
 
                 <ArticlePopup
@@ -301,18 +322,27 @@ const Show = props => {
                     }
                     {
                         editMode &&
-                        <div className='addQABtn' onClick={addQA}>
-                            + Add
-                        </div>
+                        <FormattedMessage id="company.brand.addStoryBtn" defaultMessage="+ Add" description="Add Story Button">
+                            {(text) => (
+                                <div className='addQABtn' onClick={addQA}>
+                                    {text}
+                                </div>
+                            )}
+                        </FormattedMessage>
+                        
                     }
                     {editMode && newQA && <QuestionEdit onChange={expandPanel} expanded={expanded} panelId={`panel-${faqs.length}`} onClose={endAddQA}/>}
                 </section>
             </Grid>
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
-                    <h2 className="columnTitle">
-                        <b>Recent</b> jobs
-                    </h2>
+                    <FormattedMessage id="company.brand.recentJobs" defaultMessage="Recent \n jobs" description="Recent jobs">
+                        {(text) => (
+                            <h2 className="columnTitle">
+                                <b>{text.split("\n")[0]}</b> {text.split("\n")[1]}
+                            </h2>
+                        )}
+                    </FormattedMessage>
 
                     <div className='jobs'>
                         {
@@ -372,12 +402,17 @@ const Show = props => {
                         }
                         {
                             editMode &&
-                            <Link className='addJobBtn' to={{
-                                pathname: `/${lang}/jobs/new`,
-                                state: { companyId }
-                            }}>
-                                + Add new job
-                            </Link>
+                            <FormattedMessage id="company.brand.addJobBtn" defaultMessage="+ Add new job" description="Add new job">
+                                {(text) => (
+                                    <Link className='addJobBtn' to={{
+                                        pathname: `/${lang}/jobs/new`,
+                                        state: { companyId }
+                                    }}>
+                                        {text}
+                                    </Link>
+                                )}
+                            </FormattedMessage>
+                            
                         }
                     </div>
                 </div>

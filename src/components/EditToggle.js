@@ -2,13 +2,18 @@ import React from 'react';
 import { FormGroup, FormLabel, Switch } from '@material-ui/core';
 import { compose, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
-
+import { FormattedMessage } from 'react-intl';
 import { setEditMode, getEditMode } from '../store/queries';
 
 
 const EditToggle = ({ switchEditMode, getEditMode: { editMode: { status } = { status: false } } }) => (
     <FormGroup row className='editToggle'>
-        <FormLabel className={!status ? 'active' : ''}>View</FormLabel>
+        <FormattedMessage id="toggle.view" defaultMessage="View" description="View">
+            {(text) => (
+                <FormLabel className={!status ? 'active' : ''}>{text}</FormLabel>
+            )}
+        </FormattedMessage>
+        
         <Switch checked={status} onChange={switchEditMode}
             classes={{
                 switchBase: 'colorSwitchBase',
@@ -16,7 +21,12 @@ const EditToggle = ({ switchEditMode, getEditMode: { editMode: { status } = { st
                 bar: 'colorBar',
             }}
             color="primary" />
-        <FormLabel className={status ? 'active' : ''}>Edit</FormLabel>
+        <FormattedMessage id="toggle.edit" defaultMessage="Edit" description="Edit">
+            {(text) => (
+                <FormLabel className={status ? 'active' : ''}>{text}</FormLabel>
+            )}
+        </FormattedMessage>
+        
     </FormGroup>
 );
 

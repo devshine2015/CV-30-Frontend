@@ -3,7 +3,7 @@ import { Snackbar, IconButton } from '@material-ui/core';
 import { Close, CheckCircle, Error, Info, Warning } from '@material-ui/icons';
 import { compose, pure, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
-
+import { FormattedMessage } from 'react-intl';
 import { getFeedbackMessage, resetFeedbackMessage } from '../store/queries';
 
 const FeedbackHOC = compose(
@@ -47,15 +47,20 @@ const Feedback = ({ handleClose, getFeedbackMessage: { feedbackMessage } }) => {
                 </span>
             )}
             action={
-                <IconButton
-                    key="close"
-                    aria-label="Close"
-                    color="inherit"
-                    className='feedbackCloseBtn'
-                    onClick={handleClose}
-                >
-                    <Close />
-                </IconButton>}
+                <FormattedMessage id="feed.close" defaultMessage="Close" description="Close">
+                    {(text) => (
+                        <IconButton
+                            key="close"
+                            aria-label={text}
+                            color="inherit"
+                            className='feedbackCloseBtn'
+                            onClick={handleClose}
+                        >
+                            <Close />
+                        </IconButton>
+                    )}
+                </FormattedMessage>
+                }
         />
     );
 };

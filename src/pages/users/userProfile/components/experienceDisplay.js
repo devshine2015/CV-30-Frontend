@@ -25,9 +25,14 @@ const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, clos
 
             return (
                 <div className='experienceItem'>
-                    <span className='company'>At&nbsp;
-                        <span className='highlight'>{job.company}</span>
-                    </span>
+                    <FormattedMessage id="users.at" defaultMessage="At" description="At">
+                        {(text) => (
+                            <span className='company'>{text}&nbsp;
+                                <span className='highlight'>{job.company}</span>
+                            </span>
+                        )}
+                    </FormattedMessage>
+                    
 
                     <span className={globalEditMode ? 'durationLocation editable' : 'durationLocation'}>
                         <span className='period'>

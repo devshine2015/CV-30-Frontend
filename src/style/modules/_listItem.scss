@@ -421,16 +421,45 @@
 
     .jobs {
         display: flex;
+        position: relative;
+        flex-direction: column;
+        .alice-carousel {
+            position: static;
+            .alice-carousel__next-btn, .alice-carousel__prev-btn {
+                top: 0px;
+                left: 0px;
+                position: absolute;
+                width: auto;
+                padding: 0;
+                p {
+                    margin: 5px;
+                }
+            }
+            .alice-carousel__dots {    
+                position: absolute;    
+                left: 24px;
+                top: 5px;
+                width: 80px;
+                margin: 0;
+            }
+        }
+        
+        .top-panel {
+            padding: 5px;
+            .right-icon {
+                margin-left: 70px;
+            }
+        }
 
         .jobItem {
             display: flex;
             border-bottom: 1px solid #ebebeb;
             padding: 15px 0;
             align-items: center;
-            width: 400px;
-            margin-right: 50px;
-            min-width: 400px;
-
+            // width: 400px;
+            margin-right: 10px;
+            // min-width: 400px;
+      
             .media {
                 display: flex;
                 position: relative;
@@ -449,6 +478,16 @@
                     i {
                         color: #fff;
                     }
+                    img {
+                        height: 100%;
+                        width: 100%;
+                        object-fit: cover;
+                    }
+
+                    @media (max-width: 600px) {
+                        width: 180px;
+                        height: 100px;
+                    }
                 }
 
                 span.role {
@@ -459,6 +498,8 @@
                     bottom: -10px;
                     left: 10px;
                 }
+
+                
             }
 
             .info {
@@ -468,6 +509,7 @@
                 margin-left: 15px;
 
                 h5 {
+                    margin: 3px 0;
                     font-size: 1rem;
                     color: #414141;
                     font-weight: bold;

@@ -1,21 +1,21 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage } from 'react-intl';
 //import SuggestionsInput from './SuggestionsInput';
 import AutoCompleteSelectInput from './AutoCompleteSelectInput';
-import locations from '../constants/locations';
+import levels from '../constants/educationLevels';
 
-const LocationInput = props => {
-    const name = props.name || 'location';
+const EducationLevelInput = props => {
+    const name = props.name || 'position';
     const { value, onChange } = props;
 
-    const suggestions = locations.map(item => ({
+    const suggestions = levels.map(item => ({
         value: item,
         label: item
     }));
     //console.log(props, suggestions, suggestions.find(el => el.value === value));
 
     return (
-        <FormattedMessage id="location.placeHolder" defaultMessage="Location\nEnter location..." description="Enter location">
+        <FormattedMessage id="education.addLevel" defaultMessage="Enter Education Level..." description="Enter Education Level">
             {(text) => (
                 <AutoCompleteSelectInput
                     value={suggestions.find(el => el.value === value) || ''}
@@ -26,14 +26,14 @@ const LocationInput = props => {
                         }
                     })}
                     suggestions={suggestions}
-                    placeholder={text.split("\n")[1]}
-                    label={text.split("\n")[0]}
+                    placeholder={text}
+                    label='Level'
                 />
             )}
         </FormattedMessage>
         
         // <SuggestionsInput
-        //     suggestions={locations}
+        //     suggestions={levels}
         //     name='location'
         //     label='Location'
         //     placeholder='Enter location...'
@@ -46,4 +46,4 @@ const LocationInput = props => {
     );
 }
 
-export default LocationInput;
+export default EducationLevelInput;

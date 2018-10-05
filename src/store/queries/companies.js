@@ -33,6 +33,14 @@ const minimumCompanyData = gql`
       hasProfileCover
       coverContentType
       coverBackground
+      members {
+        id
+        firstName
+        lastName
+        email
+        avatarPath
+        position
+      }
     }
     recentJobs {
       ...companyJobData

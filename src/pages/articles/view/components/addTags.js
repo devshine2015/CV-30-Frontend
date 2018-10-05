@@ -3,7 +3,7 @@ import { Popover, IconButton, Icon } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-
+import { FormattedMessage } from 'react-intl'
 import { handleArticleTags, setFeedbackMessage } from '../../../../store/queries';
 import { articleRefetch } from '../../../../store/refetch';
 import TagsInput from '../../../../components/TagsInput';
@@ -72,9 +72,19 @@ const AddTag = props => {
             }}
         >
             <div className='addTag'>
-                <p className='title'>Apreciate your own way</p>
+                <FormattedMessage id="articles.view.appreciate" defaultMessage="Appreciate your own way" description="Appreciate your own way">
+                    {(text) => (
+                        <p className='title'>{text}</p>
+                    )}
+                </FormattedMessage>
+                
                 <TagsInput value={newTags} onChange={setTags} helpTagName='tag' />
-                <small className='helperText'>Search for a tag or create your own to share what did you found the most interesting about this post.</small>
+                <FormattedMessage id="articles.view.searchTag" defaultMessage="Search for a tag or create your own to share what did you found the most interesting about this post." description="Search  Tag">
+                    {(text) => (
+                        <small className='helperText'>{text}</small>
+                    )}
+                </FormattedMessage>
+                
                 <IconButton onClick={updateTags} className='submitBtn'>
                     <Icon>done</Icon>
                 </IconButton>

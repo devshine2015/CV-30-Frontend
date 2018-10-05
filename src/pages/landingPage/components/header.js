@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Hidden, IconButton, Icon, Button, FormGroup, FormLabel, Switch as ToggleSwitch } from '@material-ui/core';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
-
+import { FormattedMessage } from 'react-intl'
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
 // Require Editor CSS files.
@@ -97,7 +97,12 @@ const Header = props => {
             {
                 isEditAllowed &&
                 <FormGroup row className='editToggle'>
-                    <FormLabel className={!editMode ? 'active' : ''}>View</FormLabel>
+                    <FormattedMessage id="toggle.view" defaultMessage="View" description="View">
+                        {(text) => (
+                            <FormLabel className={!editMode ? 'active' : ''}>{text}</FormLabel>
+                        )}
+                    </FormattedMessage>
+                    
                     <ToggleSwitch checked={editMode} onChange={switchEditMode}
                         classes={{
                             switchBase: 'colorSwitchBase',
@@ -105,14 +110,24 @@ const Header = props => {
                             bar: 'colorBar',
                         }}
                         color="primary" />
-                    <FormLabel className={editMode ? 'active' : ''}>Edit</FormLabel>
+                    <FormattedMessage id="toggle.edit" defaultMessage="Edit" description="Edit">
+                        {(text) => (
+                            <FormLabel className={editMode ? 'active' : ''}>{text}</FormLabel>
+                        )}
+                    </FormattedMessage>
+                    
                 </FormGroup>
             }
             {
                 editMode &&
                 <React.Fragment>
                     <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
-                        <span className='text'>Change Background</span>
+                        <FormattedMessage id="company.brand.changeBackground" defaultMessage="Change Background" description="Change Background">
+                            {(text) => (
+                                <span className='text'>{text}</span>
+                            )}
+                        </FormattedMessage>
+                       
                         <Icon className='icon'>brush</Icon>
                     </Button>
                     <ColorPicker

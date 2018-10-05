@@ -4,6 +4,7 @@ import { graphql } from 'react-apollo';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import ReactPlayer from 'react-player';
 import uuid from 'uuidv4';
+import { FormattedMessage } from 'react-intl'
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -181,29 +182,40 @@ const ArticleEdit = props => {
         <Grid container className='mainBody articleEdit'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 <section className='titleSection'>
-                    <TextField
-                        name="title"
-                        label="Title"
-                        placeholder="Add title..."
-                        className='textField'
-                        fullWidth
-                        onChange={handleFormChange}
-                        value={title}
-                        InputProps={{
-                            classes: {
-                                input: 'titleInput',
-                            }
-                        }}
-                    />
+                    <FormattedMessage id="articles.new.title" defaultMessage="Title\nAdd title..." description="Add title">
+                        {(text) => (
+                            <TextField
+                                name="title"
+                                label={text.split("\n")[0]}
+                                placeholder={text.split("\n")[1]}
+                                className='textField'
+                                fullWidth
+                                onChange={handleFormChange}
+                                value={title}
+                                InputProps={{
+                                    classes: {
+                                        input: 'titleInput',
+                                    }
+                                }}
+                            />
+                        )}
+                    </FormattedMessage>
                 </section>
                 <section className='mediaUpload'>
-                    <p className='helperText'>
-                        Add/Edit images or embed video links.
-                        </p>
-
-                    <Button className='mediaBtn' onClick={openImageUpload}>
-                        Add image
-                        </Button>
+                    <FormattedMessage id="articles.new.helperText" defaultMessage="Add/Edit images or embed video links." description="Add/Edit images or embed video links.">
+                        {(text) => (
+                            <p className='helperText'>
+                                {text}
+                            </p>
+                        )}
+                    </FormattedMessage>
+                    <FormattedMessage id="articles.new.addImage" defaultMessage="Add image" description="Add image">
+                        {(text) => (
+                            <Button className='mediaBtn' onClick={openImageUpload}>
+                                {text}
+                            </Button>
+                        )}
+                    </FormattedMessage>
 
                     <ImageUploader
                         type='article'
@@ -214,9 +226,14 @@ const ArticleEdit = props => {
                         id={articleId}
                     />
 
-                    <Button className='mediaBtn' onClick={openVideoShare}>
-                        Share video
-                        </Button>
+                    <FormattedMessage id="articles.new.shareVideo" defaultMessage="Share video" description="Share video">
+                        {(text) => (
+                            <Button className='mediaBtn' onClick={openVideoShare}>
+                                {text}
+                            </Button>
+
+                        )}
+                    </FormattedMessage>
 
                     <Popover
                         anchorOrigin={{
@@ -236,17 +253,21 @@ const ArticleEdit = props => {
                         disableBackdropClick
                     >
                         <div className='popupBody'>
-                            <TextField
-                                name="videoUrl"
-                                label="Video URL"
-                                placeholder="Enter video link..."
-                                className='textField'
-                                fullWidth
-                                onChange={updateVideoUrl}
-                                value={videoURL}
-                                helperText={(!!videoURL && !isVideoUrlValid && 'Invalid video URL')}
-                                error={!!videoURL && !isVideoUrlValid}
-                            />
+                            <FormattedMessage id="articles.new.videoUrl" defaultMessage="Video URL\nEnter video link...\nInvalid video URL" description="Enter video link">
+                                {(text) => (
+                                    <TextField
+                                        name="videoUrl"
+                                        label={text.split("\n")[0]}
+                                        placeholder={text.split("\n")[1]}
+                                        className='textField'
+                                        fullWidth
+                                        onChange={updateVideoUrl}
+                                        value={videoURL}
+                                        helperText={(!!videoURL && !isVideoUrlValid && text.split("\n")[2])}
+                                        error={!!videoURL && !isVideoUrlValid}
+                                    />
+                                )}
+                            </FormattedMessage>
                         </div>
                         <div className='popupFooter'>
                             <IconButton
@@ -267,24 +288,33 @@ const ArticleEdit = props => {
                     </Popover>
                 </section>
                 <section className='articleBodySection'>
-                    <p className='infoMsg'>Write your article below.</p>
-                    <FroalaEditor
-                        config={{
-                            placeholderText: 'Article body...',
-                            iconsTemplate: 'font_awesome_5',
-                            toolbarInline: true,
-                            charCounterCount: false,
-                            toolbarButtons: [ 'bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo' ],
-                            quickInsertButtons: [ 'table', 'ul', 'ol', 'hr' ],
-                            events: {
-                                'froalaEditor.initialized': bindEditor,
-                                'froalaEditor.image.removed': removeImage,
-                                'froalaEditor.video.removed': removeVideo
-                            }
-                        }}
-                        model={description}
-                        onModelChange={updateDescription}
-                    />
+                    <FormattedMessage id="articles.new.infoMsg" defaultMessage="Write your article below." description="Write your article below.">
+                        {(text) => (
+                            <p className='infoMsg'>{text}</p>
+                        )}
+                    </FormattedMessage>
+                    <FormattedMessage id="articles.new.froalaArticle" defaultMessage="Article body..." description="Article body">
+                        {(text) => (
+                            <FroalaEditor
+                                config={{
+                                    placeholderText: text,
+                                    iconsTemplate: 'font_awesome_5',
+                                    toolbarInline: true,
+                                    charCounterCount: false,
+                                    imageUploadRemoteUrls: false,
+                                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo'],
+                                    quickInsertButtons: [ 'table', 'ul', 'ol', 'hr' ],
+                                    events: {
+                                        'froalaEditor.initialized': bindEditor,
+                                        'froalaEditor.image.removed': removeImage,
+                                        'froalaEditor.video.removed': removeVideo
+                                    }
+                                }}
+                                model={description}
+                                onModelChange={updateDescription}
+                            />
+                        )}
+                    </FormattedMessage>
                 </section>
                 <section className='mediaUpload'>
 
@@ -293,15 +323,23 @@ const ArticleEdit = props => {
             <Grid item lg={3} md={3} sm={10} xs={11} className='columnRight'>
                 <div className='columnRightContent'>
                     <section className='tags'>
-                        <p className='helperText'>Tag your article</p>
+                        <FormattedMessage id="articles.new.tagArticle" defaultMessage="Tag your article" description="Tag your article">
+                            {(text) => (
+                                <p className='helperText'>{text}</p>
+                            )}
+                        </FormattedMessage>
                         <TagsInput value={tags} onChange={setTags} helpTagName='tag' />
                     </section>
-
+                    
                     {((images && images.length > 0) || (videos && videos.length > 0)) &&
                         <section className='featuredMedia'>
-                            <p className='helperText'>
-                                Select a cover image for your article.
-                                </p>
+                            <FormattedMessage id="articles.new.coverImage" defaultMessage="Select a cover image for your article." description="Select a cover image for your article.">
+                                {(text) => (
+                                    <p className='helperText'>
+                                        {text}
+                                    </p>
+                                )}
+                            </FormattedMessage>
                             {(images && images.length > 0) &&
                                 <div className='images'>
                                     {images.map(image => (
@@ -351,9 +389,13 @@ const ArticleEdit = props => {
                         </section>
                     }
 
-                    <Button className='publishBtn' onClick={saveArticle}>
-                        Publish article
-                    </Button>
+                    <FormattedMessage id="articles.new.publishBtn" defaultMessage="Publish article" description="Publish article">
+                        {(text) => (
+                            <Button className='publishBtn' onClick={saveArticle}>
+                                {text}
+                            </Button>
+                        )}
+                    </FormattedMessage>
                 </div>
             </Grid>
         </Grid>

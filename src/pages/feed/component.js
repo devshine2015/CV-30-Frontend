@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-
+import { FormattedMessage } from 'react-intl'
 import Loader from '../../components/Loader';
 import FeedArticlesList from './components/feedArticlesList';
 import NewPost from './components/newPost';
@@ -69,10 +69,18 @@ const NewsFeed = props => {
                             <NewsFeedSearch searchData={searchData} setSearchData={setSearchData} />
                             <Promo />
                             <section className='links'>
-                                <p className='copyright'>Copyright © 2018 CV30. All rights reserved </p>
-                                <Link to={``}>About Us</Link>
-                                <Link to={``}>Terms and Conditions</Link>
-                                <Link to={``}>Q&A</Link>
+                                <FormattedMessage id="feed.copyRight" defaultMessage="Copyright © 2018 CV30. All rights reserved " description="Copyright">
+                                    {(text) => (<p className='copyright'>{ text} </p>)}
+                                </FormattedMessage>
+                                <FormattedMessage id="feed.aboutUs" defaultMessage="About Us " description="About Us">
+                                    {(text) => (<Link to={``}>{text}</Link>)}
+                                </FormattedMessage>
+                                <FormattedMessage id="feed.termsAndConditions" defaultMessage="Terms and Conditions" description="Terms and Conditions">
+                                    {(text) => (<Link to={``}>{text}</Link>)}
+                                </FormattedMessage>
+                                <FormattedMessage id="feed.qa" defaultMessage="Q&A" description="Q&A">
+                                    {(text) => (<Link to={``}>{text}</Link>)}
+                                </FormattedMessage>
                             </section>
                         </div>
                     </div>

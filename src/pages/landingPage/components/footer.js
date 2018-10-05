@@ -102,7 +102,12 @@ const Footer = props => {
                 editMode &&
                 <React.Fragment>
                     <Button size='small' className='colorPickerButton' disableRipple onClick={toggleColorPicker}>
-                        <span className='text'>Change Background</span>
+                        <FormattedMessage id="company.brand.changeBackground" defaultMessage="Change Background" description="Change Background">
+                            {(text) => (
+                                <span className='text'>{text}</span>
+                            )}
+                        </FormattedMessage>
+                        
                         <Icon className='icon'>brush</Icon>
                     </Button>
                     <ColorPicker
@@ -121,27 +126,36 @@ const Footer = props => {
                     {
                         editMode ?
                             <div className='editorWrapper'>
-                                <FroalaEditor
-                                    config={{
-                                        placeholderText: 'This is where the company footer message should be',
-                                        iconsTemplate: 'font_awesome_5',
-                                        toolbarInline: true,
-                                        charCounterCount: false,
-                                        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
-                                    }}
-                                    model={footerMessage}
-                                    onModelChange={updateFooterMessage}
-                                />
+                                <FormattedMessage id="landing.froala.companyFooter" defaultMessage="This is where the company footer message should be" description="Frola Company Footer">
+                                    {(text) => (
+                                        <FroalaEditor
+                                            config={{
+                                                placeholderText: text,
+                                                iconsTemplate: 'font_awesome_5',
+                                                toolbarInline: true,
+                                                charCounterCount: false,
+                                                toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                                            }}
+                                            model={footerMessage}
+                                            onModelChange={updateFooterMessage}
+                                        />
+                                    )}
+                                </FormattedMessage>
+                                
                                 <IconButton className='submitBtn' onClick={submitFooterMessage}>
                                     <Icon>done</Icon>
                                 </IconButton>
                             </div>
                             : <div dangerouslySetInnerHTML={{ __html: footerMessage }} />
                     }
-
-                    <Button component={Link} to={`/${lang}/register`} variant="raised" color="primary" type="button" className='footerSignupButton'>
-                        Sign up
-                        </Button>
+                    <FormattedMessage id="actions.signUp" defaultMessage="Sign up" description="Sign up">
+                        {(text) => (
+                             <Button component={Link} to={`/${lang}/register`} variant="raised" color="primary" type="button" className='footerSignupButton'>
+                                {text}
+                             </Button>  
+                        )}
+                    </FormattedMessage>
+                   
                 </Grid>
             </Grid>
             <Grid container className='footerLinks'>
@@ -154,7 +168,7 @@ const Footer = props => {
                 <Grid item md={8} sm={12} xs={12} className='footerMenu'>
                     <FormattedMessage id="nav.contact" defaultMessage="Contact" description="Contact button">
                         {(text) => (
-                            <Button href="#" className='footerButton'>
+                            <Button href={`/${lang}/contact`} className='footerButton'>
                                 {text}
                             </Button>
                         )}
