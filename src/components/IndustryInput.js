@@ -25,11 +25,15 @@ const IndustryInputHOC = compose(
 const IndustryInput = props => {
     const { industriesQuery } = props;
 
-    if (industriesQuery.loading || !industriesQuery.industries) return <FormattedMessage id="industry.loading" defaultMessage="Industry..." description="Industry">
-                                                                            {(text) => (
-                                                                                <div>{text}</div>
-                                                                            )}
-                                                                        </FormattedMessage> 
+    if (industriesQuery.loading || !industriesQuery.industries) {
+        return (
+            <FormattedMessage id="industry.loading" defaultMessage="Industry..." description="Industry">
+                {(text) => (
+                    <div>{text}</div>
+                )}
+            </FormattedMessage> 
+        );
+    }
 
     const name = props.name || 'industryId';
     const { value, onChange, intl } = props;
@@ -40,23 +44,24 @@ const IndustryInput = props => {
     }));
     
     return (
-        <FormattedMessage id="industry.placeHolder" defaultMessage="Enter industry..." description="Enter industry">
+        <FormattedMessage id="industry.inputTexts" defaultMessage="Industry\nEnter industry..." description="Enter industry">
             {(text) => (
-                <AutoCompleteSelectInput
-                    value={suggestions.find(el => el.value === value)}
-                    onChange={val => onChange({
-                        target: {
-                            value: val.value,
-                            name
-                        }
-                    })}
-                    suggestions={suggestions}
-                    placeholder={text}
-                    label='Industry'
-                />
+                <div className={props.className}>
+                    <AutoCompleteSelectInput
+                        value={suggestions.find(el => el.value === value)}
+                        onChange={val => onChange({
+                            target: {
+                                value: val.value,
+                                name
+                            }
+                        })}
+                        suggestions={suggestions}
+                        placeholder={text.split("\n")[1]}
+                        label={text.split("\n")[0]}
+                    />
+                </div>
             )}
         </FormattedMessage>
-        
     )
 }
 

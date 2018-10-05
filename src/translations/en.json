@@ -661,9 +661,9 @@
     "education.addLevel": "Enter Education Level...",
     "feed.close": "Close",
     "industry.loading": "Industry...",
-    "industry.placeHolder": "Enter industry...",
+    "industry.inputTexts": "Industry\nEnter industry...",
     "loader.data": "Loading data...",
-    "location.placeHolder": "Location\nEnter location...",
+    "location.inputTexts": "Location\nEnter location...",
 
     "jobs.searchTeam": "Team\nSearch teams..."
 }
