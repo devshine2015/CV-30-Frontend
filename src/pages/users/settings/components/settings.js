@@ -280,7 +280,7 @@ const Settings = props => {
             
             <div className='actions'>
                 <FormattedMessage id="userProfile.deleteAccount" defaultMessage="Delete Account" description="Click here to terminate your account">
-                    {(text) => <a className='deleteAccount' onClick={toggleClose}>{text}</a>}
+                    {(text) => <div className='deleteAccount' onClick={toggleClose}>{text}</div>}
                 </FormattedMessage>
                 {settingsFormError && <div className="errorMessage">{settingsFormError}</div>}
                 <FormattedMessage id="users.saveSuccess" defaultMessage="Your details have been successfully saved" description="Your details have been successfully saved">

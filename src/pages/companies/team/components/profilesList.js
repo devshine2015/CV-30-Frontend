@@ -4,7 +4,7 @@ import { compose, withHandlers, pure } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroller';
-import { FormattedMessage } from 'react-intl'
+// import { FormattedMessage } from 'react-intl';
 import { s3BucketURL } from '../../../../constants/s3';
 import { profilesQuery, handleTeamMember, setFeedbackMessage } from '../../../../store/queries';
 import { teamRefetch } from '../../../../store/refetch';

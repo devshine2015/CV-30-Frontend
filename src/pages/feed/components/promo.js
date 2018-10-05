@@ -226,7 +226,7 @@ class Promo extends Component {
             <React.Fragment>
                 <section className='promo'>
                     {ad ?
-                        <a href={ad.url} className='promoLink' target='_blank'>
+                        <a href={ad.url} className='promoLink' target='_blank' rel="noopener noreferrer">
                             <img src={`${s3BucketURL}${ad.image.path}`} className='promoImg' alt='' />
                         </a>
                         :

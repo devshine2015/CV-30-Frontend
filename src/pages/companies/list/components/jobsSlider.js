@@ -1,5 +1,5 @@
 import React from 'react';
-import { CarouselProvider, DotGroup,  Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
+// import { CarouselProvider, DotGroup,  Slider, Slide, ButtonBack, ButtonNext } from 'pure-react-carousel';
 import { Icon } from '@material-ui/core';
 // ************************************** React Alice Carousel ************************** //
 import AliceCarousel from 'react-alice-carousel';

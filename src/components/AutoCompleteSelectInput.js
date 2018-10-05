@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import Select from 'react-select';
-import { FormattedMessage } from 'react-intl';
+// import { FormattedMessage } from 'react-intl';
 import { withStyles } from '@material-ui/core/styles';
 import { Typography, TextField, MenuItem, Chip, Paper } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';

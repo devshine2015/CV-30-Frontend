@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import { graphql } from 'react-apollo'
-import { compose, pure, renderComponent } from 'recompose'
+import { compose, pure } from 'recompose'
 
 import LandingPage from './pages/landingPage';
 

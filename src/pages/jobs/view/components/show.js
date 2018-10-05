@@ -341,13 +341,13 @@ const Show = props => {
                                     {facebook &&
                                         <div className='contactField'>
                                             <i className='fab fa-lg fa-facebook' />
-                                            <a href={facebook} target="_blank">{facebook}</a>
+                                            <a href={facebook} target="_blank" rel="noopener noreferrer">{facebook}</a>
                                         </div>
                                     }
                                     {linkedin &&
                                         <div className='contactField'>
                                             <i className='fab fa-lg fa-linkedin-in' />
-                                            <a href={linkedin} target="_blank">{linkedin}</a>
+                                            <a href={linkedin} target="_blank" rel="noopener noreferrer">{linkedin}</a>
                                         </div>
                                     }
                                 </section>

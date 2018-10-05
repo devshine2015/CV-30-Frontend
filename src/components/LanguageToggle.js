@@ -1,8 +1,8 @@
 import React from 'react'
-import { FormGroup, FormLabel, Switch } from '@material-ui/core'
+import { FormGroup, FormLabel } from '@material-ui/core'
 import { compose, withHandlers, pure } from 'recompose'
 import { graphql } from 'react-apollo'
-import { FormattedMessage } from 'react-intl'
+// import { FormattedMessage } from 'react-intl'
 
 import { setRomanianMode, getRomanianMode } from '../store/queries'
 
