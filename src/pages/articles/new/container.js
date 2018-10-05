@@ -6,6 +6,7 @@ import uuid from 'uuidv4';
 
 import { handleArticle, setFeedbackMessage, setEditMode } from '../../../store/queries';
 import { s3BucketURL, articlesFolder } from '../../../constants/s3';
+import { testVideoUrlValid, getFroalaInsertStringFromVideoUrl } from '../common';
 
 const NewArticleHOC = compose(
     withRouter,
@@ -37,7 +38,7 @@ const NewArticleHOC = compose(
         updateVideoUrl: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const videoURL = target.type === 'checkbox' ? target.checked : target.value;
-            let isVideoUrlValid = !!videoURL.match(/^(http(s)??:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+/);
+            const isVideoUrlValid = testVideoUrlValid(videoURL);
             setState({
                 ...state,
                 videoURL,
@@ -113,7 +114,7 @@ const NewArticleHOC = compose(
                     }
                 ]);
                 setState({ ...state, videoShareAnchor: null, videoURL: '' });
-                state.editor.video.insert(`<iframe width="560" height="315" src="${state.videoURL.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe>`);
+                state.editor.video.insert(getFroalaInsertStringFromVideoUrl(state.videoURL));
             }
             else
                 return false;

@@ -20,6 +20,7 @@ import { articleRefetch } from '../../../../store/refetch';
 import TagsInput from '../../../../components/TagsInput';
 import ImageUploader from '../../../../components/imageUploader';
 import { s3BucketURL, articlesFolder } from '../../../../constants/s3';
+import { testVideoUrlValid, getFroalaInsertStringFromVideoUrl } from '../../common';
 
 const ArticleEditHOC = compose(
     graphql(handleArticle, { name: 'handleArticle' }),
@@ -53,7 +54,7 @@ const ArticleEditHOC = compose(
                     isFeatured: false
                 }]);
                 setState({ ...state, videoShareAnchor: null });
-                state.editor.video.insert(`<iframe width="560" height="315" src="${state.videoURL.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe>`);
+                state.editor.video.insert(getFroalaInsertStringFromVideoUrl(state.videoURL));
             }
             else
                 return false;
@@ -62,7 +63,7 @@ const ArticleEditHOC = compose(
         updateVideoUrl: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const videoURL = target.type === 'checkbox' ? target.checked : target.value;
-            let isVideoUrlValid = !!videoURL.match(/^(http(s)??:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])+/);
+            let isVideoUrlValid = testVideoUrlValid(videoURL);
             setState({
                 ...state,
                 videoURL,
