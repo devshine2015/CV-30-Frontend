@@ -26,6 +26,13 @@
         align-items: center;
         .authMessages {
             color: #fff;
+            h1 {
+                font-size: 80px;
+            }
+            p {
+                font-size: 25px;
+                margin: 0;
+            }
         }
     }
     .authForm {

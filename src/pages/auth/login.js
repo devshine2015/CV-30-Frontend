@@ -33,7 +33,7 @@ const LoginComponent = props => {
                             {(text) => (<div>
                                 {   
                                     text.split("\n").map((i,key) => {
-                                    return <div key={key}>{i}</div>;
+                                    return <p key={key}>{i}</p>;
                                 })}
                             </div>)}
                         </FormattedMessage>

@@ -11,10 +11,6 @@ const companyJobData = gql`
     imagePath
     videoUrl
     status
-    jobTypes {
-      id
-      title
-    }
   }
 `;
 
