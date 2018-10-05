@@ -19,7 +19,6 @@ import ArticleSlider from '../../../../components/articleSlider';
 import { defaultHeaderOverlay, defaultUserAvatar } from '../../../../constants/utils';
 import ImageUploader from '../../../../components/imageUploader';
 
-
 const HeaderHOC = compose(
     withRouter,
     graphql(updateAvatar, { name: 'updateAvatar' }),
@@ -496,6 +495,5 @@ const Header = props => {
         </div>
     )
 }
-
 
 export default HeaderHOC(Header);
