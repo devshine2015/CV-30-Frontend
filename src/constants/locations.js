@@ -16980,4 +16980,9 @@ const locations = [
 'BUCURESTI SECTORUL 6'
 ];
 
-export default locations;
+const locationSugesstions = locations.map(item => ({
+    value: item,
+    label: item
+}));
+
+export default locationSugesstions;
