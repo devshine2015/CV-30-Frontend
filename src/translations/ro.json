@@ -656,6 +656,7 @@
     "industry.inputTexts": "Industrie\nAdauga industrie...",
     "loader.data": "Datele se incarca...",
     "location.inputTexts": "Locatie\nAdauga locatie...",
+    "location.startTyping": "Locatie\nIncepeti sa scrieti...",
 
     "jobs.searchTeam": "Echipam\nCauta o echipa..."
 }

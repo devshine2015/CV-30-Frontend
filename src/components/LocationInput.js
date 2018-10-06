@@ -15,7 +15,7 @@ const LocationInput = props => {
         <FormattedMessage id="location.inputTexts" defaultMessage="Location\nEnter location..." description="Enter location">
             {(text) => (
                 <div className={props.className}>
-                    <AutoCompleteSelectInput
+                    {/* <AutoCompleteSelectInput
                         value={suggestions.find(el => el.value === value) || ''}
                         onChange={val => onChange({
                             target: {
@@ -27,7 +27,7 @@ const LocationInput = props => {
                         placeholder={text.split("\n")[1]}
                         label={text.split("\n")[0]}
                         async
-                    />
+                    /> */}
                 </div>
             )}
         </FormattedMessage>

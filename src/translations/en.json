@@ -664,6 +664,7 @@
     "industry.inputTexts": "Industry\nEnter industry...",
     "loader.data": "Loading data...",
     "location.inputTexts": "Location\nEnter location...",
+    "location.startTyping": "Location\nStart typing...",
 
     "jobs.searchTeam": "Team\nSearch teams..."
 }
