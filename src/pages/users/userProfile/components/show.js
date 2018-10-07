@@ -17,6 +17,7 @@ import ArticleSlider from '../../../../components/articleSlider';
 // import Feedback from '../../../../components/Feedback';
 
 const ShowHOC = compose(
+    pure,
     withRouter,
     graphql(setStory, { name: 'setStory' }),
     graphql(setCVFile, { name: 'setCVFile' }),
@@ -68,9 +69,6 @@ const ShowHOC = compose(
             }
             
         },
-        //
-        addNewExperience: ({ state, setState }) => () => setState({ ...state, newXP: !state.newXP }),
-        closeNewExperience: ({ state, setState }) => () => setState({ ...state, newXP: false }),
         addNewProject: ({ state, setState }) => () => setState({ ...state, newProj: !state.newProj }),
         addNewEducation: ({ state, setState }) => () => setState({ ...state, newEduc: !state.newEduc }),
         addNewHobby: ({ state, setState }) => () => setState({ ...state, newHobby: !state.newHobby }),
@@ -145,14 +143,45 @@ const ShowHOC = compose(
         },
         openArticlePopUp: ({ state, setState }) => () => setState({ ...state, isPopUpOpen: true }),
         closeArticlePopUp: ({ state, setState }) => () => setState({ ...state, isPopUpOpen: false }),
-    }),
-    pure
+    })
 );
+
+class PortfolioExperienceWrapper extends React.PureComponent {
+    state = {
+        add: false
+    };
+    toggle = () => this.setState({ add: !this.state.add })
+    render() {
+        return (
+            <section className='experienceSection'>
+                <FormattedMessage id="users.myExperience" defaultMessage="My \nexperience" description="My experience">
+                    {(text) => (
+                        <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                    )}
+                </FormattedMessage>
+                {
+                    this.props.experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={this.props.editMode} type={'experience'} key={`xpItem-${index}`} />)
+                }
+                { this.props.editMode && !this.state.add &&
+                    <FormattedMessage id="users.addExperience" defaultMessage="+ Add Experience" description="Add Experience">
+                        {(text) => (
+                            <div className='experienceAdd' onClick={this.toggle}>
+                                { text }
+                            </div>
+                        )}
+                    </FormattedMessage>
+                }
+                {
+                    this.props.editMode && this.state.add && <ExperienceEdit userId={this.props.userId} type={'experience'} closeEditor={this.toggle} />
+                }
+            </section>
+        );
+    }
+}
 
 const Show = props => {
     const {
         state: {
-            newXP,
             newProj,
             newHobby,
             imageUploadOpen,
@@ -165,7 +194,7 @@ const Show = props => {
         },
         getEditMode, isEditAllowed,
         profileQuery: { profile },
-        addNewExperience, closeNewExperience, addNewProject, closeNewProject, addNewEducation, addNewHobby,
+        addNewProject, closeNewProject, addNewEducation, addNewHobby,
         toggleEditContact, closeContactEdit, toggleContactExpanded, closeNewEducation, closeNewHobby,
         openArticlePopUp, closeArticlePopUp,
         toggleSalaryPrivate, handleError, handleSuccess,
@@ -186,34 +215,7 @@ const Show = props => {
         <Grid container className='mainBody userProfileShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                 {
-                    ((experience && experience.length > 0) || editMode) &&
-
-                    <section className='experienceSection'>
-                        <FormattedMessage id="users.myExperience" defaultMessage="My \nexperience" description="My experience">
-                            {(text) => (
-                                <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
-                            )}
-                        </FormattedMessage>
-                        
-                        {
-                            experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={editMode} type={'experience'} key={`xpItem-${index}`} />)
-
-                        }
-                        {editMode && !newXP &&
-                            <FormattedMessage id="users.addExperience" defaultMessage="+ Add Experience" description="Add Experience">
-                                    {(text) => (
-                                        <div className='experienceAdd' onClick={addNewExperience}>
-                                            {text}
-                                        </div>
-                                    )}
-                            </FormattedMessage>
-                            
-                        }
-                        {
-                            (editMode && newXP) && <ExperienceEdit userId={userId} type={'experience'} closeEditor={closeNewExperience} />
-                        }
-
-                    </section>
+                    ((experience && experience.length > 0) || editMode) && <PortfolioExperienceWrapper editMode={editMode} experience={experience} userId={userId} />
                 }
                 {
                     ((projects && projects.length > 0) || editMode) &&

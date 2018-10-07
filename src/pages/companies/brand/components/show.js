@@ -91,6 +91,9 @@ const ShowHOC = compose(
         endAddQA: ({ state, setState }) => () => {
             setState({ ...state, newQA: false });
         },
+        endEditQA: ({state, setState}) => () => {
+            setState({...state, edited: null, expanded: false});
+        },
         deleteQA: props => async (e, id) => {
             e.stopPropagation();
             const { handleFAQ, setFeedbackMessage, match: { params: { lang, companyId } } } = props;
@@ -188,7 +191,7 @@ const Show = props => {
         expandPanel, getEditMode,
         companyQuery: { company: { name, faqs, officeArticles, storiesArticles, recentJobs } },
         isEditAllowed, deleteOfficeArticle,
-        editPanel, addQA, deleteQA,
+        editPanel, addQA, deleteQA, endEditQA,
         match: { params: { lang, companyId } },
         updateDescription, submitDescription,
         openArticlePopup, closeArticlePopup,
@@ -281,7 +284,7 @@ const Show = props => {
                     <h2 className='titleHeading'>Q &amp; A</h2>
                     {
                         faqs.map(item => {
-                            if (!editMode && edited !== item.id)
+                            if (!editMode || edited !== item.id)
                                 return (
                                     <ExpansionPanel
                                         expanded={expanded === item.id}
@@ -314,7 +317,7 @@ const Show = props => {
                                     </ExpansionPanel>
                                 )
                             else
-                                return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={item.id} key={item.id} />
+                                return <QuestionEdit question={item} onChange={expandPanel} expanded={expanded} panelId={item.id} key={item.id} onClose={endEditQA}/>
                         })
                     }
                     {

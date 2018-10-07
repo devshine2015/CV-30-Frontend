@@ -514,6 +514,7 @@
     "company.settings.settingTitle": "Compania mea",
     "company.settings.notifications": "Notificari",
     "company.settings.companyJobs": "Joburile companiei",
+    "company.settings.tabs": "Setari\nNotificari\nJoburile Companiei",
 
     "company.team.addTeamMember" : "Adauga un membru al echipei" ,
     "company.team.memberPara": "Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro.",
@@ -652,9 +653,10 @@
     "education.addLevel": "Introdu nivelul de educatie...",
     "feed.close": "Inchide",
     "industry.loading": "Industrie...",
-    "industry.placeHolder": "Adauga industrie...",
+    "industry.inputTexts": "Industrie\nAdauga industrie...",
     "loader.data": "Datele se incarca...",
-    "location.placeHolder": "Locatie\nAdauga locatie...",
+    "location.inputTexts": "Locatie\nAdauga locatie...",
+    "location.startTyping": "Locatie\nIncepeti sa scrieti...",
 
     "jobs.searchTeam": "Echipam\nCauta o echipa..."
 }
