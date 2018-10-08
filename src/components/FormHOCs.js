@@ -10,7 +10,6 @@ import deburr from "lodash/deburr";
 import Downshift from "downshift";
 
 import ImageUploader from './imageUploader';
-// import EducationLevelInput from './EducationLevelInput';
 import { s3BucketURL } from '../constants/s3';
 
 const debounce = (func, wait, immediate) => {

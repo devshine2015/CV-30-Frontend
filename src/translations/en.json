@@ -658,7 +658,7 @@
     "article.addArticle": "Add an article",
     "article.para": "Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro.",
 
-    "education.addLevel": "Enter Education Level...",
+    "education.inputTexts": "Level\nEnter Education Level...",
     "feed.close": "Close",
     "industry.loading": "Industry...",
     "industry.inputTexts": "Industry\nEnter industry...",

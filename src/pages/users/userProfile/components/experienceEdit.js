@@ -12,6 +12,7 @@ import { setExperienceMutation, setProjectMutation, setFeedbackMessage, setHobby
 import { currentProfileRefetch } from '../../../../store/refetch';
 import { InputHOC, PeriodDatePickers, Media } from '../../../../components/FormHOCs';
 import LocationInput from '../../../../components/LocationInput';
+import EducationLevelInput from '../../../../components/EducationLevelInput';
 
 class ExperienceEdit extends React.Component {
     validation = {
@@ -133,11 +134,8 @@ class ExperienceEdit extends React.Component {
                 </h4>
                 <section className='infoSection'>
                     {
-                        type === "education" ? null
-                        // <EducationLevelInput
-                        //     value={position}
-                        //     onChange={() => {}}
-                        // />
+                        type === "education" ?
+                        <EducationLevelInput name="position" updateFormState={this.handleChange} value={location} schema={this.validation.position} />
                         :
                         <FormattedMessage id="users.addPositionField" defaultMessage="Add position\nPosition..." description="Position">
                             { text => <InputHOC key="position" updateFormState={this.handleChange} fullWidth={true} value={position} name="position" label={text.split("\n")[0]} placeholder={text.split("\n")[1]} schema={this.validation.position} /> }
