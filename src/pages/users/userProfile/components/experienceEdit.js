@@ -10,7 +10,8 @@ import { FormattedMessage } from 'react-intl';
 
 import { setExperienceMutation, setProjectMutation, setFeedbackMessage, setHobbyMutation, setEducationMutation } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
-import { InputHOC, LocationHOC, PeriodDatePickers, Media } from '../../../../components/FormHOCs';
+import { InputHOC, PeriodDatePickers, Media } from '../../../../components/FormHOCs';
+import LocationInput from '../../../../components/LocationInput';
 
 class ExperienceEdit extends React.Component {
     validation = {
@@ -146,7 +147,7 @@ class ExperienceEdit extends React.Component {
                     <FormattedMessage id="users.addCompanyField" defaultMessage="Add institution\nAdd company\nCompany..." description="Company">
                         { text => <InputHOC key="company" updateFormState={this.handleChange} fullWidth={true} value={company} name="company" label={text.split("\n")[0]} placeholder={text.split("\n")[1]} schema={this.validation.company} /> }
                     </FormattedMessage>
-                    <LocationHOC key="location" name="location" updateFormState={this.handleChange} value={location} schema={this.validation.location} />
+                    <LocationInput updateFormState={this.handleChange} value={location} schema={this.validation.location} />
                     <PeriodDatePickers updateFormState={this.handleChange} startDate={startDate} endDate={endDate} isCurrent={isCurrent} startDateSchema={this.validation.startDate} endDateSchema={this.validation.endDate} />
                     <FormattedMessage id="users.addDescriptionField" defaultMessage="Add description\nDescription..." description="Description">
                         { text => <InputHOC key="description" updateFormState={this.handleChange} rowsMax={4} multiline={true} fullWidth={true} value={description} name="description" label={text.split("\n")[0]} placeholder={text.split("\n")[1]} schema={this.validation.description} /> }

@@ -9,7 +9,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import deburr from "lodash/deburr";
 import Downshift from "downshift";
 
-import suggestions from '../constants/locations';
 import ImageUploader from './imageUploader';
 // import EducationLevelInput from './EducationLevelInput';
 import { s3BucketURL } from '../constants/s3';
@@ -148,7 +147,7 @@ export class PeriodDatePickers extends React.PureComponent {
     }
 }
 
-export class LocationHOC extends React.PureComponent {
+export class AutoSuggestField extends React.PureComponent {
     renderInput = inputProps => {
         const { InputProps, classes, ref, ...other } = inputProps;
       
@@ -173,7 +172,7 @@ export class LocationHOC extends React.PureComponent {
       
         return inputLength === 0
             ? []
-            : suggestions.filter(suggestion => {
+            : this.props.suggestions.filter(suggestion => {
                 const keep = count < 5 && suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
                 if (keep) count += 1;
                 return keep;
@@ -198,51 +197,54 @@ export class LocationHOC extends React.PureComponent {
     }
     handleChange = value => this.props.updateFormState ? this.props.updateFormState([{
         field: this.props.name,
-        value,
+        value: this.props.suggestions.find(item => item.label === value).value,
         valid: true
     }]) : null
     render() {
+        const valueItem = this.props.suggestions.find(item => item.value === this.props.value);
         return (
-            <Downshift onChange={this.handleChange} defaultSelectedItem={this.props.value}>
-            {({
-                getInputProps,
-                getItemProps,
-                getMenuProps,
-                highlightedIndex,
-                inputValue,
-                isOpen,
-                selectedItem
-            }) => (
-                <div>
-                    <FormattedMessage id="location.startTyping" defaultMessage="Start typing..." description="Start typing...">
-                        { text => this.renderInput({
-                            fullWidth: true,
-                            classes: [],
-                            InputProps: getInputProps({
+            <div className={this.props.className}>
+                <Downshift onChange={this.handleChange} defaultSelectedItem={valueItem && valueItem.label}>
+                {({
+                    getInputProps,
+                    getItemProps,
+                    getMenuProps,
+                    highlightedIndex,
+                    inputValue,
+                    isOpen,
+                    selectedItem
+                }) => (
+                    <div>
+                        <FormattedMessage id={this.props.i18nId} defaultMessage="\nStart typing..." description="Start typing...">
+                            { text => this.renderInput({
+                                fullWidth: true,
+                                classes: [],
+                                InputProps: getInputProps({
+                                    placeholder: text.split("\n")[1]
+                                }),
+                                label: text.split("\n")[0],
                                 placeholder: text.split("\n")[1]
-                            }),
-                            label: text.split("\n")[0],
-                            placeholder: text.split("\n")[1]
-                        }) }
-                    </FormattedMessage>
-                    <div {...getMenuProps()}>
-                        { isOpen ? (
-                            <Paper square>
-                                { this.getSuggestions(inputValue).map((suggestion, index) =>
-                                    this.renderSuggestion({
-                                        suggestion,
-                                        index,
-                                        itemProps: getItemProps({ item: suggestion.label }),
-                                        highlightedIndex,
-                                        selectedItem
-                                    })
-                                ) }
-                            </Paper>
-                        ) : null }
+                            }) }
+                        </FormattedMessage>
+                        <div {...getMenuProps()}>
+                            { isOpen ? (
+                                <Paper square>
+                                    { this.getSuggestions(inputValue).map((suggestion, index) =>
+                                        this.renderSuggestion({
+                                            suggestion,
+                                            index,
+                                            itemProps: getItemProps({ item: suggestion.label }),
+                                            highlightedIndex,
+                                            selectedItem
+                                        })
+                                    ) }
+                                </Paper>
+                            ) : null }
+                        </div>
                     </div>
-                </div>
-            )}
-            </Downshift>
+                )}
+                </Downshift>
+            </div>
         );
     }
 }

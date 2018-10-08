@@ -25,11 +25,13 @@ const NewCompany = ({ cancel, values, touched, errors, isSubmitting, handleBlur,
             <Grid item lg={6} sm={11}>
                 <section className='locationSection'>
                     <LocationInput
+                        updateFormState={val => handleChange({ target: { name: val[0].field, value: val[0].value }})}
                         value={values.location}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={!!(touched.location && errors.location)}
-                        helperText={touched.location && errors.location}
+                        // schema={this.validation.location}
+
+                        // onBlur={handleBlur}
+                        // error={!!(touched.location && errors.location)}
+                        // helperText={touched.location && errors.location}
                     />
                 </section>
                 <section className='titleSection'>
@@ -95,13 +97,19 @@ const NewCompany = ({ cancel, values, touched, errors, isSubmitting, handleBlur,
                 <section className='details'>
                     <IndustryInput
                         className='textField'
+                        updateFormState={val => handleChange({ target: { name: val[0].field, value: val[0].value }})}
+                        value={values.industryId}
+                        // schema={this.validation.industryId}
+                    />
+                    {/* <IndustryInput
+                        className='textField'
                         fullWidth
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.industryId}
                         error={!!(touched.industryId && errors.industryId)}
                         //helperText={touched.industryId && errors.industryId}
-                    />
+                    /> */}
                     <FormattedMessage id="company.new.noOfEmployees" defaultMessage="Number of employees\nEnter number of employees..." description="Enter number of employees">
                         {(text) => (
                              <TextField

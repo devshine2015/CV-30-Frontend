@@ -455,9 +455,9 @@ const NewJob = props => {
                         </section>
                         <section className='locationSection'>
                             <LocationInput
+                                updateFormState={val => handleChange({ target: { name: val[0].field, value: val[0].value }})}
                                 value={values.location}
-                                onChange={handleChange}
-                                className='jobSelect'
+                                // schema={this.validation.location}
                             />
                         </section>
                         <section className='jobStatus'>

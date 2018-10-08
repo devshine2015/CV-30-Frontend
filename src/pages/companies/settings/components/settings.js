@@ -32,6 +32,7 @@ const SettingsHOC = compose(
     })),
     withHandlers({
         handleFormChange: props => event => {
+            console.log(event);
             const target = event.target;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
@@ -127,16 +128,18 @@ const Settings = props => {
             <div className='infoFields'>
                 <IndustryInput
                     className='textField'
-                    onChange={handleFormChange}
+                    updateFormState={val => handleFormChange({ target: { name: val[0].field, value: val[0].value }})}
                     value={industryId}
+                    // schema={this.validation.industryId}
                 />
 
                 <LocationInput
                     className='textField'
+                    updateFormState={val => handleFormChange({ target: { name: val[0].field, value: val[0].value }})}
                     value={location}
-                    onChange={handleFormChange}
+                    // schema={this.validation.location}
                 />
-                
+
                 <TextField
                     name='noOfEmployees'
                     label='Number of noOfEmployees'
