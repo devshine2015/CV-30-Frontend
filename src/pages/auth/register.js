@@ -186,7 +186,7 @@ const RegisterComponent = ({ values, touched, errors, isSubmitting, handleChange
 
                             <FormattedMessage id="actions.login" defaultMessage="Log in" description="Log in action">
                                 {(text) => (
-                                    <Button variant="raised" color="primary" type="button" className='registerButton' component={Link} to={`/${match.params.lang}/login`} disabled={isSubmitting}>
+                                    <Button variant="contained" color="primary" type="button" className='registerButton' component={Link} to={`/${match.params.lang}/login`} disabled={isSubmitting}>
                                         {text}
                                     </Button>
                                 )}

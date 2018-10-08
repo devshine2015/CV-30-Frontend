@@ -98,7 +98,7 @@ const LoginComponent = props => {
                             }
 
                             <FormattedMessage id="actions.logIn" defaultMessage="Log in" description="Log in action">
-                                {(text) => (<Button variant="raised" type="submit" className='loginButton' disabled={!email || !password || passwordError || emailError || loading}>
+                                {(text) => (<Button variant="contained" type="submit" className='loginButton' disabled={!email || !password || passwordError || emailError || loading}>
                                     {text}
                                 </Button>)}
                             </FormattedMessage>
@@ -107,7 +107,7 @@ const LoginComponent = props => {
 
                             <FormattedMessage id="actions.register" defaultMessage="Register" description="Register action">
                                 {(text) => (
-                                    <Button variant="raised" color="primary" type="button" className='registerButton' component={Link} to={`/${match.params.lang}/register`} disabled={loading}>
+                                    <Button variant="contained" color="primary" type="button" className='registerButton' component={Link} to={`/${match.params.lang}/register`} disabled={loading}>
                                         {text}
                                     </Button>
                                 )}

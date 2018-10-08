@@ -150,7 +150,7 @@ const Footer = props => {
                     }
                     <FormattedMessage id="actions.signUp" defaultMessage="Sign up" description="Sign up">
                         {(text) => (
-                             <Button component={Link} to={`/${lang}/register`} variant="raised" color="primary" type="button" className='footerSignupButton'>
+                             <Button component={Link} to={`/${lang}/register`} variant="contained" color="primary" type="button" className='footerSignupButton'>
                                 {text}
                              </Button>  
                         )}
