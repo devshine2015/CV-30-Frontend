@@ -601,6 +601,14 @@
                 flex: 1;
                 margin-right: 15px;
             }
+            .searchField {
+                flex: 1;
+                margin-right: 15px;
+                overflow: hidden;
+                label {
+                    white-space: nowrap;
+                }
+            }
 
             @media (max-width: 600px) {
                 flex-wrap: wrap;
@@ -823,4 +831,13 @@
 
 .jobsList {
     margin-top: 0;
+}
+
+.searchFields {
+    .searchField {
+        overflow: hidden;
+        label {
+            white-space: nowrap;
+        }
+    }
 }

@@ -4,17 +4,17 @@ import { compose, withHandlers, pure } from 'recompose'
 import { graphql } from 'react-apollo'
 // import { FormattedMessage } from 'react-intl'
 
-import { setRomanianMode, getRomanianMode } from '../store/queries'
+import { setLanguageMutation, getLanguageQuery } from '../store/queries/locals';
 
 const LanguageToggleHOC = compose (
-    graphql( setRomanianMode, { name: 'setRomanianMode'}),
-    graphql( getRomanianMode , { name: 'getRomanianMode'}),
+    graphql( setLanguageMutation, { name: 'setLanguage'}),
+    graphql( getLanguageQuery, { name: 'languageData'}),
     withHandlers({
-        switchLanguageMode: ( { setRomanianMode, getRomanianMode: { romanianMode: {status}}}) => async() =>{
+        switchLanguageMode: ( { setLanguage, languageData: { language: { code }}}) => async() => {
             try {
-                await setRomanianMode ({
+                await setLanguage ({
                     variables: {
-                        status: !status
+                        code: code === "ro" ? "en" : "ro"
                     }
                 })
             }
@@ -26,17 +26,11 @@ const LanguageToggleHOC = compose (
     pure
 )
 
-const LanguageToggle = ({switchLanguageMode, getRomanianMode: { romanianMode: { status } = {status: false}}}) => (
-    <FormGroup row className='editToggle'>
-        <FormLabel className={status? 'active' : ''} style={{ marginLeft: '10px' }} onClick={switchLanguageMode}>ro</FormLabel>
-        {/* <Switch checked={!status} onChange={switchLanguageMode}
-            classes={{
-                switchBase: 'colorSwitchBase',
-                checked: 'colorChecked',
-                bar: 'colorBar',
-            }}
-            color="primary"/> */}
-        <FormLabel className={!status ? 'active' : ''} style={{ marginLeft: '10px' }} onClick={switchLanguageMode}>en</FormLabel>
+const LanguageToggle = ({switchLanguageMode, languageData: { language: { code } = {} }}) => (
+    <FormGroup row className='langaugeToggle'>
+        <FormLabel className={code === "ro" ? 'active' : ''} onClick={switchLanguageMode}>ro</FormLabel>
+        <span className="separator">|</span>
+        <FormLabel className={code === "en" ? 'active' : ''} onClick={switchLanguageMode}>en</FormLabel>
     </FormGroup>
 )
 

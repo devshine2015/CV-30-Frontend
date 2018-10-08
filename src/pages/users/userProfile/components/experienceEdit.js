@@ -44,7 +44,7 @@ class InputHOC extends React.PureComponent {
         field: this.props.name,
         value: this.state.value,
         valid: this.state.valid
-    }]), 330)
+    }]), 180)
     handleChange = async event => this.setState({
         value: event.target.value,
         valid: (this.props.schema && await this.props.schema.isValid(event.target.value))
@@ -324,11 +324,11 @@ class Media extends React.PureComponent {
                                 </IconButton>
                             </div> :
                             <FormattedMessage id="feed.imageUpload" defaultMessage="Upload" description="Upload">
-                                    {(text) => (
-                                        <Button className='uploadBtn' onClick={this.openImageUpload}>
-                                            {text}
-                                        </Button>
-                                    )}
+                                {(text) => (
+                                    <Button className='uploadBtn' onClick={this.openImageUpload}>
+                                        {text}
+                                    </Button>
+                                )}
                             </FormattedMessage>
                             
                         }
@@ -358,24 +358,39 @@ class ExperienceEdit extends React.Component {
             startDate: (this.props.job && this.props.startDate) || moment().subtract(1, 'days'),
             endDate: (this.props.job && this.props.endDate) || moment().subtract(1, 'days'),
             isCurrent: (this.props.job && this.props.jobisCurrent) || false
+        },
+        fieldsValidity: {
+            position: false,
+            company: false,
+            location: false,
+            startDate: true
+        },
+        formStatus: {
+            isValid: false
         }
     }
     shouldComponentUpdate = (nextProps, nextState) => {
-        return false;
+        return this.state.formStatus.isValid !== nextState.formStatus.isValid;
     }
-    handleChange = (value, key) => this.setState({
-        formData: {
-            ...this.state.formData,
-            [key]: value
-        }
-    }, () => console.log(this.state.formData))
+    handleChange = values => {
+        let isValid = this.state.formStatus.isValid;
+        let formData = { ...this.state.formData };
+        let fieldsValidity = { ...this.state.fieldsValidity };
+        values.map(item => {
+            formData[item.field] = item.value;
+            fieldsValidity[item.field] = item.valid;
+        });
+        this.setState({
+            formData,
+            fieldsValidity,
+            formStatus: {
+                isValid: Object.keys(fieldsValidity).reduce((accumulator, currentValue) => accumulator && fieldsValidity[currentValue], true)
+            }
+        }, () => console.log(this.state));
+    }
     render() {
         console.log("Experience Edit");
-        const {
-            closeEditor,
-            type,
-            userId
-        } = this.props;
+        const { closeEditor, type, userId } = this.props;
         const { id, company, position, location, startDate, endDate, isCurrent, description, videos, images } = this.state.formData; 
         return (
             <div className='experienceForm'>
@@ -398,7 +413,7 @@ class ExperienceEdit extends React.Component {
                     <FormattedMessage id="users.addCompanyField" defaultMessage="Add institution\nAdd company\nCompany..." description="Company">
                         { text => <InputHOC key="company" updateFormState={this.handleChange} fullWidth={true} value={company} name="company" label={text.split("\n")[0]} placeholder={text.split("\n")[1]} schema={yup.string().required('Company cannot be null').max(255, 'Experience company cannot be longer than 255 chars')} /> }
                     </FormattedMessage>
-                    <LocationHOC updateFormState={this.handleChange} />
+                    <LocationHOC key="location" name="location" updateFormState={this.handleChange} />
                     <PeriodDatePickers updateFormState={this.handleChange} startDate={startDate} endDate={endDate} isCurrent={isCurrent} startDateSchema={yup.date().required('Please provide a start date.')} endDateSchema={yup.date()} />
                     <FormattedMessage id="users.addDescriptionField" defaultMessage="Add description\nDescription..." description="Description">
                         { text => <InputHOC key="description" updateFormState={this.handleChange} rowsMax={4} multiline={true} fullWidth={true} value={description} name="description" label={text.split("\n")[0]} placeholder={text.split("\n")[1]} schema={yup.string().nullable()} /> }
@@ -409,7 +424,7 @@ class ExperienceEdit extends React.Component {
                     <IconButton className='cancelBtn' onClick={closeEditor} disabled={false}>
                         <Icon>close</Icon>
                     </IconButton>
-                    <IconButton className='submitBtn' style={this.state.isValid ? {} : { color: '#aaa', background: '#fff', border: '1px solid #aaa' }} onClick={() => {}} disabled={!this.state.isValid}>
+                    <IconButton className='submitBtn' style={this.state.formStatus.isValid ? {} : { color: '#aaa', background: '#fff', border: '1px solid #aaa' }} onClick={() => {}} disabled={!this.state.formStatus.isValid}>
                         <Icon>done</Icon>
                     </IconButton>
                 </section>

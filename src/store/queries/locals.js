@@ -85,20 +85,20 @@ export const getEditMode = gql`
     }
 `;
 
-export const setRomanianMode = gql`
-    mutation setRomanianMode ($status: Boolean!) {
-        setRomanianMode (status: $status) @client {
+export const setLanguageMutation = gql`
+    mutation setLanguage ($code: String!) {
+        setLanguage (code: $code) @client {
             __typename
-            status
+            code
         }
     }
 `
 
-export const getRomanianMode = gql`
-    query getRomanianMode {
-        romanianMode @client {
+export const getLanguageQuery = gql`
+    query getLanguage {
+        language @client {
             __typename
-            status
+            code
         }
     }
 `

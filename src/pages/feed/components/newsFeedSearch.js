@@ -44,7 +44,7 @@ const NewsFeedSearch = props => {
                         label={text.split("\n")[0]}
                         placeholder={text.split("\n")[1]}
                         type="search"
-                        className='textField'
+                        className='searchField'
                         value={peopleOrCompany || ''}
                         onChange={handleSearchFormChange}
                         fullWidth

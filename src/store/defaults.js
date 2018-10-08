@@ -11,9 +11,9 @@ export default {
         __typename: "EditMode",
         status: false
     },
-    romanianMode: {
-        __typename: "RomanianMode",
-        status: false
+    language: {
+        __typename: "Language",
+        code: "en"
     },
     feedbackMessage: {
         __typename: "FeedbackMessage",
