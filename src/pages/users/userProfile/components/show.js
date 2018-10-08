@@ -160,9 +160,10 @@ class PortfolioExperienceWrapper extends React.PureComponent {
                     )}
                 </FormattedMessage>
                 {
-                    this.props.experience.map((job, index) => <ExperienceDisplay job={job} globalEditMode={this.props.editMode} type={'experience'} key={`xpItem-${index}`} />)
+                    this.props.experience.map((job, index) => <ExperienceDisplay userId={this.props.userId} job={job} globalEditMode={this.props.editMode} type={'experience'} key={`xpItem-${index}`} />)
                 }
-                { this.props.editMode && !this.state.add &&
+                {
+                    this.props.editMode && !this.state.add &&
                     <FormattedMessage id="users.addExperience" defaultMessage="+ Add Experience" description="Add Experience">
                         {(text) => (
                             <div className='experienceAdd' onClick={this.toggle}>
@@ -200,7 +201,7 @@ const Show = props => {
         toggleSalaryPrivate, handleError, handleSuccess,
         updateStory, saveStory,openImageUpload,closeImageUpload, // Add Image Upload
         updateDesiredSalary, saveDesiredSalary,
-        currentUser: {  auth: { currentUser } }
+        currentUser: { auth: { currentUser } }
     } = props;
 
     let editMode = false;
@@ -210,7 +211,7 @@ const Show = props => {
 
     const { contact, experience, projects, aboutMeArticles, salary, educations, hobbies } = profile;
     const { id: userId } = currentUser || {};
-    console.log("*****************", currentUser)
+    console.log("*****************", userId)
     return (
         <Grid container className='mainBody userProfileShow'>
             <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>

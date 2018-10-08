@@ -6,13 +6,13 @@ import { FormattedDate, FormattedMessage } from 'react-intl';
 import ReactPlayer from 'react-player';
 import { s3BucketURL } from '../../../../constants/s3';
 
-const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, closeEditor, type }) => {
+const ExperienceDisplay = ({ job, globalEditMode, editItem, toggleEditItem, closeEditor, type, userId }) => {
     if (!job) {
         return null;
     } else {
 
         if (editItem) {
-            return <ExperienceEdit job={job} closeEditor={closeEditor} type={type} />
+            return <ExperienceEdit userId={userId} job={job} closeEditor={closeEditor} type={type} />
         } else {
             let image, video;
             if (job.images && job.images.length > 0) {
