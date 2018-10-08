@@ -369,6 +369,81 @@ class ExperienceEdit extends React.Component {
             isValid: false
         }
     }
+    handleSubmit = async () => {
+        const { job: { videos: oldVideos } = {}, type, match, closeEditor, setFeedbackMessage, client } = this.props;
+        let { id, title, description, position, company, startDate, endDate, isCurrent, images, video, location } = this.state.formData;
+        const videos = [];
+        let videoId = null;
+        if (video) {
+            if (oldVideos && oldVideos.length) videoId = oldVideos[0].id;
+            videos.push({
+                id: videoId || uuid(),
+                source: id,
+                path: video || '',
+                sourceType: type
+            });
+        }
+        console.log(match);
+        // console.log({
+        //     [type]: {
+        //         id,
+        //         location,
+        //         title,
+        //         description,
+        //         position,
+        //         company,
+        //         startDate,
+        //         endDate: isCurrent ? undefined : endDate,
+        //         isCurrent,
+        //         videos,
+        //         images
+        //     },
+        //     language: match.params.lang
+        // });
+    }
+        //         try {
+        //             await client.mutate({
+        //                 mutation : type === 'experience'? setExperienceMutation : type === 'project'? setProjectMutation : type === 'education'?  setEducationMutation : setHobbyMutation,
+        //                 variables: {
+        //                     [type]: {
+        //                         id,
+        //                         location,
+        //                         title,
+        //                         description,
+        //                         position,
+        //                         company,
+        //                         startDate,
+        //                         endDate: isCurrent ? undefined : endDate,
+        //                         isCurrent,
+        //                         videos,
+        //                         images
+        //                     },
+        //                     language: match.params.lang
+        //                 },
+        //                 refetchQueries: [
+        //                     currentProfileRefetch(match.params.lang)
+        //                 ]
+        //             });
+        //             await setFeedbackMessage({
+        //                 variables: {
+        //                     status: 'success',
+        //                     message: 'Changes saved successfully.'
+        //                 }
+        //             });
+        //             closeEditor();
+        //             } catch ({ graphQLErrors }) {
+        //                 let formattedError = graphQLErrors && graphQLErrors[0].reduce((result, current) => {
+        //                     result += "\n" + current.message;
+        //                     return result;
+        //                 }, '')
+        //                 await setFeedbackMessage({
+        //                     variables: {
+        //                         status: 'error',
+        //                         message: formattedError
+        //                     }
+        //                 });
+        //         }
+        //     }
     shouldComponentUpdate = (nextProps, nextState) => {
         return this.state.formStatus.isValid !== nextState.formStatus.isValid;
     }
@@ -424,7 +499,7 @@ class ExperienceEdit extends React.Component {
                     <IconButton className='cancelBtn' onClick={closeEditor} disabled={false}>
                         <Icon>close</Icon>
                     </IconButton>
-                    <IconButton className='submitBtn' style={this.state.formStatus.isValid ? {} : { color: '#aaa', background: '#fff', border: '1px solid #aaa' }} onClick={() => {}} disabled={!this.state.formStatus.isValid}>
+                    <IconButton className='submitBtn' style={this.state.formStatus.isValid ? {} : { color: '#aaa', background: '#fff', border: '1px solid #aaa' }} onClick={this.handleSubmit} disabled={!this.state.formStatus.isValid}>
                         <Icon>done</Icon>
                     </IconButton>
                 </section>

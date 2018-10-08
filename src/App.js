@@ -55,8 +55,9 @@ const CVRouter = props => {
 	if (loading) return null;
 	var pathname = props.location.pathname;
 	const renderRoute = () => {
-		if (!pathname.includes(language)) {
+		if (pathname.indexOf("/" + language) === -1) {
 			pathname = pathname.replace(language === "ro" ? "en" : "ro", language);
+			
 			return <Redirect to={pathname} />;
 		}
 	};

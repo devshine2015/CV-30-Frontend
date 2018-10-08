@@ -6,11 +6,13 @@ import { graphql } from 'react-apollo'
 
 import { setLanguageMutation, getLanguageQuery } from '../store/queries/locals';
 
-const LanguageToggleHOC = compose (
+const LanguageItem = compose(
+    pure,
     graphql( setLanguageMutation, { name: 'setLanguage'}),
     graphql( getLanguageQuery, { name: 'languageData'}),
     withHandlers({
-        switchLanguageMode: ( { setLanguage, languageData: { language: { code }}}) => async() => {
+        switchLanguageMode: ( { language, setLanguage, languageData: { language: { code }}}) => async () => {
+            if (code === language) return;
             try {
                 await setLanguage ({
                     variables: {
@@ -22,16 +24,15 @@ const LanguageToggleHOC = compose (
                 console.log(err)
             }
         }
-    }),
-    pure
-)
+    })
+)(({ language, isActive, switchLanguageMode, languageData: { language: { code }} }) => <FormLabel className={language === code ? 'active' : ''} onClick={switchLanguageMode}>{language}</FormLabel>)
 
-const LanguageToggle = ({switchLanguageMode, languageData: { language: { code } = {} }}) => (
+const LanguageToggle = () => (
     <FormGroup row className='langaugeToggle'>
-        <FormLabel className={code === "ro" ? 'active' : ''} onClick={switchLanguageMode}>ro</FormLabel>
+        <LanguageItem language="ro" />
         <span className="separator">|</span>
-        <FormLabel className={code === "en" ? 'active' : ''} onClick={switchLanguageMode}>en</FormLabel>
+        <LanguageItem language="en" />
     </FormGroup>
 )
 
-export default LanguageToggleHOC(LanguageToggle)
+export default LanguageToggle;
