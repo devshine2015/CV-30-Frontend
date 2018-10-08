@@ -124,7 +124,7 @@ const AddTeam = props => {
                                 <InputAdornment position="end">
                                     <FormattedMessage id="company.brand.add" defaultMessage="Add" description="Add">
                                         {(text) => (
-                                            <Button color='primary' size='small' variant='raised' className='addSkillButton' onClick={addTeam} disabled={!newTeam}>{text}</Button>
+                                            <Button color='primary' size='small' variant='contained' className='addSkillButton' onClick={addTeam} disabled={!newTeam}>{text}</Button>
                                         )}
                                     </FormattedMessage>
                                     

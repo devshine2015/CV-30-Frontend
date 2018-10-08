@@ -4,17 +4,19 @@ import { compose, withHandlers, pure } from 'recompose'
 import { graphql } from 'react-apollo'
 // import { FormattedMessage } from 'react-intl'
 
-import { setRomanianMode, getRomanianMode } from '../store/queries'
+import { setLanguageMutation, getLanguageQuery } from '../store/queries/locals';
 
-const LanguageToggleHOC = compose (
-    graphql( setRomanianMode, { name: 'setRomanianMode'}),
-    graphql( getRomanianMode , { name: 'getRomanianMode'}),
+const LanguageItem = compose(
+    pure,
+    graphql( setLanguageMutation, { name: 'setLanguage'}),
+    graphql( getLanguageQuery, { name: 'languageData'}),
     withHandlers({
-        switchLanguageMode: ( { setRomanianMode, getRomanianMode: { romanianMode: {status}}}) => async() =>{
+        switchLanguageMode: ( { language, setLanguage, languageData: { language: { code }}}) => async () => {
+            if (code === language) return;
             try {
-                await setRomanianMode ({
+                await setLanguage ({
                     variables: {
-                        status: !status
+                        code: code === "ro" ? "en" : "ro"
                     }
                 })
             }
@@ -22,22 +24,15 @@ const LanguageToggleHOC = compose (
                 console.log(err)
             }
         }
-    }),
-    pure
-)
+    })
+)(({ language, isActive, switchLanguageMode, languageData: { language: { code }} }) => <FormLabel className={language === code ? 'active' : ''} onClick={switchLanguageMode}>{language}</FormLabel>)
 
-const LanguageToggle = ({switchLanguageMode, getRomanianMode: { romanianMode: { status } = {status: false}}}) => (
-    <FormGroup row className='editToggle'>
-        <FormLabel className={status? 'active' : ''} style={{ marginLeft: '10px' }} onClick={switchLanguageMode}>ro</FormLabel>
-        {/* <Switch checked={!status} onChange={switchLanguageMode}
-            classes={{
-                switchBase: 'colorSwitchBase',
-                checked: 'colorChecked',
-                bar: 'colorBar',
-            }}
-            color="primary"/> */}
-        <FormLabel className={!status ? 'active' : ''} style={{ marginLeft: '10px' }} onClick={switchLanguageMode}>en</FormLabel>
+const LanguageToggle = () => (
+    <FormGroup row className='langaugeToggle'>
+        <LanguageItem language="ro" />
+        <span className="separator">|</span>
+        <LanguageItem language="en" />
     </FormGroup>
 )
 
-export default LanguageToggleHOC(LanguageToggle)
+export default LanguageToggle;

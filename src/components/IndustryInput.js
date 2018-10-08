@@ -3,9 +3,9 @@ import { compose, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { industriesQuery } from '../store/queries';
 
-import AutoCompleteSelectInput from './AutoCompleteSelectInput';
+import { industriesQuery } from '../store/queries';
+import  { AutoSuggestField } from './FormHOCs';
 
 const IndustryInputHOC = compose(
     withRouter,
@@ -35,8 +35,7 @@ const IndustryInput = props => {
         );
     }
 
-    const name = props.name || 'industryId';
-    const { value, onChange, intl } = props;
+    const { intl } = props;
 
     const suggestions = industriesQuery.industries.map(industry => ({
         value: industry.id,
@@ -44,26 +43,13 @@ const IndustryInput = props => {
     }));
     
     return (
-        <FormattedMessage id="industry.inputTexts" defaultMessage="Industry\nEnter industry..." description="Enter industry">
-            {(text) => (
-                <div className={props.className}>
-                    <AutoCompleteSelectInput
-                        value={suggestions.find(el => el.value === value)}
-                        onChange={val => onChange({
-                            target: {
-                                value: val.value,
-                                name
-                            }
-                        })}
-                        suggestions={suggestions}
-                        placeholder={text.split("\n")[1]}
-                        label={text.split("\n")[0]}
-                    />
-                </div>
-            )}
-        </FormattedMessage>
+        <AutoSuggestField
+            {...props}
+            suggestions={suggestions}
+            name={props.name || 'industryId'}
+            i18nId={props.i18nId || 'industry.inputTexts'}
+        />
     )
 }
-
 
 export default IndustryInputHOC(IndustryInput);

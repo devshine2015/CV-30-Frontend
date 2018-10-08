@@ -31,11 +31,11 @@ export default {
             cache.writeData({ data });
             return null;
         },
-        setRomanianMode: (_, {status}, {cache}) => {
+        setLanguage: (_, { code }, {cache}) => {
             const data = {
-                romanianMode: {
-                    __typename: "RomanianMode",
-                    status
+                language: {
+                    __typename: "Langauge",
+                    code
                 }
             }
             cache.writeData({data})

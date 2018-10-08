@@ -55,7 +55,7 @@ const ForgotPasswordComponent = ({ match, updateEmail, sendMail, state: { email,
                             }
 
                             <FormattedMessage id="actions.resetPassword" defaultMessage="Reset password" description="Reset password action">
-                                {(text) => (<Button variant="raised" className='loginButton' onClick={sendMail} disabled={!email || emailError || loading}>
+                                {(text) => (<Button variant="contained" className='loginButton' onClick={sendMail} disabled={!email || emailError || loading}>
                                     {text}
                                 </Button>)}
                             </FormattedMessage>
@@ -66,7 +66,7 @@ const ForgotPasswordComponent = ({ match, updateEmail, sendMail, state: { email,
                                 <Grid item md={6} sm={6} xs={12}>
                                     <FormattedMessage id="actions.register" defaultMessage="Register" description="Register action">
                                         {(text) => (
-                                            <Button variant="raised" color="primary" type="button" className='registerButton' component={Link} to={`/${match.params.lang}/register`} disabled={loading}>
+                                            <Button variant="contained" color="primary" type="button" className='registerButton' component={Link} to={`/${match.params.lang}/register`} disabled={loading}>
                                                 {text}
                                             </Button>
                                         )}
@@ -75,7 +75,7 @@ const ForgotPasswordComponent = ({ match, updateEmail, sendMail, state: { email,
                                 <Grid item md={6} sm={6} xs={12}>
                                     <FormattedMessage i id="actions.logIn" defaultMessage="Log in" description="Log in action">
                                         {(text) => (
-                                            <Button variant="raised" color="primary" type="button" className='registerButton' component={Link} to={`/${match.params.lang}/login`} disabled={loading}>
+                                            <Button variant="contained" color="primary" type="button" className='registerButton' component={Link} to={`/${match.params.lang}/login`} disabled={loading}>
                                                 {text}
                                             </Button>
                                         )}

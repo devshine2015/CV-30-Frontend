@@ -573,9 +573,10 @@ const Edit = props => {
                         </section>
                         <section className='locationSection'>
                             <LocationInput
-                                value={values.location}
-                                onChange={handleChange}
                                 className='jobSelect'
+                                updateFormState={val => handleChange({ target: { name: val[0].field, value: val[0].value }})}
+                                value={values.location}
+                                // schema={this.validation.location}
                             />
                         </section>
                         <section className='jobStatus'>

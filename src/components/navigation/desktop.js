@@ -210,7 +210,7 @@ class ProfileMenu extends React.PureComponent {
         <React.Fragment>
             <FormattedMessage id="actions.logIn" defaultMessage="Log in" description="Log in action">
                 {(text) => (
-                    <Button component={NavLink} to={`/${this.props.lang}/login`} variant="raised" type="button" className='loginButton'>
+                    <Button component={NavLink} to={`/${this.props.lang}/login`} variant="contained" type="button" className='loginButton'>
                         {text}
                     </Button>
                 )}
@@ -218,7 +218,7 @@ class ProfileMenu extends React.PureComponent {
 
             <FormattedMessage id="actions.signUp" defaultMessage="Sign up" description="Sign up action">
                 {(text) => (
-                    <Button component={NavLink} to={`/${this.props.lang}/register`} variant="raised" color="primary" type="button" className='registerButton'>
+                    <Button component={NavLink} to={`/${this.props.lang}/register`} variant="contained" color="primary" type="button" className='registerButton'>
                         {text}
                     </Button>
                 )}
