@@ -17,9 +17,10 @@ const JobsList = props => {
     if (loading) {
         return <Loader />
     } else {
+
         const jobs = getJobsQuery.jobs ? getJobsQuery.jobs.edges.map(edge => edge.node) : [];
         const hasNextPage = getJobsQuery.jobs ? getJobsQuery.jobs.pageInfo.hasNextPage : false;
-        console.log("----------------- Job page jobs -----------------------", jobs)
+        console.log("----------------- Job page jobs -----------------------", getJobsQuery, jobs)
         const { formData, handleFormChange, handleSearchJobs, match: { params: { lang }} } = props;
         const { jobName, company, location, isPartTime, isFullTime, isProjectBased, isRemote, isStartup, isCorporation, isBoutique, isMultinational, handleSliderChange } = formData;
         return (
