@@ -215,7 +215,7 @@ const ArticlePopUp = props => {
                     classes={{
                         label: 'closeBtnLabel'
                     }}>
-                        <Icon className='closeBtnIconRoot'>close</Icon>
+                        <Icon className='closeBtnIconRoot' onClick={onClose}>close</Icon>
                     </IconButton>
                 </div>
             }
