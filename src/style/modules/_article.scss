@@ -17,8 +17,7 @@
     max-width: 600px;
     max-height: 80vh;
     top: 100px;
-    // overflow-y: auto;
-    overflow: visible;
+    overflow-y: auto;
     outline: none;
 }
 
@@ -31,6 +30,14 @@
         align-items: center;
         padding: 15px 15px 0;
         flex-wrap: wrap;
+        
+        div.popupTitle {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+        }
 
         h4 {
             font-size: 1rem;
@@ -38,6 +45,20 @@
             color: #397db9;
             width: 100;
             margin: 5px 0;
+        }
+
+        .headerCloseBtn {
+            font-size: 0.8em;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-weight: 400;
+            color: #aaa;
+            cursor: pointer;
+            &:hover {
+                border-color: #aaaaaa;
+                color: #888888;
+            }
         }
 
         p {
