@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, Button, TextField } from '@material-ui/core';
-import S3Uploader from 'react-s3-uploader';
+// import S3Uploader from 'react-s3-uploader';
 import { compose, withState, withHandlers, pure } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
@@ -14,6 +14,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { s3BucketURL, profilesFolder } from '../../../../constants/s3';
 import { updateAvatar, localUserQuery, deleteAccountMutation, updateAvatarTimestampMutation, updateUserSettingsMutation, setFeedbackMessage } from '../../../../store/queries';
 import { currentProfileRefetch } from '../../../../store/refetch';
+import ImageUploader from '../../../../components/imageUploader';
 
 const SettingsHOC = compose(
     graphql(updateAvatar, { name: 'updateAvatar' }),
@@ -23,8 +24,9 @@ const SettingsHOC = compose(
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('state', 'setState', ({ currentProfileQuery: { profile: { firstName, lastName, email } } }) => ({
         isTerminatingAccount: false,
-        isUploading: false,
-        uploadProgress: 0,
+        imageUploadOpen: false,
+        // isUploading: false,
+        // uploadProgress: 0,
         uploadError: null,
         settingsFormError: '',
         settingsFormSuccess: false,
@@ -64,7 +66,7 @@ const SettingsHOC = compose(
                 });
             }
         },
-        onUploadStart: ({ state, setState }) => (file, next) => {
+        /*onUploadStart: ({ state, setState }) => (file, next) => {
             let size = file.size;
             if (size > 500 * 1024) {
                 alert('File is too big!');
@@ -72,9 +74,11 @@ const SettingsHOC = compose(
                 setState({ ...state, isUploading: true });
                 next(file);
             }
-        },
-        onProgress: ({ state, setState }) => setUploadProgress => setState({ ...state, setUploadProgress }),
-        onError: ({ setFeedbackMessage }) => async error => {
+        },*/
+        // onProgress: ({ state, setState }) => setUploadProgress => setState({ ...state, setUploadProgress }),
+        openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
+        closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
+        handleError: ({ setFeedbackMessage }) => async error => {
             console.log(error);
             await setFeedbackMessage({
                 variables: {
@@ -83,7 +87,55 @@ const SettingsHOC = compose(
                 }
             });
         },
-        onFinishUpload: ({ updateAvatar, updateAvatarTimestamp, match, state, setState, setFeedbackMessage }) => async data => {
+        handleSuccess: ({
+            setFeedbackMessage, updateAvatar, updateAvatarTimestamp, match,
+            currentProfileQuery: { profile: { id: profileId } } }) =>
+            async data => {
+                const { path, filename } = data;
+                const avatarPath = path ? path : `/${profilesFolder}/${profileId}/${filename}`;
+                try {
+                    await updateAvatar({
+                        variables: {
+                            status: true,
+                            path: avatarPath
+                        },
+                        refetchQueries: [
+                            currentProfileRefetch(match.params.lang)
+                        ]
+                    });
+                    await updateAvatarTimestamp({
+                        variables: {
+                            timestamp: Date.now()
+                        }
+                    });
+                    await setFeedbackMessage({
+                        variables: {
+                            status: 'success',
+                            message: 'Changes saved successfully.'
+                        }
+                    });
+                }
+                catch (err) {
+                    console.log(err);
+                    await setFeedbackMessage({
+                        variables: {
+                            status: 'error',
+                            message: err.message
+                        }
+                    });
+                }
+        },
+        /*onError: ({ setFeedbackMessage }) => async error => {
+            console.log(error);
+            await setFeedbackMessage({
+                variables: {
+                    status: 'error',
+                    message: error || error.message
+                }
+            });
+        },
+        /*onFinishUpload: ({ updateAvatar, updateAvatarTimestamp, match, state, setState, setFeedbackMessage }) => async data => {
+            debugger;
             try {
                 await updateAvatar({
                     variables: {
@@ -116,7 +168,7 @@ const SettingsHOC = compose(
                 });
             }
             setState({ ...state, isUploading: false });
-        },
+        },*/
         handleFormChange: ({ state, setState }) => event => {
             const target = event.currentTarget;
             const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -168,24 +220,33 @@ const SettingsHOC = compose(
 )
 const Settings = props => {
     const {
-        isUploading,
+        // isUploading,
         settingsFormError,
         settingsFormSuccess,
         isTerminatingAccount,
+        imageUploadOpen,
         formData: { firstName, lastName, email, oldPassword, newPassword, newPasswordConfirm }
     } = props.state
-    const { toggleClose, getSignedUrl, onUploadStart, onProgress, onError, onFinishUpload, localUserData, currentProfileQuery, handleFormChange, saveUserDetails } = props;
+    const { openImageUpload, toggleClose, closeImageUpload, handleError, handleSuccess, localUserData, currentProfileQuery, handleFormChange, saveUserDetails } = props;
 
     const { profile } = currentProfileQuery;
-    let avatar =
-        (!localUserData.loading && profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
+    // let avatar = (!localUserData.loading && profile.hasAvatar) ? `${s3BucketURL}/${profilesFolder}/${profile.id}/avatar.${profile.avatarContentType}?${localUserData.localUser.timestamp}` : null
+    let avatar = (!localUserData.loading && profile.avatarPath) ? `${s3BucketURL}${profile.avatarPath}?${localUserData.localUser.timestamp}` : null;
 
     return (
         <div className='settingsTab'>
             <div className='profilePicture'>
                 <Avatar src={avatar} alt='profile picture' key={avatar} className='settingsAvatar' />
                 <label htmlFor="uploadProfileImg">
-                    <S3Uploader
+                    <ImageUploader
+                        type='profile_avatar'
+                        open={imageUploadOpen}
+                        onClose={closeImageUpload}
+                        onError={handleError}
+                        onSuccess={handleSuccess}
+                        id={profile.id}
+                    />
+                    {/* <S3Uploader
                         id="uploadProfileImg"
                         name="uploadProfileImg"
                         className='hiddenInput'
@@ -199,10 +260,10 @@ const Settings = props => {
                             'x-amz-acl': 'public-read',
                         }}
 
-                    />
+                    /> */}
                     <FormattedMessage id="users.changePicture" defaultMessage="Change profile picture" description="Change profile picture">
                         {(text) => (
-                            <Button component='span' className='settingsUploadBtn' disabled={isUploading}>
+                            <Button component='span' className='settingsUploadBtn' disabled={imageUploadOpen} onClick={openImageUpload}>
                                 {text}
                             </Button>
                         )}
