@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Grid } from '@material-ui/core';
+import { Grid, Modal, Icon, IconButton } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { compose, withHandlers, pure } from 'recompose';
@@ -211,6 +211,9 @@ const ArticlePopUp = props => {
                             }
                         </div>
                     </div>
+                    <IconButton className='closeBtn'>
+                        <Icon>close</Icon>
+                    </IconButton>
                 </div>
             }
         </Modal>

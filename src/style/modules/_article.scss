@@ -17,7 +17,8 @@
     max-width: 600px;
     max-height: 80vh;
     top: 100px;
-    overflow-y: auto;
+    // overflow-y: auto;
+    overflow: visible;
 }
 
 .storyEditPaper,
@@ -211,6 +212,17 @@
             background: #397db9;
             color: #fff;
             margin-left: 15px;
+        }
+    }
+
+    .closeBtn {
+        position: absolute;
+        background-color: #fff;
+        bottom: -24px;
+        right: 12px;
+        border: 1px solid #aaa;
+        & :hover {
+            background-color: #fff;
         }
     }
 }
@@ -523,6 +535,7 @@
                 }
             }
         }
+
     }
 
     .articleEdit {
@@ -637,12 +650,29 @@
                     margin: 30px 0;
                 }
 
+                .btnsContainer {
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    display: flex;
+                    margin-top: 30px;
+                }
+
+                .cancelBtn {
+                    padding: 7px 16px;
+                    font-size: 1.25em;
+                    font-weight: 400;
+                    color: #fff;
+                    border: 1px solid #ffffff;
+                    border-radius: 4px;
+                    text-decoration: none;
+                }
+
                 .publishBtn {
                     background: #fff;
                     color: #397db9;
                     text-transform: capitalize;
                     font-size: 1.25rem;
-                    margin-top: 30px;
                 }
 
                 .featuredMedia {

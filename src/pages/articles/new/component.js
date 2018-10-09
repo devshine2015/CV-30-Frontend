@@ -10,6 +10,8 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 // Require Font Awesome.
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
+import { Link } from 'react-router-dom';
+
 import ImageUploader from '../../../components/imageUploader';
 import TagsInput from '../../../components/TagsInput';
 import { s3BucketURL } from '../../../constants/s3';
@@ -21,7 +23,7 @@ const NewArticle = (props) => {
         openImageUpload, closeImageUpload, handleError, handleSuccess,
         setTags, bindEditor, removeImage,
         openVideoShare, closeVideoShare, updateVideoUrl, removeVideo, cancelVideoPopover,
-        images, selectFeaturedImage, videos, selectFeaturedVideo
+        images, selectFeaturedImage, videos, selectFeaturedVideo, match
     } = props;
 
     return (
@@ -238,14 +240,20 @@ const NewArticle = (props) => {
                                 }
                             </section>
                         }
-                        <FormattedMessage id="articles.new.publishBtn" defaultMessage="Publish article" description="Publish article">
-                            {(text) => (
-                                <Button className='publishBtn' onClick={saveArticle}>
-                                    {text}
-                                </Button>
-                            )}
-                        </FormattedMessage>
-                        
+                        <div className="btnsContainer">
+                            <FormattedMessage id="articles.new.publishBtn" defaultMessage="Publish article" description="Publish article">
+                                {(text) => (
+                                    <Button className='publishBtn' onClick={saveArticle}>
+                                        {text}
+                                    </Button>
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="articles.new.cancelBtn" defaultMessage="Cancel" description="Cancel">
+                                {(text) => (
+                                    <Link to={`/${match.params.lang}/news`} className='cancelBtn'>{text}</Link>
+                                )}
+                            </FormattedMessage>
+                        </div>
                     </div>
                 </Grid>
             </Grid>
