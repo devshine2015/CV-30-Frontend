@@ -106,11 +106,13 @@ const HeaderHOC = compose(
         handleSuccess: ({
             setFeedbackMessage, updateAvatar, updateAvatarTimestamp, match,
             profileQuery: { profile: { id: profileId } } }) =>
-            async ({ path, filename }) => {
+            async data => {
+                const { path, filename } = data;
                 const avatarPath = path ? path : `/${profilesFolder}/${profileId}/${filename}`;
                 try {
                     await updateAvatar({
                         variables: {
+                            status: true,
                             path: avatarPath
                         },
                         refetchQueries: [
