@@ -211,8 +211,11 @@ const ArticlePopUp = props => {
                             }
                         </div>
                     </div>
-                    <IconButton className='closeBtn'>
-                        <Icon>close</Icon>
+                    <IconButton className='closeBtn'
+                    classes={{
+                        label: 'closeBtnLabel'
+                    }}>
+                        <Icon className='closeBtnIconRoot'>close</Icon>
                     </IconButton>
                 </div>
             }

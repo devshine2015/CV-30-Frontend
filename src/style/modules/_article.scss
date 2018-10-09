@@ -19,6 +19,7 @@
     top: 100px;
     // overflow-y: auto;
     overflow: visible;
+    outline: none;
 }
 
 .storyEditPaper,
@@ -223,6 +224,20 @@
         border: 1px solid #aaa;
         & :hover {
             background-color: #fff;
+        }
+    }
+
+    .closeBtnLabel {
+        background: transparent;
+        &:hover {
+            background: transparent;
+        }
+    }
+
+    .closeBtnIconRoot {
+        background: transparent;
+        &:hover {
+            background: transparent;
         }
     }
 }
