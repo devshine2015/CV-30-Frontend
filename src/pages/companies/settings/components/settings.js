@@ -26,13 +26,12 @@ const SettingsHOC = compose(
         isSaving: false,
         settingsFormError: '',
         settingsFormSuccess: false,
-        headline,
-        description,
+        headline: headline ? headline : undefined,
+        description: description ? description : undefined,
         formData: { id, industryId: industry ? industry.id : undefined, location, noOfEmployees, name }
     })),
     withHandlers({
         handleFormChange: props => event => {
-            console.log(event);
             const target = event.target;
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
@@ -50,7 +49,7 @@ const SettingsHOC = compose(
         },
         updateHeadline: ({ state, setState }) => headline => setState({ ...state, headline }),
         updateDescription: ({ state, setState }) => description => setState({ ...state, description }),
-        saveUserDetails: props => async () => {
+        saveCompanyDetails: props => async () => {
             const {
                 handleCompany, state, setState, match, setFeedbackMessage
             } = props;
@@ -101,7 +100,7 @@ const Settings = props => {
             formData: { name, location, industryId, noOfEmployees }
         },
         handleFormChange,
-        saveUserDetails,
+        saveCompanyDetails,
         updateHeadline,
         updateDescription
     } = props;
@@ -182,7 +181,7 @@ const Settings = props => {
                 {/* <Button className='cancelBtn'>Cancel</Button> */}
                 {settingsFormError && <div className="errorMessage">{settingsFormError}</div>}
                 {settingsFormSuccess && <div className="successMessage">Your details have been successfully saved</div>}
-                <Button className='saveBtn' onClick={saveUserDetails}>Save</Button>
+                <Button className='saveBtn' onClick={saveCompanyDetails}>Save</Button>
             </div>
         </div>
     );
