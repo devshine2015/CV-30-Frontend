@@ -107,7 +107,7 @@
     "benefits.stock-option": "Optiune Actiuni in Firma",
     "benefits.team-bonding-events": "Evenimente Team Building",
     "benefits.trainings": "Carti Gratuite",
-    "benefits.tuition-rebrusment": "Subventie Costuri Scolarizare",
+    "benefits.tuition-reimbursment": "Subventie Costuri Scolarizare",
 
     "industries.agriculture": "Agricultura",
     "industries.business-services": "Servicii destinate intreprinderilor",
@@ -446,7 +446,7 @@
     "uploader.maxFileSize": "Dimensiune maxima pentru fisiere:",
     "uploader.imageSizes": "Dimensiunea recomandata pentru fotografii:",
     "uploader.gallery": "Alege din galerie",
-    "uploader.document": "Incarca un nou document/Incarca o noua fotografie",
+    
 
     "article.likeBtn": "Compliment your own way",
 
@@ -486,7 +486,6 @@
     "company.brand.add": "Adauga",
     "company.brand.picUpload": "Incarca o fotografie",
     "company.brand.none": "Niciun rezultat",
-    "company.brand.patterns": "Modele",
     "company.brand.changeBackground": "Schimba fundalul",
     "company.brand.froalaEditor": "Aici ar trebui sa fie numele titlul companiei",
     "company.brand.storyTitle": "+ Add un articol recomandat",
@@ -514,7 +513,6 @@
     "company.settings.settingTitle": "Compania mea",
     "company.settings.notifications": "Notificari",
     "company.settings.companyJobs": "Joburile companiei",
-    "company.settings.tabs": "Setari\nNotificari\nJoburile Companiei",
 
     "company.team.addTeamMember" : "Adauga un membru al echipei" ,
     "company.team.memberPara": "Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro.",
@@ -659,6 +657,12 @@
     "industry.inputTexts": "Industrie\nAdauga industrie...",
     "loader.data": "Datele se incarca...",
     "location.inputTexts": "Locatie\nAdauga locatia...",
+
+    "uploader.document": "Alege din galerie\nSAU\nIncarca un document nou\nIncarca o poza noua",
+    "company.brand.patterns": "Culori\nModele",
+    "company.list.tabs": "Joburi0Echipe",
+    "company.settings.tabs": "Setari\nNotificari\nJoburile Companiei",
+    "company.team.tabs": "Alege un profil existent\n SAU \nCreaza un profil nou",
 
     "jobs.searchTeam": "Echipam\nCauta o echipa..."
 }

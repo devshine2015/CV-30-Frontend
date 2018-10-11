@@ -54,7 +54,7 @@ const uploadFile_ = async (file, signedUrl) => {
         });
         console.log(result)
         
-        return ({ result, error: null });
+        return ({ result, signedUrl, error: null });
     }
     catch (error) {
         console.log(error);

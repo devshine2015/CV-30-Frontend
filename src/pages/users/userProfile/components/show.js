@@ -15,6 +15,7 @@ import fields from '../../../../constants/contact';
 import ArticlePopUp from '../../../../components/ArticlePopup';
 import ArticleSlider from '../../../../components/articleSlider';
 // import Feedback from '../../../../components/Feedback';
+import { s3BucketURL } from '../../../../constants/s3'
 
 const ShowHOC = compose(
     pure,
@@ -24,6 +25,7 @@ const ShowHOC = compose(
     graphql(setSalary, { name: 'setSalary' }),
     graphql(setFeedbackMessage, { name: 'setFeedbackMessage' }),
     withState('state', 'setState', ({ profileQuery: { profile } }) => ({
+        cvUrl: null,
         imageUploadOpen: false,
         newXP: false,
         newProj: false,
@@ -40,12 +42,16 @@ const ShowHOC = compose(
         openImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: true }),
         closeImageUpload: ({ state, setState }) => () => setState({ ...state, imageUploadOpen: false }),
         handleError: () => error => { console.log("an error occured") },
-        handleSuccess: ({setCVFile, match, client, setFeedbackMessage}) => async ({filename}) => {
-            console.log('document upload success')
+        handleSuccess: ({setCVFile, match, client, setFeedbackMessage, state, setState, currentUser: { auth: { currentUser } }}) => async ({filename}) => {
+            const { id: userId } = currentUser
+            setState({
+                ...state,
+                cvUrl: s3BucketURL + '/profile/' + userId + '/' + filename
+            })
             try {
                 await setCVFile({
                     variables: {
-                        cvFile: 'profile' + filename
+                        cvFile: 'profile/' + userId + "/" + filename
                     },
                     refetchQueries: [
                         currentProfileRefetch(match.params.lang)
@@ -191,7 +197,8 @@ const Show = props => {
             story,
             contactExpanded,
             isSalaryPublic,
-            desiredSalary
+            desiredSalary,
+            cvUrl
         },
         getEditMode, isEditAllowed,
         profileQuery: { profile },
@@ -394,7 +401,12 @@ const Show = props => {
                                     </div>
                                 )}
                             </FormattedMessage>
-                            
+                            {
+                                cvUrl &&
+                                <a href={cvUrl} download="cvfile">
+                                    download cvfile
+                                </a>
+                            }
                             <ImageUploader
                                 type='cv'
                                 open={imageUploadOpen}

@@ -104,9 +104,11 @@ class ExperienceEdit extends React.Component {
             });
         }
     }
+    
     shouldComponentUpdate = (nextProps, nextState) => {
         return this.state.formStatus.isValid !== nextState.formStatus.isValid;
     }
+
     handleChange = values => {
         let formData = { ...this.state.formData };
         let fieldsValidity = { ...this.state.fieldsValidity };
@@ -123,6 +125,7 @@ class ExperienceEdit extends React.Component {
             }
         }, () => console.log(this.state));
     }
+
     render() {
         console.log("Experience Edit");
         const { closeEditor, type, userId } = this.props;

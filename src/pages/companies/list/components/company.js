@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { defaultCompanyLogo, stripHtmlTags } from '../../../../constants/utils';
 import { s3BucketURL } from '../../../../constants/s3';
 import JobsSlider from './jobsSlider';
+import TeamsSlider from './teamsSlider'
 import TeamMember from './teamMember'
 
 const CompanyHOC = compose(
@@ -109,10 +110,7 @@ const Company = ({ activeTab, handleTabChange,
                 }
                 {
                     activeTab === 'teams' &&
-                    <div className='team'>
-                        { console.log("--------------- teams ----------------", teams)}
-                        { teams[0].members.map((member, index) => (<TeamMember {...member} key={`member-${index}`} />))}
-                    </div>
+                    <TeamsSlider teams={teams} />
                 }
             </div>
         </div>

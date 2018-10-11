@@ -9,7 +9,9 @@ import ReactPlayer from 'react-player';
 import { withFormik } from 'formik';
 import { FormattedMessage } from 'react-intl';
 import { DatePicker } from 'material-ui-pickers';
-import * as benefits from '../../../../assets/benefits';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+import * as yup from 'yup';
 
 // Require Editor JS files.
 import 'froala-editor/js/froala_editor.pkgd.min.js';
@@ -22,18 +24,15 @@ import FroalaEditor from 'react-froala-wysiwyg';
 
 import fields from '../../../../constants/contact';
 import { formatCurrency } from '../../../../constants/utils';
-import { jobValidation } from '../../new/validations';
-
+import jobValidation from '../../new/validations';
 import { jobDependencies, handleJob, setFeedbackMessage, setEditMode } from '../../../../store/queries';
 import { jobRefetch } from '../../../../store/refetch';
 import Loader from '../../../../components/Loader';
 import SkillsInput from '../../../../components/SkillsInput';
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
-
 import LocationInput from '../../../../components/LocationInput';
 import { jobsFolder, s3BucketURL } from '../../../../constants/s3';
 import ImageUploader from '../../../../components/imageUploader';
+import * as benefits from '../../../../assets/benefits';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);

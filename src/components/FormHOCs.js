@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Checkbox, FormLabel, FormControlLabel, IconButton, Icon, Switch as ToggleSwitch, FormGroup, Button } from '@material-ui/core';
+import { TextField, Checkbox, FormLabel, FormControlLabel, IconButton, Icon, Switch as ToggleSwitch, FormGroup, Button, Select, Chip, Input, ListItemText } from '@material-ui/core';
 import uuid from 'uuid/v4';
 import { DatePicker } from 'material-ui-pickers';
 import moment from 'moment';
@@ -8,9 +8,20 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import deburr from "lodash/deburr";
 import Downshift from "downshift";
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+// Require Font Awesome.
+import 'font-awesome/css/font-awesome.css';
+import FroalaEditor from 'react-froala-wysiwyg';
+import { withStyles } from '@material-ui/core/styles';
 
 import ImageUploader from './imageUploader';
 import { s3BucketURL } from '../constants/s3';
+import * as benefits from '../assets/benefits';
+import { withHandlers } from 'recompose';
 
 const debounce = (func, wait, immediate) => {
 	var timeout;
@@ -27,6 +38,130 @@ const debounce = (func, wait, immediate) => {
 	};
 };
 
+export class SelectHOC extends React.PureComponent {
+    state = {
+        value: this.props.value || "",
+        valid: true
+    }
+    validate = debounce(() => this.props.updateFormState([{
+        field: this.props.name,
+        value: this.state.value,
+        valid: this.state.valid
+    }]), 1800)
+    handleChange = async event => this.setState({
+        value: event.target && event.target.value ? event.target.value : event,
+        valid: (this.props.schema && await this.props.schema.isValid(event.target && event.target.value ? event.target.value : event))
+    }, () => this.props.updateFormState ? this.validate() : {});
+    render() {
+        return (
+            <Select
+                multiple={this.props.multiple || false}
+                value={this.state.value}
+                onChange={this.handleChange}
+                input={<Input name={this.props.name} fullWidth={true} />}
+                renderValue={selected => (
+                    <div className={this.props.className}>
+                        {selected.map(id => {
+                            let option = this.props.options.find(option => option.id === id);
+                            if (option)
+                                return (
+                                    <FormattedMessage id={`benefits.${option.key}`} defaultMessage={option.key} key={option.key}>
+                                        {(text) => <Chip label={text} className='chip' />}
+                                    </FormattedMessage>
+                                )
+                            else
+                                return null;
+                        })}
+                    </div>
+                )}
+                className='jobSelect'
+            >
+                {this.props.options.map(option => (
+                    <MenuItem key={option.id} value={option.id}>
+                        <Checkbox checked={this.state.value.indexOf(option.id) > -1} />
+                        <img style={{ marginRight: '10px', width: '20px' }} src={this.props.optionIcons[option.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() })]} alt={option.key} />
+                        <FormattedMessage id={`benefits.${option.key}`} defaultMessage={option.key}>
+                            {(text) => <ListItemText primary={text} />}
+                        </FormattedMessage>
+
+                    </MenuItem>
+                ))}
+            </Select>
+        )
+    }
+}
+
+export class ChipsHOC extends React.PureComponent {
+    state = {
+        value: this.props.value || []
+    }
+    select = value => this.setState({
+        value: this.state.value.concat([value])
+    }, () => console.log(this.state))
+    remove = value => this.setState({
+        value: [...this.state.value].filter(item => item != value)
+    })
+    render() {
+        return (
+            <React.Fragment>
+                { this.props.options.map(option => (
+                    <FormattedMessage key={option.key} id={`benefits.${option.key}`} defaultMessage={option.key}>
+                        { text => <JobBenefitChip option={option} text={text} /> }
+                    </FormattedMessage>
+                )) }
+            </React.Fragment>
+        )
+    }
+}
+
+class JobBenefitChip extends React.PureComponent {
+    state = {
+        selected: this.props.selected || false
+    }
+    toggle = () => this.setState({ selected: !this.state.selected })
+    render() {
+        return (
+            <Chip
+                icon={<img style={{ width: '19px', height: '19px' }} src={benefits[this.props.option.icon]} alt={this.props.option.key} />}
+                label={this.props.text}
+                onClick={this.state.selected ? null : this.toggle}
+                onDelete={!this.state.selected ? null : this.toggle}
+                // className={ this.state.selected ? this.props.classes.colorPrimary : this.props.classes.colorSecondary }
+                style={{
+                    alignSelf: 'flex-start',
+                    marginBottom: 5,
+                    marginRight: 5,
+                    color: this.state.selected ? '#397db9' : '#aaaaaa',
+                    borderColor: this.state.selected ? '#397db9' : '#aaaaaa',
+                    fill: this.state.selected ? '#397db9' : '#aaaaaa',
+                    backgroundColor: '#ffffff'
+                }}
+                deleteIcon={<Icon style={{ color: this.state.selected ? '#397db9' : '#aaaaaa' }}>close</Icon>}
+                variant="outlined"
+            />
+        )
+    }
+}
+
+const JobBenefitChipHOC = withStyles({
+    // colorPrimary: {
+    //     color: '#397db9!Important',
+    //     borderColor: '#397db9',
+    //     backgroundColor: '#ffffff'
+    // },
+    // colorSecondary: {
+    //     color: '#aaa'
+    // },
+    // deleteIconOutlinedColorPrimary: {
+    //     color: '#397db9',
+    //     borderColor: '#397db9',
+    //     backgroundColor: '#ffffff'
+    // },
+    // deleteIconOutlinedColorSecondary: {
+    //     color: 'green'
+    // }
+})(JobBenefitChip);
+
 export class InputHOC extends React.PureComponent {
     state = {
         value: this.props.value || "",
@@ -38,22 +173,44 @@ export class InputHOC extends React.PureComponent {
         valid: this.state.valid
     }]), 180)
     handleChange = async event => this.setState({
-        value: event.target.value,
-        valid: (this.props.schema && await this.props.schema.isValid(event.target.value))
+        value: event.target && event.target.value ? event.target.value : event,
+        valid: (this.props.schema && await this.props.schema.isValid(event.target && event.target.value ? event.target.value : event))
     }, () => this.props.updateFormState ? this.validate() : {});
     render() {
-        return (
-            <TextField
-                name={this.props.name}
-                label={this.props.label}
-                placeholder={this.props.placeholder}
-                className='textField'
-                fullWidth={this.props.fullWidth || false}
-                multiline={this.props.multiline || false}
-                rowsMax={this.props.rowsMax || 1}
-                onChange={this.handleChange}
-                value={this.state.value}
-                error={!this.state.valid}
+        return ( !this.props.froala ?
+            !this.props.date ?
+                <TextField
+                    name={this.props.name}
+                    label={this.props.label}
+                    placeholder={this.props.placeholder}
+                    className='textField'
+                    fullWidth={this.props.fullWidth || false}
+                    multiline={this.props.multiline || false}
+                    rowsMax={this.props.rowsMax || 1}
+                    onChange={this.handleChange}
+                    value={this.state.value}
+                    error={!this.state.valid}
+                    InputProps={this.props.inputProps || {}}
+                />
+                :
+                <DatePicker
+                    format="DD/MM/YYYY"
+                    disablePast={true}
+                    value={this.state.value}
+                    animateYearScrolling
+                    onChange={this.handleChange}
+                />
+            :
+            <FroalaEditor
+                config={{
+                    placeholderText: this.props.placeholder,
+                    iconsTemplate: 'font_awesome_5',
+                    toolbarInline: true,
+                    charCounterCount: false,
+                    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
+                }}
+                model={this.state.value}
+                onModelChange={this.handleChange}
             />
         )
     }
