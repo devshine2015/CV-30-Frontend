@@ -3,7 +3,7 @@ import { compose, withState, withHandlers, pure } from 'recompose';
 import { graphql, withApollo } from 'react-apollo';
 import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
-import { withFormik } from 'formik';
+// import { withFormik } from 'formik';
 
 import { jobDependencies, handleJob, setFeedbackMessage, setEditMode } from '../../../store/queries';
 import { jobsFolder } from '../../../constants/s3';

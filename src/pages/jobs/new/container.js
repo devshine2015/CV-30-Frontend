@@ -7,8 +7,7 @@ import { withFormik } from 'formik';
 
 import { jobDependencies, handleJob, setFeedbackMessage, setEditMode } from '../../../store/queries';
 import { jobsFolder } from '../../../constants/s3';
-import { jobValidation } from './validations';
-
+import jobValidation from './validations';
 
 const NewJobHOC = compose(
     withRouter,

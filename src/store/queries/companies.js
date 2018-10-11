@@ -3,7 +3,7 @@ import { pageInfoData } from './common';
 
 const companyJobData = gql`
   fragment companyJobData on Job {
-    id    
+    id
     expireDate
     location
     title

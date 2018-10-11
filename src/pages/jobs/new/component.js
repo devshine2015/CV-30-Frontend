@@ -6,77 +6,155 @@ import {
 import ReactPlayer from 'react-player';
 import { FormattedMessage } from 'react-intl';
 import { DatePicker } from 'material-ui-pickers';
-import * as benefits from '../../../assets/benefits';
-
-// Require Editor JS files.
-import 'froala-editor/js/froala_editor.pkgd.min.js';
-// Require Editor CSS files.
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
-// Require Font Awesome.
-import 'font-awesome/css/font-awesome.css';
-import FroalaEditor from 'react-froala-wysiwyg';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+import * as yup from 'yup';
+import uuid from 'uuid/v4';
+import moment from 'moment';
 
 import fields from '../../../constants/contact';
 import Loader from '../../../components/Loader';
-
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
 import { formatCurrency } from '../../../constants/utils';
-
 import LocationInput from '../../../components/LocationInput';
 import ImageUploader from '../../../components/imageUploader';
 import { s3BucketURL } from '../../../constants/s3';
 import SkillsInput from '../../../components/SkillsInput';
+import { InputHOC, SelectHOC, ChipsHOC } from '../../../components/FormHOCs';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
-const NewJob = props => {
-    const {
+class NewJob extends React.Component {
+    validation = {
+        id: yup.string().trim().matches(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i),
+        companyId: yup.string().trim().matches(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i),
+        teamId: yup.string().trim().matches(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i).required('Please choose a team'),
+        title: yup.string().trim().max(255).required('Please enter a title.'),
+        description: yup.string().trim(),
+        idealCandidate: yup.string().trim(),
+        phone: yup.string().trim().max(255).nullable(),
+        email: yup.string().trim().max(255).nullable(),
+        facebook: yup.string().trim().max(255).nullable(),
+        linkedin: yup.string().trim().max(255).nullable(),
+        // expireDate: yup.date().default(new Date()).min(new Date(), 'Cannot expire in the past.'),
+        expireDate: yup.date(),
+        location: yup.string().trim().max(255),
+        jobBenefits: yup.array().of(yup.number().positive().integer()),
+        jobTypes: yup.array().of(yup.number().positive().integer()),
+        salary: yup.object().shape({
+            amountMin: yup.number().positive().required().lessThan(yup.ref('amountMax')),
+            amountMax: yup.number().positive().required(),
+            currency: yup.string().required().matches(/(ron|eur)/, { excludeEmptyString: true }),
+            isPublic: yup.boolean().required()
+        }),
+        activityField: yup.string().trim().max(255),
+        imagePath: yup.string().trim().max(1024).nullable().url(),
+        videoUrl: yup.string().trim().max(1024).nullable().url(),
+        skills: yup.array().of(
+            yup.number().positive().integer()
+        ),
+        status: yup.string().matches(/(draft|active|archived)/, { excludeEmptyString: true })
+    }
+    state = {
+        formData: {
+            id: (this.props.job && this.props.job.id) || uuid(),
+            title: (this.props.job && this.props.job.title) || "",
+            companyId: (this.props.job && this.props.job.companyId) || "",
+            teamId: (this.props.job && this.props.job.teamId) || "",
+            jobBenefits: (this.props.job && this.props.job.jobBenefits && this.props.job.jobBenefits.map(benefit => benefit.id)) || [],
+            salary: {
+                amountMin: (this.props.job && this.props.job.salary && this.props.job.salary.amountMin) || 0,
+                amountMax: (this.props.job && this.props.job.salary && this.props.job.salary.amountMax) || 1000,
+                currency: (this.props.job && this.props.job.salary && this.props.job.salary.currency) || 'eur',
+                isPublic: (this.props.job && this.props.job.salary && this.props.job.salary.isPublic) || false
+            },
+            activityField: (this.props.job && this.props.job.activityField) || "",
+            skills: (this.props.job && this.props.job.skills && this.props.job.skills.map(skill => skill.id)) || [],
+            expireDate: (this.props.job && this.props.job.expireDate) || moment(),
+            location: (this.props.job && this.props.job.location) || "",
+            imagePath: (this.props.job && this.props.job.imagePath) || "",
+            videoUrl: (this.props.job && this.props.job.videoUrl) || "",
+            status: (this.props.job && this.props.job.status) || "draft",
+            description: (this.props.job && this.props.job.description) || "",
+            idealCandidate: (this.props.job && this.props.job.idealCandidate) || "",
+        },
+        fieldsValidity: {
+            title: (this.props.job && this.props.job.title) ? this.validation.title.isValid(this.props.job.title) : false,
+            companyId: (this.props.job && this.props.job.companyId) ? this.validation.companyId.isValid(this.props.job.companyId) : false,
+            teamId: (this.props.job && this.props.job.teamId) ? this.validation.teamId.isValid(this.props.job.teamId) : false,
+            jobBenefits: (this.props.job && this.props.job.jobBenefits) ? this.validation.jobBenefits.isValid(this.props.job.jobBenefits.map(benefit => benefit.id)) : true,
+            jobTypes: (this.props.job && this.props.job.jobTypes) ? this.validation.jobTypes.isValid(this.props.job.jobTypes.map(type => type.id)) : true,
+            salary: (this.props.job && this.props.job.salary) ? this.validation.salary.isValid(this.props.job.salary) : false,
+            activityField: (this.props.job && this.props.job.activityField) ? this.validation.activityField.isValid(this.props.job.activityField) : false,
+            skills: (this.props.job && this.props.job.skills) ? this.validation.skills.isValid(this.props.job.skills.map(skill => skill.id)) : true,
+            expireDate: (this.props.job && this.props.job.expireDate) ? this.validation.expireDate.isValid(this.props.job.expireDate) : false,
+            location: (this.props.job && this.props.job.location) ? this.validation.location.isValid(this.props.job.location) : false,
+            imagePath: (this.props.job && this.props.job.imagePath) ? this.validation.imagePath.isValid(this.props.job.imagePath) : true,
+            videoUrl: (this.props.job && this.props.job.videoUrl) ? this.validation.videoUrl.isValid(this.props.job.videoUrl) : true,
+            status: (this.props.job && this.props.job.status) ? this.validation.status.isValid(this.props.job.status) : true,
+            description: (this.props.job && this.props.job.description) ? this.validation.description.isValid(this.props.job.description) : true,
+            idealCandidate: (this.props.job && this.props.job.idealCandidate) ? this.validation.idealCandidate.isValid(this.props.job.idealCandidate) : true,
+        },
+        formStatus: {
+            isValid: false
+        }
+    }
+    shouldComponentUpdate = (nextProps, nextState) => {
+        return (
+            this.state.formStatus.isValid !== nextState.formStatus.isValid
+            || this.props.jobDependencies.loading !== nextProps.jobDependencies.loading
+        );
+    }
+    handleChange = values => {
+        let formData = { ...this.state.formData };
+        let fieldsValidity = { ...this.state.fieldsValidity };
+        values.map(item => {
+            formData[item.field] = item.value;
+            fieldsValidity[item.field] = item.valid;
+            return null;
+        });
+        this.setState({
+            formData,
+            fieldsValidity,
+            formStatus: {
+                isValid: Object.keys(fieldsValidity).reduce((accumulator, currentValue) => accumulator && fieldsValidity[currentValue], true)
+            }
+        }, () => console.log(this.state));
+    }
+    render() {
+    let {
         state: {
             anchorEl,
             imageUploadOpen,
             videoShareAnchor
         },
-        jobDependencies: { loading, jobBenefits, jobTypes, company },
+        jobDependencies: { loading, jobBenefits: allJobBenefits, jobTypes: allJobTypes, company },
         updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
         handleClick, handleClose, addField, removeTextField,
         openImageUpload, closeImageUpload, handleError, handleSuccess,
         openVideoShare, closeVideoShare,
         removeImage, removeVideo,
         handleDateChange,
-        values, touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, isValid
-    } = props;
-
-    if (loading || !company)
-        return <Loader />
-
+        values, touched, errors, isSubmitting, handleSubmit, isValid
+    } = this.props;
+    const {
+        id, title, companyId, teamId, jobBenefits, salary, activityField, skills, expireDate, location, imagePath, videoUrl, status, description, idealCandidate
+    } = this.state.formData;
+    allJobBenefits = allJobBenefits.map(item => {
+        item.icon = item.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() });
+        return item;
+    });
+    // const benefitsIcons = benefits.map()
+    // console.log(allJobBenefits);
+    // console.log(allJobTypes);
+    // console.log(company);
+    if (loading || !company) return <Loader />
     return (
         <div className='newJobRoot'>
-            {console.log(props)}
             <div className='header'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                     <FormattedMessage id="jobs.new.jobTitle" defaultMessage="Job title\nJob title..." description="Job title">
-                        {(text) => (
-                            <TextField
-                                name="title"
-                                label={text.split("\n")[0]}
-                                placeholder={text.split("\n")[2]}
-                                className='textField'
-                                fullWidth
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.title}
-                                error={!!(touched.title && errors.title)}
-                                helperText={touched.title && errors.title}
-                                InputProps={{
-                                    classes: {
-                                        input: 'titleInput',
-                                    },
-                                }}
-                            />
-                        )}
+                        {(text) => <InputHOC key="title" InputProps={{ classes: { input: 'titleInput' } }} updateFormState={this.handleChange} fullWidth={true} value={title} name="title" label={text.split("\n")[0]} placeholder={text.split("\n")[2]} schema={this.validation.title} />}
                     </FormattedMessage>
                     
                 </Grid>
@@ -178,8 +256,8 @@ const NewJob = props => {
                                                         placeholder={text.split("\n")[1]}
                                                         className='textField'
                                                         fullWidth
-                                                        onBlur={handleBlur}
-                                                        onChange={handleChange}
+                                                        // onBlur={handleBlur}
+                                                        // onChange={handleChange}
                                                         value={values.videoUrl}
                                                         error={!!(touched.videoUrl && errors.videoUrl)}
                                                         helperText={touched.videoUrl && errors.videoUrl}
@@ -216,19 +294,7 @@ const NewJob = props => {
                                 )}
                             </FormattedMessage>
                             <FormattedMessage id="company.brand.froalaEditor" defaultMessage="This is where the job description should be" description="This is where the job description should be">
-                                {(text) => (
-                                    <FroalaEditor
-                                        config={{
-                                            placeholderText: text,
-                                            iconsTemplate: 'font_awesome_5',
-                                            toolbarInline: true,
-                                            charCounterCount: false,
-                                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
-                                        }}
-                                        model={values.description}
-                                        onModelChange={updateDescription}
-                                    />
-                                )}
+                                { text => <InputHOC key="description" name="description" placeholder={text} value={description} updateFormState={this.handleChange} froala={true} /> }
                             </FormattedMessage>
                             
                         </section>
@@ -246,24 +312,7 @@ const NewJob = props => {
                                 )}
                             </FormattedMessage>
                             
-                            <DatePicker
-                                format="DD/MM/YYYY"
-                                disablePast={true}
-                                value={values.expireDate}
-                                onBlur={handleBlur}
-                                onChange={handleDateChange}
-                                animateYearScrolling
-                            />
-                            {/* <TextField
-                                name="expireDate"
-                                type="date"
-                                className='jobSelect'
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.expireDate}
-                                error={!!(touched.expireDate && errors.expireDate)}
-                                helperText={touched.expireDate && errors.expireDate}
-                            /> */}
+                            <InputHOC key="expireDate" name="expireDate" value={expireDate} updateFormState={this.handleChange} date={true} />
                         </section>
                         <section className='benefits'>
                             <FormattedMessage id="jobs.new.jobBenefits" defaultMessage="Job \nbenefits" description="Job benefits">
@@ -279,16 +328,17 @@ const NewJob = props => {
                                 )}
                             </FormattedMessage>
                             
-                            <FormControl className='formControl'>
-                                <Select
+                            <FormControl className='formControl' style={{ width: 'auto', display: 'inline', flexWrap: 'wrap' }}>
+                                <ChipsHOC key="jobBenefits" name="jobBenefits" value={jobBenefits} options={allJobBenefits} />
+                                {/* <Select
                                     multiple
-                                    value={values.jobBenefits}
-                                    onChange={handleChange}
+                                    value={jobBenefits}
+                                    // onChange={handleChange}
                                     input={<Input name="jobBenefits" />}
                                     renderValue={selected => (
                                         <div className='selectedBenefits'>
                                             {selected.map(id => {
-                                                let benefit = jobBenefits.find(benefit => benefit.id === id);
+                                                let benefit = allJobBenefits.find(benefit => benefit.id === id);
                                                 if (benefit)
                                                     return (
                                                         <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key} key={benefit.key}>
@@ -302,9 +352,9 @@ const NewJob = props => {
                                     )}
                                     className='jobSelect'
                                 >
-                                    {jobBenefits.map(benefit => (
+                                    {allJobBenefits.map(benefit => (
                                         <MenuItem key={benefit.id} value={benefit.id}>
-                                            <Checkbox checked={values.jobBenefits.indexOf(benefit.id) > -1} />
+                                            <Checkbox checked={jobBenefits.indexOf(benefit.id) > -1} />
                                             <img style={{ marginRight: '10px', width: '20px' }} src={benefits[benefit.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() })]} alt={benefit.key} />
                                             <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key}>
                                                 {(text) => <ListItemText primary={text} />}
@@ -312,7 +362,7 @@ const NewJob = props => {
 
                                         </MenuItem>
                                     ))}
-                                </Select>
+                                </Select> */}
                             </FormControl>
                         </section>
                         <section className='team'>
@@ -331,7 +381,7 @@ const NewJob = props => {
                             
                             <Select
                                 name='teamId'
-                                onChange={handleChange}
+                                // onChange={handleChange}
                                 value={values.teamId}
                                 className='jobSelect'
                             >
@@ -356,19 +406,7 @@ const NewJob = props => {
                                 )}
                             </FormattedMessage>
                             <FormattedMessage id="jobs.new.froalaCandidate" defaultMessage="Describe the ideal candidate..." description="Describe the ideal candidate">
-                                {(text) => (
-                                    <FroalaEditor
-                                        config={{
-                                            placeholderText: text,
-                                            iconsTemplate: 'font_awesome_5',
-                                            toolbarInline: true,
-                                            charCounterCount: false,
-                                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', 'color', '-', 'paragraphFormat', 'align', 'formatOL', 'indent', 'outdent', '-', 'undo', 'redo']
-                                        }}
-                                        model={values.idealCandidate}
-                                        onModelChange={updateIdealCandidate}
-                                    />
-                                )}
+                                { text => <InputHOC key="idealCandidate" name="idealCandidate" placeholder={text} value={idealCandidate} updateFormState={this.handleChange} froala={true} /> }
                             </FormattedMessage>
                             
                         </section>
@@ -379,13 +417,13 @@ const NewJob = props => {
                                 )}
                             </FormattedMessage>
                             <FormattedMessage id="jobs.new.activityField" defaultMessage="Activity field\nActivity field..." description="Activity field">
-                                {(text) => (
+                                { text => (
                                     <TextField
                                         name="activityField"
                                         label={text.split("\n")[0]}
                                         placeholder={text.split("\n")[1]}
                                         className='textField jobSelect'
-                                        onChange={handleChange}
+                                        // onChange={handleChange}
                                         value={values.activityField}
                                     />
                                 )}
@@ -419,12 +457,12 @@ const NewJob = props => {
                                 <Select
                                     multiple
                                     value={values.jobTypes}
-                                    onChange={handleChange}
+                                    // onChange={handleChange}
                                     input={<Input name="jobTypes" />}
-                                    renderValue={selected => selected.map(item => jobTypes.find(jt => jt.id === item).title).join(', ')}
+                                    renderValue={selected => selected.map(item => allJobTypes.find(jt => jt.id === item).title).join(', ')}
                                     className='jobSelect'
                                 >
-                                    {jobTypes.map(jobType => (
+                                    {allJobTypes.map(jobType => (
                                         <MenuItem key={jobType.id} value={jobType.id}>
                                             <Checkbox checked={values.jobTypes.indexOf(jobType.id) > -1} />
                                             <ListItemText primary={jobType.title} />
@@ -450,15 +488,20 @@ const NewJob = props => {
                             />
                             <FormControlLabel
                                 control={
-                                    <Checkbox name="salary.isPublic" checked={values.salary.isPublic} onChange={handleChange} />
+                                    <Checkbox
+                                        name="salary.isPublic"
+                                        checked={values.salary.isPublic}
+                                        // onChange={handleChange}
+                                        />
                                 }
                                 label="Public" />
                         </section>
                         <section className='locationSection'>
                             <LocationInput
-                                updateFormState={val => handleChange({ target: { name: val[0].field, value: val[0].value }})}
+                                // updateFormState={val => handleChange({ target: { name: val[0].field, value: val[0].value }})}
+                                updateFormState={this.handleChange}
                                 value={values.location}
-                                // schema={this.validation.location}
+                                schema={this.validation.location}
                             />
                         </section>
                         <section className='jobStatus'>
@@ -473,7 +516,7 @@ const NewJob = props => {
                             <FormControl className='formControl'>
                                 <Select
                                     name='status'
-                                    onChange={handleChange}
+                                    // onChange={handleChange}
                                     value={values.status}
                                     className='jobStatusSelect jobSelect'
                                 >
@@ -554,7 +597,7 @@ const NewJob = props => {
                                                             label={text}
                                                             placeholder={text}
                                                             className='textField'
-                                                            onChange={handleChange}
+                                                            // onChange={handleChange}
                                                             value={values[key]}
                                                             InputProps={{
                                                                 classes: {
@@ -602,6 +645,7 @@ const NewJob = props => {
             </Grid>
         </div>
     )
+    }
 }
 
 export default NewJob;
