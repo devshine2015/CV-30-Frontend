@@ -35,12 +35,11 @@ const jobsData = gql`
 export const getJobsQuery = gql`
 query jobs(
   $language: LanguageCodeType!
-  $companyId: String
-  $status: String
+  $filter: JobsFilterInput
   $first: Int!
   $after: String
 ) {
-  jobs(language: $language, companyId: $companyId, status: $status, first: $first, after: $after) {
+  jobs(language: $language, filter: $filter, first: $first, after: $after) {
     edges {
       node {
           ...jobsData

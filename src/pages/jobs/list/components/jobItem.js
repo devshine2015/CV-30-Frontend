@@ -10,7 +10,7 @@ import JobAvatarHeader from '../../../../components/AvatarHeader/JobAvatarHeader
 import { s3BucketURL } from '../../../../constants/s3';
 import * as benefits from '../../../../assets/benefits';
 
-const JobItem = props => {
+const jobItem = props => {
     const { job, lang, editJob } = props;
     const { title, description, videoUrl, imagePath, appliedDate, jobTypes, jobBenefits, location } = job;
 
@@ -106,4 +106,4 @@ const JobItem = props => {
     );
 };
 
-export default compose(withRouter)(JobItem);
+export const JobItem = compose(withRouter)(jobItem);

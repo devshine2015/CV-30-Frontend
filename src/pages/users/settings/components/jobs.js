@@ -1,6 +1,6 @@
 import React from 'react';
 
-import JobItem from '../../../jobs/list/components/jobItem';
+import { JobItem } from '../../../jobs/list/components';
 
 const JobsList = props => {
     const { 

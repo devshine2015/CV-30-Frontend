@@ -7,7 +7,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { Select, MenuItem } from '@material-ui/core';
 
 import { getJobsQuery } from '../../../../store/queries';
-import JobItem from '../../../jobs/list/components/jobItem';
+import { JobItem } from '../../../jobs/list/components';
 import Loader from '../../../../components/Loader';
 
 const JobsListHOC = compose(
@@ -19,8 +19,10 @@ const JobsListHOC = compose(
         options: (props) => ({
             variables: {
                 language: props.match.params.lang,
-                companyId: props.match.params.companyId,
-                status: props.state.status,
+                filter: {
+                    companyId: props.match.params.companyId,
+                    status: props.state.status,
+                },
                 first: 10
             },
             fetchPolicy: 'network-only'

@@ -63,8 +63,9 @@ const EditHOC = compose(
                 return {};
 
             const { id, title, activityField, description, idealCandidate, company: { id: companyId }, team: { id: teamId },
-                expireDate, jobTypes, location, salary: { amountMax, amountMin, currency, isPublic },
+                expireDate, jobTypes, location, salary,
                 skills, imagePath, videoUrl, status, jobBenefits, phone, email, facebook, linkedin } = job;
+            const { amountMax, amountMin, currency, isPublic } = salary || {amountMin: 0, amountMax: 1000, currenct: 'eur', isPublic: false };
 
             return {
                 id,

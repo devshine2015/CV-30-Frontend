@@ -669,6 +669,14 @@
     }
 }
 
+.jobsListRoot {
+    .header {
+        .searchFields {
+            align-items: flex-end;
+        }
+    }
+}
+
 .jobsListRoot,
 .jobsList {
     position: relative;

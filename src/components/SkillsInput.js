@@ -8,6 +8,7 @@ import { skillsQuery } from "../store/queries";
 import AutoCompleteSelectInput from "./AutoCompleteSelectInput";
 
 const SkillsInputHOC = compose(
+    pure,
     graphql(skillsQuery, {
         name: 'skillsQuery',
         options: () => ({
@@ -23,7 +24,7 @@ const SkillsInput = props => {
 
     if (skillsQuery.loading || !skillsQuery.skills) return <div>Skills...</div>;
 
-    const { value, onChange, intl } = props;
+    const { value, onChange, intl, label, placeholder } = props;
 
     const suggestions = skillsQuery.skills.map(skill => ({
         value: skill.id,
@@ -32,6 +33,8 @@ const SkillsInput = props => {
 
     return (
         <AutoCompleteSelectInput
+            label={label || 'Skills'}
+            placeholder={placeholder || 'Select Skills...'}
             isMulti
             value={value.map(item => suggestions.find(el => el.value === item))}
             onChange={val => onChange(val.map(item => item.value))}

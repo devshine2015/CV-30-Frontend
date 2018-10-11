@@ -149,7 +149,7 @@ export class PeriodDatePickers extends React.PureComponent {
 export class AutoSuggestField extends React.PureComponent {
     renderInput = inputProps => {
         const { InputProps, classes, ref, ...other } = inputProps;
-      
+        console.log(inputProps);
         return (
             <TextField
                 InputProps={{
@@ -219,7 +219,8 @@ export class AutoSuggestField extends React.PureComponent {
                                 fullWidth: true,
                                 classes: [],
                                 InputProps: getInputProps({
-                                    placeholder: text.split("\n")[1]
+                                    placeholder: text.split("\n")[1],
+                                    ...this.props.InputProps
                                 }),
                                 label: text.split("\n")[0],
                                 placeholder: text.split("\n")[1]

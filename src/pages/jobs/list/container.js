@@ -6,12 +6,35 @@ import { withRouter } from 'react-router-dom';
 
 const JobsListHOC = compose(
     withRouter,
+    withState('searchData', 'setSearchData', {
+        title: '',
+        location: '',
+        companyName: '',
+        jobTypes: [],
+        //salary: JobCompensationFilterInput
+        skills: [],
+        benefits: [],
+        //teamId: String
+        industryId: undefined,
+        companyTypes: []
+    }),
+    pure,
     graphql(getJobsQuery, {
         name: 'getJobsQuery',
-        options: props => ({
+        options: ({ match, searchData: { title, location, companyName, jobTypes, skills, benefits, industryId, companyTypes}}) => ({
             fetchPolicy: 'network-only',
             variables: {
-                language: props.match.params.lang,
+                language: match.params.lang,
+                filter: {
+                    title,
+                    location,
+                    companyName,
+                    jobTypes,
+                    skills,
+                    benefits,
+                    industryId,
+                    companyTypes
+                },
                 first: 10
             },
         }),
@@ -26,11 +49,7 @@ const JobsListHOC = compose(
                 throw Error('Field must have a name attribute!');
             }
             props.setFormData(state => ({ ...state, [name]: value }));
-        },
-        handleSliderChange: () => (value) => {
-            console.log(value);
-        },
-        handleSearchJobs: props => event => console.log(props.formData)
+        }
     }),
     pure
 );
