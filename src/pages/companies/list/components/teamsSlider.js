@@ -7,7 +7,6 @@ import { s3BucketURL } from '../../../../constants/s3';
 import ReactPlayer from 'react-player';
 
 import "react-alice-carousel/lib/alice-carousel.css";
-
 import { FormattedDate } from 'react-intl';
 
 import 'pure-react-carousel/dist/react-carousel.es.css';
