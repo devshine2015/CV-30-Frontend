@@ -12,13 +12,13 @@ import { FormattedDate } from 'react-intl';
 
 import 'pure-react-carousel/dist/react-carousel.es.css';
 
-const JobsSlider = ({ jobs }) => {
-    console.log("----------- jobs -------------", jobs)
-    const responsive = {
-        0: { items: 1 },
-        1600: { items: 2 },
-      };
-    const renderItems = (jobs) => {
+
+const responsive = {
+    0: { items: 1 },
+    1600: { items: 2 },
+    };
+class JobsSlider extends React.Component {
+        renderItems = (jobs) => {
         return jobs.map((job, index) => {
             const { id, level, location, expireDate, title, imagePath, videoUrl  } = job;
             return (
@@ -60,53 +60,20 @@ const JobsSlider = ({ jobs }) => {
             )
         })
     }
-    return (
-        <div className="jobs">
-            {/* <CarouselProvider
-                dragEnabled={false}
-                visibleSlides={1}
-                naturalSlideWidth={400}
-                naturalSlideHeight={400}
-                totalSlides={jobs.length}
-                className="teamSliderMain"
-            >
-                <div className="groupButtons">
-                    <ButtonBack>{"<"}</ButtonBack>
-                    <DotGroup />
-                    <ButtonNext>{">"}</ButtonNext>
-                </div>
-                <Slider>
-                    {jobs.map((job, index) => {
-                        const { id, level, location, expireDate, title } = job;
-                        return (
-                            <Slide index={index} key={id} className='jobItem'>
-                                <div className='media'>
-                                    <div className='mediaFake'>
-                                        <i className="fas fa-play fa-3x"></i>
-                                    </div>
-                                    <span className='role'>{level}</span>
-                                </div>
-                                <div className='info'>
-                                    <h5>{title}</h5>
-                                    <FormattedDate value={expireDate} month='short' day='2-digit'                >
-                                        {(text) => (<span>{text}</span>)}
-                                    </FormattedDate>
-                                    <span>&nbsp;-&nbsp;{location}</span>
-                                </div>
-                            </Slide>
-                        )
-                    })}
-                </Slider>
-            </CarouselProvider> */}
-            <div className="top-panel">
-                <Icon className="left-icon" onClick={() => this.Carousel._slidePrev()}>keyboard_arrow_left</Icon>
-                <Icon className="right-icon" onClick={() => this.Carousel._slideNext()}>keyboard_arrow_right</Icon>
-            </div>
-            <AliceCarousel responsive={responsive} buttonsDisabled={true} ref={ el => this.Carousel = el }>
-                {renderItems(jobs)}
-            </AliceCarousel>
-        </div>
-    )
-};
 
+    render () {
+        const { jobs } = this.props
+        return (
+            <div className="jobs">
+                <div className="top-panel">
+                    <Icon className="left-icon" onClick={() => this.Carousel._slidePrev()}>keyboard_arrow_left</Icon>
+                    <Icon className="right-icon" onClick={() => this.Carousel._slideNext()}>keyboard_arrow_right</Icon>
+                </div>
+                <AliceCarousel responsive={responsive} buttonsDisabled={true} ref={ el => this.Carousel = el }>
+                    {this.renderItems(jobs)}
+                </AliceCarousel>
+            </div>
+        )
+    }
+}
 export default JobsSlider;

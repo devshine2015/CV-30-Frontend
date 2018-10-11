@@ -9,6 +9,7 @@ import { jobDependencies, handleJob, setFeedbackMessage, setEditMode } from '../
 import { jobsFolder } from '../../../constants/s3';
 import { jobValidation } from './validations';
 
+
 const NewJobHOC = compose(
     withRouter,
     graphql(jobDependencies, {

@@ -54,6 +54,7 @@ const NewJob = props => {
 
     return (
         <div className='newJobRoot'>
+            {console.log(props)}
             <div className='header'>
                 <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                     <FormattedMessage id="jobs.new.jobTitle" defaultMessage="Job title\nJob title..." description="Job title">
