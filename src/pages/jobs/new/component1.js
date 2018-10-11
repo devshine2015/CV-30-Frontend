@@ -32,6 +32,8 @@ import { s3BucketURL } from '../../../constants/s3';
 import SkillsInput from '../../../components/SkillsInput';
 import { jobsFolder } from '../../../constants/s3';
 import { jobValidation } from './validations';
+import { InputHOC } from '../../../components/FormHOCs';
+
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 
@@ -172,8 +174,6 @@ class NewJob extends React.Component {
     }
 
     handleSliderChange = value => {
-        
-
         this.setState({
             formData: {
                 salary: {
@@ -185,7 +185,6 @@ class NewJob extends React.Component {
     }
 
     onSkillsChange = skills => {
-        
         this.setState({
             formData: {
                 skills
@@ -215,7 +214,6 @@ class NewJob extends React.Component {
     }
 
     handleSuccess = ({ path, filename }) => { 
-
         const { id } = this.state.formData
         
         this.setState({
@@ -226,8 +224,6 @@ class NewJob extends React.Component {
     }
 
     removeImage = () => { 
-        
-
         this.setState({
             formData: {
                 imagePath: null
@@ -236,7 +232,6 @@ class NewJob extends React.Component {
     }
 
     removeVideo = () =>  { 
-       
         this.setState({
             formData: {
                 videoUrl: null
@@ -295,7 +290,8 @@ class NewJob extends React.Component {
                 <div className='header'>
                     <Grid item lg={6} md={6} sm={10} xs={11} className='centralColumn'>
                         <FormattedMessage id="jobs.new.jobTitle" defaultMessage="Job title\nJob title..." description="Job title">
-                            {(text) => (
+                            {(text) => <InputHOC key="title" updateFormState={this.handleChange} fullWidth={true}  value={title} name="title" label={text.split("\n")[0]} placeholder={text.split("\n")[2]} schema={this.validation.position} /> }
+                            {/* (
                                 <TextField
                                     name="title"
                                     label={text.split("\n")[0]}
@@ -313,7 +309,7 @@ class NewJob extends React.Component {
                                         },
                                     }}
                                 />
-                            )}
+                            )} */}
                         </FormattedMessage>
                         
                     </Grid>
