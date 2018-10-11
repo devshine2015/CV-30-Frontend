@@ -12,7 +12,6 @@ import { FormattedDate } from 'react-intl';
 
 import 'pure-react-carousel/dist/react-carousel.es.css';
 
-
 const responsive = {
     0: { items: 1 },
     1600: { items: 2 },
@@ -47,7 +46,7 @@ class JobsSlider extends React.Component {
                                     playing={false} />
                             }
                         </div>
-                        <span className='role'>{level}</span>
+                        <span className='role'>internship</span>
                     </div>
                     <div className='info'>
                         <h5>{title}</h5>
