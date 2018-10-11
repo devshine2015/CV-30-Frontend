@@ -18,6 +18,7 @@
     max-height: 80vh;
     top: 100px;
     overflow-y: auto;
+    outline: none;
 }
 
 .storyEditPaper,
@@ -29,6 +30,14 @@
         align-items: center;
         padding: 15px 15px 0;
         flex-wrap: wrap;
+        
+        div.popupTitle {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+        }
 
         h4 {
             font-size: 1rem;
@@ -36,6 +45,20 @@
             color: #397db9;
             width: 100;
             margin: 5px 0;
+        }
+
+        .headerCloseBtn {
+            font-size: 0.8em;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-weight: 400;
+            color: #aaa;
+            cursor: pointer;
+            &:hover {
+                border-color: #aaaaaa;
+                color: #888888;
+            }
         }
 
         p {
@@ -211,6 +234,31 @@
             background: #397db9;
             color: #fff;
             margin-left: 15px;
+        }
+    }
+
+    .closeBtn {
+        position: absolute;
+        background-color: #fff;
+        bottom: -24px;
+        right: 12px;
+        border: 1px solid #aaa;
+        & :hover {
+            background-color: #fff;
+        }
+    }
+
+    .closeBtnLabel {
+        background: transparent;
+        &:hover {
+            background: transparent;
+        }
+    }
+
+    .closeBtnIconRoot {
+        background: transparent;
+        &:hover {
+            background: transparent;
         }
     }
 }
@@ -523,6 +571,7 @@
                 }
             }
         }
+
     }
 
     .articleEdit {
@@ -637,12 +686,29 @@
                     margin: 30px 0;
                 }
 
+                .btnsContainer {
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    display: flex;
+                    margin-top: 30px;
+                }
+
+                .cancelBtn {
+                    padding: 7px 16px;
+                    font-size: 1.25em;
+                    font-weight: 400;
+                    color: #fff;
+                    border: 1px solid #ffffff;
+                    border-radius: 4px;
+                    text-decoration: none;
+                }
+
                 .publishBtn {
                     background: #fff;
                     color: #397db9;
                     text-transform: capitalize;
                     font-size: 1.25rem;
-                    margin-top: 30px;
                 }
 
                 .featuredMedia {

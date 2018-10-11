@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Grid } from '@material-ui/core';
+import { Grid, Modal/*, Icon, IconButton*/ } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { compose, withHandlers, pure } from 'recompose';
@@ -126,18 +126,25 @@ const ArticlePopUp = props => {
             {loading ? <Loader /> :
                 <div className='storyEditPaper'>
                     <div className='popupHeader'>
-                        <FormattedMessage id="article.addArticle" defaultMessage="Add an article" description="Add an article">
-                            {(text) => (
-                                <h4>{text}</h4>
-                            )}
-                        </FormattedMessage>
-                        <FormattedMessage id="article.para" defaultMessage="Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro." description="Article Paragraph">
+                        <div className="popupTitle">
+                            <FormattedMessage id="article.addArticle" defaultMessage="Add an article" description="Add an article">
+                                {(text) => (
+                                    <h4>{text}</h4>
+                                )}
+                            </FormattedMessage>
+                            <FormattedMessage id="article.closeArticle" defaultMessage="CLOSE" description="CLOSE">
+                                {(text) => (
+                                    <h4 onClick={onClose} className="headerCloseBtn">{text}</h4>
+                                )}
+                            </FormattedMessage>
+                        </div>
+                        {/* <FormattedMessage id="article.para" defaultMessage="Lorem ipsum dolor sit amet, his fastidii phaedrum disputando ut, vis eu omnis intellegam, at duis voluptua signiferumque pro." description="Article Paragraph">
                             {(text) => (
                                 <p>
                                     {text}
                                 </p>
                             )}
-                        </FormattedMessage>
+                        </FormattedMessage> */}
                         
                         <div className='headerChoices'>
                             <FormattedMessage id="article.choose" defaultMessage="Choose an existing article" description="Choose an existing article">
@@ -211,6 +218,12 @@ const ArticlePopUp = props => {
                             }
                         </div>
                     </div>
+                    {/* <IconButton onClick={onClose} className='closeBtn'
+                    classes={{
+                        label: 'closeBtnLabel'
+                    }}>
+                        <Icon className='closeBtnIconRoot'>close</Icon>
+                    </IconButton> */}
                 </div>
             }
         </Modal>
