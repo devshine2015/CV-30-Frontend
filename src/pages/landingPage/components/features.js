@@ -71,20 +71,30 @@ class Features extends React.Component {
 
     constructor (props) {
         super (props)
-        
+        const { landingPageQuery: { landingPage}} = props
+        const { articles } = landingPage || {}
         this.state = {
-            articles: []
+            articles,
+            onDelete: false
         }
     }
 
-    componentWillReceiveProps (props) {
-        const { landingPageQuery: { landingPage}} = props
+    componentWillReceiveProps (nextProps) {
+        const { landingPageQuery: { landingPage}} = nextProps
         const { articles } = landingPage || {}
-        this.setState({
-            articles
-        })
+        if ( !this.state.onDelete ) {
+            this.setState({
+                articles
+            })
+        } else {
+            this.setState({
+                onDelete: false
+            })
+        }
+        
+        
     }
-    
+
     clickDeleteBtn = (id) => {
         const { handleDeleteBtnClick } = this.props
         confirmAlert({
@@ -95,14 +105,23 @@ class Features extends React.Component {
                 label: 'Yes',
                 onClick: () =>  { 
                     handleDeleteBtnClick(id) 
-                    this.setState ({
-                        articles: this.state.articles.filter((x,i) => x.id === id )
-                    })
+                    const articles = this.state.articles
+                    for (var i = 0; i < articles.length; i++) {
+                        var obj = articles[i];
+                        if ( obj.id === id ) {
+                            articles.splice(i, 1);
+                            this.setState ({
+                                articles,
+                                onDelete: true,
+                            })
+                        }
+                    }
+                   
                 }
               },
               {
                 label: 'No',
-                onClick: () => alert('Click No')
+                onClick: () => console.log("unchanged")
               }
             ]
           })
@@ -110,13 +129,13 @@ class Features extends React.Component {
 
     render () {
         const {
-            editMode, handleEditBtnClick, handleDeleteBtnClick,
+            editMode, handleEditBtnClick,
             articlePopUpOpen, toggleArticlePopUp, closeArticlePopUp,
             landingPageQuery: { landingPage }, currentUserQuery: { auth },
         } = this.props;
         const isEditAllowed = (auth && auth.currentUser && auth.currentUser.god) || false;
         // const { articles } = landingPage || {};
-        
+        console.log("----------------render --------------------", this.state.articles)
         return (
             <div className='featuresContainer'>
                 {this.state.articles && this.state.articles.map((article, index) => {
