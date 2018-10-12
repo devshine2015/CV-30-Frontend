@@ -500,7 +500,7 @@
     "company.brand.addJobBtn": "+ Add new job",
 
     "company.list.findCompany": "Find \ncompany",
-    "company.list.searchFilters": "Company\nSearch company...\nCity\nFind city...\nIndustry\nFind industry...\nTeam\nFind team...",
+    "company.list.searchFilters": "Company\nSearch company...\nLocation\nFind location...\nIndustry\nFind industry...\nTeam\nFind team...",
     "company.list.startUp": "Startup",
     "company.list.corporation": "Corporation" ,
     "company.list.boutique": "Boutique",

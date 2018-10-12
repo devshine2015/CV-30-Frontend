@@ -124,4 +124,4 @@ const Company = ({ activeTab, handleTabChange,
         </div>
     );
 
-export default CompanyHOC(Company);
+export const CompanyItem = CompanyHOC(Company);

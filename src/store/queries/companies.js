@@ -110,10 +110,11 @@ ${minimumCompanyData}
 export const companiesQuery = gql`
   query companies(
     $language: LanguageCodeType!
+    $filter: CompaniesFilterInput
     $first: Int!
     $after: String
   ) {
-    companies(language: $language, first: $first, after: $after) {
+    companies(language: $language, filter: $filter, first: $first, after: $after) {
       edges {
         node {
             ...minimumCompanyData

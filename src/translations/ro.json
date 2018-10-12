@@ -496,7 +496,7 @@
     "company.brand.addJobBtn": "+ Adauga un job nou",
 
     "company.list.findCompany": "Gaseste o companie",
-    "company.list.searchFilters": "Companie\nCauta o companie...\nOras\nGaseste un oras...\nIndustrie\nGaseste o industrie...\nEchipa\nGaseste o echipa...",
+    "company.list.searchFilters": "Companie\nCauta o companie...\nLocatie\nGaseste locatia...\nIndustrie\nGaseste o industrie...\nEchipa\nGaseste o echipa...",
     "company.list.startUp": "Startup",
     "company.list.corporation": "Corporatie" ,
     "company.list.boutique": "Butic",
