@@ -1,35 +1,79 @@
-export { default as eventTickets } from './event-tickets.js';
-export { default as childrenCare } from './children-care.js';
-export { default as privateClinic } from './private-clinic.js';
-export { default as coaching } from './coaching.js';
-export { default as coffee } from './coffee.js';
-export { default as commutingSubsidy } from './commuting-subsidy.js';
-export { default as companyCar } from './company-car.js';
-export { default as companyLaptop } from './company-laptop.js';
-export { default as companyPhone } from './company-phone.js';
-export { default as dentist } from './dentist.js';
-export { default as disabilityInsurance } from './disability-insurance.js';
-export { default as elderCare } from './elder-care.js';
-export { default as familyBenefits } from './family-benefits.js';
-export { default as freeBooks } from './free-books.js';
-export { default as games } from './games.js';
-export { default as gymMembership } from './gym-membership.js';
-export { default as housing } from './housing.js';
-export { default as internationalExperiences } from './international-experiences.js';
-export { default as lifeInisurance } from './life-inisurance.js';
-export { default as mealCoupons } from './meal-coupons.js';
-export { default as oneDayOff } from './one-day-off.js';
-export { default as paidMaternity } from './paid-maternity.js';
-export { default as paidVacations } from './paid-vacations.js';
-export { default as playground } from './playground.js';
-export { default as professionalDevProgram } from './professional-dev-program.js';
-export { default as profitSharing } from './profit-sharing.js';
-export { default as flexibleWorkingHours } from './flexible-working-hours.js';
-export { default as relaxArea } from './relax-area.js';
-export { default as relocationExpenses } from './relocation-expenses.js';
-export { default as sabaticLeave } from './sabatic-leave.js';
-export { default as snacks } from './snacks.js';
-export { default as stockOption } from './stock-option.js';
-export { default as teamBondingEvents } from './team-bonding-events.js';
-export { default as trainings } from './trainings.js';
-export { default as tuitionReimbursment } from './tuition-reimbursment.js';
+import React from 'react';
+import { default as EventTickets } from './event-tickets.js';
+import { default as ChildrenCare } from './children-care.js';
+import { default as PrivateClinic } from './private-clinic.js';
+import { default as Coaching } from './coaching.js';
+import { default as Coffee } from './coffee.js';
+import { default as CommutingSubsidy } from './commuting-subsidy.js';
+import { default as CompanyCar } from './company-car.js';
+import { default as CompanyLaptop } from './company-laptop.js';
+import { default as CompanyPhone } from './company-phone.js';
+import { default as Dentist } from './dentist.js';
+import { default as DisabilityInsurance } from './disability-insurance.js';
+import { default as ElderCare } from './elder-care.js';
+import { default as FamilyBenefits } from './family-benefits.js';
+import { default as FreeBooks } from './free-books.js';
+import { default as Games } from './games.js';
+import { default as GymMembership } from './gym-membership.js';
+import { default as Housing } from './housing.js';
+import { default as InternationalExperiences } from './international-experiences.js';
+import { default as LifeInsurance } from './life-insurance.js';
+import { default as MealCoupons } from './meal-coupons.js';
+import { default as OneDayOff } from './one-day-off.js';
+import { default as PaidMaternity } from './paid-maternity.js';
+import { default as PaidVacations } from './paid-vacations.js';
+import { default as Playground } from './playground.js';
+import { default as ProfessionalDevProgram } from './professional-dev-program.js';
+import { default as ProfitSharing } from './profit-sharing.js';
+import { default as FlexibleWorkingHours } from './flexible-working-hours.js';
+import { default as RelaxArea } from './relax-area.js';
+import { default as RelocationExpenses } from './relocation-expenses.js';
+import { default as SabaticLeave } from './sabatic-leave.js';
+import { default as Snacks } from './snacks.js';
+import { default as StockOption } from './stock-option.js';
+import { default as TeamBondingEvents } from './team-bonding-events.js';
+import { default as Trainings } from './trainings.js';
+import { default as TuitionReimbursment } from './tuition-reimbursment.js';
+
+const icons = {
+    'event-tickets': EventTickets,
+    'children-care': ChildrenCare,
+    'private-clinic': PrivateClinic,
+    'coaching': Coaching,
+    'coffee': Coffee,
+    'commuting-subsidy': CommutingSubsidy,
+    'company-car': CompanyCar,
+    'company-laptop': CompanyLaptop,
+    'company-phone': CompanyPhone,
+    'dentist': Dentist,
+    'disability-insurance': DisabilityInsurance,
+    'elder-care': ElderCare,
+    'family-benefits': FamilyBenefits,
+    'free-books': FreeBooks,
+    'games': Games,
+    'gym-membership': GymMembership,
+    'housing': Housing,
+    'international-experiences': InternationalExperiences,
+    'life-insurance': LifeInsurance,
+    'meal-coupons': MealCoupons,
+    'one-day-off': OneDayOff,
+    'paid-maternity': PaidMaternity,
+    'paid-vacations': PaidVacations,
+    'playground': Playground,
+    'professional-dev-program': ProfessionalDevProgram,
+    'profit-sharing': ProfitSharing,
+    'flexible-working-hours': FlexibleWorkingHours,
+    'relax-area': RelaxArea,
+    'relocation-expenses': RelocationExpenses,
+    'sabatic-leave': SabaticLeave,
+    'snacks': Snacks,
+    'stock-option': StockOption,
+    'team-bonding-events': TeamBondingEvents,
+    'trainings': Trainings,
+    'tuition-reimbursment': TuitionReimbursment,
+}
+
+export default ({ icon, size, fill, style }) => {
+    const IconComponent = icons[icon];
+    return <IconComponent width={size} height={size} fill={fill} style={style} />
+}

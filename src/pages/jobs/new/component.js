@@ -137,15 +137,16 @@ class NewJob extends React.Component {
         handleDateChange,
         values, touched, errors, isSubmitting, handleSubmit, isValid
     } = this.props;
+    if (loading) return null;
     const {
         id, title, companyId, teamId, jobBenefits, salary, activityField, skills, expireDate, location, imagePath, videoUrl, status, description, idealCandidate
     } = this.state.formData;
-    allJobBenefits = allJobBenefits.map(item => {
-        item.icon = item.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() });
-        return item;
-    });
+    // allJobBenefits = allJobBenefits.map(item => {
+    //     item.icon = item.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() });
+    //     item.icon = item.icon.charAt(0).toUpperCase() + item.icon.slice(1);
+    //     return item;
+    // });
     // const benefitsIcons = benefits.map()
-    // console.log(allJobBenefits);
     // console.log(allJobTypes);
     // console.log(company);
     if (loading || !company) return <Loader />
@@ -320,69 +321,37 @@ class NewJob extends React.Component {
                                     <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
                                 )}
                             </FormattedMessage>
-                            <FormattedMessage id="jobs.new.benefitsPara" defaultMessage="Add job benefits." description="Add job benefits.">
+                            {/* <FormattedMessage id="jobs.new.benefitsPara" defaultMessage="Add job benefits." description="Add job benefits.">
                                 {(text) => (
                                     <p className='helperText'>
                                         {text}
                                     </p>
                                 )}
-                            </FormattedMessage>
+                            </FormattedMessage> */}
                             
                             <FormControl className='formControl' style={{ width: 'auto', display: 'inline', flexWrap: 'wrap' }}>
                                 <ChipsHOC key="jobBenefits" name="jobBenefits" value={jobBenefits} options={allJobBenefits} />
-                                {/* <Select
-                                    multiple
-                                    value={jobBenefits}
-                                    // onChange={handleChange}
-                                    input={<Input name="jobBenefits" />}
-                                    renderValue={selected => (
-                                        <div className='selectedBenefits'>
-                                            {selected.map(id => {
-                                                let benefit = allJobBenefits.find(benefit => benefit.id === id);
-                                                if (benefit)
-                                                    return (
-                                                        <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key} key={benefit.key}>
-                                                            {(text) => <Chip label={text} className='chip' />}
-                                                        </FormattedMessage>
-                                                    )
-                                                else
-                                                    return null;
-                                            })}
-                                        </div>
-                                    )}
-                                    className='jobSelect'
-                                >
-                                    {allJobBenefits.map(benefit => (
-                                        <MenuItem key={benefit.id} value={benefit.id}>
-                                            <Checkbox checked={jobBenefits.indexOf(benefit.id) > -1} />
-                                            <img style={{ marginRight: '10px', width: '20px' }} src={benefits[benefit.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() })]} alt={benefit.key} />
-                                            <FormattedMessage id={`benefits.${benefit.key}`} defaultMessage={benefit.key}>
-                                                {(text) => <ListItemText primary={text} />}
-                                            </FormattedMessage>
-
-                                        </MenuItem>
-                                    ))}
-                                </Select> */}
                             </FormControl>
                         </section>
                         <section className='team'>
                             <FormattedMessage id="jobs.new.associatedTeam" defaultMessage="Associated \nteam" description="Associated team">
                                 {(text) => (
-                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[0]}</b></h2>
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
                                 )}
                             </FormattedMessage>
-                            <FormattedMessage id="jobs.new.addTeam" defaultMessage="Add team." description="Add team.">
+                            {/* <FormattedMessage id="jobs.new.addTeam" defaultMessage="Add team." description="Add team.">
                                 {(text) => (
                                     <p className='helperText'>
                                         {text}
                                     </p>
                                 )}
-                            </FormattedMessage>
+                            </FormattedMessage> */}
                             
                             <Select
                                 name='teamId'
                                 // onChange={handleChange}
                                 value={values.teamId}
+                                style={{ width: '100%' }}
                                 className='jobSelect'
                             >
                                 <FormattedMessage id="jobs.new.selectTeamPara" defaultMessage="Select a team" description="Select a team">
@@ -417,16 +386,17 @@ class NewJob extends React.Component {
                                 )}
                             </FormattedMessage>
                             <FormattedMessage id="jobs.new.activityField" defaultMessage="Activity field\nActivity field..." description="Activity field">
-                                { text => (
-                                    <TextField
-                                        name="activityField"
-                                        label={text.split("\n")[0]}
-                                        placeholder={text.split("\n")[1]}
-                                        className='textField jobSelect'
-                                        // onChange={handleChange}
-                                        value={values.activityField}
-                                    />
-                                )}
+                                { text => <InputHOC fullWidth={true} key="activityField" name="activityField" placeholder={text} value={activityField} updateFormState={this.handleChange} schema={this.validation.activityField} /> }
+                                {/* (
+                                    // <TextField
+                                    //     name="activityField"
+                                    //     label={text.split("\n")[0]}
+                                    //     placeholder={text.split("\n")[1]}
+                                    //     className='textField jobSelect'
+                                    //     // onChange={handleChange}
+                                    //     value={values.activityField}
+                                    // />
+                                ) */}
                             </FormattedMessage>
                             
                         </section>
@@ -445,17 +415,18 @@ class NewJob extends React.Component {
                                     <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
                                 )}
                             </FormattedMessage>
-                            <FormattedMessage id="jobs.new.selectJobTypes" defaultMessage="Select job type(s)." description="Select job type(s).">
+                            {/* <FormattedMessage id="jobs.new.selectJobTypes" defaultMessage="Select job type(s)." description="Select job type(s).">
                                 {(text) => (
                                     <p className='helperText'>
                                         {text}
                                     </p>
                                 )}
-                            </FormattedMessage>
+                            </FormattedMessage> */}
                             
-                            <FormControl className='formControl'>
+                            <FormControl className='formControl' style={{ width: '100%' }}>
                                 <Select
                                     multiple
+                                    style={{ width: '100%' }}
                                     value={values.jobTypes}
                                     // onChange={handleChange}
                                     input={<Input name="jobTypes" />}
@@ -497,6 +468,11 @@ class NewJob extends React.Component {
                                 label="Public" />
                         </section>
                         <section className='locationSection'>
+                            <FormattedMessage id="jobs.new.location" defaultMessage="Location..." description="Location">
+                                {(text) => (
+                                    <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2>
+                                )}
+                            </FormattedMessage>
                             <LocationInput
                                 // updateFormState={val => handleChange({ target: { name: val[0].field, value: val[0].value }})}
                                 updateFormState={this.handleChange}

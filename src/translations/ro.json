@@ -562,6 +562,7 @@
     
     "jobs.new.jobTitle": "Titlul jobului\nTitlul jobului...",
     "jobs.new.descriptions": "Job \ndescriere",
+    "jobs.new.location": "Locatia \njobului",
     "jobs.new.expirationData": "Data \nexpirarii",
     "jobs.new.selectData": "Selecteaza data de expirare.",
     "jobs.new.jobBenefits": "Job \nbeneficii",

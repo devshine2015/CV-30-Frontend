@@ -20,7 +20,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import ImageUploader from './imageUploader';
 import { s3BucketURL } from '../constants/s3';
-import * as benefits from '../assets/benefits';
+import BenefitsIcons from '../assets/benefits';
 import { withHandlers } from 'recompose';
 
 const debounce = (func, wait, immediate) => {
@@ -106,7 +106,7 @@ export class ChipsHOC extends React.PureComponent {
             <React.Fragment>
                 { this.props.options.map(option => (
                     <FormattedMessage key={option.key} id={`benefits.${option.key}`} defaultMessage={option.key}>
-                        { text => <JobBenefitChip option={option} text={text} /> }
+                        { text => <ChipItem option={option} text={text} type={this.props.name} /> }
                     </FormattedMessage>
                 )) }
             </React.Fragment>
@@ -114,19 +114,24 @@ export class ChipsHOC extends React.PureComponent {
     }
 }
 
-class JobBenefitChip extends React.PureComponent {
+class ChipItem extends React.PureComponent {
     state = {
         selected: this.props.selected || false
     }
     toggle = () => this.setState({ selected: !this.state.selected })
+    icon = () => {
+        this.icons = {
+            jobBenefits: <BenefitsIcons icon={this.props.option.key} fill={this.state.selected ? '#397db9' : '#aaaaaa'} size={'1em'} style={{ margin: '0 -8px 0 4px' }} />
+        }
+        return this.props.type && this.icons[this.props.type] ? this.icons[this.props.type] : null;
+    }
     render() {
         return (
             <Chip
-                icon={<img style={{ width: '19px', height: '19px' }} src={benefits[this.props.option.icon]} alt={this.props.option.key} />}
+                icon={this.icon()}
                 label={this.props.text}
                 onClick={this.state.selected ? null : this.toggle}
                 onDelete={!this.state.selected ? null : this.toggle}
-                // className={ this.state.selected ? this.props.classes.colorPrimary : this.props.classes.colorSecondary }
                 style={{
                     alignSelf: 'flex-start',
                     marginBottom: 5,
@@ -136,31 +141,13 @@ class JobBenefitChip extends React.PureComponent {
                     fill: this.state.selected ? '#397db9' : '#aaaaaa',
                     backgroundColor: '#ffffff'
                 }}
+                // icon={<Icon style={{ color: this.state.selected ? '#397db9' : '#aaaaaa' }}>close</Icon>}
                 deleteIcon={<Icon style={{ color: this.state.selected ? '#397db9' : '#aaaaaa' }}>close</Icon>}
                 variant="outlined"
             />
         )
     }
 }
-
-const JobBenefitChipHOC = withStyles({
-    // colorPrimary: {
-    //     color: '#397db9!Important',
-    //     borderColor: '#397db9',
-    //     backgroundColor: '#ffffff'
-    // },
-    // colorSecondary: {
-    //     color: '#aaa'
-    // },
-    // deleteIconOutlinedColorPrimary: {
-    //     color: '#397db9',
-    //     borderColor: '#397db9',
-    //     backgroundColor: '#ffffff'
-    // },
-    // deleteIconOutlinedColorSecondary: {
-    //     color: 'green'
-    // }
-})(JobBenefitChip);
 
 export class InputHOC extends React.PureComponent {
     state = {

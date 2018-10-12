@@ -570,6 +570,7 @@
     
     "jobs.new.jobTitle": "Job title\nJob title...",
     "jobs.new.descriptions": "Job \ndescription",
+    "jobs.new.location": "Job \nlocation",
     "jobs.new.expirationData": "Expiration \ndate",
     "jobs.new.selectData": "Select expiration date.",
     "jobs.new.jobBenefits": "Job \nbenefits",

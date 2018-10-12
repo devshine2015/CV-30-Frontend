@@ -1,7 +1,7 @@
 import React from 'react'
 
-export default ({ width, height, fill }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39.91 33.25" width={width || 40} height={height || 33}>
+export default ({ width, height, fill, style }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" style={style || {}} viewBox="0 0 39.91 33.25" width={width || 40} height={height || 33}>
         <title>one day off</title>
         <g id="Layer_2" data-name="Layer 2">
             <g id="OBJECTS">
