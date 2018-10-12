@@ -68,6 +68,7 @@
         padding-bottom: 100px;
 
         .featureRow {
+            position: relative;
             justify-content: space-evenly;
             align-items: center;
             margin-top: 100px;
@@ -114,6 +115,18 @@
                 background: #397db9;
                 color: #fff;
                 margin-left: 15px;
+                box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
+            }
+
+            .deleteBtn {
+                width: 35px;
+                height: 35px;
+                background: #397db9;
+                color: #fff;
+                margin-left: 15px;
+                position: absolute;
+                right: 20px;
+                bottom: 20px;
                 box-shadow: 0px 2px 5px 1px rgba(120, 118, 120, 0.3);
             }
         }

@@ -32,6 +32,7 @@
     "react-apollo": "^2.2.4",
     "react-async-script-loader": "^0.3.0",
     "react-autosuggest": "^9.4.2",
+    "react-confirm-alert": "^2.0.6",
     "react-dom": "^16.5.2",
     "react-dropzone": "^6.0.3",
     "react-froala-wysiwyg": "^2.8.5",
