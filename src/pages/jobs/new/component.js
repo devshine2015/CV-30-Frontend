@@ -19,7 +19,7 @@ import LocationInput from '../../../components/LocationInput';
 import ImageUploader from '../../../components/imageUploader';
 import { s3BucketURL } from '../../../constants/s3';
 import SkillsInput from '../../../components/SkillsInput';
-import { InputHOC, SelectHOC, ChipsHOC } from '../../../components/FormHOCs';
+import { InputHOC, SelectHOC, ChipsHOC, JobSalary } from '../../../components/FormHOCs';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
@@ -62,6 +62,7 @@ class NewJob extends React.Component {
             companyId: (this.props.job && this.props.job.companyId) || "",
             teamId: (this.props.job && this.props.job.teamId) || "",
             jobBenefits: (this.props.job && this.props.job.jobBenefits && this.props.job.jobBenefits.map(benefit => benefit.id)) || [],
+            jobTypes: (this.props.job && this.props.job.jobTypes && this.props.job.jobTypes && this.props.job.jobTypes.map(type => type.id)) || [],
             salary: {
                 amountMin: (this.props.job && this.props.job.salary && this.props.job.salary.amountMin) || 0,
                 amountMax: (this.props.job && this.props.job.salary && this.props.job.salary.amountMax) || 1000,
@@ -140,7 +141,7 @@ class NewJob extends React.Component {
     } = this.props;
     if (loading) return null;
     const {
-        id, title, companyId, teamId, jobBenefits, salary, activityField, skills, expireDate, location, imagePath, videoUrl, status, description, idealCandidate
+        id, title, companyId, teamId, jobBenefits, jobTypes, salary, activityField, skills, expireDate, location, imagePath, videoUrl, status, description, idealCandidate
     } = this.state.formData;
     // allJobBenefits = allJobBenefits.map(item => {
     //     item.icon = item.key.replace(/\b-([a-z])/g, function(all, char) { return char.toUpperCase() });
@@ -148,8 +149,8 @@ class NewJob extends React.Component {
     //     return item;
     // });
     // const benefitsIcons = benefits.map()
-    // console.log(allJobTypes);
-    console.log(allSkills);
+    console.log("status => " + status);
+    // console.log(allSkills);
     if (loading || !company) return <Loader />
     return (
         <div className='newJobRoot'>
@@ -331,7 +332,7 @@ class NewJob extends React.Component {
                             </FormattedMessage> */}
                             
                             <FormControl className='formControl' style={{ width: 'auto', display: 'inline', flexWrap: 'wrap' }}>
-                                <ChipsHOC key="jobBenefits" name="jobBenefits" value={jobBenefits} options={allJobBenefits} />
+                                <ChipsHOC key="jobBenefits" name="jobBenefits" value={jobBenefits} options={allJobBenefits} multiple={true} />
                             </FormControl>
                         </section>
                         <section className='team'>
@@ -399,7 +400,7 @@ class NewJob extends React.Component {
                             </FormattedMessage>
                             
                             <FormControl className='formControl' style={{ width: 'auto', display: 'inline', flexWrap: 'wrap' }}>
-                                <ChipsHOC key="skills" name="skills" value={skills} options={allSkills} />
+                                <ChipsHOC key="skills" name="skills" value={skills} options={allSkills} multiple={true} />
                             </FormControl>
                             {/* <SkillsInput className='textField jobSelect' value={values.skills} onChange={onSkillsChange}/> */}
                         </section>
@@ -417,7 +418,10 @@ class NewJob extends React.Component {
                                 )}
                             </FormattedMessage> */}
                             
-                            <FormControl className='formControl' style={{ width: '100%' }}>
+                            <FormControl className='formControl' style={{ width: 'auto', display: 'inline', flexWrap: 'wrap' }}>
+                                <ChipsHOC key="jobTypes" name="jobTypes" value={jobTypes} options={allJobTypes} multiple={false} />
+                            </FormControl>
+                            {/* <FormControl className='formControl' style={{ width: '100%' }}>
                                 <Select
                                     multiple
                                     style={{ width: '100%' }}
@@ -434,7 +438,7 @@ class NewJob extends React.Component {
                                         </MenuItem>
                                     ))}
                                 </Select>
-                            </FormControl>
+                            </FormControl> */}
                         </section>
                         <section className='salary'>
                             <FormattedMessage id="jobs.new.salaryRange" defaultMessage="Salary \nrange" description="Salary range">
@@ -443,7 +447,8 @@ class NewJob extends React.Component {
                                 )}
                             </FormattedMessage>
                             
-                            <Range
+                            <JobSalary />
+                            {/* <Range
                                 style={{ width: '100%' }}
                                 min={0}
                                 max={5000}
@@ -451,16 +456,7 @@ class NewJob extends React.Component {
                                 tipFormatter={value => `${value}${formatCurrency(values.salary.currency)}`}
                                 step={50}
                                 onChange={handleSliderChange}
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="salary.isPublic"
-                                        checked={values.salary.isPublic}
-                                        // onChange={handleChange}
-                                        />
-                                }
-                                label="Public" />
+                            /> */}
                         </section>
                         <section className='locationSection'>
                             <FormattedMessage id="jobs.new.location" defaultMessage="Location..." description="Location">
@@ -477,14 +473,13 @@ class NewJob extends React.Component {
                         </section>
                         <section className='jobStatus'>
                             <FormattedMessage id="jobs.new.selectStatus" defaultMessage="Select job status." description="Select job status.">
-                                {(text) => (
-                                    <p className='helperText'>
-                                        {text}
-                                    </p>
-                                )}
+                                { text => <h2 className='sectionTitle'>{text.split("\n")[0]} <b>{text.split("\n")[1]}</b></h2> }
                             </FormattedMessage>
                             
-                            <FormControl className='formControl'>
+                            <FormControl className='formControl' style={{ width: 'auto', display: 'inline', flexWrap: 'wrap' }}>
+                                <ChipsHOC key="status" name="status" value={status} options={['draft', 'active', 'archived'].map(item => ({ id: item, title: item }))} multiple={false} />
+                            </FormControl>
+                            {/* <FormControl className='formControl'>
                                 <Select
                                     name='status'
                                     // onChange={handleChange}
@@ -502,7 +497,7 @@ class NewJob extends React.Component {
                                         ['draft', 'active', 'archived'].map(item => <MenuItem value={item} key={item}>{item.toUpperCase()}</MenuItem>)
                                     }
                                 </Select>
-                            </FormControl>
+                            </FormControl> */}
                         </section>
                     </div>
                 </Grid>

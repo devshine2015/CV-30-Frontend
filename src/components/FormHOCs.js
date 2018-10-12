@@ -16,7 +16,7 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 // Require Font Awesome.
 import 'font-awesome/css/font-awesome.css';
 import FroalaEditor from 'react-froala-wysiwyg';
-import { withStyles } from '@material-ui/core/styles';
+import DoneIcon from '@material-ui/icons/Done';
 
 import ImageUploader from './imageUploader';
 import { s3BucketURL } from '../constants/s3';
@@ -37,6 +37,73 @@ const debounce = (func, wait, immediate) => {
 		if (callNow) func.apply(context, args);
 	};
 };
+
+export class JobSalary extends React.PureComponent {
+    state = {
+        amountMin: (this.props.salary && this.props.salary.amountMin) || 0,
+        amountMax: (this.props.salary && this.props.salary.amountMax) || 10000,
+        currency: (this.props.salary && this.props.salary.currency) || 'eur',
+        isPublic: (this.props.salary && this.props.salary.isPublic) || false
+    }
+    handleMinChange = event => this.setState({ amountMin: event.target.value })
+    handleMaxChange = event => this.setState({ amountMax: event.target.value })
+    handlePublicChange = () => this.setState({ isPublic: !this.state.isPublic })
+    render() {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <TextField
+                    id="salary-min"
+                    placeholder="minimum"
+                    value={this.state.amountMin}
+                    onChange={this.handleMinChange}
+                    type="number"
+                    className={"textfield"}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    InputProps={{
+                        inputProps: {
+                            min: 0,
+                            max: this.state.amountMax
+                        }
+                    }}
+                    style={{ marginTop: 0, marginBottom: 0 }}
+                    margin="normal"
+                />
+                <TextField
+                    id="salary-max"
+                    placeholder="maximum"
+                    value={this.state.amountMax}
+                    onChange={this.handleMaxChange}
+                    type="number"
+                    className={"textfield"}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    InputProps={{
+                        inputProps: {
+                            min: this.state.amountMin
+                        }
+                    }}
+                    style={{ marginLeft: 10, marginTop: 0, marginBottom: 0 }}
+                    margin="normal"
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            style={{
+                                color: '#397db9'
+                            }}
+                            name="salary.isPublic"
+                            checked={this.state.isPublic}
+                            onChange={this.handlePublicChange}
+                            />
+                    }
+                    label="Public" />
+            </div>
+        );
+    }
+}
 
 export class SelectHOC extends React.PureComponent {
     state = {
@@ -93,10 +160,10 @@ export class SelectHOC extends React.PureComponent {
 
 export class ChipsHOC extends React.PureComponent {
     state = {
-        value: this.props.value || []
+        value: this.props.value ? this.props.value : this.props.multiple ? [] : null
     }
     select = value => this.setState({
-        value: this.state.value.concat([value])
+        value: this.props.multiple ? this.state.value.concat([value]) : value
     }, () => console.log(this.state))
     remove = value => this.setState({
         value: [...this.state.value].filter(item => item != value)
@@ -104,15 +171,17 @@ export class ChipsHOC extends React.PureComponent {
     render() {
         const languageKeys = {
             'jobBenefits': 'benefits',
-            'skills': 'skills'
+            'skills': 'skills',
+            'jobTypes': 'jobTypes'
         };
         return (
             <React.Fragment>
-                { this.props.options.map(option => (
-                    <FormattedMessage key={option.key} id={`${languageKeys[this.props.name]}.${option.key}`} defaultMessage={option.key}>
-                        { text => <ChipItem option={option} text={text} type={this.props.name} /> }
-                    </FormattedMessage>
-                )) }
+                { this.props.options.map(option => {
+                    if (this.props.name === "jobTypes" || this.props.name === "status") return <ChipItem key={option.key || option.id} id={option.key || option.id} option={option} text={option.title} type={this.props.name} multiple={this.props.multiple} isSelected={this.state.value == option.id} useParentState={this.select} />
+                    return <FormattedMessage key={option.key || option.id} id={`${languageKeys[this.props.name]}.${option.key}`} defaultMessage={option.key}>
+                        { text => <ChipItem option={option} text={text} type={this.props.name} multiple={this.props.multiple} /> }
+                    </FormattedMessage>;
+                }) }
             </React.Fragment>
         )
     }
@@ -122,7 +191,11 @@ class ChipItem extends React.PureComponent {
     state = {
         selected: this.props.selected || false
     }
-    toggle = () => this.setState({ selected: !this.state.selected })
+    toggle = () => {
+        if (this.props.useParentState) {
+            if (!this.props.isSelected) this.props.useParentState(this.props.id);
+        } else this.setState({ selected: !this.state.selected })
+    }
     icon = () => {
         this.icons = {
             jobBenefits: <BenefitsIcons icon={this.props.option.key} fill={this.state.selected ? '#397db9' : '#aaaaaa'} size={'1em'} style={{ margin: '0 -8px 0 4px' }} />
@@ -134,19 +207,18 @@ class ChipItem extends React.PureComponent {
             <Chip
                 icon={this.icon()}
                 label={this.props.text}
-                onClick={this.state.selected ? null : this.toggle}
-                onDelete={!this.state.selected ? null : this.toggle}
+                onClick={this.props.isSelected || this.state.selected ? null : this.toggle}
+                onDelete={this.props.multiple ? !this.state.selected ? null : this.toggle : this.props.isSelected ? this.toggle : null}
                 style={{
                     alignSelf: 'flex-start',
                     marginBottom: 5,
                     marginRight: 5,
-                    color: this.state.selected ? '#397db9' : '#aaaaaa',
-                    borderColor: this.state.selected ? '#397db9' : '#aaaaaa',
-                    fill: this.state.selected ? '#397db9' : '#aaaaaa',
+                    color: this.props.isSelected || this.state.selected ? '#397db9' : '#aaaaaa',
+                    borderColor: this.props.isSelected || this.state.selected ? '#397db9' : '#aaaaaa',
+                    fill: this.props.isSelected || this.state.selected ? '#397db9' : '#aaaaaa',
                     backgroundColor: '#ffffff'
                 }}
-                // icon={<Icon style={{ color: this.state.selected ? '#397db9' : '#aaaaaa' }}>close</Icon>}
-                deleteIcon={<Icon style={{ color: this.state.selected ? '#397db9' : '#aaaaaa' }}>close</Icon>}
+                deleteIcon={!this.props.multiple ? this.props.isSelected ? <DoneIcon style={{ color: '#397db9' }} /> : null : <Icon style={{ color: this.props.isSelected || this.state.selected ? '#397db9' : '#aaaaaa' }}>close</Icon>}
                 variant="outlined"
             />
         )
