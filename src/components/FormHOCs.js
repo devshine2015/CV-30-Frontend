@@ -102,10 +102,14 @@ export class ChipsHOC extends React.PureComponent {
         value: [...this.state.value].filter(item => item != value)
     })
     render() {
+        const languageKeys = {
+            'jobBenefits': 'benefits',
+            'skills': 'skills'
+        };
         return (
             <React.Fragment>
                 { this.props.options.map(option => (
-                    <FormattedMessage key={option.key} id={`benefits.${option.key}`} defaultMessage={option.key}>
+                    <FormattedMessage key={option.key} id={`${languageKeys[this.props.name]}.${option.key}`} defaultMessage={option.key}>
                         { text => <ChipItem option={option} text={text} type={this.props.name} /> }
                     </FormattedMessage>
                 )) }

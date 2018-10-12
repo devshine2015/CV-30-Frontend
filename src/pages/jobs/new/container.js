@@ -5,12 +5,15 @@ import uuid from 'uuidv4';
 import { withRouter } from 'react-router-dom';
 import { withFormik } from 'formik';
 
-import { jobDependencies, handleJob, setFeedbackMessage, setEditMode } from '../../../store/queries';
+import { jobDependencies, handleJob, setFeedbackMessage, setEditMode, skillsQuery } from '../../../store/queries';
 import { jobsFolder } from '../../../constants/s3';
 import jobValidation from './validations';
 
 const NewJobHOC = compose(
     withRouter,
+    graphql(skillsQuery, {
+        name: 'skillsData'
+    }),
     graphql(jobDependencies, {
         name: 'jobDependencies',
         options: props => ({

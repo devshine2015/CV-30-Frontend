@@ -128,6 +128,7 @@ class NewJob extends React.Component {
             imageUploadOpen,
             videoShareAnchor
         },
+        skillsData: { skills: allSkills },
         jobDependencies: { loading, jobBenefits: allJobBenefits, jobTypes: allJobTypes, company },
         updateDescription, updateIdealCandidate, handleSliderChange, onSkillsChange,
         handleClick, handleClose, addField, removeTextField,
@@ -148,7 +149,7 @@ class NewJob extends React.Component {
     // });
     // const benefitsIcons = benefits.map()
     // console.log(allJobTypes);
-    // console.log(company);
+    console.log(allSkills);
     if (loading || !company) return <Loader />
     return (
         <div className='newJobRoot'>
@@ -387,16 +388,6 @@ class NewJob extends React.Component {
                             </FormattedMessage>
                             <FormattedMessage id="jobs.new.activityField" defaultMessage="Activity field\nActivity field..." description="Activity field">
                                 { text => <InputHOC fullWidth={true} key="activityField" name="activityField" placeholder={text} value={activityField} updateFormState={this.handleChange} schema={this.validation.activityField} /> }
-                                {/* (
-                                    // <TextField
-                                    //     name="activityField"
-                                    //     label={text.split("\n")[0]}
-                                    //     placeholder={text.split("\n")[1]}
-                                    //     className='textField jobSelect'
-                                    //     // onChange={handleChange}
-                                    //     value={values.activityField}
-                                    // />
-                                ) */}
                             </FormattedMessage>
                             
                         </section>
@@ -407,7 +398,10 @@ class NewJob extends React.Component {
                                 )}
                             </FormattedMessage>
                             
-                            <SkillsInput className='textField jobSelect' value={values.skills} onChange={onSkillsChange}/>
+                            <FormControl className='formControl' style={{ width: 'auto', display: 'inline', flexWrap: 'wrap' }}>
+                                <ChipsHOC key="skills" name="skills" value={skills} options={allSkills} />
+                            </FormControl>
+                            {/* <SkillsInput className='textField jobSelect' value={values.skills} onChange={onSkillsChange}/> */}
                         </section>
                         <section className='jobType'>
                             <FormattedMessage id="jobs.new.jobTypes" defaultMessage="Job \ntype" description="Job type">
@@ -450,6 +444,7 @@ class NewJob extends React.Component {
                             </FormattedMessage>
                             
                             <Range
+                                style={{ width: '100%' }}
                                 min={0}
                                 max={5000}
                                 defaultValue={[values.salary.amountMin, values.salary.amountMax]}
