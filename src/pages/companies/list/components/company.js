@@ -66,38 +66,46 @@ const Company = ({ activeTab, handleTabChange,
                                 indicator: 'tabsIndicator'
                             }}
                         >   
-                            <Tab
-                                label={text.split("0")[0]}
-                                value='jobs'
-                                classes={{
-                                    root: 'tabRoot',
-                                    labelIcon: 'labelIcon',
-                                    selected: 'tabSelected',
-                                    wrapper: 'tabWrapper',
-                                    labelContainer: 'labelContainer',
-                                    label: 'label'
-                                }}
-                                disableRipple
-                                disableTouchRipple
-                                focusRipple
-                                disabled={!recentJobs || recentJobs.length === 0}
-                            />
-                            <Tab
-                                label={text.split("0")[1]}
-                                value='teams'
-                                classes={{
-                                    root: 'tabRoot',
-                                    labelIcon: 'labelIcon',
-                                    selected: 'tabSelected',
-                                    wrapper: 'tabWrapper',
-                                    labelContainer: 'labelContainer',
-                                    label: 'label'
-                                }}
-                                disableRipple
-                                disableTouchRipple
-                                focusRipple
-                                disabled={!teams || teams.length === 0}
-                            />
+                            {
+                                (recentJobs && recentJobs.length !== 0) &&
+                                <Tab
+                                    label={text.split("0")[0]}
+                                    value='jobs'
+                                    classes={{
+                                        root: 'tabRoot',
+                                        labelIcon: 'labelIcon',
+                                        selected: 'tabSelected',
+                                        wrapper: 'tabWrapper',
+                                        labelContainer: 'labelContainer',
+                                        label: 'label',
+                                        display: 'none'
+                                    }}
+                                    disableRipple
+                                    disableTouchRipple
+                                    focusRipple
+                                    disabled={!recentJobs || recentJobs.length === 0}
+                                />
+                            }
+                            {
+                                (teams && teams.length !== 0) && 
+                                <Tab
+                                    label={text.split("0")[1]}
+                                    value='teams'
+                                    classes={{
+                                        root: 'tabRoot',
+                                        labelIcon: 'labelIcon',
+                                        selected: 'tabSelected',
+                                        wrapper: 'tabWrapper',
+                                        labelContainer: 'labelContainer',
+                                        label: 'label'
+                                    }}
+                                    disableRipple
+                                    disableTouchRipple
+                                    focusRipple
+                                    disabled={!teams || teams.length === 0}
+                                />
+                            }
+                            
                         </Tabs>
                     )}
                 </FormattedMessage>
