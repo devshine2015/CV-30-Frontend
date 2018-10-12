@@ -144,4 +144,4 @@ const Profile = props => {
     );
 }
 
-export default ProfileHOC(Profile);
+export const ProfileItem = ProfileHOC(Profile);

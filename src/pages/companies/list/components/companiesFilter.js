@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, Button, TextField, Checkbox, InputAdornment } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import { debounce } from 'lodash';
-import 'rc-slider/assets/index.css';
 
 import LocationInput from '../../../../components/LocationInput';
 import IndustryInput from '../../../../components/IndustryInput';
