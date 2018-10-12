@@ -11,7 +11,6 @@ import { setEditMode, setFeedbackMessage } from '../../../store/queries';
 import { currentProfileRefetch } from '../../../store/refetch';
 import { removeLandingPageArticle,  } from '../../../store/queries/articles'
 
-
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 

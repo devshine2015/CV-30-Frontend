@@ -31,6 +31,7 @@ const minimumCompanyData = gql`
       id
       name
       hasProfileCover
+      coverPath
       coverContentType
       coverBackground
       members {

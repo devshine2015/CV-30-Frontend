@@ -5,7 +5,6 @@ import { Icon } from '@material-ui/core';
 import AliceCarousel from 'react-alice-carousel';
 import { s3BucketURL } from '../../../../constants/s3';
 import ReactPlayer from 'react-player';
-
 import "react-alice-carousel/lib/alice-carousel.css";
 import { FormattedDate } from 'react-intl';
 
@@ -21,12 +20,12 @@ const responsive = {
 class TeamsSlider extends React.Component {
         renderItems = (teams) => {
         return teams.map((team, index) => {
-            const { id, coverBackground, name } = team
-            console.log(team)
+            const { id, coverBackground, coverPath, name } = team
             const style = {
-                background: `url(${testImage})`,
+                background: coverPath? `url(${s3BucketURL}${coverPath})` : `${coverBackground}`,
                 backgroundSize: 'auto 100%',
-                backgroundRepeat: 'no-repeat'
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center'
             }
             return (
                 <div key={index} className='team'>

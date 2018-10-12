@@ -87,6 +87,7 @@ const Company = ({ activeTab, handleTabChange,
                                 />
                             }
                             {
+                                
                                 (teams && teams.length !== 0) && 
                                 <Tab
                                     label={text.split("0")[1]}
@@ -112,7 +113,7 @@ const Company = ({ activeTab, handleTabChange,
                 
             </div>
             <div className={activeTab ? 'itemFooter open' : 'itemFooter'}>
-                
+                {console.log(teams)}
                 {   activeTab === 'jobs' &&
                     <JobsSlider jobs={recentJobs} />
                 }
