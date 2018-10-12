@@ -130,6 +130,15 @@ export const removeArticle = gql`
     }
 `;
 
+export const removeLandingPageArticle = gql`
+    mutation removeLandingPageArticle($id: String!) {
+        removeLandingPageArticle(id: $id) {
+            status
+            error
+        }
+    }
+`;
+
 export const handleArticleTags = gql`
     mutation handleArticleTags($language: LanguageCodeType!, $details: ArticleTagsInput!) {
         handleArticleTags(language: $language, details: $details) {
