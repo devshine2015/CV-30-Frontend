@@ -381,10 +381,11 @@ const profilesData = gql`
 export const profilesQuery = gql`
     query profiles(
         $language: LanguageCodeType!
+        $filter: ProfilesFilterInput
         $first: Int!
         $after: String
     ) {
-        profiles(language: $language, first: $first, after: $after) {
+        profiles(language: $language, filter: $filter, first: $first, after: $after) {
             edges {
                 node {
                     ...profilesData
