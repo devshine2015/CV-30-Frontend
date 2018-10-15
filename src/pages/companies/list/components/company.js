@@ -78,7 +78,6 @@ const Company = ({ activeTab, handleTabChange,
                                         wrapper: 'tabWrapper',
                                         labelContainer: 'labelContainer',
                                         label: 'label',
-                                        display: 'none'
                                     }}
                                     disableRipple
                                     disableTouchRipple

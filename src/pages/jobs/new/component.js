@@ -100,6 +100,7 @@ class NewJob extends React.Component {
             isValid: false
         }
     }
+    
     shouldComponentUpdate = (nextProps, nextState) => {
         return (
             this.state.formStatus.isValid !== nextState.formStatus.isValid
